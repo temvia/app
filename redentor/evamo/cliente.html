@@ -4574,11 +4574,31 @@ const SENHA_CLIENTE = 'evamo@26'; // fallback se o config nao tiver senha defini
     const sc = snap.exists() ? (snap.data().senhaCliente || '') : '';
     if (sc) window._senhaClienteCfg = sc; // quando definida no config, ela passa a valer
   } catch(e) { /* sem rede: usa o fallback */ }
+  tentarAutoEntradaCliente();
 })();
+
+// Entrada automatica: o portal temvia guarda a senha validada; se ela confere, pula a tela de senha.
+function tentarAutoEntradaCliente() {
+  try {
+    const salva = localStorage.getItem('temvia_cliente_senha_' + CLIENTE_ID) || '';
+    const alvo = window._senhaClienteCfg || SENHA_CLIENTE;
+    const overlay = document.getElementById('loginOverlay');
+    if (salva && salva === alvo && overlay && overlay.style.display !== 'none') {
+      overlay.style.display = 'none';
+      MAPS_API_KEY = '';
+      getApiKey();
+      loadDataRealtime();
+    } else if (salva && salva !== alvo) {
+      localStorage.removeItem('temvia_cliente_senha_' + CLIENTE_ID); // senha mudou: pedir de novo
+    }
+  } catch(e) {}
+}
+tentarAutoEntradaCliente();
 
 function fazerLogin() {
   const val = document.getElementById('senhaCliente').value;
   if (val === (window._senhaClienteCfg || SENHA_CLIENTE)) {
+    try { localStorage.setItem('temvia_cliente_senha_' + CLIENTE_ID, val); } catch(e) {}
     document.getElementById('loginOverlay').style.display = 'none';
     // Recarregar chave Maps (validada — rejeita chave Firebase)
     MAPS_API_KEY = '';
