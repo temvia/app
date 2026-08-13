@@ -615,10 +615,10 @@ body {
 <div class="app" id="appMain" style="display:flex;flex-direction:column;min-height:100vh">
   <div class="header">
     <div>
-      <div class="header-logo">🚐 __MARCA_UPPER__</div>
+      <div class="header-logo"><svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-3px;margin-right:7px'><path d='M1 4h14v12H1z'/><path d='M15 9h4l4 4v3h-8V9z'/><circle cx='6' cy='18.5' r='2'/><circle cx='18' cy='18.5' r='2'/></svg>__MARCA_UPPER__</div>
       <div class="header-sub" id="headerSub">Rota do Dia</div>
     </div>
-    <div style="display:flex;gap:8px"><button class="logout-btn" id="btnAtualizarApp" onclick="atualizarApp()" title="Buscar as atualizações mais recentes">🔄 Atualizar</button><button class="logout-btn" onclick="resetSelecao()">↺ Trocar</button></div>
+    <div style="display:flex;gap:8px"><button class="logout-btn" id="btnAtualizarApp" onclick="atualizarApp()" title="Buscar as atualizações mais recentes">Atualizar</button><button class="logout-btn" onclick="resetSelecao()">↺ Trocar</button></div>
   </div>
 
   <div class="body">
@@ -626,15 +626,15 @@ body {
     <div style="display:flex;gap:8px;margin-bottom:16px">
       <button id="abaRotaBtn" onclick="trocarAba('rota')"
         style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--accent);background:var(--accent);color:#000;font-family:'Barlow',sans-serif;font-weight:800;font-size:12px;cursor:pointer">
-        🚐 Minha Rota
+        Minha Rota
       </button>
       <button id="abaHojeBtn" onclick="trocarAba('hoje')"
         style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:800;font-size:12px;cursor:pointer;position:relative">
-        🎯 Rotas de Hoje<span id="hojeBadge" style="display:none;position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;align-items:center;justify-content:center">0</span>
+        Rotas de Hoje<span id="hojeBadge" style="display:none;position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;align-items:center;justify-content:center">0</span>
       </button>
       <button id="abaBuscaBtn" onclick="trocarAba('busca')"
         style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:800;font-size:12px;cursor:pointer">
-        🔍 Busca
+        Busca
       </button>
     </div>
 
@@ -647,7 +647,7 @@ body {
         </select>
       </div>
       <div style="margin-bottom:8px">
-        <label class="section-label">🔁 Cobertura — ver rotas de outro motorista</label>
+        <label class="section-label">Cobertura — ver rotas de outro motorista</label>
         <select class="select-input" id="selCobertura" onchange="carregarRotasHoje()">
           <option value="">— ninguém (só as minhas) —</option>
         </select>
@@ -675,7 +675,7 @@ body {
 
     <!-- ABA BUSCA RÁPIDA -->
     <div id="abaBusca" style="display:none">
-      <input id="buscaRapidaInput" type="text" placeholder="🔍 Digite nome, bairro ou cidade..."
+      <input id="buscaRapidaInput" type="text" placeholder="Digite nome, bairro ou cidade..."
         oninput="renderBuscaRapida()"
         style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;box-sizing:border-box">
 
@@ -685,10 +685,10 @@ body {
       <!-- Selecionados para rota personalizada -->
       <div id="buscaRapidaSelecionadosBox" style="display:none;margin-top:16px;background:var(--surface);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:14px">
         <div style="font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;color:var(--accent);margin-bottom:6px">
-          📍 Rota personalizada — <span id="buscaRapidaCount">0</span> parada(s)
+          Rota personalizada — <span id="buscaRapidaCount">0</span> parada(s)
         </div>
         <div style="background:rgba(245,158,11,0.08);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--muted);line-height:1.6">
-          👆 Navegue <strong style="color:var(--text)">ponto a ponto</strong> — clique em Maps ou Waze em cada parada, conclua a navegação e volte para a próxima.
+          Navegue <strong style="color:var(--text)">ponto a ponto</strong> — clique em Maps ou Waze em cada parada, conclua a navegação e volte para a próxima.
         </div>
         <div id="buscaRapidaSelecionadosList" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px"></div>
         <div id="buscaRapidaPorParada"></div>
@@ -741,7 +741,7 @@ function _rotaSelo(data) {
   const p = data.split('-');
   if (p.length !== 3) return data;
   const txt = p[2] + '/' + p[1];
-  return (data < hoje) ? ('\u26A0\uFE0F ' + txt) : txt;
+  return (data < hoje) ? (txt + ' · ATRASADA') : txt;
 }
 
 function mesLocal(baseDate){
@@ -786,8 +786,8 @@ function restaurarBuscaSessao() {
   } catch(e) {}
 }
 function trocarAba(aba) {
-  document.getElementById('abaRota').style.display  = aba === 'rota'  ? 'block' : 'none';
-  document.getElementById('abaHoje').style.display  = aba === 'hoje'  ? 'block' : 'none';
+  document.getElementById('abaRota').style.display  = aba === 'rota' ? 'block' : 'none';
+  document.getElementById('abaHoje').style.display  = aba === 'hoje' ? 'block' : 'none';
   document.getElementById('abaBusca').style.display = aba === 'busca' ? 'block' : 'none';
   const btns = { rota: 'abaRotaBtn', hoje: 'abaHojeBtn', busca: 'abaBuscaBtn' };
   Object.entries(btns).forEach(([k, id]) => {
@@ -850,7 +850,7 @@ async function concluirRotaHoje(rotaId) {
     await carregarRotasHojeFirebase();
     carregarRotasHoje();
   } catch(e) {
-    if (status) status.textContent = '❌ Erro ao concluir: ' + e.message;
+    if (status) status.textContent = 'Erro ao concluir: ' + e.message;
   }
 }
 
@@ -911,9 +911,9 @@ function carregarRotasHoje() {
   }
   if (!minhas.length) {
     div.innerHTML = aviso + '<div style="padding:30px 16px;text-align:center;color:var(--muted)">'+
-      '<div style="font-size:32px;margin-bottom:8px">📭</div>'+
+      '<div style="font-size:32px;margin-bottom:8px"></div>'+
       'Nenhuma rota publicada para <strong>' + esc(nomeVer) + '</strong> hoje.<br>'+
-      '<span style="font-size:12px">Use a aba <strong>🚐 Minha Rota</strong> para ver as linhas fixas.</span></div>';
+      '<span style="font-size:12px">Use a aba <strong>Minha Rota</strong> para ver as linhas fixas.</span></div>';
     return;
   }
   div.innerHTML = aviso + minhas.map(r => {
@@ -921,7 +921,7 @@ function carregarRotasHoje() {
     const dataFmt = _rotaSelo(r.data);
     let h = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px">';
     h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">';
-    h += '<span style="background:' + (isSaida?'var(--red)':'var(--green)') + ';color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px">' + (isSaida?'🔴 SAÍDA':'🔵 ENTRADA') + '</span>';
+    h += '<span style="background:' + (isSaida?'var(--red)':'var(--green)') + ';color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px">' + (isSaida?'SAÍDA':'ENTRADA') + '</span>';
     h += '<span style="background:var(--accent);color:#000;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px">' + dataFmt + '</span>';
     h += '</div>';
     h += '<div style="font-family:\'Barlow\',sans-serif;font-weight:800;font-size:17px;margin-bottom:2px">' + esc(r.nomeRota) + '</div>';
@@ -929,7 +929,7 @@ function carregarRotasHoje() {
 
     // Origem
     h += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border)">';
-    h += '<div style="width:28px;height:28px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:14px">🏁</div>';
+    h += '<div style="width:28px;height:28px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:14px"></div>';
     h += '<div><div style="font-size:11px;color:var(--muted)">' + (isSaida?'Saída da empresa às':'Saída da garagem às') + '</div>';
     h += '<div style="font-weight:700">' + r.departure + '</div></div></div>';
 
@@ -946,10 +946,10 @@ function carregarRotasHoje() {
       // Linha de ações: WhatsApp + Ir
       h += '<div style="display:flex;gap:8px;margin-top:8px;margin-left:38px">';
       if (telLimpo) {
-        h += '<a href="https://wa.me/55' + telLimpo + '" target="_blank" style="flex:1;text-align:center;background:rgba(37,211,102,0.12);color:#25D366;border:1px solid rgba(37,211,102,0.3);border-radius:8px;padding:8px;font-size:13px;font-weight:700;text-decoration:none">💬 ' + esc(p.telefone) + '</a>';
+        h += '<a href="https://wa.me/55' + telLimpo + '" target="_blank" style="flex:1;text-align:center;background:rgba(37,211,102,0.12);color:#25D366;border:1px solid rgba(37,211,102,0.3);border-radius:8px;padding:8px;font-size:13px;font-weight:700;text-decoration:none">' + esc(p.telefone) + '</a>';
       }
       const q = p.lat && p.lng ? p.lat+','+p.lng : encodeURIComponent(p.embarque+' '+(p.cidade||'Sorocaba'));
-      h += '<a href="https://www.google.com/maps/dir/?api=1&destination=' + q + '&travelmode=driving" target="_blank" style="flex:1;text-align:center;background:rgba(59,130,246,0.12);color:var(--accent2);border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:8px;font-size:13px;font-weight:700;text-decoration:none">🗺️ Navegar</a>';
+      h += '<a href="https://www.google.com/maps/dir/?api=1&destination=' + q + '&travelmode=driving" target="_blank" style="flex:1;text-align:center;background:rgba(59,130,246,0.12);color:var(--accent2);border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:8px;font-size:13px;font-weight:700;text-decoration:none">Navegar</a>';
       h += '</div>';
       h += '</div>';
     });
@@ -957,22 +957,22 @@ function carregarRotasHoje() {
     // Para ENTRADA: mostra chegada na empresa. Para SAÍDA: não mostra retorno.
     if (!isSaida) {
       h += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border)">';
-      h += '<div style="width:28px;height:28px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:14px">🏁</div>';
+      h += '<div style="width:28px;height:28px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:14px"></div>';
       h += '<div><div style="font-size:11px;color:var(--muted)">Chegada na empresa</div>';
       h += '<div style="font-weight:700">' + r.horarioReferencia + '</div></div></div>';
     }
 
     // Mensagem de atenção
     h += '<div style="margin-top:12px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text);line-height:1.5">';
-    h += '⚠️ <strong>Atenção, motorista:</strong> programe-se com antecedência, verifique o veículo antes de sair (combustível, pneus, limpeza), confirme presença dos passageiros e dirija com segurança. Bom trabalho! 🚐';
+    h += '<strong>Atenção, motorista:</strong> programe-se com antecedência, verifique o veículo antes de sair (combustível, pneus, limpeza), confirme presença dos passageiros e dirija com segurança. Bom trabalho! ';
     h += '</div>';
 
     // Botões de comunicação da rota extra (chat + localização)
     h += '<div style="display:flex;gap:8px;margin-top:10px">';
-    h += '<button onclick="commExtraLocal(\'' + r.id + '\')" style="flex:1;background:var(--accent2);color:#fff;border:none;border-radius:10px;padding:11px;font-weight:700;font-family:Barlow;font-size:13px;cursor:pointer">📍 Localização</button>';
-    h += '<button onclick="commExtraChat(\'' + r.id + '\',\'' + esc(r.nomeRota).replace(/'/g,"") + '\')" style="flex:1;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:11px;font-weight:700;font-family:Barlow;font-size:13px;cursor:pointer">💬 Chat da rota</button>';
+    h += '<button onclick="commExtraLocal(\'' + r.id + '\')" style="flex:1;background:var(--accent2);color:#fff;border:none;border-radius:10px;padding:11px;font-weight:700;font-family:Barlow;font-size:13px;cursor:pointer">Localização</button>';
+    h += '<button onclick="commExtraChat(\'' + r.id + '\',\'' + esc(r.nomeRota).replace(/'/g,"") + '\')" style="flex:1;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:11px;font-weight:700;font-family:Barlow;font-size:13px;cursor:pointer">Chat da rota</button>';
     h += '</div>';
-    h += '<button onclick="concluirRotaHoje(\'' + r.id + '\')" style="width:100%;margin-top:8px;background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.4);border-radius:10px;padding:12px;font-weight:800;font-family:Barlow;font-size:14px;cursor:pointer">✅ Concluir rota</button>';
+    h += '<button onclick="concluirRotaHoje(\'' + r.id + '\')" style="width:100%;margin-top:8px;background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.4);border-radius:10px;padding:12px;font-weight:800;font-family:Barlow;font-size:14px;cursor:pointer">Concluir rota</button>';
     h += '<div id="concluirStatus-' + r.id + '" style="font-size:12px;color:var(--muted);text-align:center;margin-top:6px"></div>';
     h += '<div id="commExtraBox-' + r.id + '" style="display:none;margin-top:10px"></div>';
 
@@ -1026,7 +1026,7 @@ function renderBuscaRapida() {
     // Botão + usando addEventListener (sem inline onclick, sem problemas com aspas)
     const btnSel = document.createElement('button');
     btnSel.style.cssText = 'flex-shrink:0;width:36px;height:36px;border-radius:50%;border:2px solid ' + (jaSel ? 'var(--accent)' : 'var(--border)') + ';background:' + (jaSel ? 'rgba(245,158,11,0.15)' : 'transparent') + ';color:' + (jaSel ? 'var(--accent)' : 'var(--muted)') + ';font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1';
-    btnSel.textContent = jaSel ? '✅' : '＋';
+    btnSel.textContent = jaSel ? '' : '＋';
     btnSel.addEventListener('click', function() {
       toggleBuscaSelecionado(idx, btnSel, card);
     });
@@ -1035,7 +1035,7 @@ function renderBuscaRapida() {
     infoDiv.innerHTML =
       '<div style="font-weight:700;font-size:14px">' + esc(p.nome) + '</div>' +
       '<div style="font-size:12px;color:var(--muted)">' + esc(p.linhaInfo) + '</div>' +
-      (addr ? '<div style="font-size:12px;color:var(--muted)">📍 ' + esc(addr) + (p.cidade ? ' · ' + esc(p.cidade) : '') + '</div>' : '');
+      (addr ? '<div style="font-size:12px;color:var(--muted)">' + esc(addr) + (p.cidade ? ' · ' + esc(p.cidade) : '') + '</div>' : '');
 
     const topRow = document.createElement('div');
     topRow.style.cssText = 'display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px';
@@ -1045,8 +1045,8 @@ function renderBuscaRapida() {
     const navRow = document.createElement('div');
     navRow.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px';
     navRow.innerHTML =
-      '<a href="' + mapsUrl + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:8px;background:var(--green);color:#000;font-family:Barlow,sans-serif;font-weight:800;font-size:13px;text-decoration:none">🗺️ Google Maps</a>' +
-      '<a href="' + wazeUrl + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:8px;background:#33CCFF;color:#000;font-family:Barlow,sans-serif;font-weight:800;font-size:13px;text-decoration:none">🔵 Waze</a>';
+      '<a href="' + mapsUrl + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:8px;background:var(--green);color:#000;font-family:Barlow,sans-serif;font-weight:800;font-size:13px;text-decoration:none">Google Maps</a>' +
+      '<a href="' + wazeUrl + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:8px;background:#33CCFF;color:#000;font-family:Barlow,sans-serif;font-weight:800;font-size:13px;text-decoration:none">Waze</a>';
 
     card.appendChild(topRow);
     card.appendChild(navRow);
@@ -1067,7 +1067,7 @@ function toggleBuscaSelecionado(idx, btn, card) {
     if (card) card.style.borderColor = 'var(--border)';
   } else {
     buscaSelecionados.push(p);
-    btn.textContent = '✅';
+    btn.textContent = '';
     btn.style.borderColor = 'var(--accent)';
     btn.style.background = 'rgba(245,158,11,0.15)';
     btn.style.color = 'var(--accent)';
@@ -1111,17 +1111,17 @@ function atualizarRotaPersonalizada() {
           '<span style="background:var(--accent);color:#000;border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">' + (i+1) + '</span>' +
           '<div style="flex:1">' +
             '<div style="font-weight:700;font-size:13px">' + esc(p.nome.split(' ').slice(0,2).join(' ')) + '</div>' +
-            (addr ? '<div style="font-size:11px;color:var(--muted)">📍 ' + esc(addr) + '</div>' : '') +
+            (addr ? '<div style="font-size:11px;color:var(--muted)">' + esc(addr) + '</div>' : '') +
             '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">' +
               (p.linhaInfo ? '<span style="font-size:10px;background:rgba(245,158,11,0.12);color:var(--accent);border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:2px 7px">' + esc(p.linhaInfo) + '</span>' : '') +
-              (p.bairro ? '<span style="font-size:10px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:2px 7px">📌 ' + esc(p.bairro) + '</span>' : '') +
+              (p.bairro ? '<span style="font-size:10px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:2px 7px">' + esc(p.bairro) + '</span>' : '') +
             '</div>' +
-            (p.telefone ? '<a href="https://wa.me/55' + p.telefone.replace(/\D/g,'') + '" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:11px;color:#25D366;text-decoration:none;font-weight:600">💬 ' + esc(p.telefone) + '</a>' : '') +
+            (p.telefone ? '<a href="https://wa.me/55' + p.telefone.replace(/\D/g,'') + '" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:11px;color:#25D366;text-decoration:none;font-weight:600">' + esc(p.telefone) + '</a>' : '') +
           '</div>' +
         '</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">' +
-          '<a href="' + mapsUrl + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;border-radius:8px;background:var(--green);color:#000;font-family:Barlow,sans-serif;font-weight:800;font-size:12px;text-decoration:none">🗺️ Maps</a>' +
-          '<a href="' + wazeUrl + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;border-radius:8px;background:#33CCFF;color:#000;font-family:Barlow,sans-serif;font-weight:800;font-size:12px;text-decoration:none">🔵 Waze</a>' +
+          '<a href="' + mapsUrl + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;border-radius:8px;background:var(--green);color:#000;font-family:Barlow,sans-serif;font-weight:800;font-size:12px;text-decoration:none">Maps</a>' +
+          '<a href="' + wazeUrl + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;border-radius:8px;background:#33CCFF;color:#000;font-family:Barlow,sans-serif;font-weight:800;font-size:12px;text-decoration:none">Waze</a>' +
         '</div>';
       porParada.appendChild(item);
     });
@@ -1227,9 +1227,9 @@ async function atualizarApp() {
     if (typeof loadRota === 'function' && document.getElementById('selLinha') && document.getElementById('selLinha').value) {
       loadRota();
     }
-    if (btn) { btn.textContent = '✅ Atualizado'; setTimeout(() => { btn.textContent = txtOrig; btn.disabled = false; }, 1500); }
+    if (btn) { btn.textContent = 'Atualizado'; setTimeout(() => { btn.textContent = txtOrig; btn.disabled = false; }, 1500); }
   } catch(e) {
-    if (btn) { btn.textContent = '❌ Erro'; setTimeout(() => { btn.textContent = txtOrig; btn.disabled = false; }, 2000); }
+    if (btn) { btn.textContent = 'Erro'; setTimeout(() => { btn.textContent = txtOrig; btn.disabled = false; }, 2000); }
     console.warn('atualizarApp:', e);
   }
 }
@@ -1248,7 +1248,7 @@ function verificarIdentidade() {
   if (real !== PROJETO_ESPERADO) {
     TRAVA_OK = false;
     try {
-      document.body.innerHTML = '<div style="max-width:560px;margin:80px auto;padding:32px;font-family:sans-serif;background:#1a1208;border:2px solid #f59e0b;border-radius:14px;color:#fff;text-align:center"><div style="font-size:48px;margin-bottom:12px">⚠️</div><h2 style="color:#f59e0b">Arquivo no lugar errado</h2><p>Este arquivo é do cliente <b>' + CLIENTE_ID.toUpperCase() + '</b> (projeto <b>' + PROJETO_ESPERADO + '</b>), mas está conectado ao projeto <b>' + real + '</b>.</p><p style="color:#fca5a5">Bloqueado por segurança para NÃO sobrescrever dados de outro cliente.</p></div>';
+      document.body.innerHTML = '<div style="max-width:560px;margin:80px auto;padding:32px;font-family:sans-serif;background:#1a1208;border:2px solid #f59e0b;border-radius:14px;color:#fff;text-align:center"><div style="font-size:48px;margin-bottom:12px"></div><h2 style="color:#f59e0b">Arquivo no lugar errado</h2><p>Este arquivo é do cliente <b>' + CLIENTE_ID.toUpperCase() + '</b> (projeto <b>' + PROJETO_ESPERADO + '</b>), mas está conectado ao projeto <b>' + real + '</b>.</p><p style="color:#fca5a5">Bloqueado por segurança para NÃO sobrescrever dados de outro cliente.</p></div>';
     } catch(e) {}
     return false;
   }
@@ -1273,7 +1273,7 @@ async function loadFromStorage() {
       MOTORISTAS = data.MOTORISTAS || [];
       // Cache locally
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
-      console.log('✅ Dados carregados do Firebase');
+      console.log('Dados carregados do Firebase');
     } else {
       throw new Error('Sem dados no Firebase');
     }
@@ -1286,7 +1286,7 @@ async function loadFromStorage() {
         const snap = JSON.parse(raw);
         DATA = snap.DATA || [];
         MOTORISTAS = snap.MOTORISTAS || [];
-        console.log('✅ Dados carregados do localStorage (cache)');
+        console.log('Dados carregados do localStorage (cache)');
       } else {
         showNoData('Sem conexão', 'Não foi possível carregar os dados. Verifique sua conexão e tente novamente.');
         return;
@@ -1325,7 +1325,7 @@ function showLoading() {
   document.getElementById('rotaContent').innerHTML = `
     <div style="margin-top:8px;display:flex;flex-direction:column;gap:12px">
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 16px">
-        <div style="font-family:'Barlow',sans-serif;font-weight:800;font-size:13px;color:var(--accent);letter-spacing:1px;margin-bottom:12px">🚐 MINHA ROTA</div>
+        <div style="font-family:'Barlow',sans-serif;font-weight:800;font-size:13px;color:var(--accent);letter-spacing:1px;margin-bottom:12px">MINHA ROTA</div>
         <div style="display:flex;flex-direction:column;gap:10px">
           <div style="display:flex;align-items:flex-start;gap:12px">
             <div style="width:26px;height:26px;border-radius:50%;background:var(--accent);color:#000;font-family:'Barlow',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
@@ -1337,13 +1337,13 @@ function showLoading() {
           </div>
           <div style="display:flex;align-items:flex-start;gap:12px">
             <div style="width:26px;height:26px;border-radius:50%;background:var(--accent);color:#000;font-family:'Barlow',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
-            <div style="font-size:13px;color:var(--text);line-height:1.5">A lista de paradas aparece — toque em <strong>🗺️ Maps</strong> ou <strong>🔵 Waze</strong> em cada parada para navegar</div>
+            <div style="font-size:13px;color:var(--text);line-height:1.5">A lista de paradas aparece — toque em <strong>Maps</strong> ou <strong>Waze</strong> em cada parada para navegar</div>
           </div>
         </div>
       </div>
 
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 16px">
-        <div style="font-family:'Barlow',sans-serif;font-weight:800;font-size:13px;color:var(--accent);letter-spacing:1px;margin-bottom:12px">🔍 BUSCA RÁPIDA</div>
+        <div style="font-family:'Barlow',sans-serif;font-weight:800;font-size:13px;color:var(--accent);letter-spacing:1px;margin-bottom:12px">BUSCA RÁPIDA</div>
         <div style="font-size:13px;color:var(--text);line-height:1.6">
           Use a aba <strong>Busca Rápida</strong> para localizar qualquer passageiro pelo nome, bairro ou cidade e navegar direto até ele — ou selecione vários para montar uma rota personalizada.
         </div>
@@ -1412,7 +1412,7 @@ function loadLinhas(restoreLinhaId) {
     if (re.motorista !== nome) return;
     const opt = document.createElement('option');
     opt.value = re.id;
-    opt.textContent = '⚡ ' + re.nome + ' · ' + re.data + ' · ' + (re.horario||'--:--') + ' · ' + re.passageiros.length + ' pass.';
+    opt.textContent = '' + re.nome + ' · ' + re.data + ' · ' + (re.horario||'--:--') + ' · ' + re.passageiros.length + ' pass.';
     opt.style.color = '#ec4899';
     sel.appendChild(opt);
   });
@@ -1437,7 +1437,7 @@ function loadRotaExtra(re) {
 
   // Extra route badge
   html += '<div style="background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.4);border-radius:12px;padding:12px 16px;margin-bottom:14px;text-align:center">';
-  html += '<div style="font-size:11px;color:#ec4899;text-transform:uppercase;letter-spacing:1px;font-weight:700">⚡ Rota Extra</div>';
+  html += '<div style="font-size:11px;color:#ec4899;text-transform:uppercase;letter-spacing:1px;font-weight:700">Rota Extra</div>';
   html += '<div style="font-weight:800;font-size:18px;margin:4px 0">' + esc(re.nome) + '</div>';
   html += '<div style="font-size:12px;color:var(--muted)">' + esc(re.data) + ' · Saída: ' + (re.horario||'--:--') + '</div>';
   html += '</div>';
@@ -1451,11 +1451,11 @@ function loadRotaExtra(re) {
     html += '<div class="stop-num">' + (i+1) + '</div>';
     html += '<div class="stop-info">';
     html += '<div class="stop-name">' + esc(p.nome) + '</div>';
-    if (p.telefone) html += '<div class="stop-tel">📞 ' + p.telefone + '</div>';
-    html += '<div class="stop-addr">📍 ' + esc(p.embarque||p.endereco||'—') + '</div>';
+    if (p.telefone) html += '<div class="stop-tel">' + p.telefone + '</div>';
+    html += '<div class="stop-addr">' + esc(p.embarque||p.endereco||'—') + '</div>';
     html += '<div class="stop-nav-row">';
-    html += '<a href="' + mapsUrl + '" target="_blank" class="stop-nav-maps">🗺️ Maps</a>';
-    html += '<a href="' + wazeUrl + '" target="_blank" class="stop-nav-waze">🔵 Waze</a>';
+    html += '<a href="' + mapsUrl + '" target="_blank" class="stop-nav-maps">Maps</a>';
+    html += '<a href="' + wazeUrl + '" target="_blank" class="stop-nav-waze">Waze</a>';
     html += '</div></div></div>';
   });
   html += '</div>';
@@ -1516,19 +1516,19 @@ function loadRota() {
   // Summary chips
   html += '<div class="chips">';
   html += '<span class="chip chip-turno">⏰ ' + rota.turno + ' Turno</span>';
-  html += '<span class="chip chip-pass">👥 ' + sorted.length + ' passageiros</span>';
-  html += '<span class="chip chip-vei">🚐 ' + rota.veiculo + '</span>';
+  html += '<span class="chip chip-pass">' + sorted.length + ' passageiros</span>';
+  html += '<span class="chip chip-vei">' + rota.veiculo + '</span>';
   html += '</div>';
 
   // Motorista card
   if (mObj) {
     html += '<div class="card">';
-    html += '<div class="card-title">👤 Motorista responsável</div>';
+    html += '<div class="card-title">Motorista responsável</div>';
     html += '<div class="moto-name">' + mObj.nome + '</div>';
-    if (mObj.tel) html += '<div class="moto-tel">📞 ' + mObj.tel + '</div>';
+    if (mObj.tel) html += '<div class="moto-tel">' + mObj.tel + '</div>';
     if (mObjS) {
       html += '<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">';
-      html += '<div style="font-size:11px;color:var(--muted)">🌙 Motorista de Saída: <strong style="color:var(--text)">' + mObjS.nome + '</strong>';
+      html += '<div style="font-size:11px;color:var(--muted)">Motorista de Saída: <strong style="color:var(--text)">' + mObjS.nome + '</strong>';
       if (mObjS.tel) html += ' · <span style="color:var(--accent2)">' + mObjS.tel + '</span>';
       html += '</div></div>';
     }
@@ -1543,7 +1543,7 @@ function loadRota() {
   if (!isMobile) {
     window._rotaDesktopSorted = sorted;
     html += '<button onclick="openMaps(window._rotaDesktopSorted)" class="nav-maps-btn" style="display:flex;margin-bottom:16px">';
-    html += '<span style="font-size:20px">🗺️</span> Abrir Rota Completa no Google Maps';
+    html += '<span style="font-size:20px"></span> Abrir Rota Completa no Google Maps';
     html += '</button>';
   } else {
     window._rotaDesktopSorted = sorted;
@@ -1555,17 +1555,17 @@ function loadRota() {
   window._commLinha = rota.linha;
   window._commTurno = rota.turno;
   html += '<div class="card" style="border-color:rgba(16,185,129,0.3)">';
-  html += '<div class="card-title" style="color:var(--green)">📡 Comunicação com passageiros</div>';
+  html += '<div class="card-title" style="color:var(--green)">Comunicação com passageiros</div>';
   // Presenças
   html += '<div id="commPresencas" style="margin-bottom:10px"></div>';
   // Chat
-  html += '<button onclick="commToggleChat()" style="width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:11px;font-weight:700;font-family:Barlow;font-size:13px;cursor:pointer">💬 Abrir chat da linha <span id="commChatBadge" style="display:none;background:var(--red);color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:6px">novo</span></button>';
+  html += '<button onclick="commToggleChat()" style="width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:11px;font-weight:700;font-family:Barlow;font-size:13px;cursor:pointer">Abrir chat da linha <span id="commChatBadge" style="display:none;background:var(--red);color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:6px">novo</span></button>';
   html += '<div id="commChatBox" style="display:none;margin-top:10px"></div>';
   html += '</div>';
 
 
   html += '<div class="garagem-card">';
-  html += '<div style="font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">📍 Ponto de Partida</div>';
+  html += '<div style="font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Ponto de Partida</div>';
   html += '<div style="font-weight:600">Localização Atual</div>';
   html += '<div style="font-size:12px;color:var(--muted);margin-top:3px">Use os botões Maps em cada parada para navegar</div>';
   
@@ -1573,7 +1573,7 @@ function loadRota() {
 
   // Stops
   html += '<div class="card">';
-  html += '<div class="card-title">🛑 Paradas de Embarque' + (usandoRecalc ? ' <span style="font-size:11px;color:var(--accent);font-weight:700">· 🔄 ajustada hoje</span>' : '') + '</div>';
+  html += '<div class="card-title">Paradas de Embarque' + (usandoRecalc ? ' <span style="font-size:11px;color:var(--accent);font-weight:700">· ajustada hoje</span>' : '') + '</div>';
   if (usandoRecalc) html += '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">Lista do dia: sem quem avisou que não vai, com horários recalculados.</div>';
 
   sorted.forEach((p, i) => {
@@ -1594,15 +1594,15 @@ function loadRota() {
     html += '</div>';
     html += '<div class="stop-info">';
     html += '<div class="stop-name">' + nome + '</div>';
-    if (p.telefone) html += '<a href="' + telLink + '" target="_blank" class="stop-tel" style="text-decoration:none;display:inline-block">💬 ' + p.telefone + '</a>';
-    html += '<div class="stop-addr">📍 ' + addrSafe;
+    if (p.telefone) html += '<a href="' + telLink + '" target="_blank" class="stop-tel" style="text-decoration:none;display:inline-block">' + p.telefone + '</a>';
+    html += '<div class="stop-addr">' + addrSafe;
     if (p.bairro) html += ' · ' + p.bairro;
     html += '</div>';
     html += '<div>' + commSeloPresenca(p.telefone) + '</div>';
     const wazeStopUrl = buildWazeUrl(p.lat, p.lng, p.embarque || p.endereco, p.cidade);
     html += '<div class="stop-nav-row">';
-    html += '<a href="' + coordLink + '" target="_blank" class="stop-nav-maps">🗺️ Google Maps</a>';
-    html += '<a href="' + wazeStopUrl + '" target="_blank" class="stop-nav-waze">🔵 Waze</a>';
+    html += '<a href="' + coordLink + '" target="_blank" class="stop-nav-maps">Google Maps</a>';
+    html += '<a href="' + wazeStopUrl + '" target="_blank" class="stop-nav-waze">Waze</a>';
     html += '</div>';
     html += '</div></div>';
   });
@@ -1611,15 +1611,15 @@ function loadRota() {
 
   // Destination
   html += '<div class="dest-card">';
-  html += '<div style="font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">🏁 Destino Final</div>';
+  html += '<div style="font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Destino Final</div>';
   html += '<div class="dest-time">' + chegada + '</div>';
   html += '<div class="dest-label">Chegada prevista na empresa</div>';
   const destCoords2 = (rota && String(rota.linha).startsWith('VERTIV')) ? VERTIV_COORDS : EMPRESA_COORDS;
   const destLabel   = (rota && String(rota.linha).startsWith('VERTIV')) ? 'Vertiv — Estr. dos Carvalhos, 1441' : 'Av. Jerome Case, 2600 — Éden, Sorocaba-SP';
   html += '<div class="dest-addr">' + destLabel + '</div>';
   html += '<div class="stop-nav-row" style="margin-top:8px">';
-  html += '<a href="https://www.google.com/maps/search/?api=1&query=' + EMPRESA_COORDS.lat + ',' + EMPRESA_COORDS.lng + '" target="_blank" class="stop-nav-maps">🗺️ Google Maps</a>';
-  html += '<a href="' + buildWazeUrl(EMPRESA_COORDS.lat, EMPRESA_COORDS.lng, null, null) + '" target="_blank" class="stop-nav-waze">🔵 Waze</a>';
+  html += '<a href="https://www.google.com/maps/search/?api=1&query=' + EMPRESA_COORDS.lat + ',' + EMPRESA_COORDS.lng + '" target="_blank" class="stop-nav-maps">Google Maps</a>';
+  html += '<a href="' + buildWazeUrl(EMPRESA_COORDS.lat, EMPRESA_COORDS.lng, null, null) + '" target="_blank" class="stop-nav-waze">Waze</a>';
   html += '</div>';
   html += '</div>';
 
@@ -1744,7 +1744,7 @@ async function commIniciar(chave) {
       const meu = all.find(t => t.chave === chave && t.rodada === rodada);
       const el = document.getElementById('commLocalStatus');
       const ativo = !!(meu && meu.link);
-      if (el) el.textContent = ativo ? '✅ Localização compartilhada com os passageiros' : '';
+      if (el) el.textContent = ativo ? 'Localização compartilhada com os passageiros' : '';
       commAtualizarBotoesLoc(ativo);
     });
 
@@ -1838,7 +1838,7 @@ async function commCompartilharLocal() {
     lista.push({ chave, rodada, link, em: new Date().toISOString() });
     await setDoc(ref, { lista, updatedAt: new Date().toISOString() });
     const _p = rodada.split('-');
-    document.getElementById('commLocalStatus').textContent = '✅ Localização compartilhada para ' + (_p.length===3 ? (_p[2]+'/'+_p[1]) : rodada);
+    document.getElementById('commLocalStatus').textContent = 'Localização compartilhada para ' + (_p.length===3 ? (_p[2]+'/'+_p[1]) : rodada);
     commAtualizarBotoesLoc(true);
   } catch(e) { alert('Erro ao compartilhar: ' + e.message); }
 }
@@ -1873,7 +1873,7 @@ function commToggleChat() {
   document.getElementById('commChatBadge').style.display = 'none';
   if (_commChatAberto) {
     box.innerHTML = '<div id="commChatMsgs" style="max-height:300px;overflow-y:auto;background:var(--bg);border-radius:10px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:8px"></div>' +
-      '<div style="display:flex;gap:6px"><input id="commChatInput" placeholder="Mensagem aos passageiros..." style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:10px 14px;color:var(--text);font-size:14px" onkeypress="if(event.key===\'Enter\')commEnviar()"><button onclick="commEnviar()" style="background:var(--accent);border:none;border-radius:50%;width:42px;height:42px;font-size:17px;cursor:pointer">➤</button></div>';
+      '<div style="display:flex;gap:6px"><input id="commChatInput" placeholder="Mensagem aos passageiros..." style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:10px 14px;color:var(--text);font-size:14px" onkeypress="if(event.key===\'Enter\')commEnviar()"><button onclick="commEnviar()" style="background:var(--accent);border:none;border-radius:50%;width:42px;height:42px;font-size:17px;cursor:pointer"></button></div>';
     commCarregarChatInicial();
   }
 }
@@ -1898,7 +1898,7 @@ function commRenderChat(msgs) {
     const align = ehEu ? 'flex-end' : 'flex-start';
     let inner = '';
     if (m.autor && !ehEu) inner += '<div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:2px">' + esc(m.autor) + '</div>';
-    if (m.tipo === 'loc') inner += '📍 ' + esc(m.txt) + (m.link ? ' <a href="'+esc(m.link)+'" target="_blank" style="color:var(--green)">abrir</a>' : '');
+    if (m.tipo === 'loc') inner += '' + esc(m.txt) + (m.link ? ' <a href="'+esc(m.link)+'" target="_blank" style="color:var(--green)">abrir</a>' : '');
     else inner += esc(m.txt);
     if (m.hora) inner += '<div style="font-size:9px;color:var(--muted);text-align:right;margin-top:2px">' + m.hora + '</div>';
     var _sep = _sepDataChat(m, _i > 0 ? _arr[_i-1] : null);
@@ -2113,7 +2113,7 @@ async function commExtraLocal(rotaId) {
     lista = lista.filter(t => !(t.chave === chave && t.rodada === rodada));
     lista.push({ chave, rodada, link, em: new Date().toISOString() });
     await setDoc(ref, { lista, updatedAt: new Date().toISOString() });
-    alert('✅ Localização compartilhada com os passageiros desta rota extra!');
+    alert('Localização compartilhada com os passageiros desta rota extra!');
   } catch(e) { alert('Erro: ' + e.message); }
 }
 
@@ -2128,7 +2128,7 @@ async function commExtraChat(rotaId, nomeRota) {
   }
   box.style.display = 'block';
   box.innerHTML = '<div id="commExtraMsgs-' + rotaId + '" style="max-height:280px;overflow-y:auto;background:var(--bg);border-radius:10px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:8px"></div>' +
-    '<div style="display:flex;gap:6px"><input id="commExtraInput-' + rotaId + '" placeholder="Mensagem aos passageiros..." style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:10px 14px;color:var(--text);font-size:14px" onkeypress="if(event.key===\'Enter\')commExtraEnviar(\'' + rotaId + '\')"><button onclick="commExtraEnviar(\'' + rotaId + '\')" style="background:var(--accent);border:none;border-radius:50%;width:42px;height:42px;font-size:17px;cursor:pointer">➤</button></div>';
+    '<div style="display:flex;gap:6px"><input id="commExtraInput-' + rotaId + '" placeholder="Mensagem aos passageiros..." style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:10px 14px;color:var(--text);font-size:14px" onkeypress="if(event.key===\'Enter\')commExtraEnviar(\'' + rotaId + '\')"><button onclick="commExtraEnviar(\'' + rotaId + '\')" style="background:var(--accent);border:none;border-radius:50%;width:42px;height:42px;font-size:17px;cursor:pointer"></button></div>';
   try {
     const db = await commGetDb();
     const { doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -2261,7 +2261,7 @@ async function commRecalcular() {
   const removidos = todosFixos.length - vaoFixos.length;
 
   if (vaoFixos.length < 1) { status.textContent = 'Ninguém vai hoje nesta linha.'; return; }
-  if (!vaoFixos.every(p => p.lat && p.lng)) { status.textContent = '⚠️ Alguns passageiros estão sem coordenadas. Não dá para recalcular com precisão.'; return; }
+  if (!vaoFixos.every(p => p.lat && p.lng)) { status.textContent = 'Alguns passageiros estão sem coordenadas. Não dá para recalcular com precisão.'; return; }
 
   status.textContent = '⏳ Calculando rota (ordem fixa)...';
 
@@ -2275,7 +2275,7 @@ async function commRecalcular() {
   let respondeu = false;
   const timeoutId = setTimeout(() => {
     if (!respondeu) {
-      status.innerHTML = '⚠️ O Google Maps não respondeu. Verifique se a <b>Directions API</b> está ativada no Google Cloud e se a chave permite este domínio.';
+      status.innerHTML = 'O Google Maps não respondeu. Verifique se a <b>Directions API</b> está ativada no Google Cloud e se a chave permite este domínio.';
     }
   }, 12000);
   ds.route({ origin: garagem, destination: destino, waypoints, optimizeWaypoints: false, travelMode: 'DRIVING' }, async (res, st) => {
@@ -2283,9 +2283,9 @@ async function commRecalcular() {
     clearTimeout(timeoutId);
     if (st !== 'OK') {
       let msg = 'Erro no cálculo: ' + st;
-      if (st === 'REQUEST_DENIED') msg = '⚠️ A chave do Google Maps não tem permissão para a Directions API. Ative a "Directions API" no Google Cloud.';
-      else if (st === 'OVER_QUERY_LIMIT') msg = '⚠️ Limite de uso do Google Maps atingido. Tente novamente em instantes.';
-      else if (st === 'ZERO_RESULTS') msg = '⚠️ Não foi possível traçar a rota entre estes pontos.';
+      if (st === 'REQUEST_DENIED') msg = 'A chave do Google Maps não tem permissão para a Directions API. Ative a "Directions API" no Google Cloud.';
+      else if (st === 'OVER_QUERY_LIMIT') msg = 'Limite de uso do Google Maps atingido. Tente novamente em instantes.';
+      else if (st === 'ZERO_RESULTS') msg = 'Não foi possível traçar a rota entre estes pontos.';
       status.innerHTML = msg;
       return;
     }
@@ -2323,8 +2323,8 @@ function commMostrarPreviaRecalc(novos, saida, chegada, totalMin, removidos, rot
   window._recalcDados = { novos, saida, chegada, totalMin, rota };
   let h = '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.remove()">';
   h += '<div style="background:var(--surface);border-radius:18px 18px 0 0;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;padding:20px">';
-  h += '<div style="font-family:Barlow;font-weight:800;font-size:18px;margin-bottom:4px">🔄 Horários recalculados</div>';
-  if (ehSabado) h += '<div style="background:rgba(245,158,11,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:8px 10px;font-size:12px;font-weight:700;margin-bottom:10px">🗓️ Modo Sábado — chegada às ' + chegada + '</div>';
+  h += '<div style="font-family:Barlow;font-weight:800;font-size:18px;margin-bottom:4px">Horários recalculados</div>';
+  if (ehSabado) h += '<div style="background:rgba(245,158,11,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:8px 10px;font-size:12px;font-weight:700;margin-bottom:10px">Modo Sábado — chegada às ' + chegada + '</div>';
   h += '<div style="font-size:13px;color:var(--muted);margin-bottom:14px">' + removidos + ' ausente(s) removido(s) · ordem mantida · folga ' + (buffer!=null?buffer:5) + ' min</div>';
   h += '<div style="background:var(--surface2);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center">';
   h += '<div style="font-size:13px;color:var(--muted)">Nova saída da garagem</div>';
@@ -2342,7 +2342,7 @@ function commMostrarPreviaRecalc(novos, saida, chegada, totalMin, removidos, rot
   });
   h += '<div style="display:flex;gap:10px;margin-top:16px">';
   h += '<button onclick="this.closest(\'[style*=fixed]\').remove()" style="flex:1;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:13px;font-weight:700;font-family:Barlow;cursor:pointer">Cancelar</button>';
-  h += '<button id="btnPublicarRecalc" onclick="commPublicarRecalc()" style="flex:2;background:var(--green);color:#fff;border:none;border-radius:10px;padding:13px;font-weight:800;font-family:Barlow;cursor:pointer">📲 Publicar e avisar passageiros</button>';
+  h += '<button id="btnPublicarRecalc" onclick="commPublicarRecalc()" style="flex:2;background:var(--green);color:#fff;border:none;border-radius:10px;padding:13px;font-weight:800;font-family:Barlow;cursor:pointer">Publicar e avisar passageiros</button>';
   h += '</div></div></div>';
   const div = document.createElement('div');
   div.innerHTML = h;
@@ -2372,13 +2372,13 @@ async function commPublicarRecalc() {
     const snapC = await getDoc(refChat);
     let msgs = (snapC.exists() && snapC.data().msgs) ? snapC.data().msgs : [];
     const hora = String(new Date().getHours()).padStart(2,'0')+':'+String(new Date().getMinutes()).padStart(2,'0');
-    msgs.push({ tipo:'gestor', autor:'Sistema', txt:'⚠️ Horários de HOJE ajustados pelo motorista. Confira seu novo horário de embarque na tela inicial.', hora, em:new Date().toISOString() });
+    msgs.push({ tipo:'gestor', autor:'Sistema', txt:'Horários de HOJE ajustados pelo motorista. Confira seu novo horário de embarque na tela inicial.', hora, em:new Date().toISOString() });
     if (msgs.length>200) msgs=msgs.slice(-200);
     await setDoc(refChat, { msgs, updatedAt: new Date().toISOString() });
 
     // Feedback visual de sucesso no botão
     if (btn) {
-      btn.textContent = '✅ Publicado com sucesso!';
+      btn.textContent = 'Publicado com sucesso!';
       btn.style.background = '#059669';
       btn.disabled = true;
     }
@@ -2392,7 +2392,7 @@ async function commPublicarRecalc() {
       if (typeof loadRota === 'function') loadRota();
     }, 1500);
   } catch(e) {
-    if (btn) { btn.textContent = '❌ Erro — tente de novo'; btn.style.background = 'var(--red)'; btn.disabled = false; }
+    if (btn) { btn.textContent = 'Erro — tente de novo'; btn.style.background = 'var(--red)'; btn.disabled = false; }
   }
 }
 
@@ -2405,19 +2405,19 @@ function toggleLocation() {
       alert('Seu dispositivo não suporta geolocalização.');
       return;
     }
-    btn.querySelector('.loc-toggle-sub').textContent = '📡 Obtendo localização...';
+    btn.querySelector('.loc-toggle-sub').textContent = 'Obtendo localização...';
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         currentCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         useCurrentLocation = true;
         btn.classList.add('active');
-        btn.querySelector('.loc-toggle-title').textContent = '📍 Usando minha localização';
-        btn.querySelector('.loc-toggle-sub').textContent = `✅ ${currentCoords.lat.toFixed(5)}, ${currentCoords.lng.toFixed(5)}`;
+        btn.querySelector('.loc-toggle-title').textContent = 'Usando minha localização';
+        btn.querySelector('.loc-toggle-sub').textContent = `${currentCoords.lat.toFixed(5)}, ${currentCoords.lng.toFixed(5)}`;
         // Reload the route with new origin
         loadRota();
       },
       (err) => {
-        btn.querySelector('.loc-toggle-sub').textContent = '❌ Não foi possível obter localização. Verifique as permissões.';
+        btn.querySelector('.loc-toggle-sub').textContent = 'Não foi possível obter localização. Verifique as permissões.';
         currentCoords = null;
         useCurrentLocation = false;
       },
@@ -2428,7 +2428,7 @@ function toggleLocation() {
     useCurrentLocation = false;
     currentCoords = null;
     btn.classList.remove('active');
-    btn.querySelector('.loc-toggle-title').textContent = '🏭 Usando Garagem como início';
+    btn.querySelector('.loc-toggle-title').textContent = 'Usando Garagem como início';
     btn.querySelector('.loc-toggle-sub').textContent = 'Toque para usar sua localização atual';
     loadRota();
   }
@@ -2622,8 +2622,8 @@ function renderSeqNav() {
   const doneCount = seqStops.filter((p,i) => i < seqCurrentIdx && !seqAbsent.has(i)).length;
   const remaining = total - seqCurrentIdx - (isDone ? 0 : 0);
   html += '<div style="display:flex;gap:10px;margin-bottom:10px;font-size:12px">';
-  html += '<span style="color:var(--green)">✅ ' + doneCount + ' embarcados</span>';
-  if (absentCount > 0) html += '<span style="color:var(--red)">🚫 ' + absentCount + ' ausentes</span>';
+  html += '<span style="color:var(--green)">' + doneCount + ' embarcados</span>';
+  if (absentCount > 0) html += '<span style="color:var(--red)">' + absentCount + ' ausentes</span>';
   if (!isDone) html += '<span style="color:var(--muted)">• parada ' + (seqCurrentIdx+1) + ' de ' + total + '</span>';
   html += '</div>';
 
@@ -2642,26 +2642,26 @@ function renderSeqNav() {
   if (!isDone) {
     // Current stop card
     html += '<div class="seq-nav-card">';
-    html += '<div class="seq-nav-label">🛑 Parada ' + (seqCurrentIdx + 1) + ' de ' + total + '</div>';
+    html += '<div class="seq-nav-label">Parada ' + (seqCurrentIdx + 1) + ' de ' + total + '</div>';
     html += '<div class="seq-nav-time">' + (current.horario || '--:--') + '</div>';
     html += '<div class="seq-nav-name">' + current.nome + '</div>';
-    if (current.telefone) html += '<div style="font-size:13px;color:var(--accent2);margin-bottom:6px">📞 ' + current.telefone + '</div>';
-    html += '<div class="seq-nav-addr">📍 ' + (current.embarque || current.endereco || '—') + (current.bairro ? ' · ' + current.bairro : '') + '</div>';
+    if (current.telefone) html += '<div style="font-size:13px;color:var(--accent2);margin-bottom:6px">' + current.telefone + '</div>';
+    html += '<div class="seq-nav-addr">' + (current.embarque || current.endereco || '—') + (current.bairro ? ' · ' + current.bairro : '') + '</div>';
 
     // Navigation buttons
     html += '<div class="seq-nav-btns">';
     // For google.navigation scheme, use onclick handler
     if (mapsCurrent.startsWith('google.navigation:')) {
-      html += '<a href="' + mapsCurrent + '" class="nav-maps-btn" style="font-size:13px" onclick="androidNav(event,\'' + mapsCurrent + '\')"><span>🗺️</span> Google Maps</a>';
+      html += '<a href="' + mapsCurrent + '" class="nav-maps-btn" style="font-size:13px" onclick="androidNav(event,\'' + mapsCurrent + '\')"><span></span> Google Maps</a>';
     } else {
-      html += '<a href="' + mapsCurrent + '" target="_blank" class="nav-maps-btn" style="font-size:13px"><span>🗺️</span> Google Maps</a>';
+      html += '<a href="' + mapsCurrent + '" target="_blank" class="nav-maps-btn" style="font-size:13px"><span></span> Google Maps</a>';
     }
-    html += '<a href="' + wazeCurrent + '" target="_blank" class="nav-waze-btn" style="font-size:13px"><span>🔵</span> Waze</a>';
+    html += '<a href="' + wazeCurrent + '" target="_blank" class="nav-waze-btn" style="font-size:13px"><span></span> Waze</a>';
     html += '</div>';
 
     // Action buttons
-    html += '<button class="btn-next-stop" onclick="nextStop()" style="margin-bottom:8px">✅ Embarquei — Próxima Parada</button>';
-    html += '<button onclick="markAbsent()" style="width:100%;background:none;border:1px solid var(--red);color:var(--red);border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:Barlow,sans-serif">🚫 Ausente hoje — Pular esta parada</button>';
+    html += '<button class="btn-next-stop" onclick="nextStop()" style="margin-bottom:8px">Embarquei — Próxima Parada</button>';
+    html += '<button onclick="markAbsent()" style="width:100%;background:none;border:1px solid var(--red);color:var(--red);border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:Barlow,sans-serif">Ausente hoje — Pular esta parada</button>';
     html += '</div>';
 
     // Sneak peek at next stop
@@ -2677,19 +2677,19 @@ function renderSeqNav() {
   } else {
     // Destination card
     html += '<div class="seq-nav-card" style="border-color:var(--accent2)">';
-    html += '<div class="seq-nav-label" style="color:var(--accent2)">🏁 Destino Final</div>';
+    html += '<div class="seq-nav-label" style="color:var(--accent2)">Destino Final</div>';
     html += '<div class="seq-nav-time" style="color:var(--accent2)">' + chegada + '</div>';
     html += '<div class="seq-nav-name">Huawei — Av. Jerome Case</div>';
-    html += '<div class="seq-nav-addr">📍 Av. Jerome Case, 2600 — Éden, Sorocaba-SP</div>';
+    html += '<div class="seq-nav-addr">Av. Jerome Case, 2600 — Éden, Sorocaba-SP</div>';
     html += '<div class="seq-nav-btns">';
     if (mapsCurrent.startsWith('google.navigation:')) {
-      html += '<a href="' + mapsCurrent + '" class="nav-maps-btn" style="font-size:13px" onclick="androidNav(event,\'' + mapsCurrent + '\')"><span>🗺️</span> Google Maps</a>';
+      html += '<a href="' + mapsCurrent + '" class="nav-maps-btn" style="font-size:13px" onclick="androidNav(event,\'' + mapsCurrent + '\')"><span></span> Google Maps</a>';
     } else {
-      html += '<a href="' + mapsCurrent + '" target="_blank" class="nav-maps-btn" style="font-size:13px"><span>🗺️</span> Google Maps</a>';
+      html += '<a href="' + mapsCurrent + '" target="_blank" class="nav-maps-btn" style="font-size:13px"><span></span> Google Maps</a>';
     }
-    html += '<a href="' + wazeCurrent + '" target="_blank" class="nav-waze-btn" style="font-size:13px"><span>🔵</span> Waze</a>';
+    html += '<a href="' + wazeCurrent + '" target="_blank" class="nav-waze-btn" style="font-size:13px"><span></span> Waze</a>';
     html += '</div>';
-    html += '<div style="text-align:center;padding:12px;color:var(--green);font-weight:700;font-size:15px">🎉 Todas as paradas concluídas!</div>';
+    html += '<div style="text-align:center;padding:12px;color:var(--green);font-weight:700;font-size:15px">Todas as paradas concluídas!</div>';
     html += '</div>';
   }
 
@@ -2700,7 +2700,7 @@ function renderSeqNav() {
     const isDoneStop = !isAbsent && i < seqCurrentIdx;
     const isCurrent = i === seqCurrentIdx && !isDone;
     const cls = isAbsent ? 'done' : isDoneStop ? 'done' : isCurrent ? 'current' : '';
-    const icon = isAbsent ? '🚫' : isDoneStop ? '✓' : isCurrent ? '●' : (i + 1);
+    const icon = isAbsent ? '' : isDoneStop ? '' : isCurrent ? '●' : (i + 1);
     html += '<div class="seq-stop-item ' + cls + '" onclick="jumpToStop(' + i + ')" style="' + (isAbsent ? 'text-decoration:line-through;opacity:0.4' : '') + '">';
     html += '<div class="seq-stop-check" style="' + (isAbsent ? 'border-color:var(--red);color:var(--red)' : '') + '">' + icon + '</div>';
     html += '<div style="flex:1;min-width:0">';
@@ -2713,7 +2713,7 @@ function renderSeqNav() {
   });
   // Empresa
   html += '<div class="seq-stop-item' + (isDone ? ' current' : '') + '">';
-  html += '<div class="seq-stop-check">' + (isDone ? '●' : '🏁') + '</div>';
+  html += '<div class="seq-stop-check">' + (isDone ? '●' : '') + '</div>';
   html += '<div style="flex:1"><div style="font-weight:600;font-size:13px">Empresa — Huawei</div>';
   html += '<div style="font-size:11px;color:var(--muted)">' + chegada + ' · Av. Jerome Case, 2600</div></div>';
   if (isDone) html += '<span style="font-size:10px;background:var(--accent2);color:#fff;border-radius:4px;padding:2px 6px;font-weight:700">DESTINO</span>';
@@ -2753,7 +2753,7 @@ function androidMapsClick(e, comgoogleUrl) {
 function showNoData(title, msg) {
   document.getElementById('rotaContent').innerHTML =
     '<div class="no-data">' +
-    '<div class="no-data-icon">📭</div>' +
+    '<div class="no-data-icon"></div>' +
     '<div class="no-data-title">' + title + '</div>' +
     '<div style="font-size:13px">' + msg + '</div>' +
     '</div>';
@@ -2809,7 +2809,7 @@ window.onload = function() {
       const banner = document.getElementById('installBanner');
       const btnArea = document.getElementById('installBtnArea');
       if (banner) banner.style.display = 'flex';
-      if (btnArea) btnArea.innerHTML = '<button onclick="installPWA()" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap">📲 Instalar</button>';
+      if (btnArea) btnArea.innerHTML = '<button onclick="installPWA()" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap">Instalar</button>';
     });
 
     // iOS: show instructions after 3s
