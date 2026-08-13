@@ -36,6 +36,9 @@
   .grupo{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin:14px 0 8px}
   .campo{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;color:var(--text);font-size:16px;font-family:'Inter',sans-serif;margin-bottom:10px}
   .campo:focus{outline:none;border-color:var(--accent)}
+  .campo-senha{position:relative}
+  .campo-senha .campo{padding-right:46px}
+  .olho{position:absolute;right:10px;top:12px;background:none;border:none;cursor:pointer;font-size:18px;line-height:1;padding:4px}
   .msg{min-height:20px;font-size:13px;margin:6px 0 10px}
   .msg.erro{color:var(--red)} .msg.ok{color:var(--green)} .msg.info{color:var(--muted)}
   .foot{text-align:center;font-size:11px;color:var(--muted);padding:18px}
@@ -100,6 +103,14 @@
   // e o portal oferece uma empresa onde a pessoa nao existe.
   // Mesma regra dos apps: ferias e afastado entram; desligado e sem-rota nao.
   const STATUS_PODE_ENTRAR=['ativo','ferias','afastado'];
+  // Mostrar/ocultar senha (o campo fica escondido por padrao).
+  function verSenha(idCampo,idBotao){
+    const c=document.getElementById(idCampo), b=document.getElementById(idBotao);
+    if(!c) return;
+    const ver = c.type==='password';
+    c.type = ver ? 'text' : 'password';
+    if(b){ b.textContent = ver ? '\uD83D\uDE48' : '\uD83D\uDC41\uFE0F'; b.title = ver ? 'Ocultar senha' : 'Mostrar senha'; }
+  }
   const telBate=(bruto,alvo)=>{const d=soDigitos(bruto); return d.length>=8 && (d===alvo || d.slice(-8)===alvo.slice(-8));};
   const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -231,9 +242,11 @@
       '<div class="title">Entrar como Gestor</div>'+
       '<div class="subtitle">Um único login. Depois você escolhe qual empresa vai gerenciar.</div>'+
       '<input class="campo" id="gEmail" type="email" autocomplete="username" placeholder="seu@email.com">'+
-      '<input class="campo" id="gSenha" type="password" autocomplete="current-password" placeholder="Senha">'+
+      '<div class="campo-senha"><input class="campo" id="gSenha" type="password" autocomplete="current-password" placeholder="Senha">'+
+      '<button type="button" class="olho" id="gOlho" onclick="verSenha(\'gSenha\',\'gOlho\')" title="Mostrar senha">\uD83D\uDC41\uFE0F</button></div>'+
       '<div class="msg" id="gMsg"></div>'+
-      '<button class="btn-primario" id="gBtn" onclick="gestorEntrar()">Entrar</button>';
+      '<button class="btn-primario" id="gBtn" onclick="gestorEntrar()">Entrar</button>'+
+      '<div style="text-align:center;margin-top:12px"><a href="#" onclick="gestorEsqueci();return false;" style="color:#8b949e;font-size:13px">Esqueci minha senha</a></div>';
   }
   async function gestorEntrar(){
     const email=document.getElementById('gEmail').value.trim();
@@ -242,19 +255,46 @@
     msg.className='msg'; msg.textContent='';
     if(!email||!senha){ msg.className='msg erro'; msg.textContent='Preencha e-mail e senha.'; return; }
     btn.disabled=true; btn.textContent='Entrando...';
-    const { getAuth, signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-    const resultados=[];
+    const { getAuth, signInWithEmailAndPassword, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+    const resultados=[]; let ehCliente=false;
     for(const op of opers()){
       try{
-        const app=await fbDe(op);
-        await signInWithEmailAndPassword(getAuth(app), email, senha);
-        resultados.push({op, ok:true});
+        const auth=getAuth(await fbDe(op));
+        await signInWithEmailAndPassword(auth, email, senha);
+        // Conta da empresa cliente NAO gerencia: derruba a sessao e marca o card.
+        const ac=await docDe(op,'acessos');
+        const u=((ac&&ac.lista)||[]).find(x=>(x.email||'').trim().toLowerCase()===email.toLowerCase());
+        if(u && u.papel==='cliente'){
+          ehCliente=true;
+          try{ await signOut(auth); }catch(e){}
+          resultados.push({op, ok:false, cliente:true});
+        } else {
+          resultados.push({op, ok:true});
+        }
       }catch(e){ resultados.push({op, ok:false}); }
     }
     btn.disabled=false; btn.textContent='Entrar';
     const oks=resultados.filter(r=>r.ok);
-    if(!oks.length){ msg.className='msg erro'; msg.textContent='E-mail ou senha incorretos (ou sem acesso).'; return; }
+    if(!oks.length){
+      msg.className='msg erro';
+      msg.textContent = ehCliente
+        ? 'Esta conta e do portal da empresa cliente. Volte e escolha o perfil "Empresa cliente".'
+        : 'E-mail ou senha incorretos (ou sem acesso).';
+      return;
+    }
     renderGestorOperacoes(resultados);
+  }
+  async function gestorEsqueci(){
+    const email=(document.getElementById('gEmail').value||'').trim();
+    const msg=document.getElementById('gMsg');
+    if(!email){ msg.className='msg erro'; msg.textContent='Digite seu e-mail acima e clique de novo.'; return; }
+    const { getAuth, sendPasswordResetEmail } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+    let enviou=false;
+    for(const op of opers()){
+      try{ await sendPasswordResetEmail(getAuth(await fbDe(op)), email); enviou=true; }catch(e){}
+    }
+    msg.className=enviou?'msg':'msg erro';
+    msg.textContent=enviou?'Enviamos um link para voce criar uma senha nova. Confira tambem o spam.':'Nao foi possivel enviar. Confira o e-mail digitado.';
   }
   function renderGestorOperacoes(resultados){
     sub('Gestor');
@@ -273,7 +313,7 @@
       } else {
         h+='<div class="card desativado">'+
            '<div class="card-logo" style="background:'+op.cor+'">'+op.inicial+'</div>'+
-           '<div class="card-info"><div class="card-nome">'+op.nome+'</div><div class="card-desc">Sem acesso com este login</div></div></div>';
+           '<div class="card-info"><div class="card-nome">'+op.nome+'</div><div class="card-desc">'+(r.cliente?'Conta de empresa cliente':'Sem acesso com este login')+'</div></div></div>';
       }
     });
     T().innerHTML=h;
@@ -333,7 +373,8 @@
       '<div class="title">Acesso da Empresa Cliente</div>'+
       '<div class="subtitle">Entre com seu e-mail e senha. Se sua empresa ainda usa a senha unica, deixe o e-mail em branco.</div>'+
       '<input class="campo" id="cEmail" type="email" autocomplete="username" placeholder="seu@email.com (opcional)">'+
-      '<input class="campo" id="cSenha" type="password" autocomplete="current-password" placeholder="Senha">'+
+      '<div class="campo-senha"><input class="campo" id="cSenha" type="password" autocomplete="current-password" placeholder="Senha">'+
+      '<button type="button" class="olho" id="cOlho" onclick="verSenha(\'cSenha\',\'cOlho\')" title="Mostrar senha">\uD83D\uDC41\uFE0F</button></div>'+
       '<div class="msg" id="cMsg"></div>'+
       '<button class="btn-primario" id="cBtn" onclick="clienteEntrar()">Entrar</button>'+
       '<div style="text-align:center;margin-top:12px"><a href="#" onclick="clienteEsqueci();return false;" style="color:#8b949e;font-size:13px">Esqueci minha senha</a></div>';
@@ -350,18 +391,28 @@
     let alvo=null;
     if(email){
       const { getAuth, signInWithEmailAndPassword, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+      let entrou=false, motivo='';
       for(const op of opers()){
         try{
           const auth=getAuth(await fbDe(op));
           await signInWithEmailAndPassword(auth, email, val);
+          entrou=true; // e-mail e senha conferem neste projeto
           const ac=await docDe(op,'acessos');
           const u=((ac&&ac.lista)||[]).find(x=>(x.email||'').trim().toLowerCase()===email.toLowerCase());
           if(u && u.papel==='cliente' && u.ativo!==false){ alvo=op; break; }
+          motivo = !u ? 'naolistado' : (u.papel!=='cliente' ? 'papel' : 'inativo');
           await signOut(auth);
         }catch(e){}
       }
       btn.disabled=false; btn.textContent='Entrar';
-      if(!alvo){ msg.className='msg erro'; msg.textContent='E-mail ou senha incorretos, ou este login nao tem acesso.'; return; }
+      if(!alvo){
+        msg.className='msg erro';
+        if(!entrou) msg.textContent='E-mail ou senha incorretos.';
+        else if(motivo==='papel') msg.textContent='Login correto, mas o perfil cadastrado nao e de empresa cliente. Peca ao gestor para conferir o campo papel.';
+        else if(motivo==='inativo') msg.textContent='Login correto, mas este acesso esta desativado. Fale com o gestor.';
+        else msg.textContent='Login correto, mas voce ainda nao esta na lista de acessos desta empresa. Fale com o gestor.';
+        return;
+      }
     } else {
       for(const op of opers()){
         let senhaOp=op.senhaClienteFallback;

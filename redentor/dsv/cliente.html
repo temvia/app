@@ -1181,8 +1181,12 @@ function loadGoogleMaps(key) {
     <div class="login-sub">Visualização de rotas e passageiros</div>
     <input class="login-input" type="email" id="emailCliente" autocomplete="username" placeholder="Seu e-mail"
       onkeydown="if(event.key==='Enter') document.getElementById('senhaCliente').focus()">
-    <input class="login-input" type="password" id="senhaCliente" autocomplete="current-password" placeholder="Sua senha"
-      onkeydown="if(event.key==='Enter') fazerLogin()">
+    <div style="position:relative">
+      <input class="login-input" type="password" id="senhaCliente" autocomplete="current-password" placeholder="Sua senha"
+        style="padding-right:46px" onkeydown="if(event.key==='Enter') fazerLogin()">
+      <button type="button" id="olhoCliente" onclick="verSenhaCliente()" title="Mostrar senha"
+        style="position:absolute;right:10px;top:12px;background:none;border:none;cursor:pointer;font-size:18px;line-height:1;padding:4px">&#128065;&#65039;</button>
+    </div>
     <button class="login-btn" id="btnEntrarCliente" onclick="fazerLogin()">Entrar</button>
     <div style="text-align:center;margin-top:12px">
       <a href="#" id="linkEsqueci" onclick="esqueciSenhaCliente();return false;" style="color:var(--muted);font-size:13px">Esqueci minha senha</a>
@@ -4652,6 +4656,15 @@ function liberarPortalCliente() {
   loadDataRealtime();
 }
 
+function verSenhaCliente() {
+  const c = document.getElementById('senhaCliente');
+  const b = document.getElementById('olhoCliente');
+  if (!c) return;
+  const ver = c.type === 'password';
+  c.type = ver ? 'text' : 'password';
+  if (b) { b.innerHTML = ver ? '&#128584;' : '&#128065;&#65039;'; b.title = ver ? 'Ocultar senha' : 'Mostrar senha'; }
+}
+
 function msgCliente(texto, erro) {
   const el = document.getElementById('loginMsg');
   if (!el) return;
@@ -4689,7 +4702,9 @@ async function fazerLogin() {
     const acesso = await acessoDoEmail(email);
     if (!clientePodeEntrar(acesso)) {
       await signOut(auth);
-      err.textContent = 'Este login nao tem acesso ao portal desta empresa. Fale com o gestor.';
+      if (!acesso) err.textContent = 'Login correto, mas voce ainda nao esta na lista de acessos desta empresa.';
+      else if (acesso.papel !== 'cliente') err.textContent = 'Login correto, mas o perfil cadastrado nao e de empresa cliente. Peca ao gestor para conferir o campo papel.';
+      else err.textContent = 'Login correto, mas este acesso esta desativado. Fale com o gestor.';
       err.style.display = 'block';
       return;
     }
