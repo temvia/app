@@ -398,13 +398,17 @@ function vigiarRotaExtra(rotaId) {
   } catch(e) { /* sem tempo real: o timer ainda cobre a expiração */ }
 }
 
+// Quem pode entrar no app: ativo, ferias e afastado (continuam sendo funcionarios).
+// Fora: 'desligado' (saiu da empresa) e 'sem-rota' (ainda nao alocado - o app depende de linha/turno).
+const STATUS_PODE_ENTRAR = ['ativo','ferias','afastado'];
+
 function buscarPassageiro(telRaw) {
   const tel = soDigitos(telRaw);
   if (tel.length < 8) return false;
   let achou = false;
   for (const rota of DATA) {
     for (const p of rota.passageiros) {
-      if (p.status !== 'ativo') continue;
+      if (!STATUS_PODE_ENTRAR.includes(p.status)) continue;
       const pt = soDigitos(p.telefone);
       if (pt && (pt === tel || pt.slice(-8) === tel.slice(-8))) {
         PASSAGEIRO = {

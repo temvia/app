@@ -4928,6 +4928,11 @@ const FB_CONFIG = {
   appId: "1:212228402135:web:af9ae2948f0fd1864ff992"
 };
 
+// Nome da instancia Firebase deste app.
+// Precisa ser IGUAL ao nome usado pelo Portal de Acesso (portal-<transportadora>-<operacao>),
+// senao a sessao criada no login do portal nao e reconhecida aqui e o sistema pede a senha de novo.
+const FB_APP_NOME = 'portal-redentor-dsv';
+
 // ============================================================
 // TRAVA DE IDENTIDADE (proteção multi-cliente)
 // CLIENTE_ID = nome da coleção própria deste cliente no Firestore.
@@ -4961,7 +4966,7 @@ async function initFirebase() {
   try {
     const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    const app = getApps().length > 0 ? getApp() : initializeApp(FB_CONFIG);
+    const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
     fbDb = getFirestore(app);
     fbDocRef = doc(fbDb, CLIENTE_ID, 'dados');
     console.log('✅ Firebase conectado');
@@ -4979,7 +4984,7 @@ async function initAuth() {
   if (fbAuth) return fbAuth;
   const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
   const { getAuth } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-  const app = getApps().length > 0 ? getApp() : initializeApp(FB_CONFIG);
+  const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
   fbAuth = getAuth(app);
   return fbAuth;
 }
@@ -5043,14 +5048,37 @@ async function logout() {
   } catch (e) { alert('Erro ao sair: ' + e.message); }
 }
 
+// Perfis: {CLIENTE_ID}/acessos guarda quem e da EMPRESA CLIENTE.
+// E-mail nao listado = gestor (transicao: contas antigas continuam entrando).
+async function ehAcessoDeCliente(email) {
+  try {
+    const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await initAuth();
+    const snap = await getDoc(doc(getFirestore(fbAuth.app), CLIENTE_ID, 'acessos'));
+    const lista = snap.exists() ? (snap.data().lista || []) : [];
+    const alvo = (email || '').trim().toLowerCase();
+    const u = lista.find(x => (x.email || '').trim().toLowerCase() === alvo);
+    return !!(u && u.papel === 'cliente');
+  } catch (e) { return false; }
+}
+
 // Inicia o sistema só depois de confirmar login
 async function iniciarComAutenticacao() {
   await initAuth();
   const { onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
   let jaIniciou = false;
-  onAuthStateChanged(fbAuth, (user) => {
+  onAuthStateChanged(fbAuth, async (user) => {
     const overlay = document.getElementById('loginOverlay');
     if (user) {
+      // Conta criada para a empresa cliente NAO abre o painel do gestor.
+      if (await ehAcessoDeCliente(user.email)) {
+        const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+        await signOut(fbAuth);
+        const erroEl = document.getElementById('loginErro');
+        if (erroEl) { erroEl.style.color = '#ef4444'; erroEl.textContent = 'Este login e do portal da empresa cliente, nao do gestor.'; }
+        if (overlay) overlay.style.display = 'flex';
+        return;
+      }
       // Logado: esconde login e carrega o sistema (uma única vez)
       if (overlay) overlay.style.display = 'none';
       if (!jaIniciou) {

@@ -1179,10 +1179,16 @@ function loadGoogleMaps(key) {
   <div class="login-box">
     <div class="login-title">Acesso ao Portal</div>
     <div class="login-sub">Visualização de rotas e passageiros</div>
-    <input class="login-input" type="password" id="senhaCliente" placeholder="Digite a senha"
+    <input class="login-input" type="email" id="emailCliente" autocomplete="username" placeholder="Seu e-mail"
+      onkeydown="if(event.key==='Enter') document.getElementById('senhaCliente').focus()">
+    <input class="login-input" type="password" id="senhaCliente" autocomplete="current-password" placeholder="Sua senha"
       onkeydown="if(event.key==='Enter') fazerLogin()">
-    <button class="login-btn" onclick="fazerLogin()">🔓 Entrar</button>
+    <button class="login-btn" id="btnEntrarCliente" onclick="fazerLogin()">Entrar</button>
+    <div style="text-align:center;margin-top:12px">
+      <a href="#" id="linkEsqueci" onclick="esqueciSenhaCliente();return false;" style="color:var(--muted);font-size:13px">Esqueci minha senha</a>
+    </div>
     <div class="login-error" id="loginError">Senha incorreta. Tente novamente.</div>
+    <div id="loginMsg" style="font-size:13px;text-align:center;margin-top:10px"></div>
   </div>
 </div>
 
@@ -3660,6 +3666,10 @@ const FB_CONFIG = {
   appId: "1:212228402135:web:af9ae2948f0fd1864ff992"
 };
 
+// Nome da instancia Firebase. Precisa bater com o do Portal de Acesso,
+// senao a sessao aberta no portal nao e reconhecida aqui.
+const FB_APP_NOME = 'portal-redentor-dsv';
+
 // ============================================================
 // TRAVA DE IDENTIDADE (proteção multi-cliente)
 // CLIENTE_ID = nome da coleção própria deste cliente no Firestore.
@@ -3693,7 +3703,7 @@ async function initFirebase() {
   try {
     const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    const app = getApps().length > 0 ? getApp() : initializeApp(FB_CONFIG);
+    const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
     fbDb = getFirestore(app);
     fbDocRef = doc(fbDb, CLIENTE_ID, 'dados');
     console.log('✅ Firebase conectado');
@@ -4580,7 +4590,7 @@ const SENHA_CLIENTE = 'redentordsv'; // fallback se o config nao tiver senha def
   try {
     const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    const app = getApps().length > 0 ? getApp() : initializeApp(FB_CONFIG);
+    const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
     const db = getFirestore(app);
     const snap = await getDoc(doc(db, CLIENTE_ID, 'config'));
     const sc = snap.exists() ? (snap.data().senhaCliente || '') : '';
@@ -4607,25 +4617,140 @@ function tentarAutoEntradaCliente() {
 }
 tentarAutoEntradaCliente();
 
-function fazerLogin() {
+let fbAuthCli = null;
+async function initAuthCli() {
+  if (fbAuthCli) return fbAuthCli;
+  const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+  const { getAuth } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+  const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
+  fbAuthCli = getAuth(app);
+  return fbAuthCli;
+}
+
+// Quem pode entrar: lista mantida pelo gestor em {CLIENTE_ID}/acessos
+// -> { lista: [ { email, nome, papel: 'cliente', ativo: true } ] }
+async function acessoDoEmail(email) {
+  try {
+    const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const auth = await initAuthCli();
+    const snap = await getDoc(doc(getFirestore(auth.app), CLIENTE_ID, 'acessos'));
+    const lista = snap.exists() ? (snap.data().lista || []) : [];
+    const alvo = (email || '').trim().toLowerCase();
+    return lista.find(u => (u.email || '').trim().toLowerCase() === alvo) || null;
+  } catch (e) { return null; }
+}
+
+function clientePodeEntrar(acesso) {
+  return !!(acesso && acesso.papel === 'cliente' && acesso.ativo !== false);
+}
+
+function liberarPortalCliente() {
+  const overlay = document.getElementById('loginOverlay');
+  if (overlay) overlay.style.display = 'none';
+  MAPS_API_KEY = '';
+  getApiKey();
+  loadDataRealtime();
+}
+
+function msgCliente(texto, erro) {
+  const el = document.getElementById('loginMsg');
+  if (!el) return;
+  el.style.color = erro ? 'var(--red)' : '#10b981';
+  el.textContent = texto || '';
+}
+
+async function fazerLogin() {
+  const email = (document.getElementById('emailCliente').value || '').trim();
   const val = document.getElementById('senhaCliente').value;
-  if (val === (window._senhaClienteCfg || SENHA_CLIENTE)) {
-    try { localStorage.setItem('temvia_cliente_senha_' + CLIENTE_ID, val); } catch(e) {}
-    document.getElementById('loginOverlay').style.display = 'none';
-    // Recarregar chave Maps (validada — rejeita chave Firebase)
-    MAPS_API_KEY = '';
-    getApiKey();
-    loadDataRealtime();
-  } else {
-    document.getElementById('loginError').style.display = 'block';
-    document.getElementById('senhaCliente').value = '';
+  const err = document.getElementById('loginError');
+  const btn = document.getElementById('btnEntrarCliente');
+  err.style.display = 'none';
+  msgCliente('');
+
+  // Sem e-mail: senha unica da empresa (caminho antigo, vale ate todos terem conta propria).
+  if (!email) {
+    if (val === (window._senhaClienteCfg || SENHA_CLIENTE)) {
+      try { localStorage.setItem('temvia_cliente_senha_' + CLIENTE_ID, val); } catch(e) {}
+      liberarPortalCliente();
+    } else {
+      err.textContent = 'Senha incorreta. Se voce ja tem conta propria, informe tambem o e-mail.';
+      err.style.display = 'block';
+      document.getElementById('senhaCliente').value = '';
+    }
+    return;
+  }
+
+  // Com e-mail: conta individual (Firebase Auth) + conferencia do perfil.
+  btn.disabled = true; btn.textContent = 'Entrando...';
+  try {
+    const auth = await initAuthCli();
+    const { signInWithEmailAndPassword, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+    await signInWithEmailAndPassword(auth, email, val);
+    const acesso = await acessoDoEmail(email);
+    if (!clientePodeEntrar(acesso)) {
+      await signOut(auth);
+      err.textContent = 'Este login nao tem acesso ao portal desta empresa. Fale com o gestor.';
+      err.style.display = 'block';
+      return;
+    }
+    liberarPortalCliente();
+  } catch (e) {
+    const map = {
+      'auth/invalid-email': 'E-mail invalido.',
+      'auth/user-not-found': 'Usuario nao encontrado.',
+      'auth/wrong-password': 'Senha incorreta.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/too-many-requests': 'Muitas tentativas. Tente de novo em alguns minutos.'
+    };
+    err.textContent = map[e && e.code] || ('Erro ao entrar: ' + ((e && e.message) ? e.message : e));
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Entrar';
   }
 }
 
-function logout() {
+// Autosservico: o proprio usuario redefine a senha, sem passar pelo gestor.
+async function esqueciSenhaCliente() {
+  const email = (document.getElementById('emailCliente').value || '').trim();
+  const err = document.getElementById('loginError');
+  err.style.display = 'none';
+  if (!email) { msgCliente('Digite seu e-mail no campo acima e clique de novo.', true); return; }
+  try {
+    const auth = await initAuthCli();
+    const { sendPasswordResetEmail } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+    await sendPasswordResetEmail(auth, email);
+    msgCliente('Enviamos um link para voce criar uma senha nova. Confira tambem o spam.', false);
+  } catch (e) {
+    msgCliente('Nao foi possivel enviar: ' + ((e && e.code) ? e.code : e), true);
+  }
+}
+
+// Sessao ja aberta neste aparelho (ou vinda do portal temvia): entra direto.
+(async () => {
+  try {
+    const auth = await initAuthCli();
+    const { onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
+      const overlay = document.getElementById('loginOverlay');
+      if (!overlay || overlay.style.display === 'none') return;
+      if (clientePodeEntrar(await acessoDoEmail(user.email))) liberarPortalCliente();
+    });
+  } catch (e) {}
+})();
+
+async function logout() {
   if (fbUnsub) { fbUnsub(); fbUnsub = null; }
+  try { localStorage.removeItem('temvia_cliente_senha_' + CLIENTE_ID); } catch(e) {}
+  try {
+    const auth = await initAuthCli();
+    const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+    await signOut(auth);
+  } catch (e) {}
   document.getElementById('loginOverlay').style.display = 'flex';
   document.getElementById('senhaCliente').value = '';
+  const em = document.getElementById('emailCliente'); if (em) em.value = '';
+  msgCliente('');
 }
 
 let fbUnsub = null;

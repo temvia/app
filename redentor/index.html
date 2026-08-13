@@ -98,6 +98,13 @@
   const set=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
   const opers=()=>{const o=[];TRANSPORTADORAS.forEach(t=>t.operacoes.forEach(op=>o.push({...op,transp:t.nome,transpId:t.id,key:t.id+':'+op.id})));return o;};
   const soDigitos=t=>(t||'').replace(/\D/g,'');
+  // Comparacao de telefone IGUAL a usada pelos apps (motorista/passageiro):
+  // exige numero com pelo menos 8 digitos e compara os 8 ultimos.
+  // Sem isso, um cadastro com telefone em branco ou curto casa com QUALQUER busca
+  // e o portal oferece uma empresa onde a pessoa nao existe.
+  // Mesma regra dos apps: ferias e afastado entram; desligado e sem-rota nao.
+  const STATUS_PODE_ENTRAR=['ativo','ferias','afastado'];
+  const telBate=(bruto,alvo)=>{const d=soDigitos(bruto); return d.length>=8 && (d===alvo || d.slice(-8)===alvo.slice(-8));};
   const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
   // ---- Firebase helpers (uma instancia por operacao) ----
@@ -144,7 +151,7 @@
   function escolher(id){
     perfilAtual=PERFIS.find(x=>x.id===id);
     set(K_PERFIL,id);
-    if(id==='motorista') renderOperacoes('motorista.html');
+    if(id==='motorista') renderMotorista();
     else if(id==='gestor') renderGestorLogin();
     else if(id==='passageiro') renderPassageiro();
     else renderCliente();
@@ -168,6 +175,57 @@
       });
     });
     T().innerHTML=h;
+  }
+
+  // ================= MOTORISTA: telefone -> so as operacoes onde ele trabalha =================
+  function renderMotorista(){
+    sub('Motorista');
+    const telLembrado=get('temvia_moto_tel');
+    T().innerHTML=voltar+
+      '<div class="title">Acesso do Motorista</div>'+
+      '<div class="subtitle">Digite seu telefone. Mostramos apenas as empresas onde você trabalha.</div>'+
+      '<input class="campo" id="mTel" type="tel" inputmode="numeric" placeholder="(15) 99999-9999" value="'+esc(telLembrado)+'">'+
+      '<div class="msg" id="mMsg"></div>'+
+      '<button class="btn-primario" id="mBtn" onclick="motoristaEntrar()">Continuar</button>'+
+      '<div class="divider">não encontrou seu telefone?</div>'+
+      '<button class="btn-voltar" style="width:100%;margin-bottom:0" onclick="renderOperacoes(\'motorista.html\')">Escolher a empresa manualmente</button>';
+    if(telLembrado) setTimeout(motoristaEntrar, 50);
+  }
+  async function motoristaEntrar(){
+    const tel=soDigitos(document.getElementById('mTel').value);
+    const msg=document.getElementById('mMsg'), btn=document.getElementById('mBtn');
+    msg.className='msg'; msg.textContent='';
+    if(tel.length<8){ msg.className='msg erro'; msg.textContent='Digite o telefone com DDD.'; return; }
+    btn.disabled=true; btn.textContent='Procurando...';
+    const achadas=[];
+    for(const op of opers()){
+      try{
+        const dados=await docDe(op,'dados');
+        if(!dados) continue;
+        const m=(dados.MOTORISTAS||[]).find(x=>telBate(x.tel,tel));
+        if(m) achadas.push({op, nome:m.nome});
+      }catch(e){}
+    }
+    btn.disabled=false; btn.textContent='Continuar';
+    if(!achadas.length){ msg.className='msg erro'; msg.textContent='Telefone não encontrado no cadastro de motoristas. Fale com o gestor ou use a escolha manual abaixo.'; return; }
+    set('temvia_moto_tel', tel);
+    if(achadas.length===1){ motoristaIr(achadas[0]); return; }
+    let h=voltar+'<div class="title">Olá, '+esc((achadas[0].nome||'').split(' ')[0])+'</div><div class="subtitle">Escolha a empresa que vai rodar agora.</div>';
+    const multi=[...new Set(achadas.map(a=>a.op.transp))].length>1;
+    let transpAtual='';
+    achadas.forEach((a,i)=>{
+      if(multi && a.op.transp!==transpAtual){ transpAtual=a.op.transp; h+='<div class="grupo">'+a.op.transp+'</div>'; }
+      h+='<div class="card" onclick="motoristaIr(window._mAchadas['+i+'])">'+
+         (a.op.key===get(K_OPER)?'<span class="badge">ULTIMA</span>':'')+
+         '<div class="card-logo" style="background:'+a.op.cor+'">'+a.op.inicial+'</div>'+
+         '<div class="card-info"><div class="card-nome">'+a.op.nome+'</div><div class="card-desc">'+a.op.desc+'</div></div>'+
+         '<div class="card-seta">\u203A</div></div>';
+    });
+    window._mAchadas=achadas; T().innerHTML=h;
+  }
+  function motoristaIr(a){
+    set(K_OPER, a.op.key);
+    window.location.href=a.op.path+'motorista.html';
   }
 
   // ================= GESTOR: login unico -> escolhe a operacao =================
@@ -247,9 +305,9 @@
         const dados=await docDe(op,'dados');
         if(!dados) continue;
         const todos=[];
-        (dados.DATA||[]).forEach(r=>(r.passageiros||[]).forEach(p=>todos.push(p)));
+        (dados.DATA||[]).forEach(r=>(r.passageiros||[]).forEach(p=>{ if(STATUS_PODE_ENTRAR.includes(p.status)) todos.push(p); }));
         (dados.SEM_ROTA||[]).forEach(p=>todos.push(p));
-        const m=todos.find(p=>{const d=soDigitos(p.telefone); return d===tel||d.endsWith(tel)||tel.endsWith(d);});
+        const m=todos.find(p=>telBate(p.telefone,tel));
         if(m) achados.push({op, tel: soDigitos(m.telefone)});
       }catch(e){}
     }
@@ -277,31 +335,64 @@
     sub('Empresa cliente');
     T().innerHTML=voltar+
       '<div class="title">Acesso da Empresa Cliente</div>'+
-      '<div class="subtitle">Digite a senha da sua empresa. O sistema identifica e abre o painel certo.</div>'+
-      '<input class="campo" id="cSenha" type="password" placeholder="Senha da empresa">'+
+      '<div class="subtitle">Entre com seu e-mail e senha. Se sua empresa ainda usa a senha unica, deixe o e-mail em branco.</div>'+
+      '<input class="campo" id="cEmail" type="email" autocomplete="username" placeholder="seu@email.com (opcional)">'+
+      '<input class="campo" id="cSenha" type="password" autocomplete="current-password" placeholder="Senha">'+
       '<div class="msg" id="cMsg"></div>'+
-      '<button class="btn-primario" id="cBtn" onclick="clienteEntrar()">Entrar</button>';
+      '<button class="btn-primario" id="cBtn" onclick="clienteEntrar()">Entrar</button>'+
+      '<div style="text-align:center;margin-top:12px"><a href="#" onclick="clienteEsqueci();return false;" style="color:#8b949e;font-size:13px">Esqueci minha senha</a></div>';
   }
+  // Com e-mail: conta individual (Firebase Auth) + conferencia na lista de acessos.
+  // Sem e-mail: senha unica antiga da empresa (transicao).
   async function clienteEntrar(){
+    const email=(document.getElementById('cEmail').value||'').trim();
     const val=document.getElementById('cSenha').value;
     const msg=document.getElementById('cMsg'), btn=document.getElementById('cBtn');
     msg.className='msg'; msg.textContent='';
     if(!val){ msg.className='msg erro'; msg.textContent='Digite a senha.'; return; }
     btn.disabled=true; btn.textContent='Verificando...';
     let alvo=null;
-    for(const op of opers()){
-      let senhaOp=op.senhaClienteFallback;
-      try{
-        const cfg=await docDe(op,'config');
-        if(cfg && cfg.senhaCliente) senhaOp=cfg.senhaCliente;
-      }catch(e){}
-      if(val===senhaOp){ alvo=op; break; }
+    if(email){
+      const { getAuth, signInWithEmailAndPassword, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+      for(const op of opers()){
+        try{
+          const auth=getAuth(await fbDe(op));
+          await signInWithEmailAndPassword(auth, email, val);
+          const ac=await docDe(op,'acessos');
+          const u=((ac&&ac.lista)||[]).find(x=>(x.email||'').trim().toLowerCase()===email.toLowerCase());
+          if(u && u.papel==='cliente' && u.ativo!==false){ alvo=op; break; }
+          await signOut(auth);
+        }catch(e){}
+      }
+      btn.disabled=false; btn.textContent='Entrar';
+      if(!alvo){ msg.className='msg erro'; msg.textContent='E-mail ou senha incorretos, ou este login nao tem acesso.'; return; }
+    } else {
+      for(const op of opers()){
+        let senhaOp=op.senhaClienteFallback;
+        try{
+          const cfg=await docDe(op,'config');
+          if(cfg && cfg.senhaCliente) senhaOp=cfg.senhaCliente;
+        }catch(e){}
+        if(val===senhaOp){ alvo=op; break; }
+      }
+      btn.disabled=false; btn.textContent='Entrar';
+      if(!alvo){ msg.className='msg erro'; msg.textContent='Senha incorreta.'; return; }
+      try{ localStorage.setItem('temvia_cliente_senha_'+alvo.clienteId, val); }catch(e){}
     }
-    btn.disabled=false; btn.textContent='Entrar';
-    if(!alvo){ msg.className='msg erro'; msg.textContent='Senha incorreta.'; return; }
-    try{ localStorage.setItem('temvia_cliente_senha_'+alvo.clienteId, val); }catch(e){}
     set(K_OPER, alvo.key);
     window.location.href=alvo.path+'cliente.html';
+  }
+  async function clienteEsqueci(){
+    const email=(document.getElementById('cEmail').value||'').trim();
+    const msg=document.getElementById('cMsg');
+    if(!email){ msg.className='msg erro'; msg.textContent='Digite seu e-mail acima e clique de novo.'; return; }
+    const { getAuth, sendPasswordResetEmail } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+    let enviou=false;
+    for(const op of opers()){
+      try{ await sendPasswordResetEmail(getAuth(await fbDe(op)), email); enviou=true; }catch(e){}
+    }
+    msg.className=enviou?'msg':'msg erro';
+    msg.textContent=enviou?'Enviamos um link para voce criar uma senha nova. Confira tambem o spam.':'Nao foi possivel enviar. Confira o e-mail digitado.';
   }
 
   renderPerfil();
