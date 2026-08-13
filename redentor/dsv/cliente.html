@@ -4574,11 +4574,23 @@ function exportBackup() {
 }
 
 // ---- CLIENTE AUTH ----
-const SENHA_CLIENTE = 'redentordsv';
+const SENHA_CLIENTE = 'redentordsv'; // fallback se o config nao tiver senha definida
+// Busca a senha definida pelo gestor (Config > Senha da empresa cliente) no Firebase.
+(async () => {
+  try {
+    const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const app = getApps().length > 0 ? getApp() : initializeApp(FB_CONFIG);
+    const db = getFirestore(app);
+    const snap = await getDoc(doc(db, CLIENTE_ID, 'config'));
+    const sc = snap.exists() ? (snap.data().senhaCliente || '') : '';
+    if (sc) window._senhaClienteCfg = sc; // quando definida no config, ela passa a valer
+  } catch(e) { /* sem rede: usa o fallback */ }
+})();
 
 function fazerLogin() {
   const val = document.getElementById('senhaCliente').value;
-  if (val === SENHA_CLIENTE) {
+  if (val === (window._senhaClienteCfg || SENHA_CLIENTE)) {
     document.getElementById('loginOverlay').style.display = 'none';
     // Recarregar chave Maps (validada — rejeita chave Firebase)
     MAPS_API_KEY = '';

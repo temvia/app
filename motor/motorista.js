@@ -646,6 +646,13 @@ body {
           <option value="">— Selecione o motorista —</option>
         </select>
       </div>
+      <div style="margin-bottom:8px">
+        <label class="section-label">🔁 Cobertura — ver rotas de outro motorista</label>
+        <select class="select-input" id="selCobertura" onchange="carregarRotasHoje()">
+          <option value="">— ninguém (só as minhas) —</option>
+        </select>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">Para quando um colega falta ou atrasa: veja e rode a rota dele sem precisar do PIN dele.</div>
+      </div>
       <div id="rotasHojeLista"></div>
     </div>
 
@@ -870,23 +877,46 @@ function popularMotoristasHoje() {
     opt.textContent = nome + (temRota ? ' ●' : '');
     sel.appendChild(opt);
   });
-  if (atual) { sel.value = atual; carregarRotasHoje(); }
+  if (atual) { sel.value = atual; }
+  // Popular o seletor de cobertura com todos os motoristas
+  const selC = document.getElementById('selCobertura');
+  if (selC) {
+    const atualC = selC.value;
+    selC.innerHTML = '<option value="">— ninguém (só as minhas) —</option>';
+    ordenados.forEach(nome => {
+      const temRota = comRota.includes(nome);
+      const o = document.createElement('option');
+      o.value = nome; o.textContent = nome + (temRota ? ' ●' : '');
+      selC.appendChild(o);
+    });
+    if (atualC) selC.value = atualC;
+  }
+  if (atual) carregarRotasHoje();
 }
 
 function carregarRotasHoje() {
   const nome = document.getElementById('selMotoristaHoje').value;
+  if (nome && !commVerificarPin(nome)) { const _s=document.getElementById('selMotoristaHoje'); if(_s)_s.value=''; return; }
   const div = document.getElementById('rotasHojeLista');
   if (!nome) { div.innerHTML = ''; return; }
-  const minhas = ROTAS_HOJE.filter(r => r.motorista === nome)
+  // Cobertura: ver as rotas de um colega (sem o PIN dele; a identidade continua sendo a sua)
+  const cobertura = (document.getElementById('selCobertura') || {}).value || '';
+  const nomeVer = cobertura || nome;
+  const minhas = ROTAS_HOJE.filter(r => r.motorista === nomeVer)
     .sort((a,b) => (a.departure||'').localeCompare(b.departure||''));
+  let aviso = '';
+  if (cobertura && cobertura !== nome) {
+    aviso = '<div style="background:rgba(245,158,11,0.10);border:1px solid rgba(245,158,11,0.4);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px">'+
+      '\uD83D\uDD01 <strong>Modo cobertura:</strong> voc\u00ea (' + esc(nome) + ') est\u00e1 vendo as rotas de <strong>' + esc(cobertura) + '</strong>.</div>';
+  }
   if (!minhas.length) {
-    div.innerHTML = '<div style="padding:30px 16px;text-align:center;color:var(--muted)">'+
+    div.innerHTML = aviso + '<div style="padding:30px 16px;text-align:center;color:var(--muted)">'+
       '<div style="font-size:32px;margin-bottom:8px">📭</div>'+
-      'Nenhuma rota publicada para <strong>' + nome + '</strong> hoje.<br>'+
+      'Nenhuma rota publicada para <strong>' + esc(nomeVer) + '</strong> hoje.<br>'+
       '<span style="font-size:12px">Use a aba <strong>🚐 Minha Rota</strong> para ver as linhas fixas.</span></div>';
     return;
   }
-  div.innerHTML = minhas.map(r => {
+  div.innerHTML = aviso + minhas.map(r => {
     const isSaida = r.modo === 'saida';
     const dataFmt = _rotaSelo(r.data);
     let h = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px">';
@@ -1336,6 +1366,23 @@ function populateMotoristas() {
   });
 }
 
+function commVerificarPin(nome) {
+  // PIN individual definido pelo gestor no cadastro de motoristas. Sem PIN cadastrado = entra direto.
+  const m = MOTORISTAS.find(x => x.nome === nome);
+  const pin = (m && m.pin) ? String(m.pin).trim() : '';
+  if (!pin) return true;
+  const k = 'temvia_pin_' + CLIENTE_ID + '_' + nome;
+  try { if (localStorage.getItem(k) === pin) return true; } catch(e) {}
+  const digitado = prompt('\uD83D\uDD12 ' + nome + ', digite seu PIN de acesso:');
+  if (digitado === null) return false;
+  if (String(digitado).trim() === pin) {
+    try { localStorage.setItem(k, pin); } catch(e) {}
+    return true;
+  }
+  alert('PIN incorreto. Fale com o gestor se esqueceu seu PIN.');
+  return false;
+}
+
 function loadLinhas(restoreLinhaId) {
   const nome = document.getElementById('selMotorista').value;
   const linhaSection = document.getElementById('linhaSection');
@@ -1343,6 +1390,7 @@ function loadLinhas(restoreLinhaId) {
   document.getElementById('rotaContent').innerHTML = '';
 
   if (!nome) { linhaSection.style.display = 'none'; return; }
+  if (!commVerificarPin(nome)) { document.getElementById('selMotorista').value = ''; linhaSection.style.display = 'none'; return; }
 
   // Salvar motorista na sessão
   salvarSessao(nome, carregarSessao()?.linhaId || '');

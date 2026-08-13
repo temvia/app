@@ -1448,7 +1448,12 @@ function loadGoogleMaps(key) {
           <label class="form-label">Telefone</label>
           <input class="form-input" id="fMTel" type="text" placeholder="(15) 99999-9999">
         </div>
+        <div class="form-group" style="max-width:110px">
+          <label class="form-label">PIN</label>
+          <input class="form-input" id="fMPin" type="text" inputmode="numeric" maxlength="6" placeholder="ex: 1234">
+        </div>
       </div>
+      <div style="font-size:11px;color:var(--muted);margin:-8px 0 10px">🔒 PIN de acesso do motorista no app (4 a 6 dígitos). Vazio = entra sem PIN.</div>
       <button class="btn-save" style="width:100%;margin-bottom:16px" onclick="addMotorista()">➕ Adicionar Motorista</button>
       <div id="motoristaListBody"></div>
     </div>
@@ -1620,6 +1625,11 @@ function loadGoogleMaps(key) {
           <label class="form-label">📱 WhatsApp da Redentor (transportadora)</label>
           <input class="form-input" id="cfgWhatsRedentor" type="text" placeholder="Ex.: 15 99999-9999">
           <div style="font-size:11px;color:var(--muted);margin-top:4px">Contato da Redentor. Aparece no app do passageiro.</div>
+        </div>
+        <div class="config-field">
+          <label class="form-label">🔐 Senha da empresa cliente</label>
+          <input class="form-input" id="cfgSenhaCliente" type="text" placeholder="Senha do app da empresa cliente">
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Senha pedida na tela de entrada do app da empresa cliente. Troque quando precisar.</div>
         </div>
 
         <div class="opt-title" style="font-size:13px;margin-top:14px">⏱️ Horários de chegada por turno</div>
@@ -3452,6 +3462,7 @@ function renderMotoristaList() {
         '<div style="flex:1;display:flex;flex-direction:column;gap:6px">' +
           '<input class="form-input" id="editMNome_' + m.id + '" value="' + m.nome + '" style="padding:6px 10px;font-size:13px">' +
           '<input class="form-input" id="editMTel_' + m.id + '" value="' + (m.tel||'') + '" placeholder="(15) 99999-9999" style="padding:6px 10px;font-size:13px">' +
+          '<input class="form-input" id="editMPin_' + m.id + '" value="' + (m.pin||'') + '" placeholder="PIN (vazio = sem PIN)" maxlength="6" style="padding:6px 10px;font-size:13px">' +
         '</div>' +
         '<div style="display:flex;flex-direction:column;gap:4px">' +
           '<button class="add-btn" style="font-size:11px;padding:4px 10px" onclick="saveMotoEdit(' + m.id + ')">✅ Salvar</button>' +
@@ -3462,7 +3473,7 @@ function renderMotoristaList() {
         '<div class="motorista-avatar">🚐</div>' +
         '<div style="flex:1">' +
           '<div class="motorista-nome">' + m.nome + '</div>' +
-          '<div class="motorista-tel">' + (m.tel || '—') + '</div>' +
+          '<div class="motorista-tel">' + (m.tel || '—') + (m.pin ? ' · 🔒 PIN' : ' · <span style=\"color:var(--muted)\">sem PIN</span>') + '</div>' +
           (todasLinhas ? '<div class="motorista-linhas">📍 ' + todasLinhas + '</div>' : '') +
         '</div>' +
         '<div style="display:flex;gap:4px">' +
@@ -3498,6 +3509,7 @@ function saveMotoEdit(id) {
   });
   m.nome = novoNome;
   m.tel  = novoTel;
+  m.pin  = (document.getElementById('editMPin_' + id) ? document.getElementById('editMPin_' + id).value.trim() : (m.pin||''));
   m._editing = false;
   renderMotoristaList();
   // Refresh sidebar/line if active
@@ -3513,9 +3525,11 @@ function addMotorista() {
   if (MOTORISTAS.find(m => m.nome.toLowerCase() === nome.toLowerCase())) {
     alert('Já existe um motorista com este nome.'); return;
   }
-  MOTORISTAS.push({ id: nextMotoId++, nome, tel });
+  const pin = document.getElementById('fMPin').value.trim();
+  MOTORISTAS.push({ id: nextMotoId++, nome, tel, pin });
   document.getElementById('fMNome').value = '';
   document.getElementById('fMTel').value = '';
+  document.getElementById('fMPin').value = '';
   renderMotoristaList();
   saveAfterChange();
 }
@@ -4074,6 +4088,7 @@ function openConfig() {
     set('cfgNome', c.nome || '');
     set('cfgWhatsCliente', c.whatsCliente || '');
     set('cfgWhatsRedentor', c.whatsRedentor || '');
+    set('cfgSenhaCliente', c.senhaCliente || '');
     set('cfgT1', c.turnosChegada['1°'] || '');
     set('cfgT2', c.turnosChegada['2°'] || '');
     set('cfgT3', c.turnosChegada['3°'] || '');
@@ -4143,6 +4158,7 @@ async function salvarEmpresaConfig() {
     nome: nome || EMPRESA_CONFIG.nome,
     whatsCliente: whatsCliente,
     whatsRedentor: whatsRedentor,
+    senhaCliente: document.getElementById('cfgSenhaCliente').value.trim(),
     turnosChegada: { '1°': t1, '2°': t2, '3°': t3, 'ADM': ta },
     garagem: { lat: gar.lat, lng: gar.lng },
     destino: { lat: dest.lat, lng: dest.lng }
