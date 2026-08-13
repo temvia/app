@@ -1175,7 +1175,8 @@ function loadGoogleMaps(key) {
 
 <!-- ===== TELA DE LOGIN (GESTOR) ===== -->
 <div id="loginOverlay" style="position:fixed;inset:0;z-index:100000;background:#0f1115;display:flex;align-items:center;justify-content:center;padding:20px">
-  <div style="width:100%;max-width:360px;background:#171a21;border:1px solid #262b36;border-radius:16px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,0.5)">
+  <div id="loginChecando" style="color:#8a90a0;font-size:14px">Verificando acesso...</div>
+  <div id="loginBox" style="display:none;width:100%;max-width:360px;background:#171a21;border:1px solid #262b36;border-radius:16px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,0.5)">
     <div style="text-align:center;margin-bottom:20px">
       <div style="font-family:'Barlow',sans-serif;font-weight:800;font-size:22px;color:#f5f5f5;letter-spacing:1px">REDENTOR</div>
       <div style="font-size:10px;font-weight:400;color:#8a90a0;letter-spacing:3px">FRETAMENTO</div>
@@ -5039,13 +5040,26 @@ async function esqueciSenha() {
   }
 }
 
+// Evita o "pisca": o formulario so aparece quando confirmamos que nao ha sessao aberta.
+let _formGestorMostrado = false;
+function mostrarFormularioGestor() {
+  if (_formGestorMostrado) return;
+  _formGestorMostrado = true;
+  const chk = document.getElementById('loginChecando');
+  const box = document.getElementById('loginBox');
+  if (chk) chk.style.display = 'none';
+  if (box) box.style.display = '';
+}
+setTimeout(mostrarFormularioGestor, 3500);
+
 async function logout() {
   try {
     await initAuth();
     const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
     await signOut(fbAuth);
-    location.reload();
-  } catch (e) { alert('Erro ao sair: ' + e.message); }
+  } catch (e) {}
+  // Porta da frente do sistema agora e o portal temvia.
+  window.location.href = '/redentor/';
 }
 
 // Perfis: {CLIENTE_ID}/acessos guarda quem e da EMPRESA CLIENTE.
@@ -5077,6 +5091,7 @@ async function iniciarComAutenticacao() {
         const erroEl = document.getElementById('loginErro');
         if (erroEl) { erroEl.style.color = '#ef4444'; erroEl.textContent = 'Este login e do portal da empresa cliente, nao do gestor.'; }
         if (overlay) overlay.style.display = 'flex';
+        mostrarFormularioGestor();
         return;
       }
       // Logado: esconde login e carrega o sistema (uma única vez)
@@ -5093,6 +5108,7 @@ async function iniciarComAutenticacao() {
     } else {
       // Não logado: mostra a tela de login
       if (overlay) overlay.style.display = 'flex';
+      mostrarFormularioGestor();
     }
   });
 }

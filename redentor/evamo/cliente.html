@@ -1176,7 +1176,8 @@ function loadGoogleMaps(key) {
     <div style="font-family:Barlow,sans-serif;font-weight:800;font-size:24px;color:var(--accent);margin-top:8px">EVAMO</div>
     <div style="font-size:13px;color:var(--muted)">Fretamento — Portal do Cliente</div>
   </div>
-  <div class="login-box">
+  <div id="loginChecando" style="text-align:center;color:#8b949e;font-size:14px;padding:28px">Verificando acesso...</div>
+  <div class="login-box" id="loginBox" style="display:none">
     <div class="login-title">Acesso ao Portal</div>
     <div class="login-sub">Visualização de rotas e passageiros</div>
     <input class="login-input" type="email" id="emailCliente" autocomplete="username" placeholder="Seu e-mail"
@@ -4653,6 +4654,19 @@ function verSenhaCliente() {
   if (b) { b.innerHTML = ver ? '&#128584;' : '&#128065;&#65039;'; b.title = ver ? 'Ocultar senha' : 'Mostrar senha'; }
 }
 
+// Evita o "pisca": o formulario so aparece quando confirmamos que nao ha sessao aberta.
+let _formMostrado = false;
+function mostrarFormularioCliente() {
+  if (_formMostrado) return;
+  _formMostrado = true;
+  const chk = document.getElementById('loginChecando');
+  const box = document.getElementById('loginBox');
+  if (chk) chk.style.display = 'none';
+  if (box) box.style.display = '';
+}
+// Rede lenta ou fora do ar: nao deixa o usuario preso no "Verificando".
+setTimeout(mostrarFormularioCliente, 3500);
+
 function msgCliente(texto, erro) {
   const el = document.getElementById('loginMsg');
   if (!el) return;
@@ -4667,6 +4681,7 @@ async function fazerLogin() {
   const btn = document.getElementById('btnEntrarCliente');
   err.style.display = 'none';
   msgCliente('');
+  mostrarFormularioCliente();
 
   // Sem e-mail: senha unica da empresa (caminho antigo, vale ate todos terem conta propria).
   if (!email) {
@@ -4734,12 +4749,13 @@ async function esqueciSenhaCliente() {
     const auth = await initAuthCli();
     const { onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
     onAuthStateChanged(auth, async (user) => {
-      if (!user) return;
+      if (!user) { mostrarFormularioCliente(); return; }
       const overlay = document.getElementById('loginOverlay');
       if (!overlay || overlay.style.display === 'none') return;
       if (clientePodeEntrar(await acessoDoEmail(user.email))) liberarPortalCliente();
+      else mostrarFormularioCliente();
     });
-  } catch (e) {}
+  } catch (e) { mostrarFormularioCliente(); }
 })();
 
 async function logout() {
@@ -4750,10 +4766,8 @@ async function logout() {
     const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
     await signOut(auth);
   } catch (e) {}
-  document.getElementById('loginOverlay').style.display = 'flex';
-  document.getElementById('senhaCliente').value = '';
-  const em = document.getElementById('emailCliente'); if (em) em.value = '';
-  msgCliente('');
+  // Porta da frente do sistema agora e o portal temvia, nao a tela de login do app.
+  window.location.href = '/redentor/';
 }
 
 let fbUnsub = null;
