@@ -1449,12 +1449,8 @@ function loadGoogleMaps(key) {
           <label class="form-label">Telefone</label>
           <input class="form-input" id="fMTel" type="text" placeholder="(15) 99999-9999">
         </div>
-        <div class="form-group" style="max-width:110px">
-          <label class="form-label">PIN</label>
-          <input class="form-input" id="fMPin" type="text" inputmode="numeric" maxlength="6" placeholder="ex: 1234">
-        </div>
       </div>
-      <div style="font-size:11px;color:var(--muted);margin:-8px 0 10px">🔒 PIN de acesso do motorista no app (4 a 6 dígitos). Vazio = entra sem PIN.</div>
+      <div style="font-size:11px;color:var(--muted);margin:-8px 0 10px">O PIN e criado pelo proprio motorista no primeiro acesso no app.</div>
       <button class="btn-save" style="width:100%;margin-bottom:16px" onclick="addMotorista()">➕ Adicionar Motorista</button>
       <div id="motoristaListBody"></div>
     </div>
@@ -3529,11 +3525,9 @@ function addMotorista() {
   if (MOTORISTAS.find(m => m.nome.toLowerCase() === nome.toLowerCase())) {
     alert('Já existe um motorista com este nome.'); return;
   }
-  const pin = document.getElementById('fMPin').value.trim();
-  MOTORISTAS.push({ id: nextMotoId++, nome, tel, pin });
+  MOTORISTAS.push({ id: nextMotoId++, nome, tel });
   document.getElementById('fMNome').value = '';
   document.getElementById('fMTel').value = '';
-  document.getElementById('fMPin').value = '';
   renderMotoristaList();
   saveAfterChange();
 }
@@ -5120,7 +5114,7 @@ async function iniciarComAutenticacao() {
           renderSidebar();
           solCarregarFirebase();
           cadGestorCarregar();
-          carregarPinsAtivos().then(() => { try { renderMotoristas(); } catch(e) {} });
+          carregarPinsAtivos().then(() => { try { renderMotoristaList(); } catch(e) {} });
           carregarAcessos();
         });
       }
@@ -6659,7 +6653,7 @@ async function zerarPinMotorista(id) {
     await setDoc(ref, { lista, updatedAt: new Date().toISOString() });
     PINS_ATIVOS = lista;
     alert('PIN de ' + m.nome + ' zerado. Avise para ele criar um novo ao abrir o app.');
-    renderMotoristas();
+    renderMotoristaList();
   } catch (e) {
     alert('Nao foi possivel zerar: ' + (e && e.message ? e.message : e));
   }

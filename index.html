@@ -217,8 +217,7 @@
       '<input class="campo" id="mTel" type="tel" inputmode="numeric" placeholder="(15) 99999-9999" value="'+esc(telLembrado)+'">'+
       '<div class="msg" id="mMsg"></div>'+
       '<button class="btn-primario" id="mBtn" onclick="motoristaEntrar()">Continuar</button>'+
-      '<div class="divider">não encontrou seu telefone?</div>'+
-      '<button class="btn-voltar" style="width:100%;margin-bottom:0" onclick="renderOperacoes(\'motorista.html\')">Escolher a empresa manualmente</button>';
+      '<div style="font-size:12px;color:#8b949e;text-align:center;margin-top:14px;line-height:1.5">Não encontrou seu telefone?<br>Peça ao gestor para conferir seu cadastro.</div>';
     if(telLembrado) setTimeout(motoristaEntrar, 50);
   }
   async function motoristaEntrar(){
@@ -237,7 +236,7 @@
       }catch(e){}
     }
     btn.disabled=false; btn.textContent='Continuar';
-    if(!achadas.length){ msg.className='msg erro'; msg.textContent='Telefone não encontrado no cadastro de motoristas. Fale com o gestor ou use a escolha manual abaixo.'; return; }
+    if(!achadas.length){ msg.className='msg erro'; msg.textContent='Telefone não encontrado no cadastro de motoristas. Peça ao gestor para conferir o número cadastrado.'; return; }
     set('temvia_moto_tel', tel);
     if(achadas.length===1){ motoristaIr(achadas[0]); return; }
     let h=voltar+'<div class="title">Olá, '+esc((achadas[0].nome||'').split(' ')[0])+'</div><div class="subtitle">Escolha a empresa que vai rodar agora.</div>';
@@ -464,6 +463,21 @@
     msg.className=enviou?'msg':'msg erro';
     msg.textContent=enviou?'Enviamos um link para voce criar uma senha nova. Confira tambem o spam.':'Nao foi possivel enviar. Confira o e-mail digitado.';
   }
+
+  // Enter em qualquer campo aciona o botao principal da tela atual.
+  // Sem isso so o clique funcionava, o que atrapalha bastante no teclado do celular.
+  document.addEventListener('keydown', function(ev){
+    if(ev.key!=='Enter') return;
+    const alvo=ev.target;
+    if(!alvo || alvo.tagName!=='INPUT') return;
+    const tela=document.getElementById('tela'); if(!tela) return;
+    // Se ha um campo depois deste, pula para ele; senao envia.
+    const campos=Array.from(tela.querySelectorAll('input'));
+    const i=campos.indexOf(alvo);
+    if(i>-1 && i<campos.length-1){ ev.preventDefault(); campos[i+1].focus(); return; }
+    const btn=tela.querySelector('button.btn-primario:not([disabled])');
+    if(btn){ ev.preventDefault(); btn.click(); }
+  });
 
   renderPerfil();
 </script>
