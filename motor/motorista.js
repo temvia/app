@@ -894,9 +894,9 @@ function popularMotoristasHoje() {
   if (atual) carregarRotasHoje();
 }
 
-function carregarRotasHoje() {
+async function carregarRotasHoje() {
   const nome = document.getElementById('selMotoristaHoje').value;
-  if (nome && !commVerificarPin(nome)) { const _s=document.getElementById('selMotoristaHoje'); if(_s)_s.value=''; return; }
+  if (nome && !(await commVerificarPin(nome))) { const _s=document.getElementById('selMotoristaHoje'); if(_s)_s.value=''; return; }
   const div = document.getElementById('rotasHojeLista');
   if (!nome) { div.innerHTML = ''; return; }
   // Cobertura: ver as rotas de um colega (sem o PIN dele; a identidade continua sendo a sua)
@@ -1366,31 +1366,196 @@ function populateMotoristas() {
   });
 }
 
-function commVerificarPin(nome) {
-  // PIN individual definido pelo gestor no cadastro de motoristas. Sem PIN cadastrado = entra direto.
-  const m = MOTORISTAS.find(x => x.nome === nome);
-  const pin = (m && m.pin) ? String(m.pin).trim() : '';
-  if (!pin) return true;
-  const k = 'temvia_pin_' + CLIENTE_ID + '_' + nome;
-  try { if (localStorage.getItem(k) === pin) return true; } catch(e) {}
-  const digitado = prompt('\uD83D\uDD12 ' + nome + ', digite seu PIN de acesso:');
-  if (digitado === null) return false;
-  if (String(digitado).trim() === pin) {
-    try { localStorage.setItem(k, pin); } catch(e) {}
-    return true;
-  }
-  alert('PIN incorreto. Fale com o gestor se esqueceu seu PIN.');
-  return false;
+// ============================================================
+// PIN DO MOTORISTA
+// O PIN e escolhido pelo proprio motorista no primeiro acesso e NUNCA
+// e gravado em texto: guardamos so um hash lento (PBKDF2) numa colecao
+// separada, cuja LEITURA e negada pelas regras do Firestore.
+// A conferencia acontece na propria regra: o app tenta regravar o hash
+// que calculou e a gravacao so passa se for igual ao que ja esta la.
+// Quem erra o PIN nem consegue escrever, e ninguem consegue ler o hash.
+// ============================================================
+
+const PIN_DIGITOS = 4;
+const PIN_ITERACOES = 200000;
+
+// Identificador do motorista na colecao de PINs: telefone quando existe,
+// senao o nome normalizado (Firestore nao aceita barra no id).
+function commPinId(m, nome) {
+  const tel = (m && m.tel) ? String(m.tel).replace(/\D/g, '') : '';
+  if (tel.length >= 8) return tel;
+  return 'nome_' + String(nome || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
 }
 
-function loadLinhas(restoreLinhaId) {
+function commAparelhoId() {
+  const k = 'temvia_aparelho';
+  try {
+    let v = localStorage.getItem(k);
+    if (!v) { v = 'ap_' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem(k, v); }
+    return v;
+  } catch (e) { return 'ap_sem_storage'; }
+}
+
+const commPinChaveLocal = id => 'temvia_pinok_' + CLIENTE_ID + '_' + id;
+
+// Hash lento: mesmo que alguem obtenha o valor, testar os 10 mil PINs sai caro.
+async function commPinHash(id, pin) {
+  const enc = new TextEncoder();
+  const chave = await crypto.subtle.importKey('raw', enc.encode(String(pin)), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt: enc.encode('temvia:' + CLIENTE_ID + ':' + id), iterations: PIN_ITERACOES, hash: 'SHA-256' },
+    chave, 256);
+  return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Lista publica de quem JA tem PIN. Serve so para a tela saber se pede ou cria;
+// nao guarda segredo nenhum e nao decide acesso.
+async function commPinJaTem(id) {
+  try {
+    const db = await commGetDb();
+    const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const snap = await getDoc(doc(db, CLIENTE_ID, 'pins_ativos'));
+    const lista = snap.exists() ? (snap.data().lista || []) : [];
+    return lista.indexOf(id) > -1;
+  } catch (e) { return false; }
+}
+
+async function commPinMarcarAtivo(id) {
+  try {
+    const db = await commGetDb();
+    const { doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const ref = doc(db, CLIENTE_ID, 'pins_ativos');
+    const snap = await getDoc(ref);
+    const lista = snap.exists() ? (snap.data().lista || []) : [];
+    if (lista.indexOf(id) === -1) lista.push(id);
+    await setDoc(ref, { lista, updatedAt: new Date().toISOString() });
+  } catch (e) {}
+}
+
+// Confere sem ler: regrava o hash calculado. A regra recusa se nao bater.
+async function commPinConferir(id, hash) {
+  const db = await commGetDb();
+  const { doc, updateDoc, arrayUnion } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  await updateDoc(doc(db, CLIENTE_ID + '_pins', id), {
+    hash: hash,
+    ultimoAcesso: new Date().toISOString(),
+    aparelhos: arrayUnion(commAparelhoId())
+  });
+}
+
+async function commPinCriar(id, nome, hash) {
+  const db = await commGetDb();
+  const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  await setDoc(doc(db, CLIENTE_ID + '_pins', id), {
+    hash: hash, nome: nome || '', criadoEm: new Date().toISOString(),
+    ultimoAcesso: new Date().toISOString(), aparelhos: [commAparelhoId()]
+  });
+  await commPinMarcarAtivo(id);
+}
+
+// Teclado numerico proprio: prompt() abre teclado de letras no celular.
+function commPinTela(titulo, subtitulo, confirmar) {
+  return new Promise(resolve => {
+    const fundo = document.createElement('div');
+    fundo.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(8,10,14,0.96);display:flex;align-items:center;justify-content:center;padding:20px';
+    fundo.innerHTML =
+      '<div style="width:100%;max-width:340px;background:#171a21;border:1px solid #262b36;border-radius:16px;padding:24px">' +
+        '<div style="font-family:Barlow,sans-serif;font-weight:800;font-size:19px;color:#f59e0b;margin-bottom:6px">' + titulo + '</div>' +
+        '<div style="font-size:13px;color:#8a90a0;margin-bottom:18px;line-height:1.4">' + subtitulo + '</div>' +
+        '<input id="pinA" type="password" inputmode="numeric" autocomplete="off" maxlength="' + PIN_DIGITOS + '" placeholder="' + '\u2022'.repeat(PIN_DIGITOS) + '" ' +
+          'style="width:100%;background:#0f1115;border:1px solid #262b36;border-radius:10px;padding:14px;color:#f5f5f5;font-size:24px;text-align:center;letter-spacing:10px;margin-bottom:10px">' +
+        (confirmar ? '<input id="pinB" type="password" inputmode="numeric" autocomplete="off" maxlength="' + PIN_DIGITOS + '" placeholder="repita" ' +
+          'style="width:100%;background:#0f1115;border:1px solid #262b36;border-radius:10px;padding:14px;color:#f5f5f5;font-size:24px;text-align:center;letter-spacing:10px;margin-bottom:10px">' : '') +
+        '<div id="pinErro" style="min-height:18px;font-size:12px;color:#ef4444;margin-bottom:8px"></div>' +
+        '<button id="pinOk" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:10px;padding:13px;font-weight:800;font-size:15px;font-family:Barlow,sans-serif;cursor:pointer">Confirmar</button>' +
+        '<button id="pinCancelar" style="width:100%;background:none;color:#8a90a0;border:none;padding:12px;font-size:13px;cursor:pointer">Cancelar</button>' +
+      '</div>';
+    document.body.appendChild(fundo);
+    const a = fundo.querySelector('#pinA'), bb = fundo.querySelector('#pinB');
+    const erro = fundo.querySelector('#pinErro'), ok = fundo.querySelector('#pinOk');
+    const soDig = e => { e.target.value = e.target.value.replace(/\D/g, ''); };
+    a.addEventListener('input', soDig); if (bb) bb.addEventListener('input', soDig);
+    const fechar = v => { try { document.body.removeChild(fundo); } catch (e) {} resolve(v); };
+    ok.onclick = () => {
+      const v1 = a.value.trim();
+      if (v1.length !== PIN_DIGITOS) { erro.textContent = 'O PIN tem ' + PIN_DIGITOS + ' digitos.'; return; }
+      if (bb && bb.value.trim() !== v1) { erro.textContent = 'Os dois campos estao diferentes.'; return; }
+      fechar(v1);
+    };
+    fundo.querySelector('#pinCancelar').onclick = () => fechar(null);
+    [a, bb].forEach(c => { if (c) c.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); ok.click(); } }); });
+    setTimeout(() => a.focus(), 100);
+  });
+}
+
+// Caixa de aviso simples. NAO pode reusar a tela do PIN: ela exige 4 digitos
+// para fechar, e o motorista que errasse o PIN ficaria preso nela.
+function commPinAviso(texto) {
+  return new Promise(resolve => {
+    const fundo = document.createElement('div');
+    fundo.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(8,10,14,0.96);display:flex;align-items:center;justify-content:center;padding:20px';
+    fundo.innerHTML =
+      '<div style="width:100%;max-width:340px;background:#171a21;border:1px solid #262b36;border-radius:16px;padding:24px">' +
+        '<div style="font-size:14px;color:#f5f5f5;line-height:1.5;margin-bottom:18px">' + texto + '</div>' +
+        '<button id="avisoOk" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:10px;padding:13px;font-weight:800;font-size:15px;font-family:Barlow,sans-serif;cursor:pointer">Entendi</button>' +
+      '</div>';
+    document.body.appendChild(fundo);
+    fundo.querySelector('#avisoOk').onclick = () => {
+      try { document.body.removeChild(fundo); } catch (e) {}
+      resolve(null);
+    };
+  });
+}
+
+async function commVerificarPin(nome) {
+  const m = MOTORISTAS.find(x => x.nome === nome);
+  const id = commPinId(m, nome);
+  if (!id || id === 'nome_') return true;
+
+  // Aparelho ja reconhecido: entra direto (funciona ate sem sinal).
+  try { if (localStorage.getItem(commPinChaveLocal(id))) return true; } catch (e) {}
+
+  const jaTem = await commPinJaTem(id);
+  const pin = jaTem
+    ? await commPinTela('Ola, ' + nome, 'Digite seu PIN de ' + PIN_DIGITOS + ' digitos para continuar.', false)
+    : await commPinTela('Primeiro acesso', 'Crie um PIN de ' + PIN_DIGITOS + ' digitos. Ele e so seu \u2014 nem o gestor consegue ver. Se esquecer, peca para ele zerar.', true);
+  if (pin === null) return false;
+
+  let hash;
+  try { hash = await commPinHash(id, pin); }
+  catch (e) { alert('Nao foi possivel validar o PIN neste navegador. Fale com o gestor.'); return false; }
+
+  try {
+    if (jaTem) await commPinConferir(id, hash);
+    else await commPinCriar(id, nome, hash);
+    try { localStorage.setItem(commPinChaveLocal(id), '1'); } catch (e) {}
+    return true;
+  } catch (e) {
+    if (!jaTem) {
+      // O marcador dizia que nao havia PIN, mas ha: tenta conferir como se fosse entrada normal.
+      try {
+        await commPinConferir(id, hash);
+        await commPinMarcarAtivo(id);
+        try { localStorage.setItem(commPinChaveLocal(id), '1'); } catch (e2) {}
+        return true;
+      } catch (e2) {}
+      await commPinAviso('Voce ja tem um PIN cadastrado e este nao confere. Tente de novo ou peca ao gestor para zerar.');
+      return false;
+    }
+    await commPinAviso('PIN incorreto. Se esqueceu, peca ao gestor para zerar o seu.');
+    return false;
+  }
+}
+
+async function loadLinhas(restoreLinhaId) {
   const nome = document.getElementById('selMotorista').value;
   const linhaSection = document.getElementById('linhaSection');
   const sel = document.getElementById('selLinha');
   document.getElementById('rotaContent').innerHTML = '';
 
   if (!nome) { linhaSection.style.display = 'none'; return; }
-  if (!commVerificarPin(nome)) { document.getElementById('selMotorista').value = ''; linhaSection.style.display = 'none'; return; }
+  if (!(await commVerificarPin(nome))) { document.getElementById('selMotorista').value = ''; linhaSection.style.display = 'none'; return; }
 
   // Salvar motorista na sessão
   salvarSessao(nome, carregarSessao()?.linhaId || '');

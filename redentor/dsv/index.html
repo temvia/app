@@ -1184,6 +1184,7 @@ function loadGoogleMaps(key) {
     </div>
     <label style="display:block;font-size:11px;color:#8a90a0;margin-bottom:4px">E-mail</label>
     <input id="loginEmail" type="email" autocomplete="username" placeholder="seu@email.com"
+      onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('loginPassword').focus();}"
       style="width:100%;background:#0f1115;border:1px solid #262b36;border-radius:8px;padding:11px;color:#f5f5f5;font-size:14px;margin-bottom:12px">
     <label style="display:block;font-size:11px;color:#8a90a0;margin-bottom:4px">Senha</label>
     <div style="position:relative;margin-bottom:8px">
@@ -1632,6 +1633,26 @@ function loadGoogleMaps(key) {
           <input class="form-input" id="cfgSenhaCliente" type="text" placeholder="Senha do app da empresa cliente">
           <div style="font-size:11px;color:var(--muted);margin-top:4px">Senha pedida na tela de entrada do app da empresa cliente. Troque quando precisar.</div>
         </div>
+
+        <div class="opt-title" style="font-size:13px;margin-top:14px">👤 Logins da empresa cliente</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Uma conta por pessoa. Ela mesma troca a senha depois, pelo "Esqueci minha senha" — você não precisa saber a senha de ninguém.</div>
+        <div id="acessosLista" style="margin-bottom:10px"></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end">
+          <div class="config-field" style="flex:1;min-width:120px;margin:0">
+            <label class="form-label" style="font-size:11px">Nome</label>
+            <input class="form-input" id="novoAcNome" type="text" placeholder="Maria Silva" style="padding:8px 10px;font-size:13px">
+          </div>
+          <div class="config-field" style="flex:1.4;min-width:150px;margin:0">
+            <label class="form-label" style="font-size:11px">E-mail</label>
+            <input class="form-input" id="novoAcEmail" type="email" placeholder="maria@empresa.com" style="padding:8px 10px;font-size:13px">
+          </div>
+          <div class="config-field" style="flex:1;min-width:120px;margin:0">
+            <label class="form-label" style="font-size:11px">Senha inicial</label>
+            <input class="form-input" id="novoAcSenha" type="text" placeholder="mín. 6 caracteres" style="padding:8px 10px;font-size:13px">
+          </div>
+          <button class="add-btn" id="novoAcBtn" onclick="criarAcessoCliente()" style="font-size:12px;padding:8px 14px">➕ Criar</button>
+        </div>
+        <div id="acessosMsg" style="font-size:12px;margin-top:8px;min-height:16px"></div>
 
         <div class="opt-title" style="font-size:13px;margin-top:14px">⏱️ Horários de chegada por turno</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -3463,7 +3484,7 @@ function renderMotoristaList() {
         '<div style="flex:1;display:flex;flex-direction:column;gap:6px">' +
           '<input class="form-input" id="editMNome_' + m.id + '" value="' + m.nome + '" style="padding:6px 10px;font-size:13px">' +
           '<input class="form-input" id="editMTel_' + m.id + '" value="' + (m.tel||'') + '" placeholder="(15) 99999-9999" style="padding:6px 10px;font-size:13px">' +
-          '<input class="form-input" id="editMPin_' + m.id + '" value="' + (m.pin||'') + '" placeholder="PIN (vazio = sem PIN)" maxlength="6" style="padding:6px 10px;font-size:13px">' +
+          '<div style="font-size:11px;color:var(--muted);padding:2px 2px 0">O PIN e criado pelo proprio motorista no primeiro acesso. Use o cadeado aberto para zerar se ele esquecer.</div>' +
         '</div>' +
         '<div style="display:flex;flex-direction:column;gap:4px">' +
           '<button class="add-btn" style="font-size:11px;padding:4px 10px" onclick="saveMotoEdit(' + m.id + ')">✅ Salvar</button>' +
@@ -3474,10 +3495,11 @@ function renderMotoristaList() {
         '<div class="motorista-avatar">🚐</div>' +
         '<div style="flex:1">' +
           '<div class="motorista-nome">' + m.nome + '</div>' +
-          '<div class="motorista-tel">' + (m.tel || '—') + (m.pin ? ' · 🔒 PIN' : ' · <span style=\"color:var(--muted)\">sem PIN</span>') + '</div>' +
+          '<div class="motorista-tel">' + (m.tel || '—') + (pinAtivo(m) ? ' · 🔒 PIN definido' : ' · <span style=\"color:var(--muted)\">sem PIN</span>') + '</div>' +
           (todasLinhas ? '<div class="motorista-linhas">📍 ' + todasLinhas + '</div>' : '') +
         '</div>' +
         '<div style="display:flex;gap:4px">' +
+          (pinAtivo(m) ? '<button class="action-btn" onclick="zerarPinMotorista(' + m.id + ')" title="Zerar PIN" style="color:var(--accent)">\uD83D\uDD13</button>' : '') +
           '<button class="action-btn" onclick="startMotoEdit(' + m.id + ')" title="Editar" style="color:var(--accent2)">✏️</button>' +
           '<button class="action-btn" onclick="removeMotorista(' + m.id + ')" title="Remover" style="color:var(--red)">🗑️</button>' +
         '</div>';
@@ -3510,7 +3532,7 @@ function saveMotoEdit(id) {
   });
   m.nome = novoNome;
   m.tel  = novoTel;
-  m.pin  = (document.getElementById('editMPin_' + id) ? document.getElementById('editMPin_' + id).value.trim() : (m.pin||''));
+  delete m.pin; // PIN nao fica mais no cadastro: virou hash em colecao propria, ilegivel
   m._editing = false;
   renderMotoristaList();
   // Refresh sidebar/line if active
@@ -5103,6 +5125,8 @@ async function iniciarComAutenticacao() {
           renderSidebar();
           solCarregarFirebase();
           cadGestorCarregar();
+          carregarPinsAtivos().then(() => { try { renderMotoristas(); } catch(e) {} });
+          carregarAcessos();
         });
       }
     } else {
@@ -6481,6 +6505,161 @@ function cadGestorEnviarParaAddNovo(id) {
     const obs = document.getElementById('fObs');
     if (obs) obs.value = (obs.value ? obs.value + '\n' : '') + 'Ref: ' + sol.id + ' · Turno: ' + d.turno + ' · Início: ' + d.inicio;
   }, 300);
+}
+
+// ---- Logins da empresa cliente ({CLIENTE_ID}/acessos) ----
+let ACESSOS = [];
+
+function acessosMsg(txt, erro) {
+  const el = document.getElementById('acessosMsg');
+  if (!el) return;
+  el.style.color = erro ? 'var(--red)' : '#10b981';
+  el.textContent = txt || '';
+}
+
+async function carregarAcessos() {
+  try {
+    const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const snap = await getDoc(doc(fbDb, CLIENTE_ID, 'acessos'));
+    ACESSOS = snap.exists() ? (snap.data().lista || []) : [];
+  } catch (e) { ACESSOS = []; }
+  renderAcessos();
+}
+
+async function salvarAcessos() {
+  const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  await setDoc(doc(fbDb, CLIENTE_ID, 'acessos'), { lista: ACESSOS, updatedAt: new Date().toISOString() });
+}
+
+function renderAcessos() {
+  const div = document.getElementById('acessosLista');
+  if (!div) return;
+  if (!ACESSOS.length) {
+    div.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px 0">Nenhum login criado ainda. A empresa ainda entra pela senha única acima.</div>';
+    return;
+  }
+  div.innerHTML = ACESSOS.map((u, i) => {
+    const inativo = u.ativo === false;
+    return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)">' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:13px;color:' + (inativo ? 'var(--muted)' : 'var(--text)') + '">' + (u.nome || '—') + (inativo ? ' · desativado' : '') + '</div>' +
+        '<div style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis">' + u.email + '</div>' +
+      '</div>' +
+      '<button class="action-btn" onclick="resetarSenhaAcesso(' + i + ')" title="Enviar link de nova senha" style="color:var(--accent2)">✉️</button>' +
+      '<button class="action-btn" onclick="alternarAcessoCliente(' + i + ')" title="' + (inativo ? 'Reativar' : 'Desativar') + '" style="color:' + (inativo ? '#10b981' : 'var(--red)') + '">' + (inativo ? '↺' : '⊘') + '</button>' + +
+      '</div>';
+  }).join('');
+}
+
+// Cria a conta SEM derrubar a sessao do gestor: usa uma segunda instancia do
+// Firebase, sem persistencia, so para o cadastro.
+async function criarAcessoCliente() {
+  const nome = (document.getElementById('novoAcNome').value || '').trim();
+  const email = (document.getElementById('novoAcEmail').value || '').trim().toLowerCase();
+  const senha = (document.getElementById('novoAcSenha').value || '');
+  const btn = document.getElementById('novoAcBtn');
+  acessosMsg('');
+  if (!nome) { acessosMsg('Informe o nome da pessoa.', true); return; }
+  if (!email || email.indexOf('@') < 0) { acessosMsg('E-mail invalido.', true); return; }
+  if (senha.length < 6) { acessosMsg('A senha inicial precisa de pelo menos 6 caracteres.', true); return; }
+  if (ACESSOS.some(u => (u.email || '').toLowerCase() === email)) { acessosMsg('Este e-mail ja esta na lista.', true); return; }
+
+  btn.disabled = true; btn.textContent = 'Criando...';
+  try {
+    const { initializeApp, getApps, deleteApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    const { getAuth, createUserWithEmailAndPassword, setPersistence, inMemoryPersistence, signOut } =
+      await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+    const nomeTmp = 'cadastro-acesso';
+    const appTmp = getApps().find(a => a.name === nomeTmp) || initializeApp(FB_CONFIG, nomeTmp);
+    const authTmp = getAuth(appTmp);
+    await setPersistence(authTmp, inMemoryPersistence);
+    let criou = true;
+    try {
+      await createUserWithEmailAndPassword(authTmp, email, senha);
+    } catch (e) {
+      if (e && e.code === 'auth/email-already-in-use') { criou = false; }
+      else throw e;
+    }
+    try { await signOut(authTmp); } catch (e) {}
+    try { await deleteApp(appTmp); } catch (e) {}
+
+    ACESSOS.push({ email: email, nome: nome, papel: 'cliente', ativo: true, criadoEm: new Date().toISOString() });
+    await salvarAcessos();
+    renderAcessos();
+    document.getElementById('novoAcNome').value = '';
+    document.getElementById('novoAcEmail').value = '';
+    document.getElementById('novoAcSenha').value = '';
+    acessosMsg(criou
+      ? 'Login criado. Passe o e-mail e a senha inicial para ' + nome + '; ela pode trocar depois pelo "Esqueci minha senha".'
+      : 'Esse e-mail ja tinha conta no sistema. Liberei o acesso ao portal da empresa — a senha continua sendo a que ela ja usava.', false);
+  } catch (e) {
+    const map = {
+      'auth/invalid-email': 'E-mail invalido.',
+      'auth/weak-password': 'Senha muito fraca (minimo 6 caracteres).',
+      'auth/operation-not-allowed': 'Ative o provedor E-mail/senha no Firebase Authentication.'
+    };
+    acessosMsg(map[e && e.code] || ('Erro: ' + ((e && e.message) ? e.message : e)), true);
+  } finally {
+    btn.disabled = false; btn.textContent = '➕ Criar';
+  }
+}
+
+// Desativar em vez de apagar: e-mail fora da lista e tratado como gestor.
+async function alternarAcessoCliente(i) {
+  const u = ACESSOS[i]; if (!u) return;
+  const desativando = u.ativo !== false;
+  if (!confirm((desativando ? 'Desativar' : 'Reativar') + ' o acesso de ' + (u.nome || u.email) + '?')) return;
+  u.ativo = !desativando;
+  try { await salvarAcessos(); renderAcessos(); acessosMsg('Acesso ' + (desativando ? 'desativado' : 'reativado') + '.', false); }
+  catch (e) { acessosMsg('Erro ao salvar: ' + e.message, true); }
+}
+
+async function resetarSenhaAcesso(i) {
+  const u = ACESSOS[i]; if (!u) return;
+  try {
+    const { getAuth, sendPasswordResetEmail } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+    await sendPasswordResetEmail(getAuth(fbAuth.app), u.email);
+    acessosMsg('Enviamos para ' + u.email + ' um link para criar uma senha nova.', false);
+  } catch (e) { acessosMsg('Nao foi possivel enviar: ' + (e.code || e.message), true); }
+}
+
+// ---- PIN dos motoristas (colecao {CLIENTE_ID}_pins, ilegivel; aqui so sabemos QUEM tem) ----
+let PINS_ATIVOS = [];
+function pinIdDoMotorista(m) {
+  const tel = (m && m.tel) ? String(m.tel).replace(/\D/g, '') : '';
+  if (tel.length >= 8) return tel;
+  return 'nome_' + String((m && m.nome) || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+}
+function pinAtivo(m) { return PINS_ATIVOS.indexOf(pinIdDoMotorista(m)) > -1; }
+
+async function carregarPinsAtivos() {
+  try {
+    const { getDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const snap = await getDoc(doc(fbDb, CLIENTE_ID, 'pins_ativos'));
+    PINS_ATIVOS = snap.exists() ? (snap.data().lista || []) : [];
+  } catch (e) { PINS_ATIVOS = []; }
+}
+
+// Zerar = apagar o hash. O motorista cria um novo no proximo acesso.
+async function zerarPinMotorista(id) {
+  const m = MOTORISTAS.find(x => x.id === id);
+  if (!m) return;
+  if (!confirm('Zerar o PIN de ' + m.nome + '?\n\nEle vai criar um PIN novo no proximo acesso. Voce nao consegue ver o PIN atual - ninguem consegue.')) return;
+  try {
+    const { doc, deleteDoc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const pid = pinIdDoMotorista(m);
+    await deleteDoc(doc(fbDb, CLIENTE_ID + '_pins', pid));
+    const ref = doc(fbDb, CLIENTE_ID, 'pins_ativos');
+    const snap = await getDoc(ref);
+    const lista = (snap.exists() ? (snap.data().lista || []) : []).filter(x => x !== pid);
+    await setDoc(ref, { lista, updatedAt: new Date().toISOString() });
+    PINS_ATIVOS = lista;
+    alert('PIN de ' + m.nome + ' zerado. Avise para ele criar um novo ao abrir o app.');
+    renderMotoristas();
+  } catch (e) {
+    alert('Nao foi possivel zerar: ' + (e && e.message ? e.message : e));
+  }
 }
 
 function cadGestorRender() {
