@@ -2657,10 +2657,11 @@ function buildWazeRouteUrl(stops) {
 function buildMapsUrl(stops) {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const isAndroid = /Android/i.test(navigator.userAgent);
-  const origin = getOriginCoords();
   const destCoords = getDestCoords();
   const empLat = destCoords.lat, empLng = destCoords.lng;
-  const originStr = origin.lat + ',' + origin.lng;
+  // Origem VAZIA = Maps usa a localizacao do celular e oferece "Iniciar".
+  // Com origem fixa (garagem) longe do motorista, o Maps abre so a "Previa".
+  const originStr = (useCurrentLocation && currentCoords) ? (currentCoords.lat + ',' + currentCoords.lng) : '';
   const dest = empLat + ',' + empLng;
 
   const wayAddrs = stops.map(function(p) {
@@ -2687,9 +2688,10 @@ function buildMapsUrl(stops) {
 
 // Abre Maps tentando o app; se falhar (Maps não instalado no iOS) cai para web
 function openMaps(stops) {
-  const origin = getOriginCoords();
   const destCoords = getDestCoords();
-  const originStr = origin.lat + ',' + origin.lng;
+  // Origem vazia => o Maps parte de onde o motorista esta e libera o botao "Iniciar"
+  // com as paradas na sequencia. Origem fixa na garagem forcava o modo "Previa".
+  const originStr = (useCurrentLocation && currentCoords) ? (currentCoords.lat + ',' + currentCoords.lng) : '';
   const dest = destCoords.lat + ',' + destCoords.lng;
 
   const wayAddrs = stops.map(function(p) {
@@ -2800,13 +2802,12 @@ function renderSeqNav() {
     // Android: google.navigation opens Maps app directly in navigation mode
     mapsCurrent = 'google.navigation:q=' + destCoord + '&mode=d';
   } else if (destCoord) {
+    // Sem origem: o Maps parte da posicao atual e ja entra em navegacao guiada.
     mapsCurrent = 'https://www.google.com/maps/dir/?api=1' +
-      '&origin=' + getOriginCoords().lat + ',' + getOriginCoords().lng +
-      '&destination=' + destCoord + '&travelmode=driving';
+      '&destination=' + destCoord + '&travelmode=driving&dir_action=navigate';
   } else {
     mapsCurrent = 'https://www.google.com/maps/dir/?api=1' +
-      '&origin=' + getOriginCoords().lat + ',' + getOriginCoords().lng +
-      '&destination=' + destAddr + '&travelmode=driving';
+      '&destination=' + destAddr + '&travelmode=driving&dir_action=navigate';
   }
 
   let html = '';
