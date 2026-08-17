@@ -5056,6 +5056,10 @@ async function esqueciSenha() {
   }
 }
 
+// Portal da transportadora: e para la que mandamos quem chega sem sessao.
+const PORTAL_URL = '/redentor/';
+let _bloqueadoComoCliente = false;
+
 // Evita o "pisca": o formulario so aparece quando confirmamos que nao ha sessao aberta.
 let _formGestorMostrado = false;
 function mostrarFormularioGestor() {
@@ -5075,7 +5079,7 @@ async function logout() {
     await signOut(fbAuth);
   } catch (e) {}
   // Porta da frente do sistema agora e o portal temvia.
-  window.location.href = '/redentor/';
+  window.location.href = PORTAL_URL;
 }
 
 // Perfis: {CLIENTE_ID}/acessos guarda quem e da EMPRESA CLIENTE.
@@ -5104,6 +5108,7 @@ async function iniciarComAutenticacao() {
       if (await ehAcessoDeCliente(user.email)) {
         const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
         await signOut(fbAuth);
+        _bloqueadoComoCliente = true;   // nao redirecionar: a pessoa precisa LER o motivo
         const erroEl = document.getElementById('loginErro');
         if (erroEl) { erroEl.style.color = '#ef4444'; erroEl.textContent = 'Este login e do portal da empresa cliente, nao do gestor.'; }
         if (overlay) overlay.style.display = 'flex';
@@ -5123,10 +5128,14 @@ async function iniciarComAutenticacao() {
           carregarAcessos();
         });
       }
-    } else {
-      // Não logado: mostra a tela de login
+    } else if (_bloqueadoComoCliente) {
+      // Conta de cliente barrada acima: fica na tela com a explicacao.
       if (overlay) overlay.style.display = 'flex';
       mostrarFormularioGestor();
+    } else {
+      // Sem sessao: a porta de entrada do sistema e o PORTAL, nao o login deste app.
+      // replace() em vez de href para o botao "voltar" nao ficar pingando entre os dois.
+      window.location.replace(PORTAL_URL);
     }
   });
 }
