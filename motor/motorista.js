@@ -664,6 +664,14 @@ body {
           <option value="">— Selecione o motorista —</option>
         </select>
       </div>
+      <div style="margin-bottom:8px">
+        <label class="section-label">Cobertura — ver rotas de outro motorista</label>
+        <select class="select-input" id="selCoberturaRota" onchange="loadLinhas()">
+          <option value="">— ninguém (só as minhas) —</option>
+        </select>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">Para quando um colega falta ou atrasa: veja e rode a rota dele sem precisar do PIN dele.</div>
+      </div>
+      <div id="coberturaAvisoRota"></div>
       <div id="linhaSection" style="display:none">
         <label class="section-label">Selecione a linha e turno</label>
         <select class="select-input" id="selLinha" onchange="loadRota()">
@@ -1364,6 +1372,19 @@ function populateMotoristas() {
     opt.textContent = m.nome;
     sel.appendChild(opt);
   });
+  // Mesmo seletor de cobertura da aba Rotas de Hoje, agora tambem na Minha Rota
+  const selC = document.getElementById('selCoberturaRota');
+  if (selC) {
+    const atualC = selC.value;
+    selC.innerHTML = '<option value="">— ninguém (só as minhas) —</option>';
+    MOTORISTAS.forEach(m => {
+      const o = document.createElement('option');
+      o.value = m.nome;
+      o.textContent = m.nome;
+      selC.appendChild(o);
+    });
+    if (atualC) selC.value = atualC;
+  }
 }
 
 // ============================================================
@@ -1554,15 +1575,26 @@ async function loadLinhas(restoreLinhaId) {
   const sel = document.getElementById('selLinha');
   document.getElementById('rotaContent').innerHTML = '';
 
+  const avisoDiv = document.getElementById('coberturaAvisoRota');
+  if (avisoDiv) avisoDiv.innerHTML = '';
+
   if (!nome) { linhaSection.style.display = 'none'; return; }
   if (!(await commVerificarPin(nome))) { document.getElementById('selMotorista').value = ''; linhaSection.style.display = 'none'; return; }
+
+  // Cobertura: ver as linhas de um colega (sem o PIN dele; a identidade continua sendo a sua)
+  const cobertura = (document.getElementById('selCoberturaRota') || {}).value || '';
+  const nomeVer = cobertura || nome;
+  if (avisoDiv && cobertura && cobertura !== nome) {
+    avisoDiv.innerHTML = '<div style="background:rgba(245,158,11,0.10);border:1px solid rgba(245,158,11,0.4);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px">'+
+      '\uD83D\uDD01 <strong>Modo cobertura:</strong> voc\u00ea (' + esc(nome) + ') est\u00e1 vendo as linhas de <strong>' + esc(cobertura) + '</strong>.</div>';
+  }
 
   // Salvar motorista na sessão
   salvarSessao(nome, carregarSessao()?.linhaId || '');
 
   sel.innerHTML = '<option value="">— Selecione uma linha —</option>';
   DATA.forEach(rota => {
-    if (rota.motorista !== nome && rota.motoristaSaida !== nome) return;
+    if (rota.motorista !== nomeVer && rota.motoristaSaida !== nomeVer) return;
     const ativos = rota.passageiros.filter(p => p.status === 'ativo').length;
     if (ativos === 0) return;
     const chegada = CHEGADAS[rota.turno] || '';
@@ -1574,7 +1606,7 @@ async function loadLinhas(restoreLinhaId) {
 
   // Add extra routes assigned to this motorista
   ROTAS_EXTRAS.forEach(re => {
-    if (re.motorista !== nome) return;
+    if (re.motorista !== nomeVer) return;
     const opt = document.createElement('option');
     opt.value = re.id;
     opt.textContent = '' + re.nome + ' · ' + re.data + ' · ' + (re.horario||'--:--') + ' · ' + re.passageiros.length + ' pass.';
