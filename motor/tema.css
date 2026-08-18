@@ -1461,3 +1461,42 @@ header.tv-top {
 .action-btn.act-excluir, .tv-main .action-btn.act-excluir { color: var(--red); }
 .tv-main .action-btn.act-editar:hover  { background: rgba(78,143,255,.12); color: var(--accent2); }
 .tv-main .action-btn.act-excluir:hover { background: rgba(239,68,68,.12); color: var(--red); }
+
+
+/* ==================================================================
+   GERENCIAR LINHAS (itens 15 e 17)
+   O formulario tinha 3 colunas fixas e estourava a caixa em telas
+   menores; passa a se acomodar. E a linha ganhou cor propria.
+   ================================================================== */
+#modalGerLinhas .modal { width: 780px; max-width: 96vw; }
+#modalGerLinhas .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+#modalGerLinhas .form-group { min-width: 0; }
+#modalGerLinhas .form-input,
+#modalGerLinhas .form-select { min-width: 0; width: 100%; }
+
+.gl-cores { display: flex; flex-wrap: wrap; gap: 6px; }
+.gl-cor {
+  width: 26px; height: 26px; border-radius: 7px; cursor: pointer;
+  border: 2px solid transparent; padding: 0; outline-offset: 2px;
+}
+.gl-cor:hover { transform: scale(1.08); }
+.gl-cor.sel { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg) inset; }
+.gl-cor-auto {
+  width: auto; padding: 0 9px; background: var(--surface2);
+  border: 1px dashed var(--border); color: var(--muted);
+  font-size: 10.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+}
+.gl-cor-auto.sel { border-style: solid; border-color: var(--text); color: var(--text); }
+
+.gl-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px;
+  border: 1px solid var(--border); border-radius: 10px;
+  margin-bottom: 8px; background: var(--surface);
+}
+.gl-bolinha {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
