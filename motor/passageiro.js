@@ -27,8 +27,11 @@ if (C.pathPrefix && location.protocol !== 'file:' && location.pathname.indexOf(C
   throw new Error('pasta errada');
 }
 
-document.title = C.marca + ' \u2014 Passageiro';
+document.title = (C.empresaNome || C.marca) + ' \u2014 Portal temvia \u2014 Passageiro';
 document.head.insertAdjacentHTML('beforeend',
+  '<link rel="icon" type="image/png" sizes="32x32" href="/marca/favicon-32.png">' +
+  '<link rel="icon" type="image/png" sizes="192x192" href="/marca/icon-192.png">' +
+  '<link rel="apple-touch-icon" href="/marca/icon-192.png">' +
   '<meta name="apple-mobile-web-app-capable" content="yes">' +
   '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">' +
   '<meta name="theme-color" content="#0d1117">' +
