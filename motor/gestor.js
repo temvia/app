@@ -2653,11 +2653,23 @@ async function ocSalvar() {
     permitirAcimaDoLimite: c('ocPermitirAcima'),
     objetivo: objetivoEl ? objetivoEl.value : OPT_CFG.objetivo
   };
-  const antes = JSON.stringify(bruto);
   optAplicarConfig(bruto);
-  const depois = JSON.stringify(optConfigParaSalvar());
-  if (antes !== depois) {
-    ocMsg('Alguns valores estavam fora do intervalo e voltaram ao padrão. Confira os campos.', true);
+  const aceito = optConfigParaSalvar();
+  // Comparar campo a campo, não JSON.stringify: os dois objetos têm as mesmas
+  // chaves em ORDEM diferente, e comparar as strings acusava divergência
+  // mesmo quando nada tinha sido recusado.
+  const rotulos = {
+    maxRideMin: 'Tempo máximo em rota', margemChegadaMin: 'Margem de chegada',
+    stopServiceSeconds: 'Tempo por parada', extraPassengerSeconds: 'Adicional por passageiro',
+    coordToleranceMeters: 'Distância para mesmo ponto', minGanhoSegundos: 'Ganho mínimo de tempo',
+    minGanhoMetros: 'Ganho mínimo de distância', agruparPontos: 'Agrupar passageiros',
+    preservarOrdem: 'Manter a ordem atual', permitirAcimaDoLimite: 'Aplicar sem confirmar',
+    objetivo: 'Objetivo'
+  };
+  const recusados = Object.keys(aceito).filter(k => aceito[k] !== bruto[k]);
+  if (recusados.length) {
+    ocMsg('Fora do intervalo, voltou ao padrão: ' +
+          recusados.map(k => rotulos[k] || k).join(', ') + '.', true);
     ocPreencher();
   }
 
@@ -2671,7 +2683,7 @@ async function ocSalvar() {
     const { setDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     await setDoc(doc(fbDb, CLIENTE_ID, 'config'),
       { otimizacao: optConfigParaSalvar(), updatedAt: new Date().toISOString() }, { merge: true });
-    if (antes === depois) ocMsg('Regras de otimização salvas.', false);
+    if (!recusados.length) ocMsg('Regras de otimização salvas.', false);
     logChange('alteracao', 'Otimização de rotas', '—',
       'máx ' + OPT_CFG.maxRideMin + ' min · margem ' + OPT_CFG.margemChegadaMin +
       ' min · objetivo ' + OPT_CFG.objetivo, '');
