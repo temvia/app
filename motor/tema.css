@@ -1552,3 +1552,61 @@ header.tv-top {
 }
 .rt-veh-cheio { border-color: var(--red); }
 .rt-veh-cheio .rt-veh-head { background: rgba(239,68,68,.07); }
+
+
+/* ==================================================================
+   OTIMIZADOR DE ROTA
+   ================================================================== */
+.ot-fatos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ot-fato {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 9px; padding: 8px 10px; min-width: 0;
+}
+.ot-fato span { display: block; font-size: 9.5px; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--muted); font-weight: 600; }
+.ot-fato b { display: block; font-size: 13px; margin-top: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.ot-passos { margin: 8px 0 4px; display: flex; flex-direction: column; gap: 3px; }
+.ot-passo { font-size: 11.5px; color: var(--green); }
+.ot-passo.run { color: var(--muted); }
+.ot-passo.erro { color: var(--red); }
+
+.ot-comp { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ot-comp-1 { grid-template-columns: 1fr; }
+.ot-bloco { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; }
+.ot-bloco-tit { font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--muted); margin-bottom: 8px; }
+.ot-linha { display: flex; align-items: baseline; gap: 6px; font-size: 12px; padding: 3px 0; }
+.ot-linha span { color: var(--muted); flex: 1; }
+.ot-linha b { font-size: 13px; }
+.ot-bom { color: var(--green); }
+.ot-mau { color: var(--red); }
+.ot-delta { font-size: 11px; font-weight: 700; }
+.ot-delta.bom { color: var(--green); }
+.ot-delta.ruim { color: var(--red); }
+
+.ot-economia {
+  margin-top: 10px; padding: 9px 12px; border-radius: 9px;
+  background: rgba(31,199,122,.09); border: 1px solid rgba(31,199,122,.3);
+  font-size: 12.5px; color: var(--text);
+}
+.ot-economia span { color: var(--muted); font-size: 11.5px; }
+.ot-aviso {
+  padding: 10px 12px; border-radius: 9px; margin-bottom: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  font-size: 12px; color: var(--muted); line-height: 1.6;
+}
+.ot-seqs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.ot-seq { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+.ot-seq-tit { font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--muted); margin-bottom: 7px; }
+.ot-seq-item { font-size: 12px; padding: 4px 0 4px 12px; position: relative; line-height: 1.4; }
+.ot-seq-item::before {
+  content: ''; position: absolute; left: 2px; top: 9px;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--accent2);
+}
+.ot-seq-fixo { color: var(--muted); font-weight: 600; }
+.ot-seq-fixo::before { background: var(--muted); }
+.ot-seq-h { font-weight: 700; margin-right: 6px; font-variant-numeric: tabular-nums; }
+.ot-seq-alerta { color: var(--red); font-size: 11px; margin-left: 6px; font-weight: 600; }

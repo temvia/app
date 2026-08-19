@@ -30,9 +30,9 @@ const LOGO_MARCA = "data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1
 
 const CSS_MOTOR = "\n  /* Roteirizador */\n  .rt-veh { min-width:300px; max-width:340px; background:var(--surface); border:1px solid var(--border); border-radius:10px; flex-shrink:0; }\n  .rt-veh-head { padding:10px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }\n  .rt-veh-head input { font-weight:700; font-size:13px; background:transparent; border:1px solid transparent; padding:4px 6px; color:var(--text); border-radius:4px; flex:1; }\n  .rt-veh-head input:hover { border-color:var(--border); }\n  .rt-veh-body { padding:8px; min-height:60px; }\n  .rt-pax { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 11px; margin-bottom:7px; cursor:grab; position:relative; }\n  .rt-pax.dragging { opacity:.4; }\n  .rt-pax .rt-nm { font-weight:600; font-size:13px; }\n  .rt-pax .rt-addr { color:var(--muted); font-size:11px; margin-top:2px; line-height:1.35; }\n  .rt-pax .rt-time { position:absolute; top:9px; right:11px; font-weight:800; color:var(--accent); font-size:14px; }\n  .rt-pax.rt-unknown { border-color:var(--red); }\n  .rt-drop { border:2px dashed transparent; border-radius:8px; transition:.15s; }\n  .rt-drop.rt-over { border-color:var(--green); background:rgba(16,185,129,0.06); }\n  .rt-order { display:inline-flex; width:18px; height:18px; align-items:center; justify-content:center; background:var(--accent2); border-radius:50%; font-size:10px; font-weight:700; margin-right:6px; color:#fff; }\n  .rt-pool-pax { min-width:200px; flex:1; max-width:260px; margin:0 !important; }\n\n  .hidden { display: none !important; }\n\n  @media (max-width: 768px) {\n\n    /* ── HEADER MOBILE ── */\n    header {\n      flex-wrap: wrap;\n      gap: 6px;\n      padding: 8px 12px;\n      position: relative;\n    }\n    .header-stats { gap: 10px; }\n    .hstat-num { font-size: 18px; }\n    .hstat-label { font-size: 9px; }\n\n    /* Botões do header: esconder todos, mostrar só hamburguer */\n    .header-actions-desktop {\n      display: none !important;\n    }\n    .header-menu-toggle {\n      display: flex !important;\n    }\n\n    /* ── CONTAINER: pilha vertical ── */\n    .container {\n      grid-template-columns: 1fr;\n      grid-template-rows: auto 1fr;\n      height: calc(100vh - 56px);\n      overflow: hidden;\n    }\n\n    /* ── SIDEBAR vira barra horizontal de filtros ── */\n    .sidebar {\n      height: auto;\n      max-height: 160px;\n      border-right: none;\n      border-bottom: 1px solid var(--border);\n      overflow: hidden;\n      padding: 0;\n      display: flex;\n      flex-direction: column;\n      background: var(--surface);\n    }\n\n    .search-wrap {\n      padding: 8px 12px 6px;\n      border-bottom: none;\n      margin-bottom: 0;\n    }\n    .search-input { font-size: 13px; padding: 7px 10px; }\n\n    /* Turno filter: chips horizontais */\n    .turno-filter {\n      padding: 0 12px 6px;\n      gap: 6px;\n      flex-wrap: nowrap;\n      overflow-x: auto;\n      -webkit-overflow-scrolling: touch;\n      scrollbar-width: none;\n    }\n    .turno-filter::-webkit-scrollbar { display: none; }\n    .turno-btn {\n      flex: 0 0 auto;\n      padding: 5px 12px;\n      font-size: 12px;\n    }\n\n    /* Labels somem */\n    .sidebar-label { display: none; }\n\n    /* Status filter: chips horizontais */\n    .status-filter {\n      flex-wrap: nowrap !important;\n      overflow-x: auto !important;\n      -webkit-overflow-scrolling: touch;\n      scrollbar-width: none;\n      gap: 6px !important;\n      padding: 0 12px 8px !important;\n    }\n    .status-filter::-webkit-scrollbar { display: none; }\n    .status-filter-btn {\n      flex: 0 0 auto !important;\n      white-space: nowrap;\n      font-size: 12px;\n      padding: 5px 12px;\n    }\n\n    /* Lista de linhas: carrossel horizontal */\n    #lineList {\n      display: flex;\n      flex-direction: row;\n      overflow-x: auto;\n      -webkit-overflow-scrolling: touch;\n      scrollbar-width: none;\n      gap: 6px;\n      padding: 0 12px 10px;\n    }\n    #lineList::-webkit-scrollbar { display: none; }\n\n    .line-item {\n      flex: 0 0 auto;\n      flex-direction: column;\n      align-items: center;\n      gap: 2px;\n      padding: 8px 10px;\n      margin: 0;\n      border-radius: 10px;\n      min-width: 68px;\n      text-align: center;\n    }\n    .line-info { display: flex; flex-direction: column; gap: 0; }\n    .line-name { font-size: 10px; white-space: nowrap; }\n    .line-meta { display: none; }\n    .line-count { font-size: 13px; }\n\n    /* ── MAIN: scroll livre ── */\n    .main {\n      overflow-y: auto;\n      -webkit-overflow-scrolling: touch;\n      padding: 12px;\n      min-height: 0;\n    }\n\n    /* Tabela de passageiros */\n    .pass-table th, .pass-table td {\n      padding: 8px 6px;\n      font-size: 12px;\n    }\n\n    /* Route header mais compacto */\n    .route-header { padding: 14px 16px; }\n    .rh-chips { flex-wrap: wrap; gap: 4px; }\n\n    /* Turno times: coluna */\n    .turno-times { flex-direction: column; }\n\n    /* form-row: coluna no mobile */\n    .form-row { grid-template-columns: 1fr !important; }\n\n    /* Menu dropdown mobile */\n    .mobile-menu {\n      display: none;\n      position: fixed;\n      top: 0; left: 0; right: 0; bottom: 0;\n      z-index: 8000;\n    }\n    .mobile-menu.open { display: block; }\n    .mobile-menu-backdrop {\n      position: absolute;\n      inset: 0;\n      background: rgba(0,0,0,0.6);\n    }\n    .mobile-menu-panel {\n      position: absolute;\n      top: 0; right: 0; bottom: 0;\n      width: 280px;\n      background: var(--surface);\n      padding: 20px 16px;\n      overflow-y: auto;\n      display: flex;\n      flex-direction: column;\n      gap: 8px;\n      box-shadow: -4px 0 24px rgba(0,0,0,0.4);\n    }\n    .mobile-menu-title {\n      font-family: 'Barlow', sans-serif;\n      font-weight: 800;\n      font-size: 14px;\n      color: var(--accent);\n      letter-spacing: 1px;\n      margin-bottom: 8px;\n      padding-bottom: 12px;\n      border-bottom: 1px solid var(--border);\n    }\n    .mobile-menu-btn {\n      display: flex;\n      align-items: center;\n      gap: 10px;\n      padding: 12px 14px;\n      border-radius: 10px;\n      border: 1px solid var(--border);\n      background: var(--surface2);\n      color: var(--text);\n      font-size: 14px;\n      font-family: 'DM Sans', sans-serif;\n      cursor: pointer;\n      text-align: left;\n      width: 100%;\n      transition: all 0.15s;\n    }\n    .mobile-menu-btn:active { opacity: 0.7; }\n  }\n\n  /* ── ELEMENTOS MOBILE-ONLY (escondidos no desktop) ── */\n  .header-menu-toggle { display: none; }\n  .mobile-menu { display: none; }\n\n\n/* Safe-area: evita que o cabecalho fique atras da barra de status do celular */\n.header { padding-top: calc(16px + env(safe-area-inset-top)) !important; }\n";
 
-const HTML_MOTOR = "\n\n<!-- ===== TELA DE LOGIN (GESTOR) ===== -->\n<div id=\"loginOverlay\" style=\"position:fixed;inset:0;z-index:100000;background:#0f1115;display:flex;align-items:center;justify-content:center;padding:20px\">\n  <div id=\"loginChecando\" style=\"color:#8a90a0;font-size:14px\">Verificando acesso...</div>\n  <div id=\"loginBox\" style=\"display:none;width:100%;max-width:360px;background:#171a21;border:1px solid #262b36;border-radius:16px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,0.5)\">\n    <div style=\"text-align:center;margin-bottom:20px\">\n      <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:22px;color:#f5f5f5;letter-spacing:1px\" id=\"brandLogin\"></div>\n      <div style=\"font-size:10px;font-weight:400;color:#8a90a0;letter-spacing:3px\">FRETAMENTO</div>\n      <div style=\"margin-top:14px;font-size:13px;color:#8a90a0\">Acesso do Gestor</div>\n    </div>\n    <label style=\"display:block;font-size:11px;color:#8a90a0;margin-bottom:4px\">E-mail</label>\n    <input id=\"loginEmail\" type=\"email\" autocomplete=\"username\" placeholder=\"seu@email.com\"\n      onkeydown=\"if(event.key==='Enter'){event.preventDefault();document.getElementById('loginPassword').focus();}\"\n      style=\"width:100%;background:#0f1115;border:1px solid #262b36;border-radius:8px;padding:11px;color:#f5f5f5;font-size:14px;margin-bottom:12px\">\n    <label style=\"display:block;font-size:11px;color:#8a90a0;margin-bottom:4px\">Senha</label>\n    <div style=\"position:relative;margin-bottom:8px\">\n      <input id=\"loginPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"••••••••\"\n        style=\"width:100%;background:#0f1115;border:1px solid #262b36;border-radius:8px;padding:11px;padding-right:42px;color:#f5f5f5;font-size:14px\"\n        onkeydown=\"if(event.key==='Enter')fazerLogin()\">\n      <button type=\"button\" id=\"loginEye\" onclick=\"toggleSenha()\" title=\"Mostrar senha\"\n        style=\"position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;color:#8a90a0;font-size:18px;cursor:pointer;padding:6px;line-height:1\"><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-3px'><path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg></button>\n    </div>\n    <div id=\"loginErro\" style=\"min-height:18px;font-size:12px;color:#ef4444;margin-bottom:8px\"></div>\n    <button id=\"loginBtn\" onclick=\"fazerLogin()\"\n      style=\"width:100%;background:#f59e0b;color:#000;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif\">Entrar</button>\n    <div style=\"text-align:center;margin-top:14px\">\n      <a href=\"#\" onclick=\"esqueciSenha();return false\" style=\"font-size:12px;color:#8a90a0;text-decoration:none\">Esqueci minha senha</a>\n    </div>\n  </div>\n</div>\n\n\n\n<!-- MENU MOBILE -->\n<div class=\"mobile-menu\" id=\"mobileMenu\">\n  <div class=\"mobile-menu-backdrop\" onclick=\"document.getElementById('mobileMenu').classList.remove('open')\"></div>\n  <div class=\"mobile-menu-panel\">\n    <div class=\"mobile-menu-title\">MENU</div>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.15);border-color:var(--accent);color:var(--accent)\" onclick=\"openAddNovoModal();document.getElementById('mobileMenu').classList.remove('open')\">Adicionar Novo Passageiro</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);color:var(--accent)\" onclick=\"openServicosExtras();document.getElementById('mobileMenu').classList.remove('open')\">Serviços Extras</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:var(--green)\" onclick=\"openRoteirizador();document.getElementById('mobileMenu').classList.remove('open')\">Roteirizar</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(168,85,247,0.12);border-color:rgba(168,85,247,0.3);color:#a855f7\" onclick=\"openAvisos();document.getElementById('mobileMenu').classList.remove('open')\">Avisos</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(37,211,102,0.12);border-color:rgba(37,211,102,0.3);color:#25D366\" onclick=\"openChats();document.getElementById('mobileMenu').classList.remove('open')\">Chats</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);color:var(--accent2)\" onclick=\"openConfirmacoes();document.getElementById('mobileMenu').classList.remove('open')\">Confirmações</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#ef4444\" onclick=\"openReclamacoesGestor();document.getElementById('mobileMenu').classList.remove('open')\">Reclamações Cliente</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3);color:#f59e0b\" onclick=\"openAvaliacoes();document.getElementById('mobileMenu').classList.remove('open')\">Avaliações</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openConfig();document.getElementById('mobileMenu').classList.remove('open')\">Configurações</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openPainel();document.getElementById('mobileMenu').classList.remove('open')\">Painel Geral</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMapaGeral();document.getElementById('mobileMenu').classList.remove('open')\">Mapa Geral</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMotoristas();document.getElementById('mobileMenu').classList.remove('open')\">Motoristas</button>\n    <button class=\"mobile-menu-btn\" onclick=\"impAbrir();document.getElementById('mobileMenu').classList.remove('open')\" style=\"background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:var(--green)\">Importar Passageiros</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMotoristView();document.getElementById('mobileMenu').classList.remove('open')\">Visão Motorista</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openGerLinhas();document.getElementById('mobileMenu').classList.remove('open')\" style=\"background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);color:var(--accent2)\">Gerenciar Linhas</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openSemRota();document.getElementById('mobileMenu').classList.remove('open')\">Sem Rota</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportExcel();document.getElementById('mobileMenu').classList.remove('open')\">Exportar Excel</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportPDF();document.getElementById('mobileMenu').classList.remove('open')\">PDF Linha</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportBackup();document.getElementById('mobileMenu').classList.remove('open')\">Backup JSON</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openReport();document.getElementById('mobileMenu').classList.remove('open')\">Relatório</button>\n    <button class=\"mobile-menu-btn\" onclick=\"logout()\" style=\"background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#ef4444\">Sair</button>\n  </div>\n</div>\n\n<div class=\"tv-shell\" id=\"tvShell\"><aside class=\"tv-side\"><div class=\"tv-brand\"><img class=\"tv-brand-mark\" src=\"/marca/temvia-simbolo.png\" alt=\"temvia\" width=\"26\" height=\"26\"><img class=\"tv-brand-lockup\" src=\"/marca/temvia-horizontal.png\" alt=\"temvia\"><div class=\"tv-brand-txt\"><div class=\"tv-brand-sub\" id=\"tvContextoConta\">&nbsp;</div></div></div><nav class=\"tv-nav\" aria-label=\"Navegação principal\"><div class=\"tv-nav-grp\">Painel</div><button class=\"tv-nav-item\" type=\"button\" title=\"Painel Geral\" onclick=\"openPainel()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M5 20V11M12 20V4M19 20v-6'/></svg></span><span class=\"tv-lbl\">Painel Geral</span></button><div class=\"tv-nav-grp\">Operação</div><button class=\"tv-nav-item tv-on\" type=\"button\" title=\"Linhas e Rotas\" onclick=\"tvIrParaLinhas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 7h16M4 12h16M4 17h10'/></svg></span><span class=\"tv-lbl\">Linhas e Rotas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Roteirizador\" onclick=\"openRoteirizador()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 6h6l6 12h4'/><circle cx='4' cy='6' r='1.6'/><circle cx='20' cy='18' r='1.6'/></svg></span><span class=\"tv-lbl\">Roteirizador</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Rotas Extras Publicadas\" onclick=\"rtAbrirPublicadas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 6 9 17l-5-5'/><path d='M4 6h5'/></svg></span><span class=\"tv-lbl\">Rotas Extras Publicadas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Serviços Extras\" onclick=\"openServicosExtras()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 3v18'/><path d='M7.5 7h7a3 3 0 0 1 0 6H8.5a3 3 0 0 0 0 6H17'/></svg></span><span class=\"tv-lbl\">Serviços Extras</span><span id=\"seBadge\" class=\"tv-pill\" style=\"display:none\">0</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Passageiros sem Rota\" onclick=\"openSemRota()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='12' r='8.5'/><path d='M8.5 12h7'/></svg></span><span class=\"tv-lbl\">Passageiros sem Rota</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Mapa Geral\" onclick=\"openMapaGeral()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M9 4 3 6.5v13L9 17l6 3 6-2.5v-13L15 7 9 4Z'/><path d='M9 4v13M15 7v13'/></svg></span><span class=\"tv-lbl\">Mapa Geral</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Gerenciar Linhas\" onclick=\"openGerLinhas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x='3.5' y='4.5' width='17' height='15' rx='2.5'/><path d='M8 9h8M8 13h5'/></svg></span><span class=\"tv-lbl\">Gerenciar Linhas</span></button><div class=\"tv-nav-grp\">Pessoas</div><button class=\"tv-nav-item\" type=\"button\" title=\"Motoristas\" onclick=\"openMotoristas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x='3' y='7' width='18' height='10' rx='2.5'/><path d='M7 17v2M17 17v2M6.5 11h5'/></svg></span><span class=\"tv-lbl\">Motoristas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Importar Passageiros\" onclick=\"impAbrir()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 15V3'/><path d='M8 11l4 4 4-4'/><path d='M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2'/></svg></span><span class=\"tv-lbl\">Importar Passageiros</span></button><div class=\"tv-nav-grp\">Relacionamento</div><button class=\"tv-nav-item\" type=\"button\" title=\"Avisos\" onclick=\"openAvisos()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6'/><path d='M10 19a2.2 2.2 0 0 0 4 0'/></svg></span><span class=\"tv-lbl\">Avisos</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Chats\" onclick=\"openChats()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z'/></svg></span><span class=\"tv-lbl\">Chats</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Confirmações\" onclick=\"openConfirmacoes()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 6 9 17l-5-5'/></svg></span><span class=\"tv-lbl\">Confirmações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Reclamações\" onclick=\"openReclamacoesGestor()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 9v4.5M12 17v.5'/><path d='M10.3 3.9 2.6 17.4A2 2 0 0 0 4.3 20.5h15.4a2 2 0 0 0 1.7-3.1L13.7 3.9a2 2 0 0 0-3.4 0Z'/></svg></span><span class=\"tv-lbl\">Reclamações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Avaliações\" onclick=\"openAvaliacoes()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='m12 4 2.5 5 5.5.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.5-.8Z'/></svg></span><span class=\"tv-lbl\">Avaliações</span></button><div class=\"tv-nav-grp\">Análises</div><button class=\"tv-nav-item\" type=\"button\" title=\"Relatórios\" onclick=\"openReport()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M6.5 3.5h7l5 5v12a1.5 1.5 0 0 1-1.5 1.5H6.5A1.5 1.5 0 0 1 5 20.5v-15A1.5 1.5 0 0 1 6.5 3.5Z'/><path d='M13 3.5v5.5h5.5M8.5 13h7M8.5 17h5'/></svg></span><span class=\"tv-lbl\">Relatórios</span></button><div class=\"tv-nav-grp\">Sistema</div><button class=\"tv-nav-item\" type=\"button\" title=\"Configurações\" onclick=\"openConfig()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='12' r='3.2'/><path d='M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4'/></svg></span><span class=\"tv-lbl\">Configurações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Visão Motorista\" onclick=\"openMotoristView()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg></span><span class=\"tv-lbl\">Visão Motorista</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Backup\" onclick=\"exportBackup()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 3v12M8 11l4 4 4-4M4 19h16'/></svg></span><span class=\"tv-lbl\">Backup</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Restaurar Backup\" onclick=\"document.getElementById('restoreFile').click()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 21V9M8 13l4-4 4 4M4 5h16'/></svg></span><span class=\"tv-lbl\">Restaurar Backup</span></button><input type=\"file\" id=\"restoreFile\" accept=\".json\" style=\"display:none\" onchange=\"importBackup(event)\"></nav><div class=\"tv-side-foot\"><div class=\"tv-usermenu\" id=\"tvUserMenu\"><button type=\"button\" onclick=\"openConfig();tvToggleUser()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='12' r='3.2'/><path d='M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4'/></svg>Configurações</button><button type=\"button\" onclick=\"logout()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M15 17l5-5-5-5M20 12H9M11 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5'/></svg>Sair</button></div><div class=\"tv-avatar\" id=\"tvAvatar\">--</div><div class=\"tv-who\"><b id=\"tvUserNome\">Gestor</b><small id=\"tvUserPapel\">Administrador</small></div><button class=\"tv-iconbtn tv-usercaret\" type=\"button\" title=\"Menu do usuário\" onclick=\"tvToggleUser()\" style=\"width:26px;height:26px\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='5' r='1.3'/><circle cx='12' cy='12' r='1.3'/><circle cx='12' cy='19' r='1.3'/></svg></button></div></aside><div class=\"tv-main\"><header class=\"tv-top\"><button class=\"tv-iconbtn tv-topbar-only-desktop\" id=\"tvBtnRecolher\" type=\"button\" title=\"Recolher menu\" onclick=\"tvToggleSidebar()\"><svg id=\"tvSetaRecolher\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M14 6l-6 6 6 6'/></svg></button><button class=\"tv-iconbtn tv-mobile-only\" type=\"button\" title=\"Menu\" onclick=\"document.getElementById('mobileMenu').classList.toggle('open')\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 6h16M4 12h16M4 18h16'/></svg></button><div class=\"tv-crumb\">Operação <i>/</i> <b>Linhas e Rotas</b></div><div class=\"tv-search\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='11' cy='11' r='7'/><path d='m20 20-3.6-3.6'/></svg><input type=\"text\" id=\"searchInput\" oninput=\"filterSidebar()\" placeholder=\"Buscar passageiro, bairro, cidade ou ponto de embarque...\"></div><button class=\"tv-btn tv-btn-primary\" type=\"button\" onclick=\"openAddNovoModal()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 5v14M5 12h14'/></svg>Novo</button></header><div class=\"container\">\n  <aside class=\"sidebar\">\n    <div class=\"tv-rail-head\">\n      <div class=\"tv-rail-title\">Linhas e turnos</div>\n      <div class=\"tv-stats\">\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-func\">0</div><div class=\"tv-stat-l\">Ativos</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-lines\">0</div><div class=\"tv-stat-l\">Linhas</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-turnos\">0</div><div class=\"tv-stat-l\">Turnos</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-rotas\">0</div><div class=\"tv-stat-l\">Rotas</div></div>\n      </div>\n    </div>\n    <div class=\"turno-filter\" id=\"turnoFilterBar\">\n      <button class=\"turno-btn active\" onclick=\"setTurnoFilter('todos', this)\">Todos</button>\n    </div>\n    <div class=\"sidebar-label\">Status</div>\n    <div class=\"status-filter\" id=\"statusFilter\">\n      <button class=\"status-filter-btn active\" onclick=\"setStatusFilter('todos', this)\">Todos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ativo', this)\">Ativos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ferias', this)\">Férias</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('afastado', this)\">Afastados</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('desligado', this)\">Desligados</button>\n      <button class=\"status-filter-btn sem-rota\" onclick=\"setStatusFilter('sem-rota', this)\">Sem Rota</button>\n    </div>\n    <div class=\"sidebar-label\" style=\"margin-top:4px\">Linhas</div>\n    <div id=\"lineList\"></div>\n  </aside>\n\n  <main class=\"main\" id=\"mainContent\">\n    <div class=\"welcome\">\n      <div class=\"tv-empty-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 7h16M4 12h16M4 17h10'/></svg></div>\n      <h3>Selecione uma linha</h3>\n      <p>Escolha uma linha no painel ao lado para ver passageiros, horários e dados da rota.</p>\n    </div>\n  </main>\n</div></div></div>\n\n<!-- MODAL ADD/EDIT PASSAGEIRO -->\n<div class=\"modal-overlay\" id=\"modalOverlay\">\n  <div class=\"modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\" id=\"modalTitle\">Novo Passageiro</div>\n      <button class=\"modal-close\" onclick=\"closeModal()\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <input type=\"hidden\" id=\"editIdx\">\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Nome Completo</label>\n          <input class=\"form-input\" id=\"fNome\" type=\"text\" placeholder=\"Nome do funcionário\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Telefone</label>\n          <input class=\"form-input\" id=\"fTel\" type=\"text\" placeholder=\"(15) 99999-9999\">\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Endereço Residencial</label>\n        <input class=\"form-input\" id=\"fEndereco\" type=\"text\" placeholder=\"Rua, número, bairro\">\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Ponto de Embarque (se diferente)</label>\n        <input class=\"form-input\" id=\"fEmbarque\" type=\"text\" placeholder=\"Deixe vazio para usar endereço residencial\">\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Bairro</label>\n          <input class=\"form-input\" id=\"fBairro\" type=\"text\" placeholder=\"Bairro\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Cidade</label>\n          <input class=\"form-input\" id=\"fCidade\" type=\"text\" placeholder=\"Cidade\">\n        </div>\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\" id=\"turnoGroup\">\n          <label class=\"form-label\">Turno</label>\n          <select class=\"form-select\" id=\"fTurno\" onchange=\"updateLinhaOptions()\">\n            <option value=\"1°\">1° Turno — chegada 05:45</option>\n            <option value=\"2°\">2° Turno — chegada 14:45</option>\n            <option value=\"3°\">3° Turno — chegada 20:55</option>\n            <option value=\"A Definir\">A Definir (sem rota ainda)</option>\n          </select>\n        </div>\n        <div class=\"form-group\" id=\"linhaGroup\">\n          <label class=\"form-label\">Linha</label>\n          <select class=\"form-select\" id=\"fLinha\">\n          </select>\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Coordenadas do Ponto de Embarque <span style=\"color:var(--muted);font-size:10px;font-weight:400\">(lat, lng — ex: -23.514606, -47.516711)</span></label>\n        <input class=\"form-input\" id=\"fCoords\" type=\"text\" placeholder=\"-23.000000, -47.000000\" style=\"font-family:monospace;font-size:12px\" oninput=\"validateCoords()\">\n        <div id=\"fCoordsStatus\" style=\"font-size:11px;margin-top:4px;display:none\"></div>\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Status</label>\n          <select class=\"form-select\" id=\"fStatus\" onchange=\"toggleRetorno(); toggleSemRota()\">\n            <option value=\"ativo\">Ativo</option>\n            <option value=\"ferias\">Férias</option>\n            <option value=\"afastado\">Afastado</option>\n            <option value=\"desligado\">Desligado</option>\n            <option value=\"sem-rota\">Sem Rota (aguardando alocação)</option>\n          </select>\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Horário de Embarque</label>\n          <input class=\"form-input\" id=\"fHorario\" type=\"time\" placeholder=\"HH:MM\">\n        </div>\n      </div>\n      <div class=\"form-group\" id=\"retornoGroup\" style=\"display:none\">\n        <label class=\"form-label\">Data de Retorno Prevista</label>\n        <input class=\"form-input\" id=\"fRetorno\" type=\"date\">\n      </div>\n      <!-- Bloco duplicado de coordenadas ocultado: o campo fCoords acima é o oficial -->\n      <div class=\"form-group\" style=\"display:none\">\n        <input class=\"form-input\" id=\"fLat\" type=\"number\" step=\"any\" style=\"flex:1\">\n        <input class=\"form-input\" id=\"fLng\" type=\"number\" step=\"any\" style=\"flex:1\">\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" id=\"btnExcluirPass\" onclick=\"excluirPassageiroAtual()\" style=\"display:none;color:var(--red);border-color:rgba(239,68,68,0.4)\">Excluir</button>\n      <button class=\"btn-cancel\" id=\"btnSugerirModal\" onclick=\"sugerirDoModal()\" style=\"display:none;color:var(--green);border-color:rgba(16,185,129,0.5)\">Sugerir linha</button>\n      <button class=\"btn-cancel\" onclick=\"closeModal()\">Cancelar</button>\n      <button class=\"btn-save\" onclick=\"savePassageiro()\">Salvar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL SELECIONAR MOTORISTA -->\n<div class=\"modal-overlay\" id=\"modalMotorista\">\n  <div class=\"modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Atribuir Motorista</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMotorista').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-group\">\n        <label class=\"form-label\">Motorista de Entrada</label>\n        <select class=\"form-select\" id=\"fMotoristaEntrada\">\n          <option value=\"\">— A definir —</option>\n        </select>\n      </div>\n      <div class=\"form-group\" style=\"margin-top:12px\">\n        <label class=\"form-label\">Motorista de Saída <span style=\"color:var(--muted);font-size:11px;font-weight:400\">(deixe vazio se for o mesmo da entrada)</span></label>\n        <select class=\"form-select\" id=\"fMotoristaSaida\">\n          <option value=\"\">— Mesmo da entrada —</option>\n        </select>\n      </div>\n      <div style=\"text-align:center;margin-top:12px\">\n        <button class=\"export-btn\" onclick=\"document.getElementById('modalMotorista').classList.remove('open');openMotoristas()\">\n          Gerenciar cadastro de motoristas\n        </button>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalMotorista').classList.remove('open')\">Cancelar</button>\n      <button class=\"btn-save\" onclick=\"saveMotorista()\">Salvar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL GERENCIAR MOTORISTAS -->\n<div class=\"modal-overlay\" id=\"modalMotoristasGerenciar\">\n  <div class=\"modal\" style=\"width:520px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Cadastro de Motoristas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Nome</label>\n          <input class=\"form-input\" id=\"fMNome\" type=\"text\" placeholder=\"Nome do motorista\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Telefone</label>\n          <input class=\"form-input\" id=\"fMTel\" type=\"text\" placeholder=\"(15) 99999-9999\">\n        </div>\n      </div>\n      <div style=\"font-size:11px;color:var(--muted);margin:-8px 0 10px\">O PIN e criado pelo proprio motorista no primeiro acesso no app.</div>\n      <button class=\"btn-save\" style=\"width:100%;margin-bottom:16px\" onclick=\"addMotorista()\">Adicionar Motorista</button>\n      <div id=\"motoristaListBody\"></div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL PAINEL GERAL -->\n<div class=\"modal-overlay\" id=\"modalPainel\">\n  <div class=\"modal\" style=\"width:780px;max-width:97vw\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Painel Geral</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"painelBody\" style=\"padding:16px 20px\"></div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- ===== MODAL IMPORTAÇÃO DE PASSAGEIROS ===== -->\n<div class=\"modal-overlay\" id=\"modalImport\">\n  <div class=\"modal\" style=\"width:880px;max-width:95vw\">\n    <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px\">\n      <div style=\"font-family:Barlow;font-weight:800;font-size:20px\">Importar Passageiros</div>\n      <button onclick=\"document.getElementById('modalImport').classList.remove('open')\" style=\"background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer\">✕</button>\n    </div>\n\n    <div id=\"impPasso1\">\n      <p style=\"font-size:14px;color:var(--muted);margin-bottom:14px\">\n        Importe seus passageiros a partir de uma planilha. Baixe o modelo, preencha e envie (aceita <b>Excel .xlsx</b> ou <b>CSV</b>).\n        As coordenadas (lat, lng) devem estar preenchidas na planilha.\n      </p>\n      <button class=\"add-btn\" onclick=\"impBaixarModelo()\" style=\"background:rgba(59,130,246,0.12);color:var(--accent2);border:1px solid rgba(59,130,246,0.3);margin-bottom:14px\">Baixar planilha-modelo</button>\n\n      <div style=\"border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;background:var(--surface2)\">\n        <input type=\"file\" id=\"impArquivo\" accept=\".xlsx,.xls,.csv\" style=\"display:none\" onchange=\"impLerArquivo(event)\">\n        <div style=\"font-size:40px;margin-bottom:8px\"></div>\n        <button class=\"add-btn\" onclick=\"document.getElementById('impArquivo').click()\">Escolher arquivo (.xlsx ou .csv)</button>\n        <div id=\"impNomeArquivo\" style=\"font-size:12px;color:var(--muted);margin-top:8px\"></div>\n      </div>\n      <div id=\"impErro\" style=\"color:var(--red);font-size:13px;margin-top:10px\"></div>\n    </div>\n\n    <div id=\"impPasso2\" style=\"display:none\">\n      <div id=\"impResumo\" style=\"font-size:14px;margin-bottom:12px\"></div>\n      <div style=\"max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:10px\">\n        <table style=\"width:100%;border-collapse:collapse;font-size:12px\" id=\"impPreviaTabela\"></table>\n      </div>\n      <div id=\"impAvisos\" style=\"font-size:12px;color:var(--accent);margin-top:10px\"></div>\n\n      <div style=\"margin-top:16px;padding-top:14px;border-top:1px solid var(--border)\">\n        <div style=\"font-size:13px;font-weight:700;margin-bottom:8px\">Como aplicar a importação?</div>\n        <label style=\"display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;cursor:pointer\">\n          <input type=\"radio\" name=\"impModo\" value=\"acrescentar\" checked> Acrescentar aos passageiros já existentes\n        </label>\n        <label style=\"display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer\">\n          <input type=\"radio\" name=\"impModo\" value=\"substituir\"> Substituir tudo (apaga os atuais e põe os importados)\n        </label>\n      </div>\n\n      <div style=\"display:flex;gap:10px;margin-top:16px\">\n        <button class=\"add-btn\" onclick=\"impVoltar()\" style=\"background:var(--surface2);color:var(--text);border:1px solid var(--border)\">← Voltar</button>\n        <button class=\"add-btn\" id=\"impBtnConfirmar\" onclick=\"impConfirmar()\" style=\"flex:1;background:var(--green);color:#fff\">Confirmar importação</button>\n      </div>\n    </div>\n\n    <div id=\"impStatus\" style=\"font-size:13px;text-align:center;margin-top:12px\"></div>\n  </div>\n</div>\n\n<!-- MODAL GERENCIAR LINHAS -->\n<div class=\"modal-overlay\" id=\"modalGerLinhas\">\n  <div class=\"modal\" style=\"width:760px;max-width:95vw\">\n    <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px\">\n      <div style=\"font-family:Barlow;font-weight:800;font-size:20px\">Gerenciar Linhas</div>\n      <button onclick=\"document.getElementById('modalGerLinhas').classList.remove('open')\" style=\"background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer\">✕</button>\n    </div>\n\n    <!-- Formulário de criar/editar -->\n    <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px\">\n      <div style=\"font-size:13px;font-weight:700;margin-bottom:10px\" id=\"glFormTitulo\">Criar nova linha</div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Número da Linha</label>\n          <input class=\"form-input\" id=\"glLinha\" type=\"text\" placeholder=\"Ex: 8\" />\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Turno</label>\n          <select class=\"form-select\" id=\"glTurno\">\n            <option value=\"1°\">1° Turno</option>\n            <option value=\"2°\">2° Turno</option>\n            <option value=\"3°\">3° Turno</option>\n            <option value=\"__novo__\">Outro turno (digitar)</option>\n          </select>\n        </div>\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\" id=\"glTurnoNovoGroup\" style=\"display:none\">\n          <label class=\"form-label\">Nome do novo turno</label>\n          <input class=\"form-input\" id=\"glTurnoNovo\" type=\"text\" placeholder=\"Ex: ADM, Especial\" />\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Veículo</label>\n          <select class=\"form-select\" id=\"glVeiculo\"></select>\n          <div id=\"glVeiculoDica\" style=\"font-size:10.5px;color:var(--muted);margin-top:4px\"></div>\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Motorista (opcional)</label>\n          <input class=\"form-input\" id=\"glMotorista\" type=\"text\" placeholder=\"Nome do motorista\" />\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Cor da linha</label>\n          <div id=\"glCores\" class=\"gl-cores\"></div>\n        </div>\n      </div>\n      <div style=\"display:flex;gap:8px;margin-top:8px\">\n        <button class=\"add-btn\" id=\"glBtnSalvar\" onclick=\"glSalvar()\" style=\"flex:1;background:var(--green);color:#fff\">Criar linha</button>\n        <button class=\"add-btn\" id=\"glBtnCancelar\" onclick=\"glCancelarEdicao()\" style=\"display:none;background:var(--surface3);color:var(--text);border:1px solid var(--border)\">Cancelar edição</button>\n      </div>\n      <div id=\"glFormMsg\" style=\"font-size:12px;margin-top:8px\"></div>\n    </div>\n\n    <!-- Lista de linhas existentes -->\n    <div style=\"font-size:13px;font-weight:700;margin-bottom:8px\">Linhas cadastradas</div>\n    <div id=\"glLista\" style=\"max-height:320px;overflow:auto\"></div>\n  </div>\n</div>\n\n<!-- MODAL CONFIGURAÇÕES (API Key) -->\n<div class=\"modal-overlay\" id=\"modalConfig\">\n  <div class=\"modal\" style=\"width:480px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Configurações</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalConfig').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Google Maps API Key</div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Chave de API</label>\n          <input class=\"form-input config-key-input\" id=\"fApiKey\" type=\"password\"\n            placeholder=\"AIza...\" autocomplete=\"off\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:6px\">\n            A chave é salva apenas neste navegador (localStorage). Nunca é enviada para nossos servidores.\n          </div>\n        </div>\n        <button class=\"opt-btn\" onclick=\"saveApiKey()\">Salvar chave</button>\n        <div id=\"apiKeyStatus\" class=\"opt-status\"></div>\n      </div>\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Dados da Empresa</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          Estas configurações valem para todo o sistema. Ao salvar, são gravadas no servidor.\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Nome da empresa</label>\n          <input class=\"form-input\" id=\"cfgNome\" type=\"text\" placeholder=\"Ex.: Redentor Fretamento\">\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\" id=\"lblWhatsCliente\"></label>\n          <input class=\"form-input\" id=\"cfgWhatsCliente\" type=\"text\" placeholder=\"Ex.: 15 99999-9999\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\" id=\"subWhatsCliente\"></div>\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">WhatsApp da Redentor (transportadora)</label>\n          <input class=\"form-input\" id=\"cfgWhatsRedentor\" type=\"text\" placeholder=\"Ex.: 15 99999-9999\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\">Contato da Redentor (transportadora). Aparece no botão \"Falar com Gestor (Redentor)\" do passageiro.</div>\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Senha da empresa cliente</label>\n          <input class=\"form-input\" id=\"cfgSenhaCliente\" type=\"text\" placeholder=\"Senha do app da empresa cliente\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\">Senha pedida na tela de entrada do app da empresa cliente. Troque quando precisar.</div>\n        </div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Logins da empresa cliente</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:8px\">Uma conta por pessoa. Ela mesma troca a senha depois, pelo \"Esqueci minha senha\" — você não precisa saber a senha de ninguém.</div>\n        <div id=\"acessosLista\" style=\"margin-bottom:10px\"></div>\n        <div style=\"display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end\">\n          <div class=\"config-field\" style=\"flex:1;min-width:120px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">Nome</label>\n            <input class=\"form-input\" id=\"novoAcNome\" type=\"text\" placeholder=\"Maria Silva\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1.4;min-width:150px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">E-mail</label>\n            <input class=\"form-input\" id=\"novoAcEmail\" type=\"email\" placeholder=\"maria@empresa.com\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:120px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">Senha inicial</label>\n            <input class=\"form-input\" id=\"novoAcSenha\" type=\"text\" placeholder=\"mín. 6 caracteres\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <button class=\"add-btn\" id=\"novoAcBtn\" onclick=\"criarAcessoCliente()\" style=\"font-size:12px;padding:8px 14px\">Criar</button>\n        </div>\n        <div id=\"acessosMsg\" style=\"font-size:12px;margin-top:8px;min-height:16px\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Frota</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          A capacidade de cada linha vem daqui. Informe os assentos do veículo e quantos ficam\n          reservados à tripulação — o sistema calcula quantos passageiros cabem.\n        </div>\n        <div id=\"frotaLista\" style=\"margin-bottom:12px\"></div>\n        <div class=\"fr-form\">\n          <div class=\"fr-campo\" style=\"flex:1.1;min-width:120px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Tipo</label>\n            <select class=\"form-input\" id=\"frTipo\" style=\"padding:8px 10px;font-size:13px\">\n              <option value=\"Carro\">Carro</option>\n              <option value=\"Van\" selected>Van</option>\n              <option value=\"Micro-ônibus\">Micro-ônibus</option>\n              <option value=\"Ônibus\">Ônibus</option>\n            </select>\n          </div>\n          <div class=\"fr-campo\" style=\"flex:1.6;min-width:150px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Modelo</label>\n            <input class=\"form-input\" id=\"frModelo\" type=\"text\" placeholder=\"Ex.: Mercedes-Benz Sprinter\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:1;min-width:110px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Apelido</label>\n            <input class=\"form-input\" id=\"frApelido\" type=\"text\" placeholder=\"Ex.: Van 07\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 96px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Assentos</label>\n            <input class=\"form-input\" id=\"frAssentos\" type=\"number\" min=\"1\" value=\"16\" oninput=\"frCalcular()\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 104px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Tripulação</label>\n            <input class=\"form-input\" id=\"frTripulacao\" type=\"number\" min=\"0\" value=\"1\" oninput=\"frCalcular()\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 118px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Passageiros</label>\n            <input class=\"form-input\" id=\"frCapacidade\" type=\"number\" min=\"0\" disabled style=\"padding:8px 10px;font-size:13px;font-weight:700\">\n          </div>\n        </div>\n        <label class=\"fr-manual\">\n          <input type=\"checkbox\" id=\"frManual\" onchange=\"frCalcular()\">\n          Ajustar a capacidade manualmente\n          <span style=\"color:var(--muted);font-weight:400\">— use quando o veículo perdeu poltronas (área PCD, por exemplo)</span>\n        </label>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <button class=\"add-btn\" id=\"frBtnSalvar\" onclick=\"frSalvar()\" style=\"flex:1\">Adicionar veículo</button>\n          <button class=\"btn-cancel\" id=\"frBtnCancelar\" onclick=\"frCancelar()\" style=\"display:none\">Cancelar edição</button>\n        </div>\n        <div id=\"frMsg\" style=\"font-size:12px;margin-top:8px;min-height:16px\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Horários de chegada por turno</div>\n        <div style=\"display:flex;gap:8px;flex-wrap:wrap\">\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">1º Turno</label>\n            <input class=\"form-input\" id=\"cfgT1\" type=\"time\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">2º Turno</label>\n            <input class=\"form-input\" id=\"cfgT2\" type=\"time\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">3º Turno</label>\n            <input class=\"form-input\" id=\"cfgT3\" type=\"time\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">ADM</label>\n            <input class=\"form-input\" id=\"cfgTA\" type=\"time\">\n          </div>\n        </div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Garagem (início da rota)</div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Coordenadas (lat, lng)</label>\n          <input class=\"form-input\" id=\"cfgGarCoords\" type=\"text\" placeholder=\"-23.5146, -47.5167\">\n        </div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Destino (empresa/cliente)</div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Coordenadas (lat, lng)</label>\n          <input class=\"form-input\" id=\"cfgDestCoords\" type=\"text\" placeholder=\"-23.4429, -47.3896\">\n        </div>\n\n        <button class=\"opt-btn\" style=\"margin-top:14px\" onclick=\"salvarEmpresaConfig()\">Salvar dados da empresa</button>\n        <div id=\"cfgEmpresaStatus\" class=\"opt-status\"></div>\n        <div style=\"font-size:11px;color:var(--muted);margin-top:8px\">\n          ℹ️ Os endereços em texto (telas e PDFs) ainda são ajustados no código por enquanto. As coordenadas e horários acima já têm efeito imediato no sistema.\n        </div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalConfig').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL OTIMIZAÇÃO DE ROTA -->\n<div class=\"modal-overlay\" id=\"modalOtimizar\">\n  <div class=\"modal\" style=\"width:540px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\" id=\"otimizarTitle\">Otimizar Rota</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">ℹ️ Como funciona</div>\n        <div style=\"font-size:12px;color:var(--muted);line-height:1.7\">\n          O sistema usa o Google Maps para calcular a <strong style=\"color:var(--text)\">melhor ordem de paradas</strong>,\n          minimizando o tempo total de rota e garantindo chegada no horário.\n          Parte da <strong style=\"color:var(--green)\">Garagem Redentor</strong> e chega na\n          <strong style=\"color:var(--accent)\">Av. Jerome Case às ${horarioChegada}</strong>.\n          Passageiros com mais de <strong style=\"color:var(--red)\">60 min em rota</strong> serão alertados.\n        </div>\n      </div>\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Ações</div>\n        <button class=\"opt-btn\" id=\"btnOtimizarRota\" onclick=\"otimizarRotaAtual()\">\n          Otimizar ordem e recalcular horários\n        </button>\n        <button class=\"opt-btn opt-btn-secondary\" onclick=\"recalcularApenasHorarios()\">\n          Recalcular horários (manter ordem atual)\n        </button>\n        <div id=\"optStatus\" class=\"opt-status\">Aguardando...</div>\n      </div>\n      <div class=\"opt-section\" id=\"optResultSection\" style=\"display:none\">\n        <div class=\"opt-title\">Resultado</div>\n        <div id=\"optResultBody\"></div>\n      </div>\n    </div>\n      <div class=\"opt-section\" id=\"optMapSection\" style=\"display:none\">\n        <div class=\"opt-title\">Mapa da Rota</div>\n        <div id=\"optMapDiv\" style=\"width:100%;height:320px;border-radius:10px;overflow:hidden;border:1px solid var(--border)\"></div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">Fechar</button>\n      <button class=\"export-btn\" id=\"btnVerMapa\" style=\"display:none\" onclick=\"toggleOptMap()\">Ver Mapa</button>\n      <button class=\"btn-save\" id=\"btnAplicar\" style=\"display:none\" onclick=\"aplicarOtimizacao()\">Aplicar alterações</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- MOTORISTA VIEW -->\n<div class=\"moto-overlay\" id=\"motoView\">\n  <div class=\"moto-header\">\n    <div>\n      <div class=\"moto-title\">Visão do Motorista</div>\n      <div class=\"moto-subtitle\">Selecione sua linha para iniciar a rota</div>\n    </div>\n    <button class=\"moto-back\" onclick=\"document.getElementById('motoView').classList.remove('open')\">Fechar</button>\n  </div>\n  <div class=\"moto-body\">\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Motorista</label>\n      <select class=\"moto-select\" id=\"motoSelectMotorista\" onchange=\"motoFilterLinhas()\">\n        <option value=\"\">— Todos os motoristas —</option>\n      </select>\n    </div>\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Linha e Turno</label>\n      <select class=\"moto-select\" id=\"motoSelectLinha\" onchange=\"motoLoadRota()\">\n        <option value=\"\">— Selecione uma linha —</option>\n      </select>\n    </div>\n    <div id=\"motoRotaContent\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL MAPA GERAL -->\n<div class=\"modal-overlay\" id=\"modalMapaGeral\">\n  <div class=\"modal\" style=\"max-width:1100px;width:97%;height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\" style=\"flex-shrink:0\">\n      <div class=\"modal-title\">Mapa Geral de Rotas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMapaGeral').classList.remove('open')\">×</button>\n    </div>\n    <div style=\"flex-shrink:0;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center\">\n      <!-- Turno filter -->\n      <div style=\"display:flex;gap:6px;align-items:center\" id=\"mgTurnoBar\">\n        <span style=\"font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px\">Turno:</span>\n      </div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Line checkboxes -->\n      <div style=\"display:flex;gap:6px;align-items:center;flex-wrap:wrap\" id=\"mgLinhasCheck\"></div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Select all / none -->\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectAll()\">Todas</button>\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectNone()\">Nenhuma</button>\n      <!-- Route toggle -->\n      <div style=\"margin-left:auto;display:flex;gap:8px;align-items:center\">\n        <label style=\"font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px\">\n          <input type=\"checkbox\" id=\"mgShowRoutes\" checked onchange=\"renderMapaGeral()\" style=\"cursor:pointer\">\n          Mostrar rotas traçadas\n        </label>\n      </div>\n    </div>\n    <div style=\"flex:1;position:relative;min-height:0\">  <div id=\"mapaGeralDiv\" style=\"position:absolute;inset:0\"></div>  <div id=\"mgVazio\" style=\"position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--bg);z-index:2;padding:24px\">    <div style=\"font-size:15px;font-weight:600;margin-bottom:6px\">Selecione a rota desejada</div>    <div style=\"font-size:13px;color:var(--muted);max-width:380px;line-height:1.6\">Marque as linhas que quer ver no mapa, ou use <b>Todas</b> ali em cima.</div>  </div></div>\n    <div id=\"mgLegend\" style=\"flex-shrink:0;padding:10px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;font-size:12px\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL ROTAS EXTRAS -->\n<div class=\"modal-overlay\" id=\"modalRotasExtras\">\n  <div class=\"modal\" style=\"max-width:800px;width:95%\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Rotas Extras</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalRotasExtras').classList.remove('open')\">×</button>\n    </div>\n    <div class=\"modal-body\">\n      <!-- Lista de rotas extras existentes -->\n      <div id=\"rotasExtrasList\" style=\"margin-bottom:16px\"></div>\n      <!-- Criar nova rota extra -->\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px\">\n        <div style=\"font-weight:700;font-size:14px;margin-bottom:14px;color:var(--accent)\">Nova Rota Extra</div>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px\">\n          <div>\n            <label class=\"form-label\">Nome da Rota</label>\n            <input class=\"form-input\" id=\"reNome\" placeholder=\"Ex: Extra Sexta 02/05\">\n          </div>\n          <div>\n            <label class=\"form-label\">Data</label>\n            <input class=\"form-input\" type=\"date\" id=\"reData\">\n          </div>\n        </div>\n        <div style=\"background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;color:var(--muted)\">\n          <strong>Início:</strong> Garagem Redentor &nbsp;→&nbsp; Passageiros &nbsp;→&nbsp; <strong>Destino:</strong> Empresa\n        </div>\n        <label class=\"form-label\">Buscar e selecionar passageiros</label>\n        <input class=\"form-input\" id=\"reBusca\" placeholder=\"Digite nome, bairro ou cidade...\" oninput=\"filtrarPassRotaExtra()\" style=\"margin-bottom:10px\">\n        <div id=\"reResultados\" style=\"max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px\"></div>\n        <div style=\"margin-bottom:12px\">\n          <div style=\"font-size:12px;color:var(--muted);margin-bottom:6px\">Selecionados:</div>\n          <div id=\"reSelecionados\" style=\"display:flex;flex-wrap:wrap;gap:6px;min-height:32px\"></div>\n        </div>\n        <button class=\"add-btn\" onclick=\"criarRotaExtra()\" style=\"width:100%\">Criar Rota Extra</button>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL SEM ROTA -->\n<div class=\"modal-overlay\" id=\"modalSemRota\">\n  <div class=\"modal\" style=\"max-width:700px;width:95%\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Passageiros Sem Rota</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalSemRota').classList.remove('open')\">×</button>\n    </div>\n    <div class=\"modal-body\">\n      <div style=\"font-size:13px;color:var(--muted);margin-bottom:12px\">\n        Clique nos passageiros para selecioná-los, depois crie uma rota extra ou aloque em uma linha existente.\n      </div>\n      <div id=\"semRotaActionsBar\" style=\"display:none;gap:8px;margin-bottom:12px;flex-wrap:wrap\">\n        <button onclick=\"criarRotaExtraDeSemRota()\" class=\"add-btn\" style=\"background:rgba(236,72,153,0.8)\">Criar Rota Extra com Selecionados</button>\n        <button onclick=\"alocarTodosParaRota()\" class=\"export-btn\" style=\"color:var(--accent);border-color:var(--accent)\">Alocar Selecionados em Linha</button>\n        <button onclick=\"semRotaSelecionados&&semRotaSelecionados.clear();renderSemRotaList()\" class=\"export-btn\" style=\"color:var(--muted)\">Limpar seleção</button>\n      </div>\n      <div id=\"semRotaList\"></div>\n      <!-- Alocação -->\n      <div id=\"semRotaAlocarBox\" style=\"display:none;background:var(--surface2);border:1px solid var(--accent);border-radius:12px;padding:14px;margin-top:14px\">\n        <div style=\"font-weight:600;font-size:13px;margin-bottom:10px\">Alocar <span id=\"semRotaAlocarNome\" style=\"color:var(--accent)\"></span> para:</div>\n        <div style=\"display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end\">\n          <div>\n            <label class=\"form-label\">Linha e Turno</label>\n            <select class=\"form-input\" id=\"semRotaLinhaSelect\"></select>\n          </div>\n          <button class=\"add-btn\" onclick=\"confirmarAlocacao()\">Confirmar</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL SERVIÇOS EXTRAS -->\n<div class=\"modal-overlay\" id=\"modalServicosExtras\">\n  <div class=\"modal-box\" style=\"max-width:900px;width:96%;max-height:92vh;display:flex;flex-direction:column;overflow:hidden\">\n    <div class=\"modal-header\" style=\"flex-shrink:0\">\n      <div class=\"modal-title\">Serviços Extras</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalServicosExtras').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:0;display:flex;flex-direction:column;flex:1;overflow:hidden\">\n\n      <!-- ABAS -->\n      <div style=\"display:flex;border-bottom:1px solid var(--border);background:var(--surface)\">\n        <button id=\"seTab1\" onclick=\"seAba('lancar')\" style=\"flex:1;padding:12px;background:var(--accent);color:#000;border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Lançar</button>\n        <button id=\"seTab2\" onclick=\"seAba('historico')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Histórico</button>\n        <button id=\"seTab4\" onclick=\"seAba('solicitacoes')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer;position:relative\">Solicitações<span id=\"seTabBadge\" style=\"display:none;position:absolute;top:6px;right:6px;background:var(--red);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:800;align-items:center;justify-content:center;font-family:'Barlow',sans-serif\">0</span></button>\n        <button id=\"seTab5\" onclick=\"seAba('cadastro')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer;position:relative\">Cadastro<span id=\"cadBadge\" style=\"display:none;position:absolute;top:6px;right:6px;background:var(--accent2);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:800;align-items:center;justify-content:center;font-family:'Barlow',sans-serif\">0</span></button>\n        <button id=\"seTab3\" onclick=\"seAba('relatorio')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Relatórios</button>\n      </div>\n\n      <!-- ABA LANÇAR -->\n      <div id=\"seAbaLancar\" style=\"padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px\">\n          <div>\n            <label class=\"form-label\">Data do Serviço</label>\n            <input class=\"form-input\" type=\"date\" id=\"seData\">\n          </div>\n          <div>\n            <label class=\"form-label\">Horário de Atendimento</label>\n            <input class=\"form-input\" type=\"time\" id=\"seHorario\">\n          </div>\n          <div>\n            <label class=\"form-label\">Tipo de Serviço</label>\n            <select class=\"form-input\" id=\"seTipo\" onchange=\"seTipoChange()\"></select>\n          </div>\n          <div>\n            <label class=\"form-label\">Turno</label>\n            <select class=\"form-input\" id=\"seDestino\">\n              <option value=\"\">— Selecione —</option>\n              <option value=\"1º Turno\">1º Turno</option>\n              <option value=\"2º Turno\">2º Turno</option>\n              <option value=\"3º Turno\">3º Turno</option>\n              <option value=\"Diurno\">Diurno</option>\n              <option value=\"Noturno\">Noturno</option>\n              <option value=\"Adm\">Adm</option>\n            </select>\n          </div>\n          <div>\n            <label class=\"form-label\">Roteiro</label>\n            <select class=\"form-input\" id=\"seRoteiro\">\n              <option value=\"\">— Selecione —</option>\n              <option value=\"Entrada\">Entrada</option>\n              <option value=\"Saída\">Saída</option>\n              <option value=\"Ida e Volta\">Ida e Volta</option>\n            </select>\n          </div>\n          <div>\n            <label class=\"form-label\">Adicional (R$)</label>\n            <input class=\"form-input\" type=\"number\" id=\"seAdicional\" value=\"0\" onchange=\"seCalcularTotal()\">\n          </div>\n          <div style=\"background:var(--surface2);border-radius:10px;padding:14px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center\">\n            <div style=\"font-size:11px;color:var(--muted);margin-bottom:4px\">TOTAL DO SERVIÇO</div>\n            <div id=\"seTotal\" style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:28px;color:var(--accent)\">R$ 0,00</div>\n          </div>\n        </div>\n\n        <!-- Lista de veículos dinâmica -->\n        <div style=\"margin-bottom:12px\">\n          <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:8px\">\n            <label class=\"form-label\" style=\"margin:0\">Veículos e Motoristas</label>\n            <button onclick=\"seAdicionarVeiculo()\" class=\"export-btn\" style=\"font-size:12px;padding:5px 12px;color:var(--accent);border-color:var(--accent)\">＋ Adicionar Veículo</button>\n          </div>\n          <div id=\"seVeiculosList\"></div>\n        </div>\n\n        <!-- Motoristas dinâmicos (1 por veículo) -->\n        <div id=\"seMotoristasList\" style=\"margin-bottom:12px\"></div>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px\">\n          <div>\n            <label class=\"form-label\">Observação</label>\n            <input class=\"form-input\" id=\"seObs\" placeholder=\"Ex: Saída extra demissão\">\n          </div>\n          <div>\n            <label class=\"form-label\">Repetição — Marque os dias</label>\n            <div id=\"seCalendarioRepet\" style=\"background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px\"></div>\n          </div>\n        </div>\n        <div style=\"display:flex;gap:10px\">\n          <button class=\"add-btn\" style=\"flex:1\" onclick=\"seSalvar()\">Salvar Serviço</button>\n          <button class=\"btn-cancel\" onclick=\"seLimpar()\">Limpar</button>\n        </div>\n        <div id=\"seMsg\" style=\"margin-top:10px;font-size:13px;text-align:center\"></div>\n      </div>\n\n      <!-- ABA HISTÓRICO -->\n      <div id=\"seAbaHistorico\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap\">\n          <input class=\"form-input\" type=\"month\" id=\"seFiltroMes\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\">\n          <select class=\"form-input\" id=\"seFiltroTipo\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\"></select>\n          <select class=\"form-input\" id=\"seFiltroMotorista\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\">\n            <option value=\"\">Todos os motoristas</option>\n          </select>\n          <button class=\"export-btn\" onclick=\"seAba('relatorio')\" style=\"color:var(--accent);border-color:var(--accent)\">Por Período</button>\n          <button class=\"export-btn\" onclick=\"seExportarExcel('mes')\" style=\"color:var(--accent);border-color:var(--accent)\">Excel Mês</button>\n        </div>\n        <div id=\"seResumoHistorico\" style=\"margin-bottom:12px\"></div>\n        <div id=\"seListaHistorico\" style=\"max-height:420px;overflow-y:auto\"></div>\n      </div>\n\n      <!-- ABA RELATÓRIOS -->\n      <div id=\"seAbaRelatorio\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px\">\n          <div style=\"background:var(--surface2);border-radius:12px;padding:16px\">\n            <div style=\"font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;color:var(--accent);margin-bottom:12px\">Relatório por Período</div>\n            <p style=\"font-size:12px;color:var(--muted);margin-bottom:12px\">Escolha o intervalo de datas para gerar o relatório.</p>\n            <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px\">\n              <div>\n                <div style=\"font-size:10px;color:var(--muted);margin-bottom:4px\">DATA INÍCIO</div>\n                <input class=\"form-input\" type=\"date\" id=\"seDataInicio\">\n              </div>\n              <div>\n                <div style=\"font-size:10px;color:var(--muted);margin-bottom:4px\">DATA FIM</div>\n                <input class=\"form-input\" type=\"date\" id=\"seDataFim\">\n              </div>\n            </div>\n            <button class=\"add-btn\" style=\"width:100%\" onclick=\"seExportarExcel('periodo')\">Gerar Excel por Período</button>\n          </div>\n          <div style=\"background:var(--surface2);border-radius:12px;padding:16px\">\n            <div style=\"font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;color:var(--green);margin-bottom:12px\">Relatório Mensal</div>\n            <p style=\"font-size:12px;color:var(--muted);margin-bottom:12px\">Todos os serviços do mês. Enviar no dia 1º para aprovação.</p>\n            <input class=\"form-input\" type=\"month\" id=\"seDataMes\" style=\"margin-bottom:10px\">\n            <button class=\"add-btn\" style=\"width:100%;background:var(--green)\" onclick=\"seExportarExcel('mes')\">Gerar Excel Mensal</button>\n          </div>\n        </div>\n        <div id=\"seResumoRelatorio\"></div>\n      </div>\n\n      <!-- ABA SOLICITAÇÕES -->\n      <div id=\"seAbaSolicitacoes\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center\">\n          <select class=\"form-input\" id=\"solFiltroStatus\" style=\"flex:1;min-width:140px\" onchange=\"solRenderGestor()\">\n            <option value=\"\">Todos os status</option>\n            <option value=\"pendente\">Pendentes</option>\n            <option value=\"confirmada\">Confirmadas</option>\n            <option value=\"atendida\">Atendidas</option>\n            <option value=\"cancelada\">Canceladas</option>\n          </select>\n          <input class=\"form-input\" type=\"month\" id=\"solFiltroMes\" style=\"flex:1;min-width:130px\" onchange=\"solRenderGestor()\">\n          <span id=\"solResumoCount\" style=\"font-size:12px;color:var(--muted)\"></span>\n        </div>\n        <div id=\"solListaGestor\" style=\"max-height:460px;overflow-y:auto\"></div>\n      </div>\n\n      <!-- ABA CADASTRO -->\n      <div id=\"seAbaCadastro\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center\">\n          <select class=\"form-input\" id=\"cadGestorFiltroTipo\" style=\"flex:1;min-width:140px\" onchange=\"cadGestorRender()\">\n            <option value=\"\">Todos os tipos</option>\n            <option value=\"novo\">Novo Passageiro</option>\n            <option value=\"turno\">Alteração de Turno</option>\n            <option value=\"endereco\">Alteração de Endereço</option>\n            <option value=\"desligamento\">Desligamento</option>\n          </select>\n          <select class=\"form-input\" id=\"cadGestorFiltroStatus\" style=\"flex:1;min-width:120px\" onchange=\"cadGestorRender()\">\n            <option value=\"\">Todos os status</option>\n            <option value=\"pendente\">Pendentes</option>\n            <option value=\"atendida\">Atendidas</option>\n          </select>\n          <span id=\"cadGestorCount\" style=\"font-size:12px;color:var(--muted)\"></span>\n        </div>\n        <div id=\"cadGestorLista\" style=\"max-height:460px;overflow-y:auto\"></div>\n      </div>\n\n    </div>\n  </div>\n</div>\n<div class=\"modal-overlay\" id=\"modalReport\">\n  <div class=\"modal report-modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Relatório de Alterações</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"reportBody\">\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">Fechar</button>\n      <button class=\"btn-save\" onclick=\"clearLog()\">Limpar histórico</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL ROTEIRIZADOR -->\n<div class=\"modal-overlay\" id=\"modalRoteirizador\">\n  <div class=\"modal\" style=\"max-width:1400px;width:97%;max-height:94vh;display:flex;flex-direction:column;padding:0;overflow:hidden\">\n    <div class=\"modal-header\" style=\"padding:16px 20px;flex-shrink:0\">\n      <div class=\"modal-title\">Roteirizador Inteligente</div>\n      <div style=\"display:flex;gap:8px;align-items:center\">\n        <button onclick=\"rtAbrirPublicadas()\" class=\"export-btn\" style=\"font-size:12px;padding:6px 12px;background:rgba(16,185,129,0.12);color:var(--green);border-color:rgba(16,185,129,0.3)\">Rotas Publicadas</button>\n        <button class=\"modal-close\" onclick=\"rtFechar()\" title=\"Fechar\">✕</button>\n      </div>\n    </div>\n\n    <div style=\"overflow-y:auto;flex:1;padding:20px\">\n      <!-- Passo 1: Entrada de passageiros -->\n      <div style=\"background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:700;font-size:15px;margin-bottom:10px\">1. Para quais passageiros quer criar uma rota?</div>\n\n        <div style=\"display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap\">\n          <button onclick=\"rtModoEntrada('solicitacao')\" id=\"rtBtnSol\" class=\"export-btn\" style=\"font-size:12px;color:var(--accent);border-color:var(--accent)\">De uma Solicitação</button>\n          <button onclick=\"rtModoEntrada('colar')\" id=\"rtBtnColar\" class=\"export-btn\" style=\"font-size:12px\">Colar nomes</button>\n          <button onclick=\"rtModoEntrada('linha')\" id=\"rtBtnLinha\" class=\"export-btn\" style=\"font-size:12px\">De uma Linha</button>\n        </div>\n\n        <!-- Modo: solicitação -->\n        <div id=\"rtEntradaSolicitacao\" style=\"display:none\">\n          <label class=\"form-label\">Selecione a solicitação de serviço</label>\n          <select class=\"form-input\" id=\"rtSelSolicitacao\" onchange=\"rtCarregarDaSolicitacao()\">\n            <option value=\"\">— Selecione —</option>\n          </select>\n        </div>\n\n        <!-- Modo: colar / buscar -->\n        <div id=\"rtEntradaColar\" style=\"display:none\">\n          <label class=\"form-label\">Buscar e adicionar passageiros</label>\n          <input class=\"form-input\" id=\"rtBuscaPax\" type=\"text\" placeholder=\"Digite o nome...\" oninput=\"rtBuscarPax()\" style=\"margin-bottom:8px;font-size:15px\">\n          <div id=\"rtResultadoPax\" style=\"max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;display:none\"></div>\n          <div style=\"font-size:11px;color:var(--muted);margin-bottom:6px\">Adicionados:</div>\n          <div id=\"rtSelecionados\" style=\"display:flex;flex-wrap:wrap;gap:6px;min-height:30px;margin-bottom:10px\"></div>\n          <div style=\"display:flex;gap:8px\">\n            <button onclick=\"rtCarregarSelecionados()\" class=\"add-btn\" style=\"flex:2\">Carregar selecionados →</button>\n          </div>\n          <div style=\"margin-top:10px;padding-top:10px;border-top:1px solid var(--border)\">\n            <label class=\"form-label\">Ou cole uma lista (um nome por linha)</label>\n            <textarea class=\"form-input\" id=\"rtNomes\" rows=\"4\" placeholder=\"João Silva&#10;Maria Santos&#10;...\" style=\"resize:vertical;font-size:14px\"></textarea>\n            <button onclick=\"rtCarregarDeColar()\" class=\"export-btn\" style=\"margin-top:8px;font-size:12px\">Buscar lista colada →</button>\n          </div>\n        </div>\n\n        <!-- Modo: linha -->\n        <div id=\"rtEntradaLinha\" style=\"display:none\">\n          <label class=\"form-label\">Selecione a linha/turno</label>\n          <select class=\"form-input\" id=\"rtSelLinha\" onchange=\"rtCarregarDaLinha()\">\n            <option value=\"\">— Selecione —</option>\n          </select>\n          <div style=\"font-size:11px;color:var(--accent);margin-top:6px\">Você pode adicionar várias linhas (cada uma vira um veículo) para comparar e trocar passageiros entre elas.</div>\n        </div>\n\n        <div style=\"display:flex;gap:8px;margin-top:14px;margin-bottom:6px\">\n          <button onclick=\"rtSetModo('entrada')\" id=\"rtModoEntradaBtn\" class=\"export-btn\" style=\"flex:1;font-size:12px;color:var(--accent);border-color:var(--accent)\">Entrada (chega na empresa)</button>\n          <button onclick=\"rtSetModo('saida')\" id=\"rtModoSaidaBtn\" class=\"export-btn\" style=\"flex:1;font-size:12px\">Saída (sai da empresa)</button>\n        </div>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px\">\n          <div>\n            <label class=\"form-label\">Data da rota</label>\n            <input class=\"form-input\" type=\"date\" id=\"rtData\">\n          </div>\n          <div>\n            <label class=\"form-label\" id=\"rtChegadaLabel\">Horário de chegada na empresa</label><div style=\"font-size:10.5px;color:var(--muted);margin:-2px 0 4px\">Preenchido sozinho quando você carrega uma linha.</div>\n            <input class=\"form-input\" type=\"time\" id=\"rtChegada\">\n          </div>\n          <div>\n            <label class=\"form-label\">Folga de segurança (min)</label>\n            <input class=\"form-input\" type=\"number\" id=\"rtBuffer\" value=\"5\" min=\"0\">\n          </div>\n        </div>\n        <div style=\"margin-top:12px\">\n          <label class=\"form-label\">Nome da rota (para o motorista identificar)</label>\n          <input class=\"form-input\" id=\"rtNomeRota\" placeholder=\"Ex: Entrada Extra · Saída 2º Turno · Rota Vertiv...\">\n        </div>\n      </div>\n\n      <!-- Área de trabalho -->\n      <div id=\"rtWorkArea\" style=\"display:none\">\n        <!-- Mapa -->\n        <div style=\"background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px\">\n          <div style=\"display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap\">\n            <strong style=\"font-size:13px\">Mapa dos passageiros</strong>\n            <span style=\"font-size:11px;color:var(--muted)\">Cores = veículo</span>\n            <div style=\"flex:1\"></div>\n            <button onclick=\"rtRenderMap()\" class=\"export-btn\" style=\"font-size:11px;padding:4px 10px\">↻ Atualizar</button>\n          </div>\n          <div id=\"rtMap\" style=\"height:380px;width:100%;background:var(--surface2)\"></div>\n          <div id=\"rtMapLegend\" style=\"padding:8px 14px;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;border-top:1px solid var(--border)\"></div>\n        </div>\n\n        <!-- Não alocados -->\n        <div style=\"background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px\">\n          <div style=\"display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap\">\n            <strong style=\"font-size:13px\">Não alocados</strong>\n            <span style=\"font-size:12px;color:var(--muted)\" id=\"rtPoolCount\"></span>\n            <div style=\"flex:1\"></div>\n            <button onclick=\"rtAddVeiculo()\" class=\"export-btn\" style=\"font-size:11px;padding:5px 10px\">＋ Veículo</button>\n            <button onclick=\"rtLimparTudo()\" class=\"export-btn\" style=\"font-size:11px;padding:5px 10px;color:var(--red);border-color:var(--red)\">Limpar</button>\n            <label style=\"display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);cursor:pointer;user-select:none\"><input type=\"checkbox\" id=\"rtTravarOrdem\" checked style=\"cursor:pointer\">Travar ordem manual</label>\n            <button onclick=\"rtCalcular()\" class=\"add-btn\" style=\"font-size:12px;padding:6px 14px\">Calcular rotas</button>\n            <button onclick=\"rtPublicar()\" class=\"add-btn\" style=\"font-size:12px;padding:6px 14px;background:var(--green)\">Publicar p/ Motoristas</button>\n          </div>\n          <div class=\"rt-drop\" id=\"rtPoolBody\" data-veh=\"pool\" style=\"min-height:50px;display:flex;flex-wrap:wrap;gap:7px\"></div>\n        </div>\n\n        <!-- Veículos -->\n        <div class=\"rt-veh-cols\" id=\"rtVehCols\" style=\"display:flex;gap:14px;overflow-x:auto;padding-bottom:10px\"></div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL ROTAS PUBLICADAS -->\n<div class=\"modal-overlay\" id=\"modalRotasPublicadas\">\n  <div class=\"modal\" style=\"max-width:760px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Rotas Publicadas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalRotasPublicadas').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"rotasPublicadasBody\" style=\"padding:16px 20px\">\n      <div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL AVISOS (gestor) -->\n<div class=\"modal-overlay\" id=\"modalAvisos\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Avisos aos Passageiros</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalAvisos').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px\">\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px\">\n        <div style=\"font-family:Barlow;font-weight:700;margin-bottom:12px\">Novo aviso</div>\n        <label class=\"form-label\">Destinatário</label>\n        <select class=\"form-input\" id=\"avDestino\">\n          <option value=\"\">Todas as linhas (aviso geral)</option>\n        </select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Tipo</label>\n        <select class=\"form-input\" id=\"avTipo\">\n          <option value=\"aviso\">Aviso de texto</option>\n          <option value=\"pdf\">Link/PDF</option>\n        </select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Mensagem</label>\n        <textarea class=\"form-input\" id=\"avTexto\" rows=\"3\" placeholder=\"Digite o aviso...\" style=\"resize:vertical\"></textarea>\n        <label class=\"form-label\" style=\"margin-top:10px\">Link (opcional — PDF, formulário, etc.)</label>\n        <input class=\"form-input\" id=\"avLink\" placeholder=\"https://...\">\n        <div style=\"font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5\">Para anexar um PDF: suba o arquivo no Google Drive (ou outro), copie o link de compartilhamento e cole aqui. O passageiro abre o documento ao tocar no aviso.</div>\n        <button class=\"add-btn\" style=\"margin-top:14px;width:100%\" onclick=\"avPublicar()\">Publicar aviso</button>\n      </div>\n      <div style=\"font-family:Barlow;font-weight:700;margin-bottom:10px\">Avisos publicados</div>\n      <div id=\"avLista\"><div style=\"text-align:center;color:var(--muted);padding:20px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL CHATS DAS LINHAS -->\n<div class=\"modal-overlay\" id=\"modalChats\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Chats das Linhas</div>\n      <button class=\"modal-close\" onclick=\"chatsFechar()\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;display:flex;flex-direction:column;flex:1;overflow:hidden\">\n      <div id=\"chatsSeletor\">\n        <label class=\"form-label\">Selecione a linha/turno</label>\n        <select class=\"form-input\" id=\"chatSelLinha\" onchange=\"chatAbrirLinha()\">\n          <option value=\"\">— Selecione —</option>\n        </select>\n        <div style=\"font-size:12px;color:var(--muted);margin-top:10px\">Escolha uma linha para ver e participar do chat dos passageiros.</div>\n      </div>\n      <div id=\"chatsConversa\" style=\"display:none;flex-direction:column;flex:1;overflow:hidden\">\n        <div style=\"display:flex;align-items:center;gap:8px;margin-bottom:10px\">\n          <button class=\"export-btn\" style=\"font-size:12px;padding:5px 10px\" onclick=\"chatVoltarSeletor()\">← Linhas</button>\n          <strong id=\"chatTituloLinha\" style=\"font-size:14px\"></strong>\n        </div>\n        <div id=\"chatGestorMsgs\" style=\"flex:1;overflow-y:auto;background:var(--surface2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:300px;max-height:50vh\"></div>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <input id=\"chatGestorInput\" placeholder=\"Mensagem como gestor...\" style=\"flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:11px 16px;color:var(--text);font-size:14px;font-family:inherit\" onkeypress=\"if(event.key==='Enter')chatGestorEnviar()\">\n          <button onclick=\"chatGestorEnviar()\" style=\"background:var(--accent);border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer\">➤</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL CONFIRMAÇÕES (relatório de presenças) -->\n<div class=\"modal-overlay\" id=\"modalConfirmacoes\">\n  <div class=\"modal\" style=\"max-width:820px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Confirmações de Presença</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalConfirmacoes').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px\">\n      <div style=\"display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end\">\n        <div style=\"flex:1;min-width:160px\">\n          <label class=\"form-label\">Linha / Turno</label>\n          <select class=\"form-input\" id=\"cfLinha\" onchange=\"cfRender()\"><option value=\"\">Todas</option></select>\n        </div>\n        <div style=\"flex:1;min-width:120px\">\n          <label class=\"form-label\">Data</label>\n          <select class=\"form-input\" id=\"cfData\" onchange=\"cfRender()\"></select>\n        </div>\n        <button class=\"export-btn\" style=\"font-size:12px\" onclick=\"cfCarregar()\">↻ Atualizar</button>\n      </div>\n      <div style=\"font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5\">\n        = confirmou com <strong>menos de 1h</strong> antes do horário de chegada da rota (em cima da hora). O histórico mostra cada vez que o passageiro mudou a resposta, com horário.\n      </div>\n      <div id=\"cfBody\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL RECLAMAÇÕES CLIENTE (Gestor Redentor responde) -->\n<div class=\"modal-overlay\" id=\"modalReclamacoesGestor\">\n  <div class=\"modal\" style=\"max-width:920px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Reclamações do Cliente</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReclamacoesGestor').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;overflow-y:auto\">\n      <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px\">\n        <div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap\">\n          <select class=\"form-input\" id=\"rcgFiltroStatus\" onchange=\"rcgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os status</option><option value=\"aberta\">Aberta</option><option value=\"respondida\">Respondida</option><option value=\"resolvida\">Resolvida</option><option value=\"nao_resolvida\">Não resolvida</option><option value=\"improcedente\">Improcedente</option></select>\n          <select class=\"form-input\" id=\"rcgFiltroMes\" onchange=\"rcgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os meses</option></select>\n        </div>\n        <button class=\"export-btn\" onclick=\"rcgExportar()\" style=\"background:rgba(16,185,129,0.12);color:#10b981;border-color:rgba(16,185,129,0.3)\">Exportar relatório (CSV)</button>\n      </div>\n      <div id=\"rcgResumo\" style=\"display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px\"></div>\n      <div id=\"rcgLista\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL AVALIAÇÕES PASSAGEIROS -->\n<div class=\"modal-overlay\" id=\"modalAvaliacoes\">\n  <div class=\"modal\" style=\"max-width:900px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Avaliações dos Passageiros</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalAvaliacoes').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;overflow-y:auto\">\n      <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px\">\n        <div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap\">\n          <select class=\"form-input\" id=\"avFiltroLinha\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todas as linhas</option></select>\n          <select class=\"form-input\" id=\"avFiltroMes\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os meses</option></select>\n          <select class=\"form-input\" id=\"avFiltroNota\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todas as notas</option><option value=\"5\">5 </option><option value=\"4\">4 </option><option value=\"3\">3 </option><option value=\"2\">2 </option><option value=\"1\">1 </option><option value=\"baixa\">≤ 3 (atenção)</option></select>\n        </div>\n        <button class=\"export-btn\" onclick=\"avgExportar()\" style=\"background:rgba(16,185,129,0.12);color:#10b981;border-color:rgba(16,185,129,0.3)\">Exportar (CSV)</button>\n      </div>\n      <div id=\"avgResumo\" style=\"margin-bottom:16px\"></div>\n      <div id=\"avgLista\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n";
+const HTML_MOTOR = "\n\n<!-- ===== TELA DE LOGIN (GESTOR) ===== -->\n<div id=\"loginOverlay\" style=\"position:fixed;inset:0;z-index:100000;background:#0f1115;display:flex;align-items:center;justify-content:center;padding:20px\">\n  <div id=\"loginChecando\" style=\"color:#8a90a0;font-size:14px\">Verificando acesso...</div>\n  <div id=\"loginBox\" style=\"display:none;width:100%;max-width:360px;background:#171a21;border:1px solid #262b36;border-radius:16px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,0.5)\">\n    <div style=\"text-align:center;margin-bottom:20px\">\n      <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:22px;color:#f5f5f5;letter-spacing:1px\" id=\"brandLogin\"></div>\n      <div style=\"font-size:10px;font-weight:400;color:#8a90a0;letter-spacing:3px\">FRETAMENTO</div>\n      <div style=\"margin-top:14px;font-size:13px;color:#8a90a0\">Acesso do Gestor</div>\n    </div>\n    <label style=\"display:block;font-size:11px;color:#8a90a0;margin-bottom:4px\">E-mail</label>\n    <input id=\"loginEmail\" type=\"email\" autocomplete=\"username\" placeholder=\"seu@email.com\"\n      onkeydown=\"if(event.key==='Enter'){event.preventDefault();document.getElementById('loginPassword').focus();}\"\n      style=\"width:100%;background:#0f1115;border:1px solid #262b36;border-radius:8px;padding:11px;color:#f5f5f5;font-size:14px;margin-bottom:12px\">\n    <label style=\"display:block;font-size:11px;color:#8a90a0;margin-bottom:4px\">Senha</label>\n    <div style=\"position:relative;margin-bottom:8px\">\n      <input id=\"loginPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"••••••••\"\n        style=\"width:100%;background:#0f1115;border:1px solid #262b36;border-radius:8px;padding:11px;padding-right:42px;color:#f5f5f5;font-size:14px\"\n        onkeydown=\"if(event.key==='Enter')fazerLogin()\">\n      <button type=\"button\" id=\"loginEye\" onclick=\"toggleSenha()\" title=\"Mostrar senha\"\n        style=\"position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;color:#8a90a0;font-size:18px;cursor:pointer;padding:6px;line-height:1\"><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-3px'><path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg></button>\n    </div>\n    <div id=\"loginErro\" style=\"min-height:18px;font-size:12px;color:#ef4444;margin-bottom:8px\"></div>\n    <button id=\"loginBtn\" onclick=\"fazerLogin()\"\n      style=\"width:100%;background:#f59e0b;color:#000;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif\">Entrar</button>\n    <div style=\"text-align:center;margin-top:14px\">\n      <a href=\"#\" onclick=\"esqueciSenha();return false\" style=\"font-size:12px;color:#8a90a0;text-decoration:none\">Esqueci minha senha</a>\n    </div>\n  </div>\n</div>\n\n\n\n<!-- MENU MOBILE -->\n<div class=\"mobile-menu\" id=\"mobileMenu\">\n  <div class=\"mobile-menu-backdrop\" onclick=\"document.getElementById('mobileMenu').classList.remove('open')\"></div>\n  <div class=\"mobile-menu-panel\">\n    <div class=\"mobile-menu-title\">MENU</div>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.15);border-color:var(--accent);color:var(--accent)\" onclick=\"openAddNovoModal();document.getElementById('mobileMenu').classList.remove('open')\">Adicionar Novo Passageiro</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);color:var(--accent)\" onclick=\"openServicosExtras();document.getElementById('mobileMenu').classList.remove('open')\">Serviços Extras</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:var(--green)\" onclick=\"openRoteirizador();document.getElementById('mobileMenu').classList.remove('open')\">Roteirizar</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(168,85,247,0.12);border-color:rgba(168,85,247,0.3);color:#a855f7\" onclick=\"openAvisos();document.getElementById('mobileMenu').classList.remove('open')\">Avisos</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(37,211,102,0.12);border-color:rgba(37,211,102,0.3);color:#25D366\" onclick=\"openChats();document.getElementById('mobileMenu').classList.remove('open')\">Chats</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);color:var(--accent2)\" onclick=\"openConfirmacoes();document.getElementById('mobileMenu').classList.remove('open')\">Confirmações</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#ef4444\" onclick=\"openReclamacoesGestor();document.getElementById('mobileMenu').classList.remove('open')\">Reclamações Cliente</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3);color:#f59e0b\" onclick=\"openAvaliacoes();document.getElementById('mobileMenu').classList.remove('open')\">Avaliações</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openConfig();document.getElementById('mobileMenu').classList.remove('open')\">Configurações</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openPainel();document.getElementById('mobileMenu').classList.remove('open')\">Painel Geral</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMapaGeral();document.getElementById('mobileMenu').classList.remove('open')\">Mapa Geral</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMotoristas();document.getElementById('mobileMenu').classList.remove('open')\">Motoristas</button>\n    <button class=\"mobile-menu-btn\" onclick=\"impAbrir();document.getElementById('mobileMenu').classList.remove('open')\" style=\"background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:var(--green)\">Importar Passageiros</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMotoristView();document.getElementById('mobileMenu').classList.remove('open')\">Visão Motorista</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openGerLinhas();document.getElementById('mobileMenu').classList.remove('open')\" style=\"background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);color:var(--accent2)\">Gerenciar Linhas</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openSemRota();document.getElementById('mobileMenu').classList.remove('open')\">Sem Rota</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportExcel();document.getElementById('mobileMenu').classList.remove('open')\">Exportar Excel</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportPDF();document.getElementById('mobileMenu').classList.remove('open')\">PDF Linha</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportBackup();document.getElementById('mobileMenu').classList.remove('open')\">Backup JSON</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openReport();document.getElementById('mobileMenu').classList.remove('open')\">Relatório</button>\n    <button class=\"mobile-menu-btn\" onclick=\"logout()\" style=\"background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#ef4444\">Sair</button>\n  </div>\n</div>\n\n<div class=\"tv-shell\" id=\"tvShell\"><aside class=\"tv-side\"><div class=\"tv-brand\"><img class=\"tv-brand-mark\" src=\"/marca/temvia-simbolo.png\" alt=\"temvia\" width=\"26\" height=\"26\"><img class=\"tv-brand-lockup\" src=\"/marca/temvia-horizontal.png\" alt=\"temvia\"><div class=\"tv-brand-txt\"><div class=\"tv-brand-sub\" id=\"tvContextoConta\">&nbsp;</div></div></div><nav class=\"tv-nav\" aria-label=\"Navegação principal\"><div class=\"tv-nav-grp\">Painel</div><button class=\"tv-nav-item\" type=\"button\" title=\"Painel Geral\" onclick=\"openPainel()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M5 20V11M12 20V4M19 20v-6'/></svg></span><span class=\"tv-lbl\">Painel Geral</span></button><div class=\"tv-nav-grp\">Operação</div><button class=\"tv-nav-item tv-on\" type=\"button\" title=\"Linhas e Rotas\" onclick=\"tvIrParaLinhas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 7h16M4 12h16M4 17h10'/></svg></span><span class=\"tv-lbl\">Linhas e Rotas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Roteirizador\" onclick=\"openRoteirizador()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 6h6l6 12h4'/><circle cx='4' cy='6' r='1.6'/><circle cx='20' cy='18' r='1.6'/></svg></span><span class=\"tv-lbl\">Roteirizador</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Rotas Extras Publicadas\" onclick=\"rtAbrirPublicadas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 6 9 17l-5-5'/><path d='M4 6h5'/></svg></span><span class=\"tv-lbl\">Rotas Extras Publicadas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Serviços Extras\" onclick=\"openServicosExtras()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 3v18'/><path d='M7.5 7h7a3 3 0 0 1 0 6H8.5a3 3 0 0 0 0 6H17'/></svg></span><span class=\"tv-lbl\">Serviços Extras</span><span id=\"seBadge\" class=\"tv-pill\" style=\"display:none\">0</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Passageiros sem Rota\" onclick=\"openSemRota()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='12' r='8.5'/><path d='M8.5 12h7'/></svg></span><span class=\"tv-lbl\">Passageiros sem Rota</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Mapa Geral\" onclick=\"openMapaGeral()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M9 4 3 6.5v13L9 17l6 3 6-2.5v-13L15 7 9 4Z'/><path d='M9 4v13M15 7v13'/></svg></span><span class=\"tv-lbl\">Mapa Geral</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Gerenciar Linhas\" onclick=\"openGerLinhas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x='3.5' y='4.5' width='17' height='15' rx='2.5'/><path d='M8 9h8M8 13h5'/></svg></span><span class=\"tv-lbl\">Gerenciar Linhas</span></button><div class=\"tv-nav-grp\">Pessoas</div><button class=\"tv-nav-item\" type=\"button\" title=\"Motoristas\" onclick=\"openMotoristas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x='3' y='7' width='18' height='10' rx='2.5'/><path d='M7 17v2M17 17v2M6.5 11h5'/></svg></span><span class=\"tv-lbl\">Motoristas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Importar Passageiros\" onclick=\"impAbrir()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 15V3'/><path d='M8 11l4 4 4-4'/><path d='M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2'/></svg></span><span class=\"tv-lbl\">Importar Passageiros</span></button><div class=\"tv-nav-grp\">Relacionamento</div><button class=\"tv-nav-item\" type=\"button\" title=\"Avisos\" onclick=\"openAvisos()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6'/><path d='M10 19a2.2 2.2 0 0 0 4 0'/></svg></span><span class=\"tv-lbl\">Avisos</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Chats\" onclick=\"openChats()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z'/></svg></span><span class=\"tv-lbl\">Chats</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Confirmações\" onclick=\"openConfirmacoes()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 6 9 17l-5-5'/></svg></span><span class=\"tv-lbl\">Confirmações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Reclamações\" onclick=\"openReclamacoesGestor()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 9v4.5M12 17v.5'/><path d='M10.3 3.9 2.6 17.4A2 2 0 0 0 4.3 20.5h15.4a2 2 0 0 0 1.7-3.1L13.7 3.9a2 2 0 0 0-3.4 0Z'/></svg></span><span class=\"tv-lbl\">Reclamações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Avaliações\" onclick=\"openAvaliacoes()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='m12 4 2.5 5 5.5.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.5-.8Z'/></svg></span><span class=\"tv-lbl\">Avaliações</span></button><div class=\"tv-nav-grp\">Análises</div><button class=\"tv-nav-item\" type=\"button\" title=\"Relatórios\" onclick=\"openReport()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M6.5 3.5h7l5 5v12a1.5 1.5 0 0 1-1.5 1.5H6.5A1.5 1.5 0 0 1 5 20.5v-15A1.5 1.5 0 0 1 6.5 3.5Z'/><path d='M13 3.5v5.5h5.5M8.5 13h7M8.5 17h5'/></svg></span><span class=\"tv-lbl\">Relatórios</span></button><div class=\"tv-nav-grp\">Sistema</div><button class=\"tv-nav-item\" type=\"button\" title=\"Configurações\" onclick=\"openConfig()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='12' r='3.2'/><path d='M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4'/></svg></span><span class=\"tv-lbl\">Configurações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Visão Motorista\" onclick=\"openMotoristView()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg></span><span class=\"tv-lbl\">Visão Motorista</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Backup\" onclick=\"exportBackup()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 3v12M8 11l4 4 4-4M4 19h16'/></svg></span><span class=\"tv-lbl\">Backup</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Restaurar Backup\" onclick=\"document.getElementById('restoreFile').click()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 21V9M8 13l4-4 4 4M4 5h16'/></svg></span><span class=\"tv-lbl\">Restaurar Backup</span></button><input type=\"file\" id=\"restoreFile\" accept=\".json\" style=\"display:none\" onchange=\"importBackup(event)\"></nav><div class=\"tv-side-foot\"><div class=\"tv-usermenu\" id=\"tvUserMenu\"><button type=\"button\" onclick=\"openConfig();tvToggleUser()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='12' r='3.2'/><path d='M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4'/></svg>Configurações</button><button type=\"button\" onclick=\"logout()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M15 17l5-5-5-5M20 12H9M11 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5'/></svg>Sair</button></div><div class=\"tv-avatar\" id=\"tvAvatar\">--</div><div class=\"tv-who\"><b id=\"tvUserNome\">Gestor</b><small id=\"tvUserPapel\">Administrador</small></div><button class=\"tv-iconbtn tv-usercaret\" type=\"button\" title=\"Menu do usuário\" onclick=\"tvToggleUser()\" style=\"width:26px;height:26px\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='5' r='1.3'/><circle cx='12' cy='12' r='1.3'/><circle cx='12' cy='19' r='1.3'/></svg></button></div></aside><div class=\"tv-main\"><header class=\"tv-top\"><button class=\"tv-iconbtn tv-topbar-only-desktop\" id=\"tvBtnRecolher\" type=\"button\" title=\"Recolher menu\" onclick=\"tvToggleSidebar()\"><svg id=\"tvSetaRecolher\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M14 6l-6 6 6 6'/></svg></button><button class=\"tv-iconbtn tv-mobile-only\" type=\"button\" title=\"Menu\" onclick=\"document.getElementById('mobileMenu').classList.toggle('open')\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 6h16M4 12h16M4 18h16'/></svg></button><div class=\"tv-crumb\">Operação <i>/</i> <b>Linhas e Rotas</b></div><div class=\"tv-search\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='11' cy='11' r='7'/><path d='m20 20-3.6-3.6'/></svg><input type=\"text\" id=\"searchInput\" oninput=\"filterSidebar()\" placeholder=\"Buscar passageiro, bairro, cidade ou ponto de embarque...\"></div><button class=\"tv-btn tv-btn-primary\" type=\"button\" onclick=\"openAddNovoModal()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 5v14M5 12h14'/></svg>Novo</button></header><div class=\"container\">\n  <aside class=\"sidebar\">\n    <div class=\"tv-rail-head\">\n      <div class=\"tv-rail-title\">Linhas e turnos</div>\n      <div class=\"tv-stats\">\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-func\">0</div><div class=\"tv-stat-l\">Ativos</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-lines\">0</div><div class=\"tv-stat-l\">Linhas</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-turnos\">0</div><div class=\"tv-stat-l\">Turnos</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-rotas\">0</div><div class=\"tv-stat-l\">Rotas</div></div>\n      </div>\n    </div>\n    <div class=\"turno-filter\" id=\"turnoFilterBar\">\n      <button class=\"turno-btn active\" onclick=\"setTurnoFilter('todos', this)\">Todos</button>\n    </div>\n    <div class=\"sidebar-label\">Status</div>\n    <div class=\"status-filter\" id=\"statusFilter\">\n      <button class=\"status-filter-btn active\" onclick=\"setStatusFilter('todos', this)\">Todos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ativo', this)\">Ativos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ferias', this)\">Férias</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('afastado', this)\">Afastados</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('desligado', this)\">Desligados</button>\n      <button class=\"status-filter-btn sem-rota\" onclick=\"setStatusFilter('sem-rota', this)\">Sem Rota</button>\n    </div>\n    <div class=\"sidebar-label\" style=\"margin-top:4px\">Linhas</div>\n    <div id=\"lineList\"></div>\n  </aside>\n\n  <main class=\"main\" id=\"mainContent\">\n    <div class=\"welcome\">\n      <div class=\"tv-empty-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 7h16M4 12h16M4 17h10'/></svg></div>\n      <h3>Selecione uma linha</h3>\n      <p>Escolha uma linha no painel ao lado para ver passageiros, horários e dados da rota.</p>\n    </div>\n  </main>\n</div></div></div>\n\n<!-- MODAL ADD/EDIT PASSAGEIRO -->\n<div class=\"modal-overlay\" id=\"modalOverlay\">\n  <div class=\"modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\" id=\"modalTitle\">Novo Passageiro</div>\n      <button class=\"modal-close\" onclick=\"closeModal()\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <input type=\"hidden\" id=\"editIdx\">\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Nome Completo</label>\n          <input class=\"form-input\" id=\"fNome\" type=\"text\" placeholder=\"Nome do funcionário\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Telefone</label>\n          <input class=\"form-input\" id=\"fTel\" type=\"text\" placeholder=\"(15) 99999-9999\">\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Endereço Residencial</label>\n        <input class=\"form-input\" id=\"fEndereco\" type=\"text\" placeholder=\"Rua, número, bairro\">\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Ponto de Embarque (se diferente)</label>\n        <input class=\"form-input\" id=\"fEmbarque\" type=\"text\" placeholder=\"Deixe vazio para usar endereço residencial\">\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Bairro</label>\n          <input class=\"form-input\" id=\"fBairro\" type=\"text\" placeholder=\"Bairro\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Cidade</label>\n          <input class=\"form-input\" id=\"fCidade\" type=\"text\" placeholder=\"Cidade\">\n        </div>\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\" id=\"turnoGroup\">\n          <label class=\"form-label\">Turno</label>\n          <select class=\"form-select\" id=\"fTurno\" onchange=\"updateLinhaOptions()\">\n            <option value=\"1°\">1° Turno — chegada 05:45</option>\n            <option value=\"2°\">2° Turno — chegada 14:45</option>\n            <option value=\"3°\">3° Turno — chegada 20:55</option>\n            <option value=\"A Definir\">A Definir (sem rota ainda)</option>\n          </select>\n        </div>\n        <div class=\"form-group\" id=\"linhaGroup\">\n          <label class=\"form-label\">Linha</label>\n          <select class=\"form-select\" id=\"fLinha\">\n          </select>\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Coordenadas do Ponto de Embarque <span style=\"color:var(--muted);font-size:10px;font-weight:400\">(lat, lng — ex: -23.514606, -47.516711)</span></label>\n        <input class=\"form-input\" id=\"fCoords\" type=\"text\" placeholder=\"-23.000000, -47.000000\" style=\"font-family:monospace;font-size:12px\" oninput=\"validateCoords()\">\n        <div id=\"fCoordsStatus\" style=\"font-size:11px;margin-top:4px;display:none\"></div>\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Status</label>\n          <select class=\"form-select\" id=\"fStatus\" onchange=\"toggleRetorno(); toggleSemRota()\">\n            <option value=\"ativo\">Ativo</option>\n            <option value=\"ferias\">Férias</option>\n            <option value=\"afastado\">Afastado</option>\n            <option value=\"desligado\">Desligado</option>\n            <option value=\"sem-rota\">Sem Rota (aguardando alocação)</option>\n          </select>\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Horário de Embarque</label>\n          <input class=\"form-input\" id=\"fHorario\" type=\"time\" placeholder=\"HH:MM\">\n        </div>\n      </div>\n      <div class=\"form-group\" id=\"retornoGroup\" style=\"display:none\">\n        <label class=\"form-label\">Data de Retorno Prevista</label>\n        <input class=\"form-input\" id=\"fRetorno\" type=\"date\">\n      </div>\n      <!-- Bloco duplicado de coordenadas ocultado: o campo fCoords acima é o oficial -->\n      <div class=\"form-group\" style=\"display:none\">\n        <input class=\"form-input\" id=\"fLat\" type=\"number\" step=\"any\" style=\"flex:1\">\n        <input class=\"form-input\" id=\"fLng\" type=\"number\" step=\"any\" style=\"flex:1\">\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" id=\"btnExcluirPass\" onclick=\"excluirPassageiroAtual()\" style=\"display:none;color:var(--red);border-color:rgba(239,68,68,0.4)\">Excluir</button>\n      <button class=\"btn-cancel\" id=\"btnSugerirModal\" onclick=\"sugerirDoModal()\" style=\"display:none;color:var(--green);border-color:rgba(16,185,129,0.5)\">Sugerir linha</button>\n      <button class=\"btn-cancel\" onclick=\"closeModal()\">Cancelar</button>\n      <button class=\"btn-save\" onclick=\"savePassageiro()\">Salvar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL SELECIONAR MOTORISTA -->\n<div class=\"modal-overlay\" id=\"modalMotorista\">\n  <div class=\"modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Atribuir Motorista</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMotorista').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-group\">\n        <label class=\"form-label\">Motorista de Entrada</label>\n        <select class=\"form-select\" id=\"fMotoristaEntrada\">\n          <option value=\"\">— A definir —</option>\n        </select>\n      </div>\n      <div class=\"form-group\" style=\"margin-top:12px\">\n        <label class=\"form-label\">Motorista de Saída <span style=\"color:var(--muted);font-size:11px;font-weight:400\">(deixe vazio se for o mesmo da entrada)</span></label>\n        <select class=\"form-select\" id=\"fMotoristaSaida\">\n          <option value=\"\">— Mesmo da entrada —</option>\n        </select>\n      </div>\n      <div style=\"text-align:center;margin-top:12px\">\n        <button class=\"export-btn\" onclick=\"document.getElementById('modalMotorista').classList.remove('open');openMotoristas()\">\n          Gerenciar cadastro de motoristas\n        </button>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalMotorista').classList.remove('open')\">Cancelar</button>\n      <button class=\"btn-save\" onclick=\"saveMotorista()\">Salvar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL GERENCIAR MOTORISTAS -->\n<div class=\"modal-overlay\" id=\"modalMotoristasGerenciar\">\n  <div class=\"modal\" style=\"width:520px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Cadastro de Motoristas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Nome</label>\n          <input class=\"form-input\" id=\"fMNome\" type=\"text\" placeholder=\"Nome do motorista\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Telefone</label>\n          <input class=\"form-input\" id=\"fMTel\" type=\"text\" placeholder=\"(15) 99999-9999\">\n        </div>\n      </div>\n      <div style=\"font-size:11px;color:var(--muted);margin:-8px 0 10px\">O PIN e criado pelo proprio motorista no primeiro acesso no app.</div>\n      <button class=\"btn-save\" style=\"width:100%;margin-bottom:16px\" onclick=\"addMotorista()\">Adicionar Motorista</button>\n      <div id=\"motoristaListBody\"></div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL PAINEL GERAL -->\n<div class=\"modal-overlay\" id=\"modalPainel\">\n  <div class=\"modal\" style=\"width:780px;max-width:97vw\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Painel Geral</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"painelBody\" style=\"padding:16px 20px\"></div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- ===== MODAL IMPORTAÇÃO DE PASSAGEIROS ===== -->\n<div class=\"modal-overlay\" id=\"modalImport\">\n  <div class=\"modal\" style=\"width:880px;max-width:95vw\">\n    <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px\">\n      <div style=\"font-family:Barlow;font-weight:800;font-size:20px\">Importar Passageiros</div>\n      <button onclick=\"document.getElementById('modalImport').classList.remove('open')\" style=\"background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer\">✕</button>\n    </div>\n\n    <div id=\"impPasso1\">\n      <p style=\"font-size:14px;color:var(--muted);margin-bottom:14px\">\n        Importe seus passageiros a partir de uma planilha. Baixe o modelo, preencha e envie (aceita <b>Excel .xlsx</b> ou <b>CSV</b>).\n        As coordenadas (lat, lng) devem estar preenchidas na planilha.\n      </p>\n      <button class=\"add-btn\" onclick=\"impBaixarModelo()\" style=\"background:rgba(59,130,246,0.12);color:var(--accent2);border:1px solid rgba(59,130,246,0.3);margin-bottom:14px\">Baixar planilha-modelo</button>\n\n      <div style=\"border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;background:var(--surface2)\">\n        <input type=\"file\" id=\"impArquivo\" accept=\".xlsx,.xls,.csv\" style=\"display:none\" onchange=\"impLerArquivo(event)\">\n        <div style=\"font-size:40px;margin-bottom:8px\"></div>\n        <button class=\"add-btn\" onclick=\"document.getElementById('impArquivo').click()\">Escolher arquivo (.xlsx ou .csv)</button>\n        <div id=\"impNomeArquivo\" style=\"font-size:12px;color:var(--muted);margin-top:8px\"></div>\n      </div>\n      <div id=\"impErro\" style=\"color:var(--red);font-size:13px;margin-top:10px\"></div>\n    </div>\n\n    <div id=\"impPasso2\" style=\"display:none\">\n      <div id=\"impResumo\" style=\"font-size:14px;margin-bottom:12px\"></div>\n      <div style=\"max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:10px\">\n        <table style=\"width:100%;border-collapse:collapse;font-size:12px\" id=\"impPreviaTabela\"></table>\n      </div>\n      <div id=\"impAvisos\" style=\"font-size:12px;color:var(--accent);margin-top:10px\"></div>\n\n      <div style=\"margin-top:16px;padding-top:14px;border-top:1px solid var(--border)\">\n        <div style=\"font-size:13px;font-weight:700;margin-bottom:8px\">Como aplicar a importação?</div>\n        <label style=\"display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;cursor:pointer\">\n          <input type=\"radio\" name=\"impModo\" value=\"acrescentar\" checked> Acrescentar aos passageiros já existentes\n        </label>\n        <label style=\"display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer\">\n          <input type=\"radio\" name=\"impModo\" value=\"substituir\"> Substituir tudo (apaga os atuais e põe os importados)\n        </label>\n      </div>\n\n      <div style=\"display:flex;gap:10px;margin-top:16px\">\n        <button class=\"add-btn\" onclick=\"impVoltar()\" style=\"background:var(--surface2);color:var(--text);border:1px solid var(--border)\">← Voltar</button>\n        <button class=\"add-btn\" id=\"impBtnConfirmar\" onclick=\"impConfirmar()\" style=\"flex:1;background:var(--green);color:#fff\">Confirmar importação</button>\n      </div>\n    </div>\n\n    <div id=\"impStatus\" style=\"font-size:13px;text-align:center;margin-top:12px\"></div>\n  </div>\n</div>\n\n<!-- MODAL GERENCIAR LINHAS -->\n<div class=\"modal-overlay\" id=\"modalGerLinhas\">\n  <div class=\"modal\" style=\"width:760px;max-width:95vw\">\n    <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px\">\n      <div style=\"font-family:Barlow;font-weight:800;font-size:20px\">Gerenciar Linhas</div>\n      <button onclick=\"document.getElementById('modalGerLinhas').classList.remove('open')\" style=\"background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer\">✕</button>\n    </div>\n\n    <!-- Formulário de criar/editar -->\n    <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px\">\n      <div style=\"font-size:13px;font-weight:700;margin-bottom:10px\" id=\"glFormTitulo\">Criar nova linha</div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Número da Linha</label>\n          <input class=\"form-input\" id=\"glLinha\" type=\"text\" placeholder=\"Ex: 8\" />\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Turno</label>\n          <select class=\"form-select\" id=\"glTurno\">\n            <option value=\"1°\">1° Turno</option>\n            <option value=\"2°\">2° Turno</option>\n            <option value=\"3°\">3° Turno</option>\n            <option value=\"__novo__\">Outro turno (digitar)</option>\n          </select>\n        </div>\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\" id=\"glTurnoNovoGroup\" style=\"display:none\">\n          <label class=\"form-label\">Nome do novo turno</label>\n          <input class=\"form-input\" id=\"glTurnoNovo\" type=\"text\" placeholder=\"Ex: ADM, Especial\" />\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Veículo</label>\n          <select class=\"form-select\" id=\"glVeiculo\"></select>\n          <div id=\"glVeiculoDica\" style=\"font-size:10.5px;color:var(--muted);margin-top:4px\"></div>\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Motorista (opcional)</label>\n          <input class=\"form-input\" id=\"glMotorista\" type=\"text\" placeholder=\"Nome do motorista\" />\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Cor da linha</label>\n          <div id=\"glCores\" class=\"gl-cores\"></div>\n        </div>\n      </div>\n      <div style=\"display:flex;gap:8px;margin-top:8px\">\n        <button class=\"add-btn\" id=\"glBtnSalvar\" onclick=\"glSalvar()\" style=\"flex:1;background:var(--green);color:#fff\">Criar linha</button>\n        <button class=\"add-btn\" id=\"glBtnCancelar\" onclick=\"glCancelarEdicao()\" style=\"display:none;background:var(--surface3);color:var(--text);border:1px solid var(--border)\">Cancelar edição</button>\n      </div>\n      <div id=\"glFormMsg\" style=\"font-size:12px;margin-top:8px\"></div>\n    </div>\n\n    <!-- Lista de linhas existentes -->\n    <div style=\"font-size:13px;font-weight:700;margin-bottom:8px\">Linhas cadastradas</div>\n    <div id=\"glLista\" style=\"max-height:320px;overflow:auto\"></div>\n  </div>\n</div>\n\n<!-- MODAL CONFIGURAÇÕES (API Key) -->\n<div class=\"modal-overlay\" id=\"modalConfig\">\n  <div class=\"modal\" style=\"width:480px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Configurações</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalConfig').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Google Maps API Key</div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Chave de API</label>\n          <input class=\"form-input config-key-input\" id=\"fApiKey\" type=\"password\"\n            placeholder=\"AIza...\" autocomplete=\"off\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:6px\">\n            A chave é salva apenas neste navegador (localStorage). Nunca é enviada para nossos servidores.\n          </div>\n        </div>\n        <button class=\"opt-btn\" onclick=\"saveApiKey()\">Salvar chave</button>\n        <div id=\"apiKeyStatus\" class=\"opt-status\"></div>\n      </div>\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Dados da Empresa</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          Estas configurações valem para todo o sistema. Ao salvar, são gravadas no servidor.\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Nome da empresa</label>\n          <input class=\"form-input\" id=\"cfgNome\" type=\"text\" placeholder=\"Ex.: Redentor Fretamento\">\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Operação (empresa atendida)</label>\n          <input class=\"form-input\" id=\"cfgOperacaoNome\" type=\"text\" placeholder=\"Ex.: Toyota\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\">\n            Aparece no cabeçalho do PDF, abaixo do nome da transportadora. Em branco, usa o nome da operação (DSV, Evamo).\n          </div>\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\" id=\"lblWhatsCliente\"></label>\n          <input class=\"form-input\" id=\"cfgWhatsCliente\" type=\"text\" placeholder=\"Ex.: 15 99999-9999\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\" id=\"subWhatsCliente\"></div>\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">WhatsApp da Redentor (transportadora)</label>\n          <input class=\"form-input\" id=\"cfgWhatsRedentor\" type=\"text\" placeholder=\"Ex.: 15 99999-9999\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\">Contato da Redentor (transportadora). Aparece no botão \"Falar com Gestor (Redentor)\" do passageiro.</div>\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Senha da empresa cliente</label>\n          <input class=\"form-input\" id=\"cfgSenhaCliente\" type=\"text\" placeholder=\"Senha do app da empresa cliente\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\">Senha pedida na tela de entrada do app da empresa cliente. Troque quando precisar.</div>\n        </div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Logins da empresa cliente</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:8px\">Uma conta por pessoa. Ela mesma troca a senha depois, pelo \"Esqueci minha senha\" — você não precisa saber a senha de ninguém.</div>\n        <div id=\"acessosLista\" style=\"margin-bottom:10px\"></div>\n        <div style=\"display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end\">\n          <div class=\"config-field\" style=\"flex:1;min-width:120px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">Nome</label>\n            <input class=\"form-input\" id=\"novoAcNome\" type=\"text\" placeholder=\"Maria Silva\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1.4;min-width:150px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">E-mail</label>\n            <input class=\"form-input\" id=\"novoAcEmail\" type=\"email\" placeholder=\"maria@empresa.com\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:120px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">Senha inicial</label>\n            <input class=\"form-input\" id=\"novoAcSenha\" type=\"text\" placeholder=\"mín. 6 caracteres\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <button class=\"add-btn\" id=\"novoAcBtn\" onclick=\"criarAcessoCliente()\" style=\"font-size:12px;padding:8px 14px\">Criar</button>\n        </div>\n        <div id=\"acessosMsg\" style=\"font-size:12px;margin-top:8px;min-height:16px\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Frota</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          A capacidade de cada linha vem daqui. Informe os assentos do veículo e quantos ficam\n          reservados à tripulação — o sistema calcula quantos passageiros cabem.\n        </div>\n        <div id=\"frotaLista\" style=\"margin-bottom:12px\"></div>\n        <div class=\"fr-form\">\n          <div class=\"fr-campo\" style=\"flex:1.1;min-width:120px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Tipo</label>\n            <select class=\"form-input\" id=\"frTipo\" style=\"padding:8px 10px;font-size:13px\">\n              <option value=\"Carro\">Carro</option>\n              <option value=\"Van\" selected>Van</option>\n              <option value=\"Micro-ônibus\">Micro-ônibus</option>\n              <option value=\"Ônibus\">Ônibus</option>\n            </select>\n          </div>\n          <div class=\"fr-campo\" style=\"flex:1.6;min-width:150px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Modelo</label>\n            <input class=\"form-input\" id=\"frModelo\" type=\"text\" placeholder=\"Ex.: Mercedes-Benz Sprinter\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:1;min-width:110px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Apelido</label>\n            <input class=\"form-input\" id=\"frApelido\" type=\"text\" placeholder=\"Ex.: Van 07\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 96px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Assentos</label>\n            <input class=\"form-input\" id=\"frAssentos\" type=\"number\" min=\"1\" value=\"16\" oninput=\"frCalcular()\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 104px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Tripulação</label>\n            <input class=\"form-input\" id=\"frTripulacao\" type=\"number\" min=\"0\" value=\"1\" oninput=\"frCalcular()\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 118px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Passageiros</label>\n            <input class=\"form-input\" id=\"frCapacidade\" type=\"number\" min=\"0\" disabled style=\"padding:8px 10px;font-size:13px;font-weight:700\">\n          </div>\n        </div>\n        <label class=\"fr-manual\">\n          <input type=\"checkbox\" id=\"frManual\" onchange=\"frCalcular()\">\n          Ajustar a capacidade manualmente\n          <span style=\"color:var(--muted);font-weight:400\">— use quando o veículo perdeu poltronas (área PCD, por exemplo)</span>\n        </label>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <button class=\"add-btn\" id=\"frBtnSalvar\" onclick=\"frSalvar()\" style=\"flex:1\">Adicionar veículo</button>\n          <button class=\"btn-cancel\" id=\"frBtnCancelar\" onclick=\"frCancelar()\" style=\"display:none\">Cancelar edição</button>\n        </div>\n        <div id=\"frMsg\" style=\"font-size:12px;margin-top:8px;min-height:16px\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Horários de chegada por turno</div>\n        <div style=\"display:flex;gap:8px;flex-wrap:wrap\">\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">1º Turno</label>\n            <input class=\"form-input\" id=\"cfgT1\" type=\"time\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">2º Turno</label>\n            <input class=\"form-input\" id=\"cfgT2\" type=\"time\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">3º Turno</label>\n            <input class=\"form-input\" id=\"cfgT3\" type=\"time\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">ADM</label>\n            <input class=\"form-input\" id=\"cfgTA\" type=\"time\">\n          </div>\n        </div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Garagem (início da rota)</div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Coordenadas (lat, lng)</label>\n          <input class=\"form-input\" id=\"cfgGarCoords\" type=\"text\" placeholder=\"-23.5146, -47.5167\">\n        </div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Destino (empresa/cliente)</div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Coordenadas (lat, lng)</label>\n          <input class=\"form-input\" id=\"cfgDestCoords\" type=\"text\" placeholder=\"-23.4429, -47.3896\">\n        </div>\n\n        <button class=\"opt-btn\" style=\"margin-top:14px\" onclick=\"salvarEmpresaConfig()\">Salvar dados da empresa</button>\n        <div id=\"cfgEmpresaStatus\" class=\"opt-status\"></div>\n        <div style=\"font-size:11px;color:var(--muted);margin-top:8px\">\n          ℹ️ Os endereços em texto (telas e PDFs) ainda são ajustados no código por enquanto. As coordenadas e horários acima já têm efeito imediato no sistema.\n        </div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalConfig').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL OTIMIZAÇÃO DE ROTA -->\n<div class=\"modal-overlay\" id=\"modalOtimizar\">\n  <div class=\"modal\" style=\"width:640px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\" id=\"otimizarTitle\">Otimização inteligente da rota</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Parâmetros da operação</div>\n        <div class=\"ot-fatos\" id=\"otFatos\"></div>\n      </div>\n\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Ações</div>\n        <button class=\"opt-btn\" id=\"btnAnalisarRota\" onclick=\"analisarMelhorRota()\">\n          Analisar melhor rota\n        </button>\n        <button class=\"opt-btn opt-btn-secondary\" id=\"btnRecalcHorarios\" onclick=\"recalcularApenasHorarios()\">\n          Recalcular horários (manter ordem atual)\n        </button>\n        <div class=\"ot-passos\" id=\"otPassos\"></div>\n        <div id=\"optStatus\" class=\"opt-status\">Aguardando...</div>\n      </div>\n\n      <div class=\"opt-section\" id=\"optResultSection\" style=\"display:none\">\n        <div class=\"opt-title\">Resultado</div>\n        <div id=\"optResultBody\"></div>\n      </div>\n\n      <div class=\"opt-section\" id=\"optMapSection\" style=\"display:none\">\n        <div class=\"opt-title\">Mapa da rota</div>\n        <div id=\"optMapDiv\" style=\"width:100%;height:320px;border-radius:10px;overflow:hidden;border:1px solid var(--border)\"></div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" id=\"btnManterAtual\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">Fechar</button>\n      <button class=\"export-btn\" id=\"btnVerMapa\" style=\"display:none\" onclick=\"toggleOptMap()\">Ver mapa</button>\n      <button class=\"btn-save\" id=\"btnAplicar\" style=\"display:none\" onclick=\"aplicarOtimizacao()\">Aplicar otimização</button>\n    </div>\n  </div>\n</div>\n\n<!-- MOTORISTA VIEW -->\n<div class=\"moto-overlay\" id=\"motoView\">\n  <div class=\"moto-header\">\n    <div>\n      <div class=\"moto-title\">Visão do Motorista</div>\n      <div class=\"moto-subtitle\">Selecione sua linha para iniciar a rota</div>\n    </div>\n    <button class=\"moto-back\" onclick=\"document.getElementById('motoView').classList.remove('open')\">Fechar</button>\n  </div>\n  <div class=\"moto-body\">\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Motorista</label>\n      <select class=\"moto-select\" id=\"motoSelectMotorista\" onchange=\"motoFilterLinhas()\">\n        <option value=\"\">— Todos os motoristas —</option>\n      </select>\n    </div>\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Linha e Turno</label>\n      <select class=\"moto-select\" id=\"motoSelectLinha\" onchange=\"motoLoadRota()\">\n        <option value=\"\">— Selecione uma linha —</option>\n      </select>\n    </div>\n    <div id=\"motoRotaContent\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL MAPA GERAL -->\n<div class=\"modal-overlay\" id=\"modalMapaGeral\">\n  <div class=\"modal\" style=\"max-width:1100px;width:97%;height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\" style=\"flex-shrink:0\">\n      <div class=\"modal-title\">Mapa Geral de Rotas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMapaGeral').classList.remove('open')\">×</button>\n    </div>\n    <div style=\"flex-shrink:0;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center\">\n      <!-- Turno filter -->\n      <div style=\"display:flex;gap:6px;align-items:center\" id=\"mgTurnoBar\">\n        <span style=\"font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px\">Turno:</span>\n      </div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Line checkboxes -->\n      <div style=\"display:flex;gap:6px;align-items:center;flex-wrap:wrap\" id=\"mgLinhasCheck\"></div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Select all / none -->\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectAll()\">Todas</button>\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectNone()\">Nenhuma</button>\n      <!-- Route toggle -->\n      <div style=\"margin-left:auto;display:flex;gap:8px;align-items:center\">\n        <label style=\"font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px\">\n          <input type=\"checkbox\" id=\"mgShowRoutes\" checked onchange=\"renderMapaGeral()\" style=\"cursor:pointer\">\n          Mostrar rotas traçadas\n        </label>\n      </div>\n    </div>\n    <div style=\"flex:1;position:relative;min-height:0\">  <div id=\"mapaGeralDiv\" style=\"position:absolute;inset:0\"></div>  <div id=\"mgVazio\" style=\"position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--bg);z-index:2;padding:24px\">    <div style=\"font-size:15px;font-weight:600;margin-bottom:6px\">Selecione a rota desejada</div>    <div style=\"font-size:13px;color:var(--muted);max-width:380px;line-height:1.6\">Marque as linhas que quer ver no mapa, ou use <b>Todas</b> ali em cima.</div>  </div></div>\n    <div id=\"mgLegend\" style=\"flex-shrink:0;padding:10px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;font-size:12px\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL ROTAS EXTRAS -->\n<div class=\"modal-overlay\" id=\"modalRotasExtras\">\n  <div class=\"modal\" style=\"max-width:800px;width:95%\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Rotas Extras</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalRotasExtras').classList.remove('open')\">×</button>\n    </div>\n    <div class=\"modal-body\">\n      <!-- Lista de rotas extras existentes -->\n      <div id=\"rotasExtrasList\" style=\"margin-bottom:16px\"></div>\n      <!-- Criar nova rota extra -->\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px\">\n        <div style=\"font-weight:700;font-size:14px;margin-bottom:14px;color:var(--accent)\">Nova Rota Extra</div>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px\">\n          <div>\n            <label class=\"form-label\">Nome da Rota</label>\n            <input class=\"form-input\" id=\"reNome\" placeholder=\"Ex: Extra Sexta 02/05\">\n          </div>\n          <div>\n            <label class=\"form-label\">Data</label>\n            <input class=\"form-input\" type=\"date\" id=\"reData\">\n          </div>\n        </div>\n        <div style=\"background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;color:var(--muted)\">\n          <strong>Início:</strong> Garagem Redentor &nbsp;→&nbsp; Passageiros &nbsp;→&nbsp; <strong>Destino:</strong> Empresa\n        </div>\n        <label class=\"form-label\">Buscar e selecionar passageiros</label>\n        <input class=\"form-input\" id=\"reBusca\" placeholder=\"Digite nome, bairro ou cidade...\" oninput=\"filtrarPassRotaExtra()\" style=\"margin-bottom:10px\">\n        <div id=\"reResultados\" style=\"max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px\"></div>\n        <div style=\"margin-bottom:12px\">\n          <div style=\"font-size:12px;color:var(--muted);margin-bottom:6px\">Selecionados:</div>\n          <div id=\"reSelecionados\" style=\"display:flex;flex-wrap:wrap;gap:6px;min-height:32px\"></div>\n        </div>\n        <button class=\"add-btn\" onclick=\"criarRotaExtra()\" style=\"width:100%\">Criar Rota Extra</button>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL SEM ROTA -->\n<div class=\"modal-overlay\" id=\"modalSemRota\">\n  <div class=\"modal\" style=\"max-width:700px;width:95%\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Passageiros Sem Rota</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalSemRota').classList.remove('open')\">×</button>\n    </div>\n    <div class=\"modal-body\">\n      <div style=\"font-size:13px;color:var(--muted);margin-bottom:12px\">\n        Clique nos passageiros para selecioná-los, depois crie uma rota extra ou aloque em uma linha existente.\n      </div>\n      <div id=\"semRotaActionsBar\" style=\"display:none;gap:8px;margin-bottom:12px;flex-wrap:wrap\">\n        <button onclick=\"criarRotaExtraDeSemRota()\" class=\"add-btn\" style=\"background:rgba(236,72,153,0.8)\">Criar Rota Extra com Selecionados</button>\n        <button onclick=\"alocarTodosParaRota()\" class=\"export-btn\" style=\"color:var(--accent);border-color:var(--accent)\">Alocar Selecionados em Linha</button>\n        <button onclick=\"semRotaSelecionados&&semRotaSelecionados.clear();renderSemRotaList()\" class=\"export-btn\" style=\"color:var(--muted)\">Limpar seleção</button>\n      </div>\n      <div id=\"semRotaList\"></div>\n      <!-- Alocação -->\n      <div id=\"semRotaAlocarBox\" style=\"display:none;background:var(--surface2);border:1px solid var(--accent);border-radius:12px;padding:14px;margin-top:14px\">\n        <div style=\"font-weight:600;font-size:13px;margin-bottom:10px\">Alocar <span id=\"semRotaAlocarNome\" style=\"color:var(--accent)\"></span> para:</div>\n        <div style=\"display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end\">\n          <div>\n            <label class=\"form-label\">Linha e Turno</label>\n            <select class=\"form-input\" id=\"semRotaLinhaSelect\"></select>\n          </div>\n          <button class=\"add-btn\" onclick=\"confirmarAlocacao()\">Confirmar</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL SERVIÇOS EXTRAS -->\n<div class=\"modal-overlay\" id=\"modalServicosExtras\">\n  <div class=\"modal-box\" style=\"max-width:900px;width:96%;max-height:92vh;display:flex;flex-direction:column;overflow:hidden\">\n    <div class=\"modal-header\" style=\"flex-shrink:0\">\n      <div class=\"modal-title\">Serviços Extras</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalServicosExtras').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:0;display:flex;flex-direction:column;flex:1;overflow:hidden\">\n\n      <!-- ABAS -->\n      <div style=\"display:flex;border-bottom:1px solid var(--border);background:var(--surface)\">\n        <button id=\"seTab1\" onclick=\"seAba('lancar')\" style=\"flex:1;padding:12px;background:var(--accent);color:#000;border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Lançar</button>\n        <button id=\"seTab2\" onclick=\"seAba('historico')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Histórico</button>\n        <button id=\"seTab4\" onclick=\"seAba('solicitacoes')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer;position:relative\">Solicitações<span id=\"seTabBadge\" style=\"display:none;position:absolute;top:6px;right:6px;background:var(--red);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:800;align-items:center;justify-content:center;font-family:'Barlow',sans-serif\">0</span></button>\n        <button id=\"seTab5\" onclick=\"seAba('cadastro')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer;position:relative\">Cadastro<span id=\"cadBadge\" style=\"display:none;position:absolute;top:6px;right:6px;background:var(--accent2);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:800;align-items:center;justify-content:center;font-family:'Barlow',sans-serif\">0</span></button>\n        <button id=\"seTab3\" onclick=\"seAba('relatorio')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Relatórios</button>\n      </div>\n\n      <!-- ABA LANÇAR -->\n      <div id=\"seAbaLancar\" style=\"padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px\">\n          <div>\n            <label class=\"form-label\">Data do Serviço</label>\n            <input class=\"form-input\" type=\"date\" id=\"seData\">\n          </div>\n          <div>\n            <label class=\"form-label\">Horário de Atendimento</label>\n            <input class=\"form-input\" type=\"time\" id=\"seHorario\">\n          </div>\n          <div>\n            <label class=\"form-label\">Tipo de Serviço</label>\n            <select class=\"form-input\" id=\"seTipo\" onchange=\"seTipoChange()\"></select>\n          </div>\n          <div>\n            <label class=\"form-label\">Turno</label>\n            <select class=\"form-input\" id=\"seDestino\">\n              <option value=\"\">— Selecione —</option>\n              <option value=\"1º Turno\">1º Turno</option>\n              <option value=\"2º Turno\">2º Turno</option>\n              <option value=\"3º Turno\">3º Turno</option>\n              <option value=\"Diurno\">Diurno</option>\n              <option value=\"Noturno\">Noturno</option>\n              <option value=\"Adm\">Adm</option>\n            </select>\n          </div>\n          <div>\n            <label class=\"form-label\">Roteiro</label>\n            <select class=\"form-input\" id=\"seRoteiro\">\n              <option value=\"\">— Selecione —</option>\n              <option value=\"Entrada\">Entrada</option>\n              <option value=\"Saída\">Saída</option>\n              <option value=\"Ida e Volta\">Ida e Volta</option>\n            </select>\n          </div>\n          <div>\n            <label class=\"form-label\">Adicional (R$)</label>\n            <input class=\"form-input\" type=\"number\" id=\"seAdicional\" value=\"0\" onchange=\"seCalcularTotal()\">\n          </div>\n          <div style=\"background:var(--surface2);border-radius:10px;padding:14px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center\">\n            <div style=\"font-size:11px;color:var(--muted);margin-bottom:4px\">TOTAL DO SERVIÇO</div>\n            <div id=\"seTotal\" style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:28px;color:var(--accent)\">R$ 0,00</div>\n          </div>\n        </div>\n\n        <!-- Lista de veículos dinâmica -->\n        <div style=\"margin-bottom:12px\">\n          <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:8px\">\n            <label class=\"form-label\" style=\"margin:0\">Veículos e Motoristas</label>\n            <button onclick=\"seAdicionarVeiculo()\" class=\"export-btn\" style=\"font-size:12px;padding:5px 12px;color:var(--accent);border-color:var(--accent)\">＋ Adicionar Veículo</button>\n          </div>\n          <div id=\"seVeiculosList\"></div>\n        </div>\n\n        <!-- Motoristas dinâmicos (1 por veículo) -->\n        <div id=\"seMotoristasList\" style=\"margin-bottom:12px\"></div>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px\">\n          <div>\n            <label class=\"form-label\">Observação</label>\n            <input class=\"form-input\" id=\"seObs\" placeholder=\"Ex: Saída extra demissão\">\n          </div>\n          <div>\n            <label class=\"form-label\">Repetição — Marque os dias</label>\n            <div id=\"seCalendarioRepet\" style=\"background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px\"></div>\n          </div>\n        </div>\n        <div style=\"display:flex;gap:10px\">\n          <button class=\"add-btn\" style=\"flex:1\" onclick=\"seSalvar()\">Salvar Serviço</button>\n          <button class=\"btn-cancel\" onclick=\"seLimpar()\">Limpar</button>\n        </div>\n        <div id=\"seMsg\" style=\"margin-top:10px;font-size:13px;text-align:center\"></div>\n      </div>\n\n      <!-- ABA HISTÓRICO -->\n      <div id=\"seAbaHistorico\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap\">\n          <input class=\"form-input\" type=\"month\" id=\"seFiltroMes\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\">\n          <select class=\"form-input\" id=\"seFiltroTipo\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\"></select>\n          <select class=\"form-input\" id=\"seFiltroMotorista\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\">\n            <option value=\"\">Todos os motoristas</option>\n          </select>\n          <button class=\"export-btn\" onclick=\"seAba('relatorio')\" style=\"color:var(--accent);border-color:var(--accent)\">Por Período</button>\n          <button class=\"export-btn\" onclick=\"seExportarExcel('mes')\" style=\"color:var(--accent);border-color:var(--accent)\">Excel Mês</button>\n        </div>\n        <div id=\"seResumoHistorico\" style=\"margin-bottom:12px\"></div>\n        <div id=\"seListaHistorico\" style=\"max-height:420px;overflow-y:auto\"></div>\n      </div>\n\n      <!-- ABA RELATÓRIOS -->\n      <div id=\"seAbaRelatorio\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px\">\n          <div style=\"background:var(--surface2);border-radius:12px;padding:16px\">\n            <div style=\"font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;color:var(--accent);margin-bottom:12px\">Relatório por Período</div>\n            <p style=\"font-size:12px;color:var(--muted);margin-bottom:12px\">Escolha o intervalo de datas para gerar o relatório.</p>\n            <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px\">\n              <div>\n                <div style=\"font-size:10px;color:var(--muted);margin-bottom:4px\">DATA INÍCIO</div>\n                <input class=\"form-input\" type=\"date\" id=\"seDataInicio\">\n              </div>\n              <div>\n                <div style=\"font-size:10px;color:var(--muted);margin-bottom:4px\">DATA FIM</div>\n                <input class=\"form-input\" type=\"date\" id=\"seDataFim\">\n              </div>\n            </div>\n            <button class=\"add-btn\" style=\"width:100%\" onclick=\"seExportarExcel('periodo')\">Gerar Excel por Período</button>\n          </div>\n          <div style=\"background:var(--surface2);border-radius:12px;padding:16px\">\n            <div style=\"font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;color:var(--green);margin-bottom:12px\">Relatório Mensal</div>\n            <p style=\"font-size:12px;color:var(--muted);margin-bottom:12px\">Todos os serviços do mês. Enviar no dia 1º para aprovação.</p>\n            <input class=\"form-input\" type=\"month\" id=\"seDataMes\" style=\"margin-bottom:10px\">\n            <button class=\"add-btn\" style=\"width:100%;background:var(--green)\" onclick=\"seExportarExcel('mes')\">Gerar Excel Mensal</button>\n          </div>\n        </div>\n        <div id=\"seResumoRelatorio\"></div>\n      </div>\n\n      <!-- ABA SOLICITAÇÕES -->\n      <div id=\"seAbaSolicitacoes\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center\">\n          <select class=\"form-input\" id=\"solFiltroStatus\" style=\"flex:1;min-width:140px\" onchange=\"solRenderGestor()\">\n            <option value=\"\">Todos os status</option>\n            <option value=\"pendente\">Pendentes</option>\n            <option value=\"confirmada\">Confirmadas</option>\n            <option value=\"atendida\">Atendidas</option>\n            <option value=\"cancelada\">Canceladas</option>\n          </select>\n          <input class=\"form-input\" type=\"month\" id=\"solFiltroMes\" style=\"flex:1;min-width:130px\" onchange=\"solRenderGestor()\">\n          <span id=\"solResumoCount\" style=\"font-size:12px;color:var(--muted)\"></span>\n        </div>\n        <div id=\"solListaGestor\" style=\"max-height:460px;overflow-y:auto\"></div>\n      </div>\n\n      <!-- ABA CADASTRO -->\n      <div id=\"seAbaCadastro\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center\">\n          <select class=\"form-input\" id=\"cadGestorFiltroTipo\" style=\"flex:1;min-width:140px\" onchange=\"cadGestorRender()\">\n            <option value=\"\">Todos os tipos</option>\n            <option value=\"novo\">Novo Passageiro</option>\n            <option value=\"turno\">Alteração de Turno</option>\n            <option value=\"endereco\">Alteração de Endereço</option>\n            <option value=\"desligamento\">Desligamento</option>\n          </select>\n          <select class=\"form-input\" id=\"cadGestorFiltroStatus\" style=\"flex:1;min-width:120px\" onchange=\"cadGestorRender()\">\n            <option value=\"\">Todos os status</option>\n            <option value=\"pendente\">Pendentes</option>\n            <option value=\"atendida\">Atendidas</option>\n          </select>\n          <span id=\"cadGestorCount\" style=\"font-size:12px;color:var(--muted)\"></span>\n        </div>\n        <div id=\"cadGestorLista\" style=\"max-height:460px;overflow-y:auto\"></div>\n      </div>\n\n    </div>\n  </div>\n</div>\n<div class=\"modal-overlay\" id=\"modalReport\">\n  <div class=\"modal report-modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Relatório de Alterações</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"reportBody\">\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">Fechar</button>\n      <button class=\"btn-save\" onclick=\"clearLog()\">Limpar histórico</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL ROTEIRIZADOR -->\n<div class=\"modal-overlay\" id=\"modalRoteirizador\">\n  <div class=\"modal\" style=\"max-width:1400px;width:97%;max-height:94vh;display:flex;flex-direction:column;padding:0;overflow:hidden\">\n    <div class=\"modal-header\" style=\"padding:16px 20px;flex-shrink:0\">\n      <div class=\"modal-title\">Roteirizador Inteligente</div>\n      <div style=\"display:flex;gap:8px;align-items:center\">\n        <button onclick=\"rtAbrirPublicadas()\" class=\"export-btn\" style=\"font-size:12px;padding:6px 12px;background:rgba(16,185,129,0.12);color:var(--green);border-color:rgba(16,185,129,0.3)\">Rotas Publicadas</button>\n        <button class=\"modal-close\" onclick=\"rtFechar()\" title=\"Fechar\">✕</button>\n      </div>\n    </div>\n\n    <div style=\"overflow-y:auto;flex:1;padding:20px\">\n      <!-- Passo 1: Entrada de passageiros -->\n      <div style=\"background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:700;font-size:15px;margin-bottom:10px\">1. Para quais passageiros quer criar uma rota?</div>\n\n        <div style=\"display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap\">\n          <button onclick=\"rtModoEntrada('solicitacao')\" id=\"rtBtnSol\" class=\"export-btn\" style=\"font-size:12px;color:var(--accent);border-color:var(--accent)\">De uma Solicitação</button>\n          <button onclick=\"rtModoEntrada('colar')\" id=\"rtBtnColar\" class=\"export-btn\" style=\"font-size:12px\">Colar nomes</button>\n          <button onclick=\"rtModoEntrada('linha')\" id=\"rtBtnLinha\" class=\"export-btn\" style=\"font-size:12px\">De uma Linha</button>\n        </div>\n\n        <!-- Modo: solicitação -->\n        <div id=\"rtEntradaSolicitacao\" style=\"display:none\">\n          <label class=\"form-label\">Selecione a solicitação de serviço</label>\n          <select class=\"form-input\" id=\"rtSelSolicitacao\" onchange=\"rtCarregarDaSolicitacao()\">\n            <option value=\"\">— Selecione —</option>\n          </select>\n        </div>\n\n        <!-- Modo: colar / buscar -->\n        <div id=\"rtEntradaColar\" style=\"display:none\">\n          <label class=\"form-label\">Buscar e adicionar passageiros</label>\n          <input class=\"form-input\" id=\"rtBuscaPax\" type=\"text\" placeholder=\"Digite o nome...\" oninput=\"rtBuscarPax()\" style=\"margin-bottom:8px;font-size:15px\">\n          <div id=\"rtResultadoPax\" style=\"max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;display:none\"></div>\n          <div style=\"font-size:11px;color:var(--muted);margin-bottom:6px\">Adicionados:</div>\n          <div id=\"rtSelecionados\" style=\"display:flex;flex-wrap:wrap;gap:6px;min-height:30px;margin-bottom:10px\"></div>\n          <div style=\"display:flex;gap:8px\">\n            <button onclick=\"rtCarregarSelecionados()\" class=\"add-btn\" style=\"flex:2\">Carregar selecionados →</button>\n          </div>\n          <div style=\"margin-top:10px;padding-top:10px;border-top:1px solid var(--border)\">\n            <label class=\"form-label\">Ou cole uma lista (um nome por linha)</label>\n            <textarea class=\"form-input\" id=\"rtNomes\" rows=\"4\" placeholder=\"João Silva&#10;Maria Santos&#10;...\" style=\"resize:vertical;font-size:14px\"></textarea>\n            <button onclick=\"rtCarregarDeColar()\" class=\"export-btn\" style=\"margin-top:8px;font-size:12px\">Buscar lista colada →</button>\n          </div>\n        </div>\n\n        <!-- Modo: linha -->\n        <div id=\"rtEntradaLinha\" style=\"display:none\">\n          <label class=\"form-label\">Selecione a linha/turno</label>\n          <select class=\"form-input\" id=\"rtSelLinha\" onchange=\"rtCarregarDaLinha()\">\n            <option value=\"\">— Selecione —</option>\n          </select>\n          <div style=\"font-size:11px;color:var(--accent);margin-top:6px\">Você pode adicionar várias linhas (cada uma vira um veículo) para comparar e trocar passageiros entre elas.</div>\n        </div>\n\n        <div style=\"display:flex;gap:8px;margin-top:14px;margin-bottom:6px\">\n          <button onclick=\"rtSetModo('entrada')\" id=\"rtModoEntradaBtn\" class=\"export-btn\" style=\"flex:1;font-size:12px;color:var(--accent);border-color:var(--accent)\">Entrada (chega na empresa)</button>\n          <button onclick=\"rtSetModo('saida')\" id=\"rtModoSaidaBtn\" class=\"export-btn\" style=\"flex:1;font-size:12px\">Saída (sai da empresa)</button>\n        </div>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px\">\n          <div>\n            <label class=\"form-label\">Data da rota</label>\n            <input class=\"form-input\" type=\"date\" id=\"rtData\">\n          </div>\n          <div>\n            <label class=\"form-label\" id=\"rtChegadaLabel\">Horário de chegada na empresa</label><div style=\"font-size:10.5px;color:var(--muted);margin:-2px 0 4px\">Preenchido sozinho quando você carrega uma linha.</div>\n            <input class=\"form-input\" type=\"time\" id=\"rtChegada\">\n          </div>\n          <div>\n            <label class=\"form-label\">Folga de segurança (min)</label>\n            <input class=\"form-input\" type=\"number\" id=\"rtBuffer\" value=\"5\" min=\"0\">\n          </div>\n        </div>\n        <div style=\"margin-top:12px\">\n          <label class=\"form-label\">Nome da rota (para o motorista identificar)</label>\n          <input class=\"form-input\" id=\"rtNomeRota\" placeholder=\"Ex: Entrada Extra · Saída 2º Turno · Rota Vertiv...\">\n        </div>\n      </div>\n\n      <!-- Área de trabalho -->\n      <div id=\"rtWorkArea\" style=\"display:none\">\n        <!-- Mapa -->\n        <div style=\"background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px\">\n          <div style=\"display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap\">\n            <strong style=\"font-size:13px\">Mapa dos passageiros</strong>\n            <span style=\"font-size:11px;color:var(--muted)\">Cores = veículo</span>\n            <div style=\"flex:1\"></div>\n            <button onclick=\"rtRenderMap()\" class=\"export-btn\" style=\"font-size:11px;padding:4px 10px\">↻ Atualizar</button>\n          </div>\n          <div id=\"rtMap\" style=\"height:380px;width:100%;background:var(--surface2)\"></div>\n          <div id=\"rtMapLegend\" style=\"padding:8px 14px;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;border-top:1px solid var(--border)\"></div>\n        </div>\n\n        <!-- Não alocados -->\n        <div style=\"background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px\">\n          <div style=\"display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap\">\n            <strong style=\"font-size:13px\">Não alocados</strong>\n            <span style=\"font-size:12px;color:var(--muted)\" id=\"rtPoolCount\"></span>\n            <div style=\"flex:1\"></div>\n            <button onclick=\"rtAddVeiculo()\" class=\"export-btn\" style=\"font-size:11px;padding:5px 10px\">＋ Veículo</button>\n            <button onclick=\"rtLimparTudo()\" class=\"export-btn\" style=\"font-size:11px;padding:5px 10px;color:var(--red);border-color:var(--red)\">Limpar</button>\n            <label style=\"display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);cursor:pointer;user-select:none\"><input type=\"checkbox\" id=\"rtTravarOrdem\" checked style=\"cursor:pointer\">Travar ordem manual</label>\n            <button onclick=\"rtCalcular()\" class=\"add-btn\" style=\"font-size:12px;padding:6px 14px\">Calcular rotas</button>\n            <button onclick=\"rtPublicar()\" class=\"add-btn\" style=\"font-size:12px;padding:6px 14px;background:var(--green)\">Publicar p/ Motoristas</button>\n          </div>\n          <div class=\"rt-drop\" id=\"rtPoolBody\" data-veh=\"pool\" style=\"min-height:50px;display:flex;flex-wrap:wrap;gap:7px\"></div>\n        </div>\n\n        <!-- Veículos -->\n        <div class=\"rt-veh-cols\" id=\"rtVehCols\" style=\"display:flex;gap:14px;overflow-x:auto;padding-bottom:10px\"></div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL ROTAS PUBLICADAS -->\n<div class=\"modal-overlay\" id=\"modalRotasPublicadas\">\n  <div class=\"modal\" style=\"max-width:760px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Rotas Publicadas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalRotasPublicadas').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"rotasPublicadasBody\" style=\"padding:16px 20px\">\n      <div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL AVISOS (gestor) -->\n<div class=\"modal-overlay\" id=\"modalAvisos\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Avisos aos Passageiros</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalAvisos').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px\">\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px\">\n        <div style=\"font-family:Barlow;font-weight:700;margin-bottom:12px\">Novo aviso</div>\n        <label class=\"form-label\">Destinatário</label>\n        <select class=\"form-input\" id=\"avDestino\">\n          <option value=\"\">Todas as linhas (aviso geral)</option>\n        </select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Tipo</label>\n        <select class=\"form-input\" id=\"avTipo\">\n          <option value=\"aviso\">Aviso de texto</option>\n          <option value=\"pdf\">Link/PDF</option>\n        </select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Mensagem</label>\n        <textarea class=\"form-input\" id=\"avTexto\" rows=\"3\" placeholder=\"Digite o aviso...\" style=\"resize:vertical\"></textarea>\n        <label class=\"form-label\" style=\"margin-top:10px\">Link (opcional — PDF, formulário, etc.)</label>\n        <input class=\"form-input\" id=\"avLink\" placeholder=\"https://...\">\n        <div style=\"font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5\">Para anexar um PDF: suba o arquivo no Google Drive (ou outro), copie o link de compartilhamento e cole aqui. O passageiro abre o documento ao tocar no aviso.</div>\n        <button class=\"add-btn\" style=\"margin-top:14px;width:100%\" onclick=\"avPublicar()\">Publicar aviso</button>\n      </div>\n      <div style=\"font-family:Barlow;font-weight:700;margin-bottom:10px\">Avisos publicados</div>\n      <div id=\"avLista\"><div style=\"text-align:center;color:var(--muted);padding:20px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL CHATS DAS LINHAS -->\n<div class=\"modal-overlay\" id=\"modalChats\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Chats das Linhas</div>\n      <button class=\"modal-close\" onclick=\"chatsFechar()\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;display:flex;flex-direction:column;flex:1;overflow:hidden\">\n      <div id=\"chatsSeletor\">\n        <label class=\"form-label\">Selecione a linha/turno</label>\n        <select class=\"form-input\" id=\"chatSelLinha\" onchange=\"chatAbrirLinha()\">\n          <option value=\"\">— Selecione —</option>\n        </select>\n        <div style=\"font-size:12px;color:var(--muted);margin-top:10px\">Escolha uma linha para ver e participar do chat dos passageiros.</div>\n      </div>\n      <div id=\"chatsConversa\" style=\"display:none;flex-direction:column;flex:1;overflow:hidden\">\n        <div style=\"display:flex;align-items:center;gap:8px;margin-bottom:10px\">\n          <button class=\"export-btn\" style=\"font-size:12px;padding:5px 10px\" onclick=\"chatVoltarSeletor()\">← Linhas</button>\n          <strong id=\"chatTituloLinha\" style=\"font-size:14px\"></strong>\n        </div>\n        <div id=\"chatGestorMsgs\" style=\"flex:1;overflow-y:auto;background:var(--surface2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:300px;max-height:50vh\"></div>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <input id=\"chatGestorInput\" placeholder=\"Mensagem como gestor...\" style=\"flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:11px 16px;color:var(--text);font-size:14px;font-family:inherit\" onkeypress=\"if(event.key==='Enter')chatGestorEnviar()\">\n          <button onclick=\"chatGestorEnviar()\" style=\"background:var(--accent);border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer\">➤</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL CONFIRMAÇÕES (relatório de presenças) -->\n<div class=\"modal-overlay\" id=\"modalConfirmacoes\">\n  <div class=\"modal\" style=\"max-width:820px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Confirmações de Presença</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalConfirmacoes').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px\">\n      <div style=\"display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end\">\n        <div style=\"flex:1;min-width:160px\">\n          <label class=\"form-label\">Linha / Turno</label>\n          <select class=\"form-input\" id=\"cfLinha\" onchange=\"cfRender()\"><option value=\"\">Todas</option></select>\n        </div>\n        <div style=\"flex:1;min-width:120px\">\n          <label class=\"form-label\">Data</label>\n          <select class=\"form-input\" id=\"cfData\" onchange=\"cfRender()\"></select>\n        </div>\n        <button class=\"export-btn\" style=\"font-size:12px\" onclick=\"cfCarregar()\">↻ Atualizar</button>\n      </div>\n      <div style=\"font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5\">\n        = confirmou com <strong>menos de 1h</strong> antes do horário de chegada da rota (em cima da hora). O histórico mostra cada vez que o passageiro mudou a resposta, com horário.\n      </div>\n      <div id=\"cfBody\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL RECLAMAÇÕES CLIENTE (Gestor Redentor responde) -->\n<div class=\"modal-overlay\" id=\"modalReclamacoesGestor\">\n  <div class=\"modal\" style=\"max-width:920px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Reclamações do Cliente</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReclamacoesGestor').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;overflow-y:auto\">\n      <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px\">\n        <div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap\">\n          <select class=\"form-input\" id=\"rcgFiltroStatus\" onchange=\"rcgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os status</option><option value=\"aberta\">Aberta</option><option value=\"respondida\">Respondida</option><option value=\"resolvida\">Resolvida</option><option value=\"nao_resolvida\">Não resolvida</option><option value=\"improcedente\">Improcedente</option></select>\n          <select class=\"form-input\" id=\"rcgFiltroMes\" onchange=\"rcgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os meses</option></select>\n        </div>\n        <button class=\"export-btn\" onclick=\"rcgExportar()\" style=\"background:rgba(16,185,129,0.12);color:#10b981;border-color:rgba(16,185,129,0.3)\">Exportar relatório (CSV)</button>\n      </div>\n      <div id=\"rcgResumo\" style=\"display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px\"></div>\n      <div id=\"rcgLista\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL AVALIAÇÕES PASSAGEIROS -->\n<div class=\"modal-overlay\" id=\"modalAvaliacoes\">\n  <div class=\"modal\" style=\"max-width:900px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Avaliações dos Passageiros</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalAvaliacoes').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;overflow-y:auto\">\n      <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px\">\n        <div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap\">\n          <select class=\"form-input\" id=\"avFiltroLinha\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todas as linhas</option></select>\n          <select class=\"form-input\" id=\"avFiltroMes\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os meses</option></select>\n          <select class=\"form-input\" id=\"avFiltroNota\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todas as notas</option><option value=\"5\">5 </option><option value=\"4\">4 </option><option value=\"3\">3 </option><option value=\"2\">2 </option><option value=\"1\">1 </option><option value=\"baixa\">≤ 3 (atenção)</option></select>\n        </div>\n        <button class=\"export-btn\" onclick=\"avgExportar()\" style=\"background:rgba(16,185,129,0.12);color:#10b981;border-color:rgba(16,185,129,0.3)\">Exportar (CSV)</button>\n      </div>\n      <div id=\"avgResumo\" style=\"margin-bottom:16px\"></div>\n      <div id=\"avgLista\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n";
 
-const TEMA_VERSAO = '2026-08-18-5';
+const TEMA_VERSAO = '2026-08-19-2';
 // A partir da Fase 1 o painel do gestor usa a paleta e a tipografia novas.
 // O tema mora em motor/tema.css; aqui so ligamos o interruptor.
 document.documentElement.setAttribute('data-tema', 'fase1');
@@ -158,6 +158,14 @@ function aplicarEmpresaConfig(cfgFirebase) {
       if (typeof renderSidebar === 'function' && DATA.length) renderSidebar();
     }
   } catch (err) { console.warn('frota config:', err); }
+  // Nome da operacao atendida (opcional): so aparece no cabecalho do PDF.
+  try {
+    if (cfgFirebase && cfgFirebase.operacaoNome !== undefined) {
+      EMPRESA_CONFIG.operacaoNome = cfgFirebase.operacaoNome || '';
+      const _op = document.getElementById('cfgOperacaoNome');
+      if (_op) _op.value = EMPRESA_CONFIG.operacaoNome;
+    }
+  } catch (e) { console.warn('operacaoNome config:', e); }
   if (!cfgFirebase) return;
   // API Key do Google Maps: o servidor (Firestore) é a fonte da verdade.
   // Aplica a chave salva na nuvem mesmo que ainda não exista config de empresa,
@@ -1936,9 +1944,191 @@ function setStatusFilter(s, btn) {
 // ---- PDF EXPORT ----
 let pdfRevision = {};
 
+// ==================== PDF — RELATÓRIO DE EMBARQUE ====================
+// Layout claro, para impressão e para o cliente. A marca temvia é a do produto;
+// transportadora e operação aparecem como contexto, nunca acima dela.
+
+const PDF_COR = {
+  ambar:    [245, 158, 11],
+  ambarClr: [254, 243, 219],
+  tinta:    [23, 23, 23],
+  texto:    [64, 64, 64],
+  suave:    [124, 124, 124],
+  linha:    [226, 228, 232],
+  fundo:    [249, 250, 251],
+  verde:    [21, 128, 61],
+  verdeClr: [230, 247, 237],
+  vermelho: [190, 32, 44],
+  vermeClr: [253, 235, 236],
+  laranja:  [180, 105, 10],
+  laranjaC: [254, 243, 219]
+};
+
+let PDF_LOGO = undefined; // undefined = ainda não tentou; null = não disponível
+
+async function pdfCarregarLogo() {
+  if (PDF_LOGO !== undefined) return PDF_LOGO;
+  try {
+    const resp = await fetch('/marca/temvia-horizontal-claro.png', { cache: 'force-cache' });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const blob = await resp.blob();
+    PDF_LOGO = await new Promise((ok, err) => {
+      const fr = new FileReader();
+      fr.onload = () => ok(fr.result);
+      fr.onerror = () => err(new Error('leitura falhou'));
+      fr.readAsDataURL(blob);
+    });
+  } catch (e) {
+    console.warn('logo do PDF indisponível, usando texto:', e.message);
+    PDF_LOGO = null;
+  }
+  return PDF_LOGO;
+}
+
+// Ícones vetoriais simples. Desenhar em vetor mantém o PDF leve e nítido em
+// qualquer zoom — imagem rasterizada ficaria borrada na impressão.
+function pdfIcone(doc, nome, x, y, t, cor) {
+  const c = cor || PDF_COR.ambar;
+  doc.setDrawColor(c[0], c[1], c[2]);
+  doc.setFillColor(c[0], c[1], c[2]);
+  doc.setLineWidth(0.35);
+  const m = t / 2;
+  switch (nome) {
+    case 'pessoa':
+      doc.circle(x + m, y + t * 0.32, t * 0.20, 'S');
+      doc.lines([[t * 0.34, -t * 0.30], [t * 0.34, t * 0.30]], x + m - t * 0.34, y + t * 0.92, [1, 1], 'S', false);
+      break;
+    case 'telefone':
+      doc.roundedRect(x + t * 0.28, y + t * 0.08, t * 0.44, t * 0.84, t * 0.10, t * 0.10, 'S');
+      doc.line(x + t * 0.42, y + t * 0.20, x + t * 0.58, y + t * 0.20);
+      break;
+    case 'relogio':
+      doc.circle(x + m, y + m, m * 0.86, 'S');
+      doc.line(x + m, y + m, x + m, y + m - t * 0.26);
+      doc.line(x + m, y + m, x + m + t * 0.18, y + m + t * 0.10);
+      break;
+    case 'van':
+      doc.roundedRect(x + t * 0.06, y + t * 0.26, t * 0.88, t * 0.42, t * 0.08, t * 0.08, 'S');
+      doc.line(x + t * 0.06, y + t * 0.46, x + t * 0.94, y + t * 0.46);
+      doc.circle(x + t * 0.26, y + t * 0.72, t * 0.09, 'S');
+      doc.circle(x + t * 0.72, y + t * 0.72, t * 0.09, 'S');
+      break;
+    case 'revisao':
+      doc.circle(x + m, y + m, m * 0.80, 'S');
+      doc.line(x + m, y + m - m * 0.80, x + m + t * 0.16, y + m - m * 0.80 + t * 0.10);
+      break;
+    case 'calendario':
+      doc.roundedRect(x + t * 0.10, y + t * 0.18, t * 0.80, t * 0.72, t * 0.08, t * 0.08, 'S');
+      doc.line(x + t * 0.10, y + t * 0.40, x + t * 0.90, y + t * 0.40);
+      doc.line(x + t * 0.32, y + t * 0.08, x + t * 0.32, y + t * 0.26);
+      doc.line(x + t * 0.68, y + t * 0.08, x + t * 0.68, y + t * 0.26);
+      break;
+    case 'casa':
+      doc.lines([[m, -t * 0.38], [m, t * 0.38]], x, y + t * 0.48, [1, 1], 'S', false);
+      doc.rect(x + t * 0.18, y + t * 0.48, t * 0.64, t * 0.40, 'S');
+      break;
+    case 'pino':
+      doc.circle(x + m, y + t * 0.38, t * 0.30, 'S');
+      doc.lines([[-t * 0.22, t * 0.34], [t * 0.44, 0]], x + m + t * 0.22, y + t * 0.56, [1, 1], 'S', false);
+      break;
+    case 'grupo':
+      doc.circle(x + t * 0.36, y + t * 0.30, t * 0.17, 'S');
+      doc.lines([[t * 0.28, -t * 0.26], [t * 0.28, t * 0.26]], x + t * 0.08, y + t * 0.86, [1, 1], 'S', false);
+      doc.circle(x + t * 0.76, y + t * 0.32, t * 0.13, 'S');
+      break;
+  }
+}
+
+function pdfRotuloValor(doc, rotulo, valor, x, y, icone, larguraMax) {
+  if (icone) pdfIcone(doc, icone, x, y - 3.4, 4.2);
+  const dx = icone ? 6 : 0;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
+  doc.setTextColor.apply(doc, PDF_COR.suave);
+  doc.text(rotulo, x + dx, y - 0.6);
+  // O valor encolhe ate caber no proprio campo. Melhor um nome de motorista
+  // um ponto menor do que ele atravessando o divisor do campo seguinte.
+  const txt = String(valor || '—');
+  let corpo = 9.5;
+  if (larguraMax) {
+    doc.setFont('helvetica', 'bold');
+    while (corpo > 6.5) {
+      doc.setFontSize(corpo);
+      if (doc.getTextWidth(txt) <= larguraMax) break;
+      corpo -= 0.5;
+    }
+  }
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(corpo);
+  doc.setTextColor.apply(doc, PDF_COR.tinta);
+  doc.text(txt, x + dx, y + 4.2);
+}
+
+function pdfCabecalho(doc, ctx, completo) {
+  const L = 14, R = 196;
+  if (completo) {
+    if (PDF_LOGO) {
+      doc.addImage(PDF_LOGO, 'PNG', L, 11, 34, 8.1);
+    } else {
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(22);
+      doc.setTextColor.apply(doc, PDF_COR.tinta);
+      doc.text('temvia', L, 19);
+    }
+    doc.setDrawColor.apply(doc, PDF_COR.linha); doc.setLineWidth(0.4);
+    doc.line(L + 40, 10, L + 40, 22);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
+    doc.setTextColor.apply(doc, PDF_COR.laranja);
+    doc.text(ctx.transportadora, L + 45, 15.5);
+    if (ctx.operacao) {
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+      doc.setTextColor.apply(doc, PDF_COR.texto);
+      doc.text('Operação ' + ctx.operacao, L + 45, 20.5);
+    }
+    doc.setDrawColor.apply(doc, PDF_COR.ambar); doc.setLineWidth(0.5);
+    doc.circle(R - 8, 16, 7.4, 'S');
+    pdfIcone(doc, 'van', R - 12.2, 12, 8.4);
+    doc.setFillColor.apply(doc, PDF_COR.ambar);
+    doc.rect(L, 27, R - L, 0.9, 'F');
+    return 34;
+  }
+  // páginas seguintes: faixa fina, só para dar contexto
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+  doc.setTextColor.apply(doc, PDF_COR.tinta);
+  doc.text('temvia', L, 14);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  doc.setTextColor.apply(doc, PDF_COR.texto);
+  doc.text(ctx.transportadora + ' · ' + ctx.tituloLinha, L + 20, 14);
+  doc.setFillColor.apply(doc, PDF_COR.ambar);
+  doc.rect(L, 17.5, R - L, 0.6, 'F');
+  return 23;
+}
+
+function pdfRodapePagina(doc, ctx) {
+  const L = 14, R = 196;
+  doc.setDrawColor.apply(doc, PDF_COR.linha); doc.setLineWidth(0.3);
+  doc.line(L, 283, R, 283);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+  doc.setTextColor.apply(doc, PDF_COR.suave);
+  // O texto "Pagina X de Y" e escrito no fim, quando o total ja e conhecido.
+  doc.setFontSize(7);
+  doc.text('temvia', L, 288);
+}
+
+// Escreve "Pagina X de Y" em todas as paginas, agora que Y e conhecido.
+function pdfFinalizarPaginas(doc, ctx, R) {
+  const total = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= total; i++) {
+    doc.setPage(i);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+    doc.setTextColor.apply(doc, PDF_COR.suave);
+    doc.text('Relatório de Embarque   \u2022   ' + ctx.tituloLinha + '   \u2022   Página ' + i + ' de ' + total,
+             R, 288, { align: 'right' });
+  }
+}
+
 async function exportPDF(rotaId) {
   const { jsPDF } = window.jspdf;
   if (!jsPDF) { alert('Biblioteca PDF não carregou ainda. Tente novamente.'); return; }
+
+  await pdfCarregarLogo();
 
   const targetIds = rotaId ? [rotaId] : (activeId ? [activeId] : DATA.map(r => r.id));
 
@@ -1952,207 +2142,260 @@ async function exportPDF(rotaId) {
 
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const now = new Date();
-    const datahora = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+    const datahora = now.toLocaleDateString('pt-BR') + ' ' +
+      now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-    // Header (layout claro para impressão)
+    const nomeOperacao = (EMPRESA_CONFIG.operacaoNome || '').trim() ||
+      (C.pathPrefix || '').split('/').filter(Boolean).pop().toUpperCase();
+    const ctx = {
+      transportadora: EMPRESA_CONFIG.nome || C.empresaNome || C.marca,
+      operacao: nomeOperacao,
+      tituloLinha: 'Linha ' + rota.linha + ' — ' + rota.turno + ' Turno'
+    };
+
+    const L = 14, R = 196;
+    let y = pdfCabecalho(doc, ctx, true);
+
+    // ---- título + data de geração ----
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(20);
+    doc.setTextColor.apply(doc, PDF_COR.tinta);
+    doc.text('Relatório de Embarque', L, y + 7);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+    doc.setTextColor.apply(doc, PDF_COR.texto);
+    doc.text('Relação de passageiros e pontos de embarque', L, y + 12.5);
+
+    doc.setDrawColor.apply(doc, PDF_COR.linha); doc.setLineWidth(0.3);
     doc.setFillColor(255, 255, 255);
-    doc.rect(0, 0, 210, 26, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(C.pdfTituloFonte || 16);
-    doc.setTextColor(180, 120, 0);
-    doc.text(C.pdfTitulo, 14, 12);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(110, 110, 110);
-    doc.text('Gestão de Transporte de Funcionários', 14, 18);
-    doc.setFillColor(245, 158, 11);
-    doc.rect(0, 24, 210, 1.5, 'F');
+    doc.roundedRect(R - 58, y - 2, 58, 16, 2, 2, 'FD');
+    pdfIcone(doc, 'calendario', R - 53, y + 3, 6.4);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+    doc.setTextColor.apply(doc, PDF_COR.suave);
+    doc.text('Gerado em', R - 44, y + 4.5);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+    doc.setTextColor.apply(doc, PDF_COR.tinta);
+    doc.text(datahora, R - 44, y + 10.5);
+    y += 20;
 
-    // Route info (faixa cinza-clara)
-    doc.setFillColor(243, 244, 246);
-    doc.rect(0, 25.5, 210, 22, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(14);
-    doc.setTextColor(20, 20, 20);
-    doc.text('Linha ' + rota.linha + '  —  ' + rota.turno + ' Turno', 14, 35);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(70, 70, 70);
-    const chegada = {'1°':'05:45','2°':'14:45','3°':'20:55'}[rota.turno] || '';
+    // ---- cartão da linha ----
+    const chegada = TURNOS_CHEGADA[rota.turno] || '—';
     const motor = rota.motorista || 'A definir';
     const mObj = MOTORISTAS.find(m => m.nome === motor);
-    const motorTel = mObj ? ' · ' + mObj.tel : '';
-    doc.text('Motorista: ' + motor + motorTel + '   |   Chegada: ' + chegada + '   |   Veículo: ' + rota.veiculo, 14, 41);
-    doc.setTextColor(120,120,120);
-    doc.text('Gerado: ' + datahora + '   |   Revisão R' + rev, 14, 46);
+    doc.setFillColor.apply(doc, PDF_COR.fundo);
+    doc.setDrawColor.apply(doc, PDF_COR.linha); doc.setLineWidth(0.3);
+    doc.roundedRect(L, y, R - L, 24, 3, 3, 'FD');
 
-    // Sort passengers
+    doc.setDrawColor.apply(doc, PDF_COR.ambar); doc.setLineWidth(0.5);
+    doc.circle(L + 12, y + 12, 7, 'S');
+    pdfIcone(doc, 'van', L + 8, y + 8, 8);
+
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(14);
+    doc.setTextColor.apply(doc, PDF_COR.tinta);
+    doc.text(ctx.tituloLinha, L + 24, y + 8);
+
+    // Larguras por campo, nao divisao igual: telefone e veiculo precisam de mais
+    // espaco que "Chegada" e "Revisao". Soma = 156mm (largura util do cartao).
+    const campos = [
+      ['Motorista', motor,                              'pessoa',   36],
+      ['Telefone',  mObj && mObj.tel ? mObj.tel : '—',  'telefone', 36],
+      ['Chegada',   chegada,                            'relogio',  24],
+      ['Veículo',   rota.veiculo || '—',                'van',      36],
+      ['Revisão',   'R' + rev,                          'revisao',  24]
+    ];
+    let cx = L + 25;
+    campos.forEach((c, i) => {
+      if (i > 0) {
+        doc.setDrawColor.apply(doc, PDF_COR.linha); doc.setLineWidth(0.3);
+        doc.line(cx - 3, y + 11, cx - 3, y + 20);
+      }
+      pdfRotuloValor(doc, c[0], c[1], cx, y + 15.5, c[2], c[3] - 8);
+      cx += c[3];
+    });
+    y += 30;
+
+    // ---- passageiros ----
     const sorted = [...rota.passageiros]
       .filter(p => p.status !== 'desligado')
-      .sort((a,b) => {
+      .sort((a, b) => {
         const ta = a.horario && a.horario !== '--:--' ? a.horario : '99:99';
         const tb = b.horario && b.horario !== '--:--' ? b.horario : '99:99';
         return ta.localeCompare(tb);
       });
 
     const statusLabel = { ativo: 'Ativo', ferias: 'Férias', afastado: 'Afastado' };
-    const rows = sorted.map((p, i) => {
-      const retornoFmtPdf = p.retorno ? (() => {
-        const m = p.retorno.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-        return m ? m[3]+'/'+m[2]+'/'+m[1] : p.retorno;
-      })() : '';
-      const statusStr = (statusLabel[p.status] || p.status) +
-        (retornoFmtPdf && (p.status === 'ferias' || p.status === 'afastado')
-          ? '\nRetorno: ' + retornoFmtPdf : '');
-      return [
-        i + 1,
-        p.horario || '--:--',
-        p.nome,
-        p.telefone || '—',
-        p.embarque || p.endereco || '—',
-        p.bairro || '—',
-        statusStr,
-        p.status  // hidden - used for row coloring
-      ];
-    });
+    const statusCor = {
+      ativo:    { txt: PDF_COR.verde,    bg: PDF_COR.verdeClr },
+      ferias:   { txt: PDF_COR.vermelho, bg: PDF_COR.vermeClr },
+      afastado: { txt: PDF_COR.laranja,  bg: PDF_COR.laranjaC }
+    };
+    const fmtRetorno = (d) => {
+      if (!d) return '';
+      const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      return m ? m[3] + '/' + m[2] + '/' + m[1] : d;
+    };
+
+    const meta = sorted.map(p => ({
+      status: p.status,
+      retorno: (p.status === 'ferias' || p.status === 'afastado') ? fmtRetorno(p.retorno) : ''
+    }));
+
+    const rows = sorted.map((p, i) => [
+      i + 1,
+      p.horario || '--:--',
+      p.nome,
+      p.telefone || '—',
+      p.embarque || p.endereco || '—',
+      p.bairro || '—',
+      ''  // status desenhado à mão, como pílula
+    ]);
 
     doc.autoTable({
-      startY: 52,
+      startY: y,
       head: [['#', 'Horário', 'Passageiro', 'Telefone', 'Ponto de Embarque', 'Bairro', 'Status']],
-      body: rows.map(r => r.slice(0, 7)), // exclude hidden status key
-      theme: 'grid',
-      styles: { fontSize: 8, cellPadding: 2.2, textColor: [33,33,33], fillColor: [255,255,255], lineColor: [210,210,210], lineWidth: 0.1 },
-      headStyles: { fillColor: [245,158,11], textColor: [0,0,0], fontStyle: 'bold', fontSize: 8 },
-      alternateRowStyles: { fillColor: [248,249,250] },
-      columnStyles: {
-        0: { cellWidth: 8,  halign: 'center' },
-        1: { cellWidth: 16, halign: 'center' },
-        2: { cellWidth: 42 },
-        3: { cellWidth: 24 },
-        4: { cellWidth: 44 },
-        5: { cellWidth: 28 },
-        6: { cellWidth: 28, halign: 'center' }
+      body: rows,
+      theme: 'plain',
+      styles: {
+        font: 'helvetica', fontSize: 8, cellPadding: { top: 2.6, bottom: 2.6, left: 2, right: 2 },
+        textColor: PDF_COR.tinta, lineColor: PDF_COR.linha, lineWidth: 0,
+        valign: 'middle', overflow: 'linebreak'
       },
-      margin: { left: 6, right: 6 },
-      didParseCell: function(data) {
-        // Red text for férias and afastado rows
-        if (data.section === 'body') {
-          const status = rows[data.row.index][7];
-          if (status === 'ferias' || status === 'afastado') {
-            data.cell.styles.textColor = [200, 30, 30];
-          }
+      headStyles: {
+        fillColor: PDF_COR.ambar, textColor: [255, 255, 255], fontStyle: 'bold',
+        fontSize: 7.8, halign: 'left', cellPadding: { top: 3.6, bottom: 3.6, left: 2.4, right: 2.4 }
+      },
+      bodyStyles: { lineWidth: { bottom: 0.2 }, lineColor: PDF_COR.linha },
+      alternateRowStyles: { fillColor: [252, 252, 253] },
+      // 'avoid': se a linha nao cabe, ela inteira vai para a proxima pagina.
+      // Sem isso o endereco parte no meio e a continuacao aparece orfa.
+      rowPageBreak: 'avoid',
+      // Somam 182mm (largura util). Telefone e Horario levam folga porque o
+      // conteudo deles nao pode quebrar em duas linhas sem ficar ilegivel.
+      columnStyles: {
+        0: { cellWidth: 10, halign: 'center', textColor: PDF_COR.suave },
+        1: { cellWidth: 17, halign: 'center', fontStyle: 'bold' },
+        2: { cellWidth: 42 },
+        3: { cellWidth: 25, fontSize: 7.6 },
+        4: { cellWidth: 43 },
+        5: { cellWidth: 23, fontSize: 7.8, textColor: PDF_COR.texto },
+        6: { cellWidth: 22, halign: 'center' }
+      },
+      margin: { left: L, right: 210 - R, top: 24, bottom: 18 },
+      didParseCell: function (d) {
+        if (d.section === 'head' && d.column.index === 0) d.cell.styles.halign = 'center';
+        if (d.section === 'head' && (d.column.index === 1 || d.column.index === 6)) d.cell.styles.halign = 'center';
+      },
+      didDrawCell: function (d) {
+        if (d.section !== 'body' || d.column.index !== 6) return;
+        const info = meta[d.row.index];
+        if (!info) return;
+        const cor = statusCor[info.status] || statusCor.ativo;
+        const rot = statusLabel[info.status] || info.status;
+        const duas = !!info.retorno;
+        const larguraPill = 19;
+        const altura = duas ? 9 : 6;
+        const px = d.cell.x + (d.cell.width - larguraPill) / 2;
+        const py = d.cell.y + (d.cell.height - altura) / 2;
+        doc.setFillColor.apply(doc, cor.bg);
+        doc.setDrawColor.apply(doc, cor.txt);
+        doc.setLineWidth(0.2);
+        doc.roundedRect(px, py, larguraPill, altura, 1.6, 1.6, 'FD');
+        doc.setTextColor.apply(doc, cor.txt);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(7.6);
+        doc.text(rot, px + larguraPill / 2, py + (duas ? 3.7 : 4), { align: 'center' });
+        if (duas) {
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(6);
+          doc.text('Retorno ' + info.retorno, px + larguraPill / 2, py + 7.3, { align: 'center' });
         }
+      },
+      didDrawPage: function (d) {
+        const primeira = d.pageNumber === 1;
+        if (!primeira) pdfCabecalho(doc, ctx, false);
+        pdfRodapePagina(doc, ctx);
       }
     });
 
-    const finalY = doc.lastAutoTable.finalY + 6;
-    doc.setFontSize(7);
-    doc.setTextColor(100,100,100);
-    doc.text('Total: ' + sorted.length + ' passageiros  |  Garagem: R. Sebastiana Rosa Luposeli, 59  |  Destino: Av. Jerome Case, 2600 — Éden, Sorocaba-SP', 10, finalY);
+    // ---- rodapé com totais ----
+    // Se o cartão inteiro não couber, vira uma faixa de uma linha. Mandar uma
+    // folha quase vazia só para carregar o total é feio num documento que o
+    // cliente recebe — e o gestor imprime isso todo dia.
+    const cap = getCapacidade(rota);
+    const ativos = sorted.filter(p => p.status === 'ativo').length;
+    let fy = doc.lastAutoTable.finalY + 7;
+    const espaco = 280 - fy;
 
-    const turnoNum = rota.turno.replace('°','');
-    const dataFile = hojeLocal(now) + '_' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}).replace(':','');
+    if (espaco < 12) { doc.addPage(); pdfCabecalho(doc, ctx, false); pdfRodapePagina(doc, ctx); fy = 30; }
+
+    if (280 - fy < 24) {
+      // faixa compacta
+      doc.setFillColor.apply(doc, PDF_COR.fundo);
+      doc.setDrawColor.apply(doc, PDF_COR.linha); doc.setLineWidth(0.3);
+      doc.roundedRect(L, fy, R - L, 10, 2, 2, 'FD');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+      doc.setTextColor.apply(doc, PDF_COR.tinta);
+      doc.text(sorted.length + ' passageiros', L + 4, fy + 6.4);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+      doc.setTextColor.apply(doc, PDF_COR.suave);
+      doc.text('· ' + ativos + ' ativos · ' + cap + ' vagas', L + 30, fy + 6.4);
+      doc.setFontSize(7);
+      doc.text('Garagem: ' + GARAGEM, L + 66, fy + 4.4);
+      doc.text('Destino: ' + DESTINO, L + 66, fy + 8);
+      pdfFinalizarPaginas(doc, ctx, R);
+      const turnoNumC = rota.turno.replace('°', '');
+      const dataFileC = hojeLocal(now) + '_' +
+        now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }).replace(':', '');
+      doc.save('L' + rota.linha + 'T' + turnoNumC + '_R' + rev + '_' + dataFileC + '.pdf');
+      continue;
+    }
+
+    doc.setFillColor.apply(doc, PDF_COR.fundo);
+    doc.setDrawColor.apply(doc, PDF_COR.linha); doc.setLineWidth(0.3);
+    doc.roundedRect(L, fy, R - L, 22, 3, 3, 'FD');
+
+    pdfIcone(doc, 'grupo', L + 6, fy + 7.5, 7);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+    doc.setTextColor.apply(doc, PDF_COR.suave);
+    doc.text('Total de passageiros', L + 15, fy + 8);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(15);
+    doc.setTextColor.apply(doc, PDF_COR.tinta);
+    doc.text(String(sorted.length), L + 15, fy + 16);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+    doc.setTextColor.apply(doc, PDF_COR.suave);
+    doc.text(ativos + ' ativos · ' + cap + ' vagas', L + 26, fy + 15.4);
+
+    doc.setDrawColor.apply(doc, PDF_COR.linha);
+    doc.line(L + 58, fy + 4, L + 58, fy + 18);
+    pdfIcone(doc, 'casa', L + 62, fy + 7.5, 7);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+    doc.setTextColor.apply(doc, PDF_COR.suave);
+    doc.text('Garagem', L + 71, fy + 8);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+    doc.setTextColor.apply(doc, PDF_COR.tinta);
+    doc.text(doc.splitTextToSize(GARAGEM, 54), L + 71, fy + 13);
+
+    doc.setDrawColor.apply(doc, PDF_COR.linha);
+    doc.line(L + 128, fy + 4, L + 128, fy + 18);
+    pdfIcone(doc, 'pino', L + 132, fy + 7.5, 7);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+    doc.setTextColor.apply(doc, PDF_COR.suave);
+    doc.text('Destino', L + 141, fy + 8);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+    doc.setTextColor.apply(doc, PDF_COR.tinta);
+    doc.text(doc.splitTextToSize(DESTINO, 45), L + 141, fy + 13);
+
+    pdfFinalizarPaginas(doc, ctx, R);
+
+    const turnoNum = rota.turno.replace('°', '');
+    const dataFile = hojeLocal(now) + '_' +
+      now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }).replace(':', '');
     const filename = 'L' + rota.linha + 'T' + turnoNum + '_R' + rev + '_' + dataFile + '.pdf';
     doc.save(filename);
   }
 }
-
 
 function exportAllPDF() {
   DATA.forEach(rota => exportPDF(rota.id));
 }
 
 
-async function recalcularApenasHorarios() {
-  const rota = DATA.find(r => r.id === otimizarRotaId);
-  const btn = document.querySelector('#modalOtimizar .opt-btn-secondary');
-  if (btn) btn.disabled = true;
-  setOptStatus('Carregando Google Maps...', 'running');
-
-  try {
-    await ensureMapsLoaded();
-    const passAtivos = rota.passageiros.filter(p => p.status === 'ativo' && (p.endereco || p.embarque));
-    const sorted = [...passAtivos].sort((a,b) => (a.horario||'99:99').localeCompare(b.horario||'99:99'));
-
-    const geocoder = new google.maps.Geocoder();
-    const coordsMap = {};
-    for (let i = 0; i < sorted.length; i++) {
-      const p = sorted[i];
-      setOptStatus('' + (i+1) + '/' + sorted.length + ' ' + p.nome.split(' ')[0] + '...', 'running');
-      coordsMap[p.nome] = await getCoords(geocoder, p);
-      await new Promise(r => setTimeout(r, 150));
-    }
-
-    const passComCoords = sorted.filter(p => coordsMap[p.nome]);
-    const passSemCoords = sorted.filter(p => !coordsMap[p.nome]);
-
-    setOptStatus('Recalculando horários na ordem atual...', 'running');
-
-    const directionsService = new google.maps.DirectionsService();
-    const chegadaHora = { '1°': '05:45', '2°': '14:45', '3°': '20:55' }[rota.turno] || '05:45';
-    const [hh, mm] = chegadaHora.split(':').map(Number);
-    const chegadaMinutes = hh * 60 + mm;
-
-    const waypoints = passComCoords.map(p => ({
-      location: new google.maps.LatLng(coordsMap[p.nome].lat, coordsMap[p.nome].lng),
-      stopover: true
-    }));
-
-    const result = await new Promise((resolve, reject) => {
-      directionsService.route({
-        origin: new google.maps.LatLng(GARAGEM_COORDS.lat, GARAGEM_COORDS.lng),
-        destination: new google.maps.LatLng(EMPRESA_COORDS.lat, EMPRESA_COORDS.lng),
-        waypoints,
-        optimizeWaypoints: false,
-        travelMode: google.maps.TravelMode.DRIVING,
-      }, (res, status) => {
-        if (status === 'OK') resolve(res);
-        else reject(new Error('Directions API: ' + status));
-      });
-    });
-
-    const legs = result.routes[0].legs;
-    const n = passComCoords.length;
-    let totalSeconds = 0;
-    legs.forEach(leg => { totalSeconds += leg.duration.value; });
-
-    // Backwards from chegada
-    const boardingMinutes = new Array(n);
-    let timeBack = chegadaMinutes;
-    for (let i = n - 1; i >= 0; i--) {
-      timeBack -= Math.round(legs[i + 1].duration.value / 60);
-      boardingMinutes[i] = timeBack;
-    }
-    const saidaGaragem = boardingMinutes[0] - Math.round(legs[0].duration.value / 60);
-
-    const novasParadas = [];
-    for (let i = 0; i < n; i++) {
-      const p = passComCoords[i];
-      const absMin = ((boardingMinutes[i] % 1440) + 1440) % 1440;
-      const h = Math.floor(absMin / 60);
-      const m = absMin % 60;
-      const horario = h.toString().padStart(2,'0') + ':' + m.toString().padStart(2,'0');
-      const minutosEmRota = chegadaMinutes - boardingMinutes[i];
-      novasParadas.push({ passageiro: p, horario, minutosEmRota, alerta: minutosEmRota > MAX_ROTA_MINUTOS });
-    }
-
-    pendingOptimization = { rotaId: otimizarRotaId, novasParadas, passSemCoords, totalDuration: Math.round(totalSeconds/60), saidaGaragem, keepOrder: true };
-    lastDirectionsResult = result;
-    optMap = null;
-    optDirectionsRenderer = null;
-    renderOptResult(pendingOptimization, chegadaHora);
-    setOptStatus('Horários recalculados! Revise e aplique.', 'success');
-    document.getElementById('btnAplicar').style.display = 'inline-block';
-    document.getElementById('btnVerMapa').style.display = 'inline-block';
-    document.getElementById('optMapSection').style.display = 'none';
-    document.getElementById('btnVerMapa').textContent = 'Ver Mapa';
-    document.getElementById('optResultSection').style.display = 'block';
-
-  } catch(e) {
-    setOptStatus('Erro: ' + e.message, 'error');
-  }
-  if (btn) btn.disabled = false;
-}
 
 function renderOptResult(opt, chegadaHora) {
   const body = document.getElementById('optResultBody');
@@ -2189,25 +2432,71 @@ function renderOptResult(opt, chegadaHora) {
 }
 
 function aplicarOtimizacao() {
-  if (!pendingOptimization) return;
-  const rota = DATA.find(r => r.id === pendingOptimization.rotaId);
-  // keepOrder = recálculo de "apenas horários": NUNCA mexe na ordem, só no horário.
-  const manterOrdem = pendingOptimization.keepOrder !== false;
-  pendingOptimization.novasParadas.forEach((item, i) => {
-    const p = rota.passageiros.find(x => x.nome === item.passageiro.nome);
-    if (p) {
-      p.horario = item.horario;
-      if (!manterOrdem) p.ordem = i + 1; // só reordena em otimização real de rota
-    }
-  });
-  logChange('alteracao', 'Linha ' + rota.linha + ' ' + rota.turno,
-    'Horários anteriores', 'Horários otimizados via Google Maps',
-    pendingOptimization.novasParadas.length + ' paradas recalculadas');
+  if (!pendingOptimization || !pendingOptimization.ctx) return;
+  const { rotaId, ctx, metrica, keepOrder, anterior } = pendingOptimization;
+  const rota = DATA.find(r => r.id === rotaId);
+  if (!rota) return;
+
+  // ---- validacao antes de gravar ----
+  const erros = [];
+  const nomesNaRota = metrica.ordem.reduce((acc, pi) => acc.concat(ctx.pontos[pi].nomes), []);
+  const ativos = rota.passageiros.filter(p => p.status === 'ativo' && (p.endereco || p.embarque));
+  if (new Set(metrica.ordem).size !== metrica.ordem.length) erros.push('sequência com ponto repetido');
+  if (metrica.ordem.length !== ctx.pontos.length) erros.push('faltam pontos na sequência');
+  if (nomesNaRota.length !== ativos.length) erros.push('a quantidade de passageiros não confere');
+  ativos.forEach(p => { if (nomesNaRota.indexOf(p.nome) < 0) erros.push('passageiro fora da sequência: ' + p.nome); });
+  if (new Set(nomesNaRota).size !== nomesNaRota.length) erros.push('passageiro duplicado na sequência');
+  if (erros.length) {
+    setOptStatus('Não apliquei: ' + erros.join('; ') + '. A rota continua como estava.', 'error');
+    return;
+  }
+  const cap = getCapacidade(rota);
+  if (nomesNaRota.length > cap &&
+      !confirm('Esta linha ficará com ' + nomesNaRota.length + ' passageiros para ' + cap +
+               ' vagas.\n\nAplicar mesmo assim?')) return;
+
+  // ---- aplica em copia; so grava se tudo der certo ----
+  const backup = rota.passageiros.map(p => ({ nome: p.nome, horario: p.horario, ordem: p.ordem }));
+  try {
+    metrica.ordem.forEach((pi, k) => {
+      const hora = otHHMM(metrica.embarqueMin[k]);
+      ctx.pontos[pi].nomes.forEach(nome => {
+        const p = rota.passageiros.find(x => x.nome === nome);
+        if (!p) throw new Error('passageiro sumiu durante a aplicação: ' + nome);
+        p.horario = hora;
+        if (!keepOrder) p.ordem = k + 1;
+      });
+    });
+  } catch (e) {
+    backup.forEach(b => {
+      const p = rota.passageiros.find(x => x.nome === b.nome);
+      if (p) { p.horario = b.horario; p.ordem = b.ordem; }
+    });
+    setOptStatus('Falha ao aplicar: ' + e.message + '. Nada foi alterado.', 'error');
+    return;
+  }
+
+  // ---- auditoria ----
+  const nomesOrdem = o => o.map(i => ctx.pontos[i].nomes.join('+')).join(' → ');
+  if (keepOrder) {
+    logChange('alteracao', 'Linha ' + rota.linha + ' ' + rota.turno,
+      'Horários anteriores', 'Horários recalculados (ordem mantida)',
+      metrica.durMin + ' min · saída ' + otHHMM(metrica.saidaGaragem));
+  } else {
+    logChange('alteracao', 'Linha ' + rota.linha + ' ' + rota.turno,
+      nomesOrdem(anterior.ordem) + ' · ' + anterior.durMin + ' min / ' + (Math.round(anterior.distKm * 10) / 10) + ' km',
+      nomesOrdem(metrica.ordem) + ' · ' + metrica.durMin + ' min / ' + (Math.round(metrica.distKm * 10) / 10) + ' km',
+      'Rota otimizada · economia de ' + (anterior.durMin - metrica.durMin) + ' min e ' +
+      (Math.round((anterior.distKm - metrica.distKm) * 10) / 10) + ' km · ' +
+      metrica.violacoes + ' acima de ' + OPT_CFG.maxRideMin + ' min');
+  }
+
   saveAfterChange();
   document.getElementById('modalOtimizar').classList.remove('open');
-  selectLine(pendingOptimization.rotaId);
+  selectLine(rotaId);
   pendingOptimization = null;
 }
+
 
 
 // ---- API KEY CONFIG ----
@@ -2219,6 +2508,8 @@ function getApiKey() {
 }
 
 function openConfig() {
+  try { const _op = document.getElementById('cfgOperacaoNome');
+        if (_op) _op.value = EMPRESA_CONFIG.operacaoNome || ''; } catch (e) {}
   frLimparForm();
   frRenderLista();
   const saved = localStorage.getItem('redentor_maps_key') || '';
@@ -2445,6 +2736,7 @@ async function salvarEmpresaConfig() {
     return null;
   };
   const nome = document.getElementById('cfgNome').value.trim();
+  const operacaoNome = (document.getElementById('cfgOperacaoNome') || {}).value;
   const whatsCliente = document.getElementById('cfgWhatsCliente').value.trim();
   const whatsRedentor = document.getElementById('cfgWhatsRedentor').value.trim();
   const t1 = document.getElementById('cfgT1').value;
@@ -2458,8 +2750,10 @@ async function salvarEmpresaConfig() {
   if (!dest) { status.textContent = 'Coordenadas do destino inválidas. Use: -23.4429, -47.3896'; status.className = 'opt-status error'; return; }
 
   // Monta o objeto empresa
+  EMPRESA_CONFIG.operacaoNome = (operacaoNome || '').trim();
   const empresa = {
     nome: nome || EMPRESA_CONFIG.nome,
+    operacaoNome: (operacaoNome || '').trim(),
     whatsCliente: whatsCliente,
     whatsRedentor: whatsRedentor,
     senhaCliente: document.getElementById('cfgSenhaCliente').value.trim(),
@@ -2760,7 +3054,7 @@ function motoFilterLinhas() {
     if (motoNome && rota.motorista !== motoNome && rota.motoristaSaida !== motoNome) return;
     const ativos = rota.passageiros.filter(p => p.status === 'ativo').length;
     if (ativos === 0) return;
-    const chegada = {'1°':'05:45','2°':'14:45','3°':'20:55'}[rota.turno] || '';
+    const chegada = TURNOS_CHEGADA[rota.turno] || '';
     const opt = document.createElement('option');
     opt.value = rota.id;
     opt.textContent = 'Linha ' + rota.linha + ' · ' + rota.turno + ' Turno · ' + ativos + ' pass. · chegada ' + chegada;
@@ -2775,7 +3069,7 @@ function motoLoadRota() {
   if (!rotaId) { content.innerHTML = ''; return; }
   const rota = DATA.find(r => r.id === rotaId);
   if (!rota) return;
-  const chegada = {'1°':'05:45','2°':'14:45','3°':'20:55'}[rota.turno] || '';
+  const chegada = TURNOS_CHEGADA[rota.turno] || '';
   const mObj = MOTORISTAS.find(m => m.nome === rota.motorista);
   const mObjS = rota.motoristaSaida ? MOTORISTAS.find(m => m.nome === rota.motoristaSaida) : null;
   const sorted = rota.passageiros
@@ -2906,6 +3200,365 @@ async function geocodeAddress(geocoder, address, cidade) {
   });
 }
 
+// ==================================================================
+// OTIMIZADOR DE ROTA
+// ------------------------------------------------------------------
+// Tudo o que decide sequencia mora aqui, separado do Google. As funcoes
+// de avaliacao e de solver sao puras: recebem uma matriz e devolvem um
+// resultado, sem tocar em rede nem em DOM. E o que torna possivel testar
+// o caso da Linha 6 (75 min x 69 min) sem depender da API.
+// ==================================================================
+
+const OPT_CFG = {
+  // Limite operacional de tempo do passageiro dentro do veiculo.
+  maxRideMin: 60,
+  // Tempo parado em cada ponto de embarque.
+  stopServiceSeconds: 30,
+  // Adicional por passageiro alem do primeiro no mesmo ponto.
+  extraPassengerSeconds: 10,
+  // Dois embarques a menos disso um do outro sao o mesmo ponto operacional.
+  coordToleranceMeters: 40,
+  // Ate este numero de pontos o solver e exato (otimo provado).
+  exactMaxPoints: 13,
+  // Ganho minimo de duracao para valer a pena mexer na ordem (segundos).
+  minGanhoSegundos: 60,
+  // Reservado: quando ativado, a matriz passa a considerar transito.
+  // Nao implementado nesta versao — resultado deixaria de ser reproduzivel
+  // e cairia num SKU mais caro do Google.
+  trafficAware: false
+};
+
+// ---------- geometria ----------
+function optMetros(a, b) {
+  const R = 6371000, rad = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
+  const la1 = a.lat * rad, la2 = b.lat * rad;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+// ---------- agrupamento de passageiros no mesmo ponto ----------
+// Dois passageiros no mesmo endereco sao UM ponto operacional. Antes viravam
+// dois waypoints, o que inflava o tempo e a contagem de paradas.
+function optAgruparPontos(passageiros, coordsMap) {
+  const pontos = [];
+  passageiros.forEach(p => {
+    const c = coordsMap[p.nome];
+    if (!c) return;
+    const achado = pontos.find(pt => optMetros(pt, c) <= OPT_CFG.coordToleranceMeters);
+    if (achado) { achado.passageiros.push(p); return; }
+    pontos.push({
+      lat: c.lat, lng: c.lng,
+      rotulo: p.embarque || p.endereco || p.nome,
+      passageiros: [p]
+    });
+  });
+  pontos.forEach((pt, i) => {
+    pt.idx = i;
+    pt.servicoSeg = OPT_CFG.stopServiceSeconds +
+      Math.max(0, pt.passageiros.length - 1) * OPT_CFG.extraPassengerSeconds;
+    pt.nomes = pt.passageiros.map(x => x.nome);
+  });
+  return pontos;
+}
+
+// A ordem atual, traduzida para indices de ponto (pela ordem de horario).
+function optOrdemAtual(pontos, passageirosOrdenados) {
+  const vistos = [], ordem = [];
+  passageirosOrdenados.forEach(p => {
+    const pt = pontos.find(x => x.passageiros.some(q => q.nome === p.nome));
+    if (pt && vistos.indexOf(pt.idx) < 0) { vistos.push(pt.idx); ordem.push(pt.idx); }
+  });
+  // qualquer ponto que nao apareceu entra no fim, para nao perder passageiro
+  pontos.forEach(pt => { if (ordem.indexOf(pt.idx) < 0) ordem.push(pt.idx); });
+  return ordem;
+}
+
+// ---------- avaliacao de uma ordem ----------
+// ctx = { dur[][], dist[][], pontos, chegadaMin }
+// Indices na matriz: 0 = garagem, 1..K = pontos, K+1 = empresa.
+// Horarios calculados de tras para frente a partir da chegada obrigatoria.
+function optAvaliarOrdem(ordem, ctx) {
+  const K = ctx.pontos.length, EMP = K + 1;
+  let durSeg = 0, distM = 0;
+  const seq = [0].concat(ordem.map(i => i + 1)).concat([EMP]);
+  for (let k = 0; k < seq.length - 1; k++) {
+    durSeg += ctx.dur[seq[k]][seq[k + 1]];
+    distM += ctx.dist[seq[k]][seq[k + 1]];
+    if (k > 0) durSeg += ctx.pontos[seq[k] - 1].servicoSeg;
+  }
+  // tempo de cada ponto dentro do veiculo = do embarque ate a chegada
+  const rideSeg = new Array(ordem.length);
+  let acc = 0;
+  for (let k = ordem.length - 1; k >= 0; k--) {
+    const atual = ordem[k] + 1;
+    const prox = (k === ordem.length - 1) ? EMP : ordem[k + 1] + 1;
+    acc += ctx.dur[atual][prox];
+    if (k < ordem.length - 1) acc += ctx.pontos[ordem[k + 1]].servicoSeg;
+    rideSeg[k] = acc;
+  }
+  let violacoes = 0, maiorRide = 0;
+  ordem.forEach((pi, k) => {
+    const min = rideSeg[k] / 60;
+    if (min > maiorRide) maiorRide = min;
+    if (min > OPT_CFG.maxRideMin) violacoes += ctx.pontos[pi].passageiros.length;
+  });
+  const chegada = ctx.chegadaMin;
+  const embarqueMin = ordem.map((pi, k) => chegada - Math.round(rideSeg[k] / 60));
+  const saidaGaragem = chegada - Math.round(durSeg / 60);
+  return {
+    ordem: ordem.slice(),
+    durSeg: durSeg, distM: distM,
+    durMin: Math.round(durSeg / 60), distKm: distM / 1000,
+    violacoes: violacoes, maiorRideMin: Math.round(maiorRide),
+    rideMin: rideSeg.map(s => Math.round(s / 60)),
+    embarqueMin: embarqueMin, saidaGaragem: saidaGaragem
+  };
+}
+
+// ---------- comparacao lexicografica ----------
+// 1) violacoes  2) duracao  3) distancia  4) menor mudanca em relacao a atual.
+// Uma candidata um pouco mais longa PODE vencer se eliminar uma violacao.
+function optComparar(a, b) {
+  if (a.violacoes !== b.violacoes) return a.violacoes - b.violacoes;
+  if (a.durSeg !== b.durSeg) return a.durSeg - b.durSeg;
+  if (Math.abs(a.distM - b.distM) > 1) return a.distM - b.distM;
+  return 0;
+}
+
+function optDiferencaOrdem(a, b) {
+  let d = 0;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) d++;
+  return d;
+}
+
+// ---------- solver exato (Held-Karp sobre sufixos) ----------
+// Faz DP de tras para frente porque o tempo do passageiro dentro do veiculo
+// depende so do que vem DEPOIS dele. Assim a restricao de 60 min entra na
+// escolha da solucao, e nao como alerta calculado no fim.
+function optResolverExato(ctx) {
+  const K = ctx.pontos.length, EMP = K + 1;
+  const total = 1 << K;
+  const melhor = new Array(total);
+  for (let s = 0; s < total; s++) melhor[s] = new Array(K).fill(null);
+
+  const custoPonto = (i, T) => {
+    // T = duracao do sufixo a partir da SAIDA do ponto i
+    const min = T / 60;
+    return min > OPT_CFG.maxRideMin ? ctx.pontos[i].passageiros.length : 0;
+  };
+
+  for (let i = 0; i < K; i++) {
+    const durIE = ctx.dur[i + 1][EMP];
+    melhor[1 << i][i] = {
+      viol: custoPonto(i, durIE),
+      dur: ctx.pontos[i].servicoSeg + durIE,
+      dist: ctx.dist[i + 1][EMP],
+      prox: -1
+    };
+  }
+
+  for (let s = 1; s < total; s++) {
+    for (let i = 0; i < K; i++) {
+      if (!(s & (1 << i))) continue;
+      const resto = s & ~(1 << i);
+      if (resto === 0) continue;
+      let best = null;
+      for (let j = 0; j < K; j++) {
+        if (!(resto & (1 << j))) continue;
+        const sub = melhor[resto][j];
+        if (!sub) continue;
+        const durIJ = ctx.dur[i + 1][j + 1];
+        const sufixo = durIJ + sub.dur;              // a partir da saida de i
+        const cand = {
+          viol: sub.viol + custoPonto(i, sufixo),
+          dur: ctx.pontos[i].servicoSeg + sufixo,
+          dist: ctx.dist[i + 1][j + 1] + sub.dist,
+          prox: j
+        };
+        if (!best || cand.viol !== best.viol ? (best && cand.viol > best.viol ? false : true) : false) {
+          // comparacao lexicografica explicita abaixo
+        }
+        if (!best ||
+            cand.viol < best.viol ||
+            (cand.viol === best.viol && cand.dur < best.dur) ||
+            (cand.viol === best.viol && cand.dur === best.dur && cand.dist < best.dist)) {
+          best = cand;
+        }
+      }
+      melhor[s][i] = best;
+    }
+  }
+
+  const cheio = total - 1;
+  let inicio = -1, melhorTotal = null;
+  for (let i = 0; i < K; i++) {
+    const sub = melhor[cheio][i];
+    if (!sub) continue;
+    const cand = {
+      viol: sub.viol,
+      dur: ctx.dur[0][i + 1] + sub.dur,
+      dist: ctx.dist[0][i + 1] + sub.dist
+    };
+    if (!melhorTotal ||
+        cand.viol < melhorTotal.viol ||
+        (cand.viol === melhorTotal.viol && cand.dur < melhorTotal.dur) ||
+        (cand.viol === melhorTotal.viol && cand.dur === melhorTotal.dur && cand.dist < melhorTotal.dist)) {
+      melhorTotal = cand; inicio = i;
+    }
+  }
+  if (inicio < 0) return null;
+
+  const ordem = [];
+  let s = cheio, i = inicio;
+  while (i >= 0) { ordem.push(i); const nx = melhor[s][i].prox; s = s & ~(1 << i); i = nx; }
+  return ordem;
+}
+
+// ---------- solver heuristico (muitos pontos) ----------
+// Sempre semeado com a ordem atual e so aceita melhora, entao o resultado
+// nunca pode ser pior que a rota de hoje.
+function optResolverHeuristico(ctx, ordemAtual) {
+  const K = ctx.pontos.length, EMP = K + 1;
+  const sementes = [ordemAtual.slice()];
+
+  // vizinho mais proximo a partir da garagem
+  const restante = [];
+  for (let i = 0; i < K; i++) restante.push(i);
+  const nn = [];
+  let atual = 0;
+  while (restante.length) {
+    let melhorI = 0;
+    for (let k = 1; k < restante.length; k++)
+      if (ctx.dur[atual][restante[k] + 1] < ctx.dur[atual][restante[melhorI] + 1]) melhorI = k;
+    const escolhido = restante.splice(melhorI, 1)[0];
+    nn.push(escolhido); atual = escolhido + 1;
+  }
+  sementes.push(nn);
+
+  let melhor = null;
+  sementes.forEach(sem => {
+    let cur = sem.slice(), curM = optAvaliarOrdem(cur, ctx), mudou = true, voltas = 0;
+    while (mudou && voltas < 60) {
+      mudou = false; voltas++;
+      for (let i = 0; i < cur.length - 1; i++) {
+        for (let j = i + 1; j < cur.length; j++) {
+          const alt = cur.slice(0, i).concat(cur.slice(i, j + 1).reverse(), cur.slice(j + 1)); // 2-opt
+          const m = optAvaliarOrdem(alt, ctx);
+          if (optComparar(m, curM) < 0) { cur = alt; curM = m; mudou = true; }
+        }
+      }
+      for (let i = 0; i < cur.length; i++) {           // Or-opt: move 1 ponto
+        for (let j = 0; j < cur.length; j++) {
+          if (i === j) continue;
+          const alt = cur.slice(); const [x] = alt.splice(i, 1); alt.splice(j, 0, x);
+          const m = optAvaliarOrdem(alt, ctx);
+          if (optComparar(m, curM) < 0) { cur = alt; curM = m; mudou = true; }
+        }
+      }
+    }
+    if (!melhor || optComparar(curM, melhor.m) < 0) melhor = { ordem: cur, m: curM };
+  });
+  return melhor.ordem;
+}
+
+// ---------- orquestrador puro ----------
+// Recebe a matriz pronta e devolve a decisao. Sem rede, sem DOM: testavel.
+function optDecidir(ctx, ordemAtual) {
+  const atual = optAvaliarOrdem(ordemAtual, ctx);
+  const K = ctx.pontos.length;
+  let candidataOrdem;
+  if (K <= 1) candidataOrdem = ordemAtual.slice();
+  else if (K <= OPT_CFG.exactMaxPoints) candidataOrdem = optResolverExato(ctx) || ordemAtual.slice();
+  else candidataOrdem = optResolverHeuristico(ctx, ordemAtual);
+
+  const candidata = optAvaliarOrdem(candidataOrdem, ctx);
+  const cmp = optComparar(candidata, atual);
+
+  // Regra dura: so e melhoria se vencer no score. Empate mantem a atual —
+  // e o quarto criterio, "menor alteracao em relacao a ordem atual".
+  let melhorou = cmp < 0;
+  // Ganho de duracao irrelevante nao justifica remexer a operacao, EXCETO
+  // quando a candidata elimina violacao — ai vale mesmo por pouco tempo.
+  if (melhorou &&
+      candidata.violacoes === atual.violacoes &&
+      (atual.durSeg - candidata.durSeg) < OPT_CFG.minGanhoSegundos &&
+      Math.abs(atual.distM - candidata.distM) < 200) {
+    melhorou = false;
+  }
+
+  return {
+    atual: atual,
+    candidata: candidata,
+    melhorou: melhorou,
+    mudancas: optDiferencaOrdem(atual.ordem, candidata.ordem),
+    exato: K <= OPT_CFG.exactMaxPoints,
+    ganhoMin: atual.durMin - candidata.durMin,
+    ganhoKm: (atual.distM - candidata.distM) / 1000
+  };
+}
+
+// ---------- matriz (unico ponto que fala com o Google) ----------
+// Cache por conjunto de coordenadas: a matriz e o item caro da conta.
+// (K+1)x(K+1) elementos; com 9 pontos sao 100 elementos, o teto de um
+// unico request client-side do Distance Matrix.
+const OPT_MATRIZ_CACHE = {};
+
+function optChaveMatriz(pontos) {
+  const r = n => Math.round(n * 1e5) / 1e5;
+  return [r(GARAGEM_COORDS.lat), r(GARAGEM_COORDS.lng), r(EMPRESA_COORDS.lat), r(EMPRESA_COORDS.lng)]
+    .concat(pontos.map(p => r(p.lat) + ',' + r(p.lng)).sort()).join('|');
+}
+
+async function optObterMatriz(pontos, aoProgredir) {
+  const chave = optChaveMatriz(pontos);
+  if (OPT_MATRIZ_CACHE[chave]) {
+    if (aoProgredir) aoProgredir('Tempos entre os pontos (reaproveitados desta sessão)');
+    return OPT_MATRIZ_CACHE[chave];
+  }
+  const K = pontos.length, N = K + 2, EMP = K + 1;
+  const LL = c => new google.maps.LatLng(c.lat, c.lng);
+  // origens: garagem + pontos (a empresa nunca e origem)
+  // destinos: pontos + empresa (a garagem nunca e destino)
+  const origens = [LL(GARAGEM_COORDS)].concat(pontos.map(LL));
+  const destinos = pontos.map(LL).concat([LL(EMPRESA_COORDS)]);
+
+  const dur = Array.from({ length: N }, () => new Array(N).fill(0));
+  const dist = Array.from({ length: N }, () => new Array(N).fill(0));
+
+  const svc = new google.maps.DistanceMatrixService();
+  const porLote = Math.max(1, Math.floor(100 / destinos.length)); // teto de 100 elementos
+  let elementos = 0;
+
+  for (let ini = 0; ini < origens.length; ini += porLote) {
+    const fatia = origens.slice(ini, ini + porLote);
+    const res = await new Promise((ok, err) => {
+      svc.getDistanceMatrix({
+        origins: fatia, destinations: destinos,
+        travelMode: google.maps.TravelMode.DRIVING
+        // trafficAware fica para depois: exige departureTime e muda de SKU.
+      }, (r, st) => st === 'OK' ? ok(r) : err(new Error('Distance Matrix: ' + st)));
+    });
+    res.rows.forEach((linha, li) => {
+      const oi = ini + li;                       // 0 = garagem, 1..K = pontos
+      linha.elements.forEach((el, di) => {
+        elementos++;
+        const dj = (di < K) ? di + 1 : EMP;      // destinos: pontos, depois empresa
+        if (el.status !== 'OK') { dur[oi][dj] = 1e9; dist[oi][dj] = 1e9; return; }
+        dur[oi][dj] = el.duration.value;
+        dist[oi][dj] = el.distance.value;
+      });
+    });
+    if (aoProgredir) aoProgredir('Tempos entre os pontos calculados (' + elementos + ' trechos)');
+  }
+  const m = { dur: dur, dist: dist, elementos: elementos };
+  OPT_MATRIZ_CACHE[chave] = m;
+  console.info('[otimizador] matriz nova:', elementos, 'elementos do Distance Matrix');
+  return m;
+}
+
+function optLimparCacheMatriz() { Object.keys(OPT_MATRIZ_CACHE).forEach(k => delete OPT_MATRIZ_CACHE[k]); }
+
 async function getCoords(geocoder, p) {
   if (p.lat && p.lng && Math.abs(p.lat) > 1 && Math.abs(p.lng) > 1) {
     return { lat: p.lat, lng: p.lng };
@@ -2914,14 +3567,83 @@ async function getCoords(geocoder, p) {
   return await geocodeAddress(geocoder, addr, p.cidade);
 }
 
+function otPasso(txt, estado) {
+  const box = document.getElementById('otPassos');
+  if (!box) return;
+  const div = document.createElement('div');
+  div.className = 'ot-passo ' + (estado || 'ok');
+  div.textContent = (estado === 'run' ? '· ' : estado === 'erro' ? '× ' : '✓ ') + txt;
+  box.appendChild(div);
+}
+function otLimparPassos() { const b = document.getElementById('otPassos'); if (b) b.innerHTML = ''; }
+
+function otHHMM(min) {
+  const m = ((Math.round(min) % 1440) + 1440) % 1440;
+  return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+}
+
+function otRenderFatos(rota) {
+  const box = document.getElementById('otFatos');
+  if (!box) return;
+  const ativos = rota.passageiros.filter(p => p.status === 'ativo' && (p.endereco || p.embarque));
+  const chegada = TURNOS_CHEGADA[rota.turno] || '—';
+  box.innerHTML =
+    otFato('Chegada obrigatória', chegada) +
+    otFato('Origem', GARAGEM_LABEL.replace(' (início da rota)', '')) +
+    otFato('Destino', DESTINO.split('—')[0].trim()) +
+    otFato('Passageiros', String(ativos.length)) +
+    otFato('Pontos de embarque', '<span id="otQtdPontos">—</span>') +
+    otFato('Tempo máximo em viagem', OPT_CFG.maxRideMin + ' min');
+}
+function otFato(rot, val) {
+  return '<div class="ot-fato"><span>' + rot + '</span><b>' + val + '</b></div>';
+}
+
+function otBlocoMetricas(titulo, m, ref) {
+  const delta = (a, b, suf, inverso) => {
+    if (ref === undefined) return '';
+    const d = a - b;
+    if (Math.abs(d) < 0.05) return '';
+    const bom = inverso ? d > 0 : d < 0;
+    return '<span class="ot-delta ' + (bom ? 'bom' : 'ruim') + '">' +
+      (d > 0 ? '+' : '') + (Math.round(d * 10) / 10) + suf + '</span>';
+  };
+  return '<div class="ot-bloco">' +
+    '<div class="ot-bloco-tit">' + titulo + '</div>' +
+    '<div class="ot-linha"><span>Duração</span><b>' + m.durMin + ' min</b>' + (ref ? delta(m.durMin, ref.durMin, ' min') : '') + '</div>' +
+    '<div class="ot-linha"><span>Distância</span><b>' + (Math.round(m.distKm * 10) / 10) + ' km</b>' + (ref ? delta(m.distKm, ref.distKm, ' km') : '') + '</div>' +
+    '<div class="ot-linha"><span>Saída da garagem</span><b>' + otHHMM(m.saidaGaragem) + '</b></div>' +
+    '<div class="ot-linha"><span>Maior tempo de passageiro</span><b>' + m.maiorRideMin + ' min</b></div>' +
+    '<div class="ot-linha"><span>Acima de ' + OPT_CFG.maxRideMin + ' min</span><b class="' + (m.violacoes ? 'ot-mau' : 'ot-bom') + '">' +
+      m.violacoes + '</b></div>' +
+  '</div>';
+}
+
+function otSequencia(titulo, ordem, ctx, metrica) {
+  let h = '<div class="ot-seq"><div class="ot-seq-tit">' + titulo + '</div><div class="ot-seq-item ot-seq-fixo">Garagem</div>';
+  ordem.forEach((pi, k) => {
+    const pt = ctx.pontos[pi];
+    h += '<div class="ot-seq-item"><span class="ot-seq-h">' + otHHMM(metrica.embarqueMin[k]) + '</span>' +
+         pt.nomes.join(' + ') +
+         (metrica.rideMin[k] > OPT_CFG.maxRideMin ? '<span class="ot-seq-alerta">' + metrica.rideMin[k] + ' min</span>' : '') +
+         '</div>';
+  });
+  h += '<div class="ot-seq-item ot-seq-fixo">Empresa · ' + otHHMM(ctx.chegadaMin) + '</div></div>';
+  return h;
+}
+
 function openOtimizar(rotaId) {
   const key = getApiKey();
   if (!key) { alert('Configure sua Google Maps API Key primeiro.\nClique em Config no cabeçalho.'); return; }
   otimizarRotaId = rotaId;
   const rota = DATA.find(r => r.id === rotaId);
-  const chegada = { '1°': '05:45', '2°': '14:45', '3°': '20:55' }[rota.turno] || '';
-  document.getElementById('otimizarTitle').textContent = 'Otimizar — Linha ' + rota.linha + ' · ' + rota.turno + ' Turno';
+  const chegada = TURNOS_CHEGADA[rota.turno] || '';
+  document.getElementById('otimizarTitle').textContent = 'Otimização inteligente — Linha ' + rota.linha + ' · ' + rota.turno + ' Turno';
   setOptStatus('Aguardando...', '');
+  otLimparPassos();
+  otRenderFatos(rota);
+  const _btnA = document.getElementById('btnAnalisarRota'); if (_btnA) _btnA.disabled = false;
+  const _btnM = document.getElementById('btnManterAtual'); if (_btnM) _btnM.textContent = 'Fechar';
   document.getElementById('optResultSection').style.display = 'none';
   document.getElementById('optMapSection').style.display = 'none';
   document.getElementById('btnAplicar').style.display = 'none';
@@ -2931,164 +3653,204 @@ function openOtimizar(rotaId) {
   document.getElementById('modalOtimizar').classList.add('open');
 }
 
-async function otimizarRotaAtual() {
-  const btn = document.getElementById('btnOtimizarRota');
-  btn.disabled = true;
-  setOptStatus('Carregando Google Maps...', 'running');
+// Mantido por compatibilidade: qualquer chamada antiga cai no fluxo novo.
+async function otimizarRotaAtual() { return analisarMelhorRota(); }
+
+async function analisarMelhorRota() {
+  const btn = document.getElementById('btnAnalisarRota');
+  if (btn) btn.disabled = true;
+  otLimparPassos();
+  setOptStatus('Preparando análise...', 'running');
   try {
     await ensureMapsLoaded();
     const rota = DATA.find(r => r.id === otimizarRotaId);
-    const passAtivos = rota.passageiros.filter(p => p.status === 'ativo' && (p.endereco || p.embarque));
-    if (passAtivos.length === 0) { setOptStatus('Nenhum passageiro ativo com endereço.', 'error'); btn.disabled = false; return; }
+    const chegadaHora = TURNOS_CHEGADA[rota.turno] || '';
+    if (!chegadaHora) {
+      setOptStatus('Este turno não tem horário de chegada configurado. Ajuste em Configurações.', 'error');
+      if (btn) btn.disabled = false; return;
+    }
 
-    setOptStatus('Buscando coordenadas...', 'running');
+    const passAtivos = rota.passageiros
+      .filter(p => p.status === 'ativo' && (p.endereco || p.embarque))
+      .sort((a, b) => (a.horario || '99:99').localeCompare(b.horario || '99:99'));
+    if (!passAtivos.length) { setOptStatus('Nenhum passageiro ativo com endereço.', 'error'); if (btn) btn.disabled = false; return; }
+
+    // ---- coordenadas ----
+    setOptStatus('Validando pontos...', 'running');
     const geocoder = new google.maps.Geocoder();
     const coordsMap = {};
     for (let i = 0; i < passAtivos.length; i++) {
       const p = passAtivos[i];
-      setOptStatus('' + (i+1) + '/' + passAtivos.length + ': ' + p.nome.split(' ')[0] + '...', 'running');
+      setOptStatus('Coordenadas ' + (i + 1) + '/' + passAtivos.length + ': ' + p.nome.split(' ')[0] + '...', 'running');
       coordsMap[p.nome] = await getCoords(geocoder, p);
-      await new Promise(r => setTimeout(r, 150));
+      await new Promise(r => setTimeout(r, 120));
     }
+    const semCoords = passAtivos.filter(p => !coordsMap[p.nome]);
+    if (semCoords.length) {
+      otPasso('Sem coordenada: ' + semCoords.map(p => p.nome).join(', '), 'erro');
+      setOptStatus('Otimização interrompida: ' + semCoords.length +
+        ' passageiro(s) sem endereço localizável. Corrija o endereço e tente de novo.', 'error');
+      if (btn) btn.disabled = false; return;
+    }
+    otPasso('Pontos validados');
 
-    const passComCoords = passAtivos.filter(p => coordsMap[p.nome]);
-    const passSemCoords = passAtivos.filter(p => !coordsMap[p.nome]);
-    if (passComCoords.length === 0) { setOptStatus('Nenhum endereço pôde ser geocodificado.', 'error'); btn.disabled = false; return; }
+    // ---- agrupamento ----
+    const pontos = optAgruparPontos(passAtivos, coordsMap);
+    const elQtd = document.getElementById('otQtdPontos');
+    if (elQtd) elQtd.textContent = String(pontos.length);
+    const juntos = pontos.filter(p => p.passageiros.length > 1).length;
+    otPasso(pontos.length + ' pontos de embarque' + (juntos ? ' (' + juntos + ' com passageiros no mesmo local)' : ''));
 
-    // Use Distance Matrix to sort by distance to empresa (furthest first)
-    setOptStatus('Calculando distâncias à empresa...', 'running');
-    const distanceService = new google.maps.DistanceMatrixService();
-    const origins = passComCoords.map(p => new google.maps.LatLng(coordsMap[p.nome].lat, coordsMap[p.nome].lng));
+    // ---- matriz ----
+    setOptStatus('Calculando tempos entre os pontos...', 'running');
+    const matriz = await optObterMatriz(pontos, msg => otPasso(msg));
 
-    const matrixResult = await new Promise((resolve, reject) => {
-      distanceService.getDistanceMatrix({
-        origins, destinations: [new google.maps.LatLng(EMPRESA_COORDS.lat, EMPRESA_COORDS.lng)],
-        travelMode: google.maps.TravelMode.DRIVING,
-      }, (res, status) => { if (status === 'OK') resolve(res); else reject(new Error('Distance Matrix: ' + status)); });
-    });
-
-    const distToEmpresa = passComCoords.map((p, i) => {
-      const el = matrixResult.rows[i].elements[0];
-      return el.status === 'OK' ? el.distance.value : 0;
-    });
-
-    const indexed = passComCoords.map((p, i) => ({ p, dist: distToEmpresa[i] }));
-    indexed.sort((a, b) => b.dist - a.dist);
-    const ordered = indexed.map(x => x.p);
-
-    setOptStatus('Calculando tempos reais...', 'running');
-    const directionsService = new google.maps.DirectionsService();
-    const chegadaHora = { '1°': '05:45', '2°': '14:45', '3°': '20:55' }[rota.turno] || '05:45';
     const [hh, mm] = chegadaHora.split(':').map(Number);
-    const chegadaMinutes = hh * 60 + mm;
+    const ctx = { dur: matriz.dur, dist: matriz.dist, pontos: pontos, chegadaMin: hh * 60 + mm };
+    const ordemAtual = optOrdemAtual(pontos, passAtivos);
 
-    const waypoints = ordered.map(p => ({ location: new google.maps.LatLng(coordsMap[p.nome].lat, coordsMap[p.nome].lng), stopover: true }));
-    const result = await new Promise((resolve, reject) => {
-      directionsService.route({
-        origin: new google.maps.LatLng(GARAGEM_COORDS.lat, GARAGEM_COORDS.lng),
-        destination: new google.maps.LatLng(EMPRESA_COORDS.lat, EMPRESA_COORDS.lng),
-        waypoints, optimizeWaypoints: false,
-        travelMode: google.maps.TravelMode.DRIVING,
-      }, (res, status) => { if (status === 'OK') resolve(res); else reject(new Error('Directions API: ' + status)); });
-    });
+    // ---- decisao ----
+    setOptStatus('Comparando alternativas...', 'running');
+    const dec = optDecidir(ctx, ordemAtual);
+    otPasso('Restrições verificadas (limite de ' + OPT_CFG.maxRideMin + ' min em viagem)');
+    otPasso('Ordem atual comparada na mesma base de tempos');
+    otPasso(dec.exato
+      ? 'Todas as sequências possíveis avaliadas (solução exata)'
+      : 'Melhor alternativa encontrada por busca local');
 
-    const legs = result.routes[0].legs;
-    const n = ordered.length;
-    let totalSeconds = 0;
-    legs.forEach(leg => { totalSeconds += leg.duration.value; });
+    console.info('[otimizador]',
+      '\nORDEM ATUAL   ', dec.atual.ordem.map(i => pontos[i].nomes.join('+')).join(' -> '),
+      '\n              ', dec.atual.durMin + ' min / ' + (Math.round(dec.atual.distKm * 10) / 10) + ' km / viol=' + dec.atual.violacoes,
+      '\nMELHOR ENCONTRADA', dec.candidata.ordem.map(i => pontos[i].nomes.join('+')).join(' -> '),
+      '\n              ', dec.candidata.durMin + ' min / ' + (Math.round(dec.candidata.distKm * 10) / 10) + ' km / viol=' + dec.candidata.violacoes,
+      '\nMELHORIA =', dec.melhorou);
 
-    const boardingMinutes = new Array(n);
-    let timeBack = chegadaMinutes;
-    for (let i = n - 1; i >= 0; i--) { timeBack -= Math.round(legs[i+1].duration.value / 60); boardingMinutes[i] = timeBack; }
-    const saidaGaragem = boardingMinutes[0] - Math.round(legs[0].duration.value / 60);
+    ultimoCtxOtimizacao = ctx;
+    renderOptComparacao(dec, ctx, rota);
 
-    const novasParadas = [];
-    for (let i = 0; i < n; i++) {
-      const p = ordered[i];
-      const absMin = ((boardingMinutes[i] % 1440) + 1440) % 1440;
-      const h = Math.floor(absMin / 60), m = absMin % 60;
-      const horario = h.toString().padStart(2,'0') + ':' + m.toString().padStart(2,'0');
-      const minutosEmRota = chegadaMinutes - boardingMinutes[i];
-      novasParadas.push({ passageiro: p, horario, minutosEmRota, alerta: minutosEmRota > MAX_ROTA_MINUTOS, distanciaLeg: legs[i+1] ? legs[i+1].distance.text : '—' });
+    if (dec.melhorou) {
+      const partes = [];
+      if (dec.ganhoMin > 0) partes.push(dec.ganhoMin + ' min mais rápida');
+      if (dec.ganhoKm > 0.05) partes.push((Math.round(dec.ganhoKm * 10) / 10) + ' km menor');
+      if (dec.atual.violacoes > dec.candidata.violacoes)
+        partes.push((dec.atual.violacoes - dec.candidata.violacoes) + ' passageiro(s) a menos acima do limite');
+      setOptStatus('Rota melhor encontrada. ' + partes.join(' · '), 'success');
+      pendingOptimization = {
+        rotaId: otimizarRotaId, ctx: ctx, metrica: dec.candidata,
+        chegadaHora: chegadaHora, keepOrder: false, anterior: dec.atual
+      };
+      document.getElementById('btnAplicar').style.display = 'inline-block';
+      document.getElementById('btnManterAtual').textContent = 'Manter rota atual';
+    } else {
+      setOptStatus('Sua rota atual já está otimizada.', 'success');
+      pendingOptimization = null;
+      document.getElementById('btnAplicar').style.display = 'none';
+      document.getElementById('btnManterAtual').textContent = 'Fechar';
     }
-
-    pendingOptimization = { rotaId: otimizarRotaId, novasParadas, passSemCoords, totalDuration: Math.round(totalSeconds/60), saidaGaragem, coordsMap };
-    lastDirectionsResult = result;
-    optMap = null; optDirectionsRenderer = null;
-
-    renderOptResult(pendingOptimization, chegadaHora);
-    setOptStatus('Otimização concluída! Revise e clique em "Aplicar alterações".', 'success');
-    document.getElementById('btnAplicar').style.display = 'inline-block';
-    document.getElementById('btnVerMapa').style.display = 'inline-block';
     document.getElementById('optResultSection').style.display = 'block';
-  } catch(e) { setOptStatus('Erro: ' + e.message, 'error'); console.error(e); }
-  btn.disabled = false;
-}
-
-async function recalcularApenasHorarios() {
-  const rota = DATA.find(r => r.id === otimizarRotaId);
-  const btn = document.querySelector('#modalOtimizar .opt-btn-secondary');
-  if (btn) btn.disabled = true;
-  setOptStatus('Carregando Google Maps...', 'running');
-  try {
-    await ensureMapsLoaded();
-    const passAtivos = rota.passageiros.filter(p => p.status === 'ativo' && (p.endereco || p.embarque));
-    const sorted = [...passAtivos].sort((a,b) => (a.horario||'99:99').localeCompare(b.horario||'99:99'));
-    const geocoder = new google.maps.Geocoder();
-    const coordsMap = {};
-    for (let i = 0; i < sorted.length; i++) {
-      const p = sorted[i];
-      setOptStatus('' + (i+1) + '/' + sorted.length + ' ' + p.nome.split(' ')[0] + '...', 'running');
-      coordsMap[p.nome] = await getCoords(geocoder, p);
-      await new Promise(r => setTimeout(r, 150));
-    }
-    const passComCoords = sorted.filter(p => coordsMap[p.nome]);
-    const passSemCoords = sorted.filter(p => !coordsMap[p.nome]);
-    setOptStatus('Recalculando horários na ordem atual...', 'running');
-    const directionsService = new google.maps.DirectionsService();
-    const chegadaHora = { '1°': '05:45', '2°': '14:45', '3°': '20:55' }[rota.turno] || '05:45';
-    const [hh, mm] = chegadaHora.split(':').map(Number);
-    const chegadaMinutes = hh * 60 + mm;
-    const waypoints = passComCoords.map(p => ({ location: new google.maps.LatLng(coordsMap[p.nome].lat, coordsMap[p.nome].lng), stopover: true }));
-    const result = await new Promise((resolve, reject) => {
-      directionsService.route({
-        origin: new google.maps.LatLng(GARAGEM_COORDS.lat, GARAGEM_COORDS.lng),
-        destination: new google.maps.LatLng(EMPRESA_COORDS.lat, EMPRESA_COORDS.lng),
-        waypoints, optimizeWaypoints: false,
-        travelMode: google.maps.TravelMode.DRIVING,
-      }, (res, status) => { if (status === 'OK') resolve(res); else reject(new Error('Directions: ' + status)); });
-    });
-    const legs = result.routes[0].legs;
-    const n = passComCoords.length;
-    let totalSeconds = 0;
-    legs.forEach(leg => { totalSeconds += leg.duration.value; });
-    const boardingMinutes = new Array(n);
-    let timeBack = chegadaMinutes;
-    for (let i = n-1; i >= 0; i--) { timeBack -= Math.round(legs[i+1].duration.value/60); boardingMinutes[i] = timeBack; }
-    const saidaGaragem = boardingMinutes[0] - Math.round(legs[0].duration.value/60);
-    const novasParadas = [];
-    for (let i = 0; i < n; i++) {
-      const p = passComCoords[i];
-      const absMin = ((boardingMinutes[i] % 1440) + 1440) % 1440;
-      const h = Math.floor(absMin/60), m = absMin % 60;
-      const horario = h.toString().padStart(2,'0') + ':' + m.toString().padStart(2,'0');
-      novasParadas.push({ passageiro: p, horario, minutosEmRota: chegadaMinutes - boardingMinutes[i], alerta: (chegadaMinutes - boardingMinutes[i]) > MAX_ROTA_MINUTOS });
-    }
-    pendingOptimization = { rotaId: otimizarRotaId, novasParadas, passSemCoords, totalDuration: Math.round(totalSeconds/60), saidaGaragem, coordsMap, keepOrder: true };
-    lastDirectionsResult = result;
-    optMap = null; optDirectionsRenderer = null;
-    renderOptResult(pendingOptimization, chegadaHora);
-    setOptStatus('Horários recalculados! Revise e aplique.', 'success');
-    document.getElementById('btnAplicar').style.display = 'inline-block';
-    document.getElementById('btnVerMapa').style.display = 'inline-block';
-    document.getElementById('optMapSection').style.display = 'none';
-    document.getElementById('btnVerMapa').textContent = 'Ver Mapa';
-    document.getElementById('optResultSection').style.display = 'block';
-  } catch(e) { setOptStatus('Erro: ' + e.message, 'error'); }
+    document.getElementById('btnVerMapa').style.display = 'none';
+  } catch (e) {
+    // Falha de API nunca altera a rota: so informa.
+    otPasso(e.message, 'erro');
+    setOptStatus('Não foi possível concluir a análise: ' + e.message + '. A rota atual não foi alterada.', 'error');
+    pendingOptimization = null;
+    console.error(e);
+  }
   if (btn) btn.disabled = false;
 }
 
+let ultimoCtxOtimizacao = null;
 
+function renderOptComparacao(dec, ctx, rota) {
+  const body = document.getElementById('optResultBody');
+  let h = '';
+  if (!dec.melhorou) {
+    h += '<div class="ot-aviso">Analisamos as alternativas respeitando o horário de chegada e as regras ' +
+         'operacionais. Nenhuma sequência apresentou resultado melhor que a rota atual.</div>';
+    h += '<div class="ot-comp ot-comp-1">' + otBlocoMetricas('Rota atual', dec.atual) + '</div>';
+    h += otSequencia('Sequência atual', dec.atual.ordem, ctx, dec.atual);
+  } else {
+    h += '<div class="ot-comp">' +
+         otBlocoMetricas('Rota atual', dec.atual) +
+         otBlocoMetricas('Rota proposta', dec.candidata, dec.atual) +
+         '</div>';
+    h += '<div class="ot-economia">Economia: <b>' + Math.max(0, dec.ganhoMin) + ' min</b> · <b>' +
+         (Math.round(Math.max(0, dec.ganhoKm) * 10) / 10) + ' km</b>' +
+         (dec.mudancas ? ' <span>· ' + dec.mudancas + ' ponto(s) mudam de posição</span>' : '') + '</div>';
+    h += '<div class="ot-seqs">' +
+         otSequencia('Antes', dec.atual.ordem, ctx, dec.atual) +
+         otSequencia('Depois', dec.candidata.ordem, ctx, dec.candidata) +
+         '</div>';
+  }
+  body.innerHTML = h;
+}
+
+async function recalcularApenasHorarios() {
+  const btn = document.getElementById('btnRecalcHorarios');
+  if (btn) btn.disabled = true;
+  otLimparPassos();
+  setOptStatus('Preparando...', 'running');
+  try {
+    await ensureMapsLoaded();
+    const rota = DATA.find(r => r.id === otimizarRotaId);
+    const chegadaHora = TURNOS_CHEGADA[rota.turno] || '';
+    if (!chegadaHora) {
+      setOptStatus('Este turno não tem horário de chegada configurado. Ajuste em Configurações.', 'error');
+      if (btn) btn.disabled = false; return;
+    }
+    const passAtivos = rota.passageiros
+      .filter(p => p.status === 'ativo' && (p.endereco || p.embarque))
+      .sort((a, b) => (a.horario || '99:99').localeCompare(b.horario || '99:99'));
+    if (!passAtivos.length) { setOptStatus('Nenhum passageiro ativo com endereço.', 'error'); if (btn) btn.disabled = false; return; }
+
+    const geocoder = new google.maps.Geocoder();
+    const coordsMap = {};
+    for (let i = 0; i < passAtivos.length; i++) {
+      const p = passAtivos[i];
+      setOptStatus('Coordenadas ' + (i + 1) + '/' + passAtivos.length + '...', 'running');
+      coordsMap[p.nome] = await getCoords(geocoder, p);
+      await new Promise(r => setTimeout(r, 120));
+    }
+    const semCoords = passAtivos.filter(p => !coordsMap[p.nome]);
+    if (semCoords.length) {
+      otPasso('Sem coordenada: ' + semCoords.map(p => p.nome).join(', '), 'erro');
+      setOptStatus('Interrompido: ' + semCoords.length + ' passageiro(s) sem endereço localizável.', 'error');
+      if (btn) btn.disabled = false; return;
+    }
+    otPasso('Pontos validados');
+
+    const pontos = optAgruparPontos(passAtivos, coordsMap);
+    const elQtd = document.getElementById('otQtdPontos');
+    if (elQtd) elQtd.textContent = String(pontos.length);
+    setOptStatus('Calculando os tempos da ordem atual...', 'running');
+    // Reaproveita a matriz se ela já existir nesta sessão; senão calcula.
+    const matriz = await optObterMatriz(pontos, msg => otPasso(msg));
+    const [hh, mm] = chegadaHora.split(':').map(Number);
+    const ctx = { dur: matriz.dur, dist: matriz.dist, pontos: pontos, chegadaMin: hh * 60 + mm };
+    const ordemAtual = optOrdemAtual(pontos, passAtivos);
+    const metrica = optAvaliarOrdem(ordemAtual, ctx);
+    otPasso('Horários recalculados mantendo a ordem atual');
+
+    ultimoCtxOtimizacao = ctx;
+    const body = document.getElementById('optResultBody');
+    body.innerHTML = otBlocoMetricas('Rota atual (ordem mantida)', metrica) +
+                     otSequencia('Sequência', ordemAtual, ctx, metrica);
+    pendingOptimization = {
+      rotaId: otimizarRotaId, ctx: ctx, metrica: metrica,
+      chegadaHora: chegadaHora, keepOrder: true, anterior: metrica
+    };
+    setOptStatus('Horários recalculados. Revise e aplique.', 'success');
+    document.getElementById('btnAplicar').style.display = 'inline-block';
+    document.getElementById('btnAplicar').textContent = 'Aplicar horários';
+    document.getElementById('optResultSection').style.display = 'block';
+    document.getElementById('btnVerMapa').style.display = 'none';
+  } catch (e) {
+    otPasso(e.message, 'erro');
+    setOptStatus('Não foi possível recalcular: ' + e.message + '. A rota atual não foi alterada.', 'error');
+    pendingOptimization = null;
+  }
+  if (btn) btn.disabled = false;
+}
 
 function toggleOptMap() {
   const section = document.getElementById('optMapSection');
@@ -3841,7 +4603,7 @@ async function renderMapaGeral(rotaExtraIdx) {
     bounds.extend(vertivPos);
   }
 
-  const chegada = { '1°': '05:45', '2°': '14:45', '3°': '20:55' }[mgTurno] || '';
+  const chegada = TURNOS_CHEGADA[mgTurno] || '';
 
   // Show sem-rota passengers as gray markers
   DATA.forEach(rota => {
