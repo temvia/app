@@ -1648,3 +1648,100 @@ header.tv-top {
 }
 .tv-shell.tv-collapsed .tv-brand-op { display: none !important; }
 @media (max-width: 1439px) { .tv-brand-op { display: none !important; } }
+
+
+/* ==================================================================
+   ROTEIRIZADOR INTELIGENTE 2.0 — painel do planejador
+   ================================================================== */
+.pl-painel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px; margin-bottom: 16px;
+}
+.pl-topo { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+.pl-titulo { font-size: 15px; font-weight: 700; letter-spacing: -.2px; }
+.pl-sub { font-size: 12px; color: var(--muted); margin-top: 3px; max-width: 62ch; line-height: 1.5; }
+.pl-topo .tv-btn { margin-left: auto; flex-shrink: 0; }
+.pl-topo .tv-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.pl-restricoes {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px; align-items: start;
+}
+.pl-campo-larga { grid-column: 1 / -1; }
+.pl-campo .form-input { padding: 8px 10px; font-size: 13px; }
+.pl-dica { font-size: 10.5px; color: var(--muted); margin-top: 4px; }
+
+.pl-chips { display: flex; flex-wrap: wrap; gap: 6px; min-height: 28px; align-items: center; }
+.pl-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11.5px; padding: 4px 10px; border-radius: 999px;
+  background: rgba(78,143,255,.12); color: var(--accent2);
+  border: 1px solid rgba(78,143,255,.3);
+}
+.pl-chip-fixo { background: var(--surface2); color: var(--muted); border-color: var(--border); }
+.pl-chip-rota { background: rgba(255,176,0,.12); color: var(--accent); border-color: rgba(255,176,0,.35); }
+.pl-chip button {
+  background: none; border: none; color: inherit; cursor: pointer;
+  font-size: 14px; line-height: 1; padding: 0;
+}
+
+.pl-travas-acoes { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+
+.pl-erro {
+  margin-top: 12px; padding: 12px 14px; border-radius: 10px;
+  background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.35);
+  font-size: 13px; line-height: 1.55;
+}
+.pl-erro-extra { color: var(--muted); font-size: 12.5px; margin-top: 5px; }
+.pl-erro-lista { font-size: 12.5px; color: var(--red); margin-top: 6px; }
+.pl-erro-btns { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+.pl-resumo {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px; margin-top: 14px;
+}
+.pl-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 12px;
+}
+.pl-card-v { font-size: 19px; font-weight: 700; letter-spacing: -.5px; line-height: 1; }
+.pl-card-r { font-size: 10.5px; color: var(--muted); margin-top: 5px; }
+
+.pl-acoes { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.pl-acoes .tv-btn-primary { margin-left: auto; }
+.pl-acoes .tv-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.pl-aceitacao {
+  margin-top: 12px; padding: 11px 14px; border-radius: 10px;
+  background: rgba(31,199,122,.09); border: 1px solid rgba(31,199,122,.3);
+  font-size: 13px; line-height: 1.55;
+}
+
+/* métricas da rota — neutralizadas quando desatualizadas */
+.rt-veh-metricas {
+  font-size: 11px; color: var(--muted); padding: 7px 12px;
+  border-top: 1px solid var(--border); line-height: 1.6;
+}
+.rt-veh-metricas.rt-stale {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(224,169,74,.07);
+}
+.rt-stale-aviso { color: var(--warn, #E0A94A); font-weight: 600; }
+.rt-veh-metricas.rt-stale .tv-btn { padding: 4px 10px; font-size: 11px; margin-left: auto; }
+
+.rt-btn-trava { font-size: 11px; padding: 3px 9px; }
+.rt-btn-trava.on { color: var(--accent); border-color: var(--accent); background: rgba(255,176,0,.12); }
+
+.rt-pax-check {
+  position: absolute; left: 9px; top: 10px; cursor: pointer; line-height: 0;
+}
+.rt-pax-check input { width: 13px; height: 13px; }
+/* o cartão abre espaço à esquerda para a caixa não cobrir texto nenhum */
+.rt-pax { padding-left: 30px !important; }
+.rt-pax-check input { cursor: pointer; }
+.rt-pax-sel { border-color: var(--accent2); background: rgba(78,143,255,.08); }
+
+/* Rota desatualizada: horários do cartão também perdem o destaque. Mostrar
+   05:57 firme numa rota que acabou de mudar seria informação falsa. */
+.rt-veh-stale .rt-time { opacity: .35; text-decoration: line-through; }
+.rt-veh-stale .rt-order { opacity: .45; }
