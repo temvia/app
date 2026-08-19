@@ -1745,3 +1745,9 @@ header.tv-top {
    05:57 firme numa rota que acabou de mudar seria informação falsa. */
 .rt-veh-stale .rt-time { opacity: .35; text-decoration: line-through; }
 .rt-veh-stale .rt-order { opacity: .45; }
+
+.pl-chip-vazio { background: none; border-style: dashed; color: var(--muted); }
+.pl-inline { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pl-check { display: flex; align-items: center; gap: 6px; font-size: 12.5px; cursor: pointer; white-space: nowrap; }
+.pl-check input { cursor: pointer; }
+.pl-restricoes .ot-cfg-num { min-width: 0; }
