@@ -1962,3 +1962,26 @@ header.tv-top {
   border-radius: 10px; font-size: 12px; color: var(--muted); line-height: 1.6;
 }
 .pl-jornada b { color: var(--text); }
+
+.fr-item.em-edicao { border-color: var(--accent); background: rgba(255,176,0,.08); }
+.rt-pub-acoes { margin-top: 14px; display: flex; }
+.rt-pub-acoes .tv-btn { flex: 1; padding: 11px; font-size: 14px; }
+.rt-pub-acoes .tv-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+
+/* recalcular: barra junto do rascunho, visível só quando é obrigatório */
+.rt-recalc {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 11px 14px; border-radius: 10px; margin-bottom: 12px;
+  background: rgba(224,169,74,.1); border: 1px solid rgba(224,169,74,.45);
+}
+.rt-recalc span { flex: 1; min-width: 220px; font-size: 12.5px; color: var(--text); line-height: 1.5; }
+.rt-recalc .tv-btn { flex-shrink: 0; }
+
+.rt-btn-otim.urgente {
+  background: var(--accent); color: #1A1200; border-color: var(--accent); font-weight: 700;
+}
+.rt-otim-urg { font-size: 10.5px; color: var(--warn, #E0A94A); margin-left: 6px; }
+
+/* cartões do resumo: agora carregam o dono do pior caso */
+.pl-card-r b { display: block; color: var(--text); font-weight: 600; margin-top: 2px; }
