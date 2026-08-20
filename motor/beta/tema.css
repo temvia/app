@@ -2084,3 +2084,5 @@ html[data-ambiente="teste"] .tv-shell { border: 2px solid rgba(255,176,0,.35); }
   .rt-trajeto { grid-template-columns: 1fr; }
   .rt-traj-seta { display: none; }
 }
+
+.cfg-oculto { display: none !important; }
