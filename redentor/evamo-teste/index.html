@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>[TESTE] Evamo — Gestão de Transporte</title>
+<meta name="application-name" content="Evamo TESTE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Evamo TESTE">
+<meta name="theme-color" content="#0d1117">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="msapplication-TileColor" content="#0d1117">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<script>
+// ============================================================
+// CASCA DE TESTE — EVAMO
+// Local: /redentor/evamo-teste/index.html
+//
+// Aponta para a colecao evamo_teste e para os engines de /motor/beta/.
+// Nada aqui toca no dado de producao. E o lugar de quebrar a vontade.
+//
+// COMO FUNCIONA O CICLO
+//   1. o Claude entrega -> voce sobe em /motor/beta/
+//   2. testa nesta casca, com dado real e sem consequencia
+//   3. aprovou -> COPIA os arquivos de /motor/beta/ para /motor/
+//      (promover e copiar: vai para producao exatamente o que foi testado)
+//
+// Para repor o dado: Backup na producao -> Restaurar aqui.
+// ============================================================
+window.CLIENTE_CONFIG = {
+  clienteId: 'evamo_teste',
+  projetoEsperado: 'evamo-transporte',
+  pathPrefix: '/redentor/evamo-teste/',
+  marca: 'Evamo (teste)',
+  marcaUpper: 'EVAMO TESTE',
+  ambienteTeste: true,   // liga a tarja no topo
+  startUrl: '/redentor/evamo-teste/index.html',
+  storageKey: 'evamo_teste_v1',
+  appNome: 'portal-redentor-evamo-teste',            // instancia Firebase: precisa bater com o Portal
+  dataVersion: 'evamo-2026-06-15-v1',
+  empresaNome: 'Evamo (AMBIENTE DE TESTE)',
+  pdfTitulo: 'EVAMO',
+  pdfTituloFonte: 16,
+  // Horario de chegada na empresa por turno (roteirizador e horarios)
+  turnosChegada: { '1°': '05:45', '2°': '14:45', '3°': '20:55', 'ADM': '07:15' },
+  configWhatsCliente: {
+    rotulo: 'WhatsApp do Gestor (Evamo)',
+    descricao: 'Contato do Evamo (empresa-cliente). Aparece no botão "Falar com Gestor (Evamo)" do passageiro.'
+  },
+  fb: {
+    apiKey: "AIzaSyBN1VE2mS5nn5LxfxWMqJyHSe1aDtwYiCE",
+    authDomain: "evamo-transporte.firebaseapp.com",
+    projectId: "evamo-transporte",
+    storageBucket: "evamo-transporte.firebasestorage.app",
+    messagingSenderId: "84008575783",
+    appId: "1:84008575783:web:d56e4e2cdeed1438b87f02"
+  },
+  // Catalogo de Servicos Extras desta operacao (grupos do select + precos)
+  servicosExtras: {
+    grupos: [
+      { label: 'Trechos Regionais', itens: [
+        { id: 'regional', rotulo: 'Sorocaba/Votorantim ↔ EVAMO' } ] },
+      { label: 'Transfer Aeroportos', itens: [
+        { id: 'transfer_viracopos', rotulo: 'Transfer — Viracopos' },
+        { id: 'transfer_congonhas', rotulo: 'Transfer — Congonhas' },
+        { id: 'transfer_guarulhos', rotulo: 'Transfer — Guarulhos' } ] },
+      { label: 'Outros', itens: [ { id: 'outro', rotulo: 'Outro (descrever na observação)' } ] }
+    ],
+    veiculos: {
+      regional: [
+        {v:'Carro Executivo ate 04 passageiros', valor:178.20},
+        {v:'Carro Executivo ate 06 passageiros', valor:192.50},
+        {v:'Van Executiva ate 15 passageiros',   valor:206.70} ],
+      transfer_viracopos: [{v:'Carro Executivo ate 04 passageiros', valor:550.00}],
+      transfer_congonhas: [{v:'Carro Executivo ate 04 passageiros', valor:750.00}],
+      transfer_guarulhos: [{v:'Carro Executivo ate 04 passageiros', valor:950.00}],
+      outro: [{v:'A definir',valor:0}]
+    },
+    avulsos: [],
+    avulsosRotulo: ''
+  }
+};
+</script>
+<script src="/motor/beta/gestor.js"></script>
+</body>
+</html>
