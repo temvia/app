@@ -1870,3 +1870,73 @@ header.tv-top {
   font-size: 11.5px; color: var(--muted); cursor: pointer; user-select: none;
 }
 .rt-manual-check input { cursor: pointer; }
+
+
+/* ==================================================================
+   ROTEIRIZADOR — fluxo em 5 etapas
+   ================================================================== */
+.rt-layout { display: grid; grid-template-columns: 210px 1fr; gap: 20px; align-items: start; }
+.rt-etapas {
+  position: sticky; top: 0; display: flex; flex-direction: column; gap: 2px;
+}
+.rt-passo {
+  display: flex; gap: 10px; align-items: flex-start; text-align: left;
+  background: none; border: none; padding: 10px 10px; border-radius: 10px;
+  cursor: pointer; color: var(--muted); position: relative;
+}
+.rt-passo:hover { background: var(--surface2); }
+.rt-passo-n {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
+}
+.rt-passo-txt b { display: block; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.rt-passo-txt small { display: block; font-size: 10.5px; line-height: 1.45; margin-top: 2px; }
+.rt-passo.on .rt-passo-n { background: var(--accent); border-color: var(--accent); color: #1A1200; }
+.rt-passo.on .rt-passo-txt b { color: var(--text); }
+.rt-passo.feito .rt-passo-n { border-color: var(--green); color: var(--green); }
+.rt-passo.off { opacity: .38; cursor: default; }
+.rt-passo.off:hover { background: none; }
+
+.rt-etapa {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px; margin-bottom: 16px;
+}
+.rt-etapa-cab { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 14px; }
+.rt-etapa-n {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; background: var(--surface2);
+  border: 1px solid var(--border); color: var(--muted);
+}
+.rt-etapa-t { font-size: 15px; font-weight: 700; letter-spacing: -.2px; }
+.rt-etapa-s { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+
+.rt-sub {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--accent); margin-bottom: 9px;
+}
+.rt-sub-2 { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+
+.rt-gerar {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);
+}
+.rt-gerar .tv-btn { font-size: 13.5px; padding: 10px 18px; }
+.rt-gerar .tv-btn:disabled { opacity: .45; cursor: not-allowed; }
+.rt-gerar .pl-dica { margin: 0; flex: 1; min-width: 200px; }
+
+/* o painel do plano perde a moldura própria: agora ele é o corpo da etapa */
+.rt-etapa .pl-painel { background: none; border: none; padding: 0; margin: 0; }
+.rt-etapa .rt-secao-titulo { margin-top: 0; }
+.rt-pub-nota { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+
+@media (max-width: 1100px) {
+  .rt-layout { grid-template-columns: 1fr; }
+  .rt-etapas {
+    position: static; flex-direction: row; overflow-x: auto; gap: 6px; padding-bottom: 6px;
+  }
+  .rt-passo { flex: 0 0 auto; }
+  .rt-passo-txt small { display: none; }
+}
