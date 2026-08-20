@@ -1751,3 +1751,122 @@ header.tv-top {
 .pl-check { display: flex; align-items: center; gap: 6px; font-size: 12.5px; cursor: pointer; white-space: nowrap; }
 .pl-check input { cursor: pointer; }
 .pl-restricoes .ot-cfg-num { min-width: 0; }
+
+
+/* cabeçalho do roteirizador: três controles precisam caber sem cortar */
+#modalRoteirizador .modal-header {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+#modalRoteirizador .modal-header .modal-title { flex: 1; min-width: 0; }
+#modalRoteirizador .modal-header .export-btn { flex-shrink: 0; white-space: nowrap; }
+#modalRoteirizador .modal-header .modal-close { flex-shrink: 0; margin-left: 0; }
+
+
+/* aviso do plano: específico sobre o que o sistema não sabe */
+.pl-nota {
+  margin-top: 14px; padding: 10px 13px; border-radius: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  font-size: 12px; color: var(--muted); line-height: 1.6;
+}
+.pl-nota b { color: var(--text); font-weight: 600; }
+
+.rt-btn-otim { padding: 2px 8px; font-size: 10.5px; margin-left: 6px; vertical-align: middle; }
+
+
+/* ==================================================================
+   ENCAIXAR PASSAGEIROS NAS LINHAS
+   ================================================================== */
+.abs-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.68); z-index: 9998;
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.abs-caixa {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  width: 100%; max-width: 620px; max-height: 88vh; display: flex; flex-direction: column;
+}
+.abs-topo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+}
+.abs-titulo { font-size: 15px; font-weight: 700; flex: 1; }
+.abs-corpo { padding: 16px; overflow: auto; }
+.abs-carregando, .abs-vazio {
+  text-align: center; padding: 34px 12px; font-size: 13px; color: var(--muted);
+}
+.abs-carregando span { font-size: 11.5px; }
+.abs-erro {
+  padding: 14px; border-radius: 10px; font-size: 13px; line-height: 1.6;
+  background: rgba(239,68,68,.09); border: 1px solid rgba(239,68,68,.35);
+}
+.abs-nota {
+  font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 12px;
+  padding: 10px 12px; background: var(--surface2); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent); border-radius: 9px;
+}
+.abs-nota b { color: var(--text); }
+
+.abs-cenarios { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+.abs-cen {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 11px;
+  padding: 11px 12px; cursor: pointer; text-align: left; color: var(--text);
+}
+.abs-cen:hover { border-color: #334054; }
+.abs-cen.on { border-color: var(--accent); background: rgba(255,176,0,.08); }
+.abs-cen-nome { font-size: 11.5px; font-weight: 600; color: var(--muted); }
+.abs-cen.on .abs-cen-nome { color: var(--accent); }
+.abs-cen-n { font-size: 21px; font-weight: 700; letter-spacing: -.5px; margin-top: 5px; }
+.abs-cen-n span { font-size: 12px; font-weight: 500; color: var(--muted); }
+.abs-cen-r { font-size: 10.5px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+.abs-detalhe { margin-top: 14px; }
+.abs-bloco {
+  border: 1px solid var(--border); border-radius: 11px; padding: 12px;
+  margin-bottom: 10px; background: var(--surface2);
+}
+.abs-bloco-alerta { border-color: rgba(224,169,74,.4); background: rgba(224,169,74,.06); }
+.abs-bloco-erro { border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.05); }
+.abs-bloco-t {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--muted); margin-bottom: 8px;
+}
+.abs-item {
+  font-size: 12.5px; padding: 6px 0; border-top: 1px solid rgba(39,50,68,.6);
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px;
+}
+.abs-item:first-of-type { border-top: none; }
+.abs-hora { font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 600; }
+.abs-obs { font-size: 11.5px; color: var(--muted); line-height: 1.55; }
+.abs-obs2 { font-size: 11px; color: var(--muted); width: 100%; }
+.abs-acoes { display: flex; gap: 8px; margin-top: 4px; }
+.abs-acoes .add-btn { flex: 1; }
+
+
+/* ==================================================================
+   ROTEIRIZADOR — separação dos dois caminhos
+   ================================================================== */
+.rt-resumo-entrada {
+  font-size: 12px; font-weight: 400; color: var(--muted); margin-left: 10px;
+}
+#rtTituloEntrada { cursor: pointer; }
+#rtTituloEntrada:hover { color: var(--accent); }
+#rtSetaEntrada { display: inline-block; width: 14px; color: var(--muted); }
+
+.rt-secao-titulo {
+  font-size: 13px; font-weight: 700; margin: 4px 0 10px;
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+}
+.rt-secao-titulo span { font-size: 11.5px; font-weight: 400; color: var(--muted); }
+
+.rt-barra-manual {
+  border: 1px dashed var(--border); border-radius: 10px;
+  padding: 11px 12px; margin-bottom: 10px; background: var(--surface2);
+}
+.rt-manual-nota { font-size: 11.5px; color: var(--muted); line-height: 1.55; margin-bottom: 9px; }
+.rt-manual-acoes { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.rt-manual-acoes .export-btn { font-size: 11.5px; padding: 5px 11px; }
+.rt-manual-check {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11.5px; color: var(--muted); cursor: pointer; user-select: none;
+}
+.rt-manual-check input { cursor: pointer; }
