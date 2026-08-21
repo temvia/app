@@ -34,6 +34,9 @@
 window.CLIENTE_CONFIG = {
   clienteId: 'evamo_teste',
   projetoEsperado: 'evamo-transporte',
+  // Infraestrutura da temvia. Trocar o marcador pela chave real.
+  mapsKey: 'COLE_AQUI_A_CHAVE_DO_MAPS',
+  timezone: 'America/Sao_Paulo',
   operacoes: [
     { id: 'evamo',       nome: 'Evamo',         path: '/redentor/evamo/',       cor: '#3b82f6' },
     { id: 'evamo_teste', nome: 'Evamo · TESTE', path: '/redentor/evamo-teste/', cor: '#E0A94A' }
@@ -89,6 +92,7 @@ window.CLIENTE_CONFIG = {
   }
 };
 </script>
+<script src="/motor/beta/comum.js"></script>
 <script src="/motor/beta/gestor.js"></script>
 </body>
 </html>

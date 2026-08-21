@@ -5773,7 +5773,9 @@ async function iniciarComAutenticacao() {
       if (overlay) overlay.style.display = 'none';
       if (!jaIniciou) {
         jaIniciou = true;
-        MAPS_API_KEY = localStorage.getItem('redentor_maps_key') || '';
+        // getApiKey conhece a ordem: casca -> reserva -> nada. Ler o cache
+        // direto aqui apagava a chave vinda da casca em navegador limpo.
+        getApiKey();
         loadData().then(() => {
           renderSidebar();
           solCarregarFirebase();

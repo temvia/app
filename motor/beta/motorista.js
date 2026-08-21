@@ -767,7 +767,10 @@ function _fmtDiaChat(m){ try{ var d = new Date(m.em); var hoje=new Date(); var y
 function _sepDataChat(m, anterior){ var dAtual=_diaChat(m); if(!dAtual) return ''; var dAnt = anterior ? _diaChat(anterior) : ''; if(dAtual===dAnt) return ''; var lbl=_fmtDiaChat(m); if(!lbl) return ''; return '<div style="align-self:center;margin:8px auto;padding:3px 12px;background:rgba(128,128,128,0.18);border-radius:12px;font-size:11px;font-weight:600;color:var(--muted);text-align:center">'+lbl+'</div>'; }
 
 // ---- ABAS ----
-const BUSCA_KEY = 'evamo_busca_sessao';
+const BUSCA_KEY = (window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.storageKey
+                   && window.CLIENTE_CONFIG.storageKey !== 'evamo_v1')
+  ? window.CLIENTE_CONFIG.storageKey + '_busca_sessao'
+  : 'evamo_busca_sessao';
 
 function salvarBuscaSessao() {
   try {
@@ -1156,7 +1159,12 @@ function limparBuscaSelecionados() {
 
 // ---- CONFIG ----
 const SENHA = 'redentor2025'; // Altere aqui para mudar a senha
-const STORAGE_KEY = 'evamo_v1';
+// Chaves de cache local. Vem da casca para que o ambiente de teste nao
+// compartilhe cache nem sessao com a producao. A reserva mantem o valor
+// historico, para nao invalidar o cache de quem ja usa o app.
+const _BASE_LOCAL = (window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.storageKey)
+  || 'evamo_v1';
+const STORAGE_KEY = _BASE_LOCAL;
 const CHEGADAS = { '1°': '05:45', '2°': '14:45', '3°': '20:55' };
 const GARAGEM = 'R. Sebastiana Rosa Luposeli, 59 — Júlio de Mesquita Filho, Sorocaba-SP';
 const GARAGEM_COORDS = window.CLIENTE_CONFIG.garagem;
@@ -1164,6 +1172,102 @@ const EMPRESA_COORDS = window.CLIENTE_CONFIG.destino;
 // Fallback inicial; os valores reais vêm dos Dados da Empresa (config no Firebase),
 // carregados por commCarregarTurnos() ao iniciar a rota.
 let TURNOS_CHEGADA = { '1°': '05:45', '2°': '14:45', '3°': '20:55', 'ADM': '07:15' };
+
+// ==================================================================
+// CALENDÁRIO DO TURNO (mesma lógica do gestor)
+// O horário do dia = horário gravado + (chegada do dia − chegada padrão).
+// ==================================================================
+let TURNOS_CAL = [];
+
+const TV_DIAS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+const TV_DIAS_NOME = { dom: 'Domingo', seg: 'Segunda', ter: 'Terça', qua: 'Quarta',
+                       qui: 'Quinta', sex: 'Sexta', sab: 'Sábado' };
+
+// new Date('2026-08-22') é UTC e no Brasil volta um dia: a rota de sábado
+// apareceria na sexta.
+function tvData(iso) {
+  if (iso instanceof Date) return iso;
+  const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+}
+function tvSemanas(a, b) {
+  const x = tvData(a), y = tvData(b);
+  if (!x || !y) return null;
+  return Math.floor(Math.round((y - x) / 86400000) / 7);
+}
+function tvHoje() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
+         '-' + String(d.getDate()).padStart(2, '0');
+}
+function tvMin(hhmm) {
+  const m = String(hhmm || '').match(/^(\d{1,2}):(\d{2})/);
+  return m ? (+m[1] * 60 + +m[2]) : null;
+}
+function tvHHMM(min) {
+  min = ((Math.round(min) % 1440) + 1440) % 1440;
+  return String(Math.floor(min / 60)).padStart(2, '0') + ':' + String(min % 60).padStart(2, '0');
+}
+
+function tvTurnoNoDia(nome, dataIso) {
+  const t = TURNOS_CAL.find(x => x.nome === nome);
+  const padrao = (TURNOS_CHEGADA || {})[nome] || '';
+  if (!t) return { opera: true, chegada: padrao, saida: '', padrao: padrao, origem: 'legado' };
+
+  const d = tvData(dataIso);
+  const chave = d ? TV_DIAS[d.getDay()] : null;
+  const regra = chave ? (t.dias || {})[chave] : undefined;
+
+  if (regra === false) {
+    return { opera: false, chegada: '', saida: '', padrao: t.chegada || padrao,
+             motivo: (TV_DIAS_NOME[chave] || 'Este dia') + ' não tem rota neste turno.' };
+  }
+  if (t.alternado && chave === t.alternado.dia && t.alternado.desde) {
+    const n = tvSemanas(t.alternado.desde, dataIso);
+    const passo = Math.max(1, parseInt(t.alternado.semanas, 10) || 2);
+    if (n !== null && (n < 0 || (n % passo) !== 0)) {
+      return { opera: false, chegada: '', saida: '', padrao: t.chegada || padrao,
+               motivo: (TV_DIAS_NOME[chave] || 'Este dia') + ' é alternado e hoje não é a vez desta linha.' };
+    }
+  }
+  const usa = (regra && typeof regra === 'object') ? regra : {};
+  return {
+    opera: true,
+    chegada: usa.chegada || t.chegada || padrao,
+    saida: usa.saida || t.saida || '',
+    padrao: t.chegada || padrao,
+    dia: chave,
+    especial: !!(usa.chegada || usa.saida)
+  };
+}
+
+// Desloca o horário gravado pela diferença entre a chegada do dia e a padrão.
+// É a conta que o gestor já faz na mão (1º turno +5h, 2º −4h no sábado),
+// só que a partir do cadastro — sem risco de errar o sinal.
+function tvHorarioDoDia(horarioGravado, turno, dataIso) {
+  const base = tvMin(horarioGravado);
+  if (base === null) return { horario: horarioGravado || '', deslocado: false };
+  const r = tvTurnoNoDia(turno, dataIso || tvHoje());
+  if (!r.opera) return { horario: '', deslocado: false, naoOpera: true, motivo: r.motivo };
+  const cd = tvMin(r.chegada), cp = tvMin(r.padrao);
+  if (cd === null || cp === null || cd === cp) {
+    return { horario: horarioGravado, deslocado: false, chegada: r.chegada };
+  }
+  return { horario: tvHHMM(base + (cd - cp)), deslocado: true,
+           minutos: cd - cp, chegada: r.chegada, original: horarioGravado };
+}
+
+async function tvCarregarTurnos(db, docFn, getDocFn) {
+  try {
+    const snap = await getDocFn(docFn(db, CLIENTE_ID, 'config'));
+    if (snap.exists()) {
+      const c = snap.data();
+      if (c.turnosChegada) Object.assign(TURNOS_CHEGADA, c.turnosChegada);
+      if (Array.isArray(c.turnos) && c.turnos.length) TURNOS_CAL = c.turnos;
+    }
+  } catch (e) { console.warn('turnos:', e && e.message); }
+}
+
 const VERTIV_COORDS  = window.CLIENTE_CONFIG.vertiv || window.CLIENTE_CONFIG.destino;
 
 function getDestCoords() {
@@ -1189,7 +1293,9 @@ let seqAbsent = new Set(); // indices of absent passengers (today only) // { lat
 let MOTORISTAS = [];  // vazio de proposito: vem do Firestore. Nomes e telefones reais removidos.
 
 // ---- AUTH / SESSÃO ----
-const SESSION_KEY = 'evamo_sessao';
+const SESSION_KEY = _BASE_LOCAL === 'evamo_v1'
+  ? 'evamo_sessao'                       // valor historico da producao
+  : _BASE_LOCAL + '_sessao';
 
 function salvarSessao(motorista, linhaId) {
   try { localStorage.setItem(SESSION_KEY, JSON.stringify({ motorista, linhaId })); } catch(e) {}
@@ -1888,6 +1994,8 @@ async function commCarregarTurnos() {
     const snap = await getDoc(doc(db, CLIENTE_ID, 'config'));
     if (snap.exists() && snap.data().turnosChegada) {
       Object.assign(TURNOS_CHEGADA, snap.data().turnosChegada);
+      if (Array.isArray(snap.data().turnos) && snap.data().turnos.length)
+        TURNOS_CAL = snap.data().turnos;
     }
   } catch(e) { console.warn('commCarregarTurnos:', e); }
 }
@@ -2482,9 +2590,12 @@ async function commRecalcular() {
     const horaSab = document.getElementById('commSabadoHora');
     let chegada;
     if (cbSab && cbSab.checked && horaSab && /^\d{2}:\d{2}$/.test(horaSab.value)) {
-      chegada = horaSab.value;
+      chegada = horaSab.value;   // o motorista mandou um horário: respeita
     } else {
-      chegada = TURNOS_CHEGADA[rota.turno] || '05:45';
+      // Antes vinha sempre o horário do dia útil. Agora o calendário do turno
+      // responde pelo dia de hoje — sábado alternado, sexta mais cedo etc.
+      const _r = tvTurnoNoDia(rota.turno, tvHoje());
+      chegada = _r.chegada || TURNOS_CHEGADA[rota.turno] || '05:45';
     }
     const ehSabado = !!(cbSab && cbSab.checked);
     // Folga de segurança ajustável pelo motorista (padrão 5 min)

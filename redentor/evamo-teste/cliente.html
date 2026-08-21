@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>[TESTE] Evamo — Portal do Cliente</title>
+<meta name="application-name" content="Evamo Cliente TESTE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Evamo Cliente TESTE">
+<meta name="theme-color" content="#0d1117">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="msapplication-TileColor" content="#0d1117">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<script>
+// ============================================================
+// CASCA DE TESTE — EVAMO (app da empresa cliente)
+// Local: /redentor/evamo-teste/cliente.html
+//
+// Aponta para a colecao evamo_teste e para o engine de /motor/beta/.
+// Nada aqui toca no dado de producao.
+//
+// CICLO: entrega -> sobe em /motor/beta/ -> testa aqui -> aprovou,
+// COPIA de /motor/beta/ para /motor/.
+// ============================================================
+window.CLIENTE_CONFIG = {
+  clienteId: 'evamo_teste',
+  projetoEsperado: 'evamo-transporte',
+  // Infraestrutura da temvia. Trocar o marcador pela chave real.
+  mapsKey: 'COLE_AQUI_A_CHAVE_DO_MAPS',
+  timezone: 'America/Sao_Paulo',
+  pathPrefix: '/redentor/evamo-teste/',
+  marca: 'Evamo (teste)',
+  marcaUpper: 'EVAMO TESTE',
+  ambienteTeste: true,
+  startUrl: '/redentor/evamo-teste/cliente.html',
+  storageKey: 'evamo_teste_v1',
+  appNome: 'portal-redentor-evamo',            // instancia Firebase: precisa bater com o Portal
+  senhaFallback: 'evamo@26',        // senha unica antiga; config.senhaCliente vence
+  origemEmail: 'Evamo',         // identifica a operacao no e-mail de solicitacao
+  pdfTitulo: 'EVAMO',
+  pdfTituloFonte: 16,
+  fb: {
+    apiKey: "AIzaSyBN1VE2mS5nn5LxfxWMqJyHSe1aDtwYiCE",
+    authDomain: "evamo-transporte.firebaseapp.com",
+    projectId: "evamo-transporte",
+    storageBucket: "evamo-transporte.firebasestorage.app",
+    messagingSenderId: "84008575783",
+    appId: "1:84008575783:web:d56e4e2cdeed1438b87f02"
+  },
+  // Catalogo de solicitacoes que este cliente pode abrir
+  tiposSolicitacao: [
+    {
+      grupo: 'Trechos Regionais',
+      itens: [
+        { id: 'regional', rotulo: 'Sorocaba/Votorantim ↔ EVAMO' }
+      ]
+    },
+    {
+      grupo: 'Transfer Aeroportos',
+      itens: [
+        { id: 'transfer_viracopos', rotulo: 'Transfer — Viracopos' },
+        { id: 'transfer_congonhas', rotulo: 'Transfer — Congonhas' },
+        { id: 'transfer_guarulhos', rotulo: 'Transfer — Guarulhos' }
+      ]
+    },
+    {
+      grupo: 'Outros',
+      itens: [
+        { id: 'outro', rotulo: 'Outro (descrever na observação)' }
+      ]
+    }
+  ]
+};
+</script>
+<script src="/motor/beta/comum.js"></script>
+<script src="/motor/beta/cliente.js"></script>
+</body>
+</html>

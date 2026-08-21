@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>[TESTE] Evamo Motorista</title>
+<meta name="application-name" content="Evamo Motorista TESTE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Evamo TESTE">
+<meta name="theme-color" content="#0d1117">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="msapplication-TileColor" content="#0d1117">
+</head>
+<body>
+<script>
+// ============================================================
+// CASCA DE TESTE — EVAMO (app do motorista)
+// Local: /redentor/evamo-teste/motorista.html
+//
+// Aponta para a colecao evamo_teste e para o engine de /motor/beta/.
+// Sem esta casca, mudanca no motorista.js so podia ser validada na
+// producao — com o motorista dentro do onibus.
+// ============================================================
+window.CLIENTE_CONFIG = {
+  clienteId: 'evamo_teste',
+  projetoEsperado: 'evamo-transporte',
+  // Infraestrutura da temvia. Trocar o marcador pela chave real.
+  mapsKey: 'COLE_AQUI_A_CHAVE_DO_MAPS',
+  timezone: 'America/Sao_Paulo',
+  pathPrefix: '/redentor/evamo-teste/',
+  // A chave de cache saiu do engine e passou a vir daqui.
+  storageKey: 'evamo_teste_v1',
+  marca: 'Evamo (teste)',
+  marcaUpper: 'EVAMO TESTE',
+  ambienteTeste: true,
+  startUrl: '/redentor/evamo-teste/motorista.html',
+  fb: {
+    apiKey: "AIzaSyBN1VE2mS5nn5LxfxWMqJyHSe1aDtwYiCE",
+    authDomain: "evamo-transporte.firebaseapp.com",
+    projectId: "evamo-transporte",
+    storageBucket: "evamo-transporte.firebasestorage.app",
+    messagingSenderId: "84008575783",
+    appId: "1:84008575783:web:d56e4e2cdeed1438b87f02"
+  },
+  garagem: { lat: -23.514606111185454, lng: -47.51671157145018 },
+  destino: { lat: -23.44293641550631, lng: -47.389652010783614 },
+  vertiv:  { lat: -23.386451104226673, lng: -47.38984559023686 }
+};
+</script>
+<script src="/motor/beta/comum.js"></script>
+<script src="/motor/beta/motorista.js"></script>
+</body>
+</html>
