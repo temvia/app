@@ -8064,7 +8064,7 @@ function renderAcessos() {
         '<div style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis">' + u.email + '</div>' +
       '</div>' +
       '<button class="action-btn" onclick="resetarSenhaAcesso(' + i + ')" title="Enviar link de nova senha" style="color:var(--accent2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></button>' +
-      '<button class="action-btn" onclick="alternarAcessoCliente(' + i + ')" title="' + (inativo ? 'Reativar' : 'Desativar') + '" style="color:' + (inativo ? '#10b981' : 'var(--red)') + '">' + (inativo ? '↺' : '⊘') + '</button>' + +
+      '<button class="action-btn" onclick="alternarAcessoCliente(' + i + ')" title="' + (inativo ? 'Reativar' : 'Desativar') + '" style="color:' + (inativo ? '#10b981' : 'var(--red)') + '">' + (inativo ? '↺' : '⊘') + '</button>' +
       '</div>';
   }).join('');
 }
