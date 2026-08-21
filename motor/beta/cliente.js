@@ -1831,7 +1831,17 @@ function verSenhaCliente() {
 
 
 // Portal da transportadora: e para la que mandamos quem chega sem sessao.
-const PORTAL_URL = '/redentor/';
+// Portal da transportadora: e para la que mandamos quem chega sem sessao.
+// Vem da CASCA. Sem portalUrl declarado (ambiente de teste), o app mostra o
+// proprio formulario em vez de redirecionar — senao a casca de teste vira
+// beco sem saida, devolvendo para o portal de producao.
+const PORTAL_URL = (window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.portalUrl) || '';
+function irParaPortal(usarReplace) {
+  if (!PORTAL_URL) return false;              // sem portal: quem chama mostra o form
+  if (usarReplace) window.location.replace(PORTAL_URL);
+  else window.location.href = PORTAL_URL;
+  return true;
+}
 let _semAcessoNestaEmpresa = false;
 
 // Evita o "pisca": o formulario so aparece quando confirmamos que nao ha sessao aberta.
@@ -1936,7 +1946,7 @@ async function esqueciSenhaCliente() {
       if (!user) {
         // Sem sessao: a porta de entrada e o PORTAL, nao o login deste app.
         // replace() para o botao "voltar" nao ficar pingando entre os dois.
-        if (!_semAcessoNestaEmpresa) window.location.replace(PORTAL_URL);
+        if (_semAcessoNestaEmpresa || !irParaPortal(true)) mostrarFormularioCliente();
         else mostrarFormularioCliente();
         return;
       }
@@ -1960,7 +1970,7 @@ async function logout() {
     await signOut(auth);
   } catch (e) {}
   // Porta da frente do sistema agora e o portal temvia, nao a tela de login do app.
-  window.location.href = PORTAL_URL;
+  if (!irParaPortal(false)) mostrarFormularioCliente();
 }
 
 let fbUnsub = null;

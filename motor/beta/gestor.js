@@ -5717,7 +5717,17 @@ async function esqueciSenha() {
 }
 
 // Portal da transportadora: e para la que mandamos quem chega sem sessao.
-const PORTAL_URL = '/redentor/';
+// Portal da transportadora: e para la que mandamos quem chega sem sessao.
+// Vem da CASCA. Sem portalUrl declarado (ambiente de teste), o app mostra o
+// proprio formulario em vez de redirecionar — senao a casca de teste vira
+// beco sem saida, devolvendo para o portal de producao.
+const PORTAL_URL = (window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.portalUrl) || '';
+function irParaPortal(usarReplace) {
+  if (!PORTAL_URL) return false;              // sem portal: quem chama mostra o form
+  if (usarReplace) window.location.replace(PORTAL_URL);
+  else window.location.href = PORTAL_URL;
+  return true;
+}
 let _bloqueadoComoCliente = false;
 
 // Evita o "pisca": o formulario so aparece quando confirmamos que nao ha sessao aberta.
@@ -5739,7 +5749,7 @@ async function logout() {
     await signOut(fbAuth);
   } catch (e) {}
   // Porta da frente do sistema agora e o portal temvia.
-  window.location.href = PORTAL_URL;
+  if (!irParaPortal(false)) mostrarFormularioGestor();
 }
 
 // Perfis: {CLIENTE_ID}/acessos guarda quem e da EMPRESA CLIENTE.
@@ -5797,7 +5807,7 @@ async function iniciarComAutenticacao() {
     } else {
       // Sem sessao: a porta de entrada do sistema e o PORTAL, nao o login deste app.
       // replace() em vez de href para o botao "voltar" nao ficar pingando entre os dois.
-      window.location.replace(PORTAL_URL);
+      if (!irParaPortal(true)) mostrarFormularioGestor();
     }
   });
 }
