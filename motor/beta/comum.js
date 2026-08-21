@@ -152,7 +152,63 @@
     };
   }
 
+  // ==========================================================================
+  // APP CHECK
+  //
+  // O que ele faz: prova ao Firebase que a requisicao veio de uma pagina
+  // servida num dominio registrado. E o que barra o `curl` e o script de
+  // raspagem. NAO diz quem e o usuario — isso e a Fase 2.
+  //
+  // Mora aqui porque os quatro engines precisam do MESMO comportamento e
+  // porque inicializar duas vezes a mesma instancia estoura. O controle de
+  // "ja ativei nesta instancia" tem que ser unico.
+  // ==========================================================================
+
+  var _appCheckFeito = {};   // nome da instancia -> true
+  var _appCheckLib = null;   // a biblioteca, carregada uma vez so
+
+  /**
+   * Liga o App Check numa instancia do Firebase.
+   * Idempotente: chamar de novo na mesma instancia nao faz nada.
+   * Nunca lanca — App Check quebrado nao pode derrubar o app antes do
+   * enforcement estar ligado. Falha vira aviso no console.
+   */
+  async function ativarAppCheck(app, chaveSite) {
+    if (!app || !chaveSite) return false;
+    var nome = app.name || '[DEFAULT]';
+    if (_appCheckFeito[nome]) return true;
+
+    try {
+      if (!_appCheckLib) {
+        _appCheckLib = await import(
+          'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check.js');
+      }
+      _appCheckLib.initializeAppCheck(app, {
+        provider: new _appCheckLib.ReCaptchaV3Provider(chaveSite),
+        isTokenAutoRefreshEnabled: true
+      });
+      _appCheckFeito[nome] = true;
+      return true;
+    } catch (e) {
+      // Ja inicializado por outro caminho tambem cai aqui: marcar como feito
+      // evita repetir a tentativa a cada chamada.
+      _appCheckFeito[nome] = true;
+      console.warn('[temvia] App Check nao ativou em "' + nome + '": ' + e.message);
+      return false;
+    }
+  }
+
+  /** A chave vem da casca, como toda infraestrutura da plataforma. */
+  function chaveAppCheck() {
+    try {
+      var k = window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.appCheckKey;
+      return (typeof k === 'string' && k.length > 20 && k.indexOf('COLE_') !== 0) ? k : '';
+    } catch (e) { return ''; }
+  }
+
   raiz.temviaComum = {
+    ativarAppCheck: ativarAppCheck,
+    chaveAppCheck: chaveAppCheck,
     normalizarTelefone: normalizarTelefone,
     formatarTelefone: formatarTelefone,
     mesmoTelefone: mesmoTelefone,

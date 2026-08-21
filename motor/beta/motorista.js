@@ -822,11 +822,9 @@ let ROTAS_HOJE = [];
 
 async function carregarRotasHojeFirebase() {
   try {
-    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, getDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     if (!verificarIdentidade()) return;
-    const fbApp = initializeApp(FB_CONFIG, 'rotasHoje-' + Date.now());
-    const fbDb = getFirestore(fbApp);
+    const fbDb = getFirestore(await fbAppMotorista());
     const snap = await getDoc(doc(fbDb, CLIENTE_ID, 'rotas_do_dia'));
     ROTAS_HOJE = (snap.exists() && snap.data().lista) ? snap.data().lista : [];
   } catch(e) {
@@ -845,11 +843,9 @@ async function concluirRotaHoje(rotaId) {
   if (!confirm('Confirmar conclusão desta rota? Ela sairá da sua lista.')) return;
   if (status) status.textContent = '⏳ Concluindo...';
   try {
-    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, getDoc, setDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     if (!verificarIdentidade()) return;
-    const fbApp = initializeApp(FB_CONFIG, 'concluir-' + Date.now());
-    const fbDb = getFirestore(fbApp);
+    const fbDb = getFirestore(await fbAppMotorista());
     const ref = doc(fbDb, CLIENTE_ID, 'rotas_do_dia');
     const snap = await getDoc(ref);
     let lista = (snap.exists() && snap.data().lista) ? snap.data().lista : [];
@@ -1362,11 +1358,9 @@ async function loadFromStorage() {
   showLoading();
   try {
     // Try Firebase first
-    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     if (!verificarIdentidade()) return;
-    const fbApp = initializeApp(FB_CONFIG);
-    const fbDb = getFirestore(fbApp);
+    const fbDb = getFirestore(await fbAppMotorista());
     const snap = await getDoc(doc(fbDb, CLIENTE_ID, 'dados'));
 
     if (snap.exists()) {
@@ -1976,13 +1970,32 @@ function commRodada(turno) {
 }
 function commChatDocId(chave) { return 'chat_' + chave.replace('°','').replace(/[^a-zA-Z0-9_]/g,''); }
 
+// ---------------------------------------------------------------------------
+// UMA instancia do Firebase para o app inteiro.
+// Antes, cada operacao abria uma instancia nova com nome carimbado pela hora
+// ('rotasHoje-1755...'), e nenhuma era destruida. Alem do vazamento, isso
+// faria o App Check disparar uma avaliacao do reCAPTCHA por operacao.
+// ---------------------------------------------------------------------------
+const FB_APP_NOME_MOT = 'motorista-' + CLIENTE_ID;
+let _fbAppMot = null;
+
+async function fbAppMotorista() {
+  if (_fbAppMot) return _fbAppMot;
+  const { initializeApp, getApps } = await import(
+    'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+  _fbAppMot = getApps().find(a => a.name === FB_APP_NOME_MOT)
+           || initializeApp(FB_CONFIG, FB_APP_NOME_MOT);
+  // App Check antes de qualquer acesso ao Firestore.
+  if (window.temviaComum) await window.temviaComum.ativarAppCheck(
+    _fbAppMot, window.temviaComum.chaveAppCheck());
+  return _fbAppMot;
+}
+
 async function commGetDb() {
   if (_commDb) return _commDb;
-  const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
   const { getFirestore } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
   if (!verificarIdentidade()) return;
-  const app = initializeApp(FB_CONFIG, 'comm-' + Date.now());
-  _commDb = getFirestore(app);
+  _commDb = getFirestore(await fbAppMotorista());
   return _commDb;
 }
 

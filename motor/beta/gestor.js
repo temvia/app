@@ -5638,6 +5638,9 @@ async function initFirebase() {
     const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
+    // App Check antes de qualquer acesso ao Firestore.
+    if (window.temviaComum) await window.temviaComum.ativarAppCheck(
+      app, window.temviaComum.chaveAppCheck());
     fbDb = getFirestore(app);
     fbDocRef = doc(fbDb, CLIENTE_ID, 'dados');
     console.log('Firebase conectado');
@@ -5656,6 +5659,9 @@ async function initAuth() {
   const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
   const { getAuth } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
   const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
+  // App Check antes de qualquer acesso ao Firestore.
+  if (window.temviaComum) await window.temviaComum.ativarAppCheck(
+    app, window.temviaComum.chaveAppCheck());
   fbAuth = getAuth(app);
   return fbAuth;
 }
@@ -8083,6 +8089,9 @@ async function criarAcessoCliente() {
       await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
     const nomeTmp = 'cadastro-acesso';
     const appTmp = getApps().find(a => a.name === nomeTmp) || initializeApp(FB_CONFIG, nomeTmp);
+    // App Check antes de qualquer acesso ao Firestore.
+    if (window.temviaComum) await window.temviaComum.ativarAppCheck(
+      appTmp, window.temviaComum.chaveAppCheck());
     const authTmp = getAuth(appTmp);
     await setPersistence(authTmp, inMemoryPersistence);
     let criou = true;
