@@ -26,6 +26,14 @@ window.CLIENTE_CONFIG = {
   clienteId: 'evamo',
   projetoEsperado: 'evamo-transporte',
   pathPrefix: '/redentor/evamo/',
+  // Porta de entrada. As cascas de TESTE nao declaram, e por isso
+  // mostram o proprio formulario em vez de voltar para ca.
+  portalUrl: '/redentor/',
+  // Infraestrutura da temvia. Trocar o marcador pela chave real.
+  mapsKey: 'COLE_AQUI_A_CHAVE_DO_MAPS',
+  // Chave de SITE do reCAPTCHA v3, publica. A secreta fica so no console.
+  appCheckKey: '6LcqJJItAAAAANzo7cZ476uqKlHkv_2KAY1Ugtrm',
+  timezone: 'America/Sao_Paulo',
   marca: 'Evamo',
   marcaUpper: 'EVAMO',
   startUrl: '/redentor/evamo/cliente.html',
@@ -68,6 +76,7 @@ window.CLIENTE_CONFIG = {
   ]
 };
 </script>
+<script src="/motor/comum.js"></script>
 <script src="/motor/cliente.js"></script>
 </body>
 </html>
