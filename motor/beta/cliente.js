@@ -1792,6 +1792,9 @@ async function initAuthCli() {
 
 // Quem pode entrar: lista mantida pelo gestor em {CLIENTE_ID}/acessos
 // -> { lista: [ { email, nome, papel: 'cliente', ativo: true } ] }
+// Tres estados, nunca dois. Ver o cabecalho do patch.
+const ACESSO = { AUTORIZADO: 'AUTHORIZED', NEGADO: 'DENIED', INDISPONIVEL: 'UNAVAILABLE' };
+
 async function acessoDoEmail(email) {
   try {
     const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -1799,12 +1802,34 @@ async function acessoDoEmail(email) {
     const snap = await getDoc(doc(getFirestore(auth.app), CLIENTE_ID, 'acessos'));
     const lista = snap.exists() ? (snap.data().lista || []) : [];
     const alvo = (email || '').trim().toLowerCase();
-    return lista.find(u => (u.email || '').trim().toLowerCase() === alvo) || null;
-  } catch (e) { return null; }
+    const achado = lista.find(u => (u.email || '').trim().toLowerCase() === alvo) || null;
+    const ok = !!(achado && achado.papel === 'cliente' && achado.ativo !== false);
+    return { estado: ok ? ACESSO.AUTORIZADO : ACESSO.NEGADO, acesso: achado };
+  } catch (e) {
+    // NAO deu para perguntar. Isso nao e uma negativa.
+    console.warn('[temvia] Nao foi possivel verificar o acesso:', e && e.message);
+    return { estado: ACESSO.INDISPONIVEL, acesso: null };
+  }
 }
 
-function clientePodeEntrar(acesso) {
-  return !!(acesso && acesso.papel === 'cliente' && acesso.ativo !== false);
+function clientePodeEntrar(r) {
+  return !!(r && r.estado === ACESSO.AUTORIZADO);
+}
+
+// Servidor fora do ar na hora de conferir o acesso. Nao acusa ninguem: diz o
+// que aconteceu e oferece tentar de novo.
+function cliAvisoIndisponivel() {
+  mostrarFormularioCliente();
+  const err = document.getElementById('loginError');
+  if (err) {
+    err.innerHTML =
+      'N\u00e3o foi poss\u00edvel verificar seu acesso agora. ' +
+      'Verifique sua conex\u00e3o e tente novamente.' +
+      '<div style="margin-top:10px"><button onclick="location.reload()" ' +
+      'style="padding:8px 18px;border-radius:8px;border:0;background:var(--accent);' +
+      'color:#000;font-weight:700;cursor:pointer">Tentar novamente</button></div>';
+    err.style.display = 'block';
+  }
 }
 
 function liberarPortalCliente() {
@@ -1950,11 +1975,17 @@ async function esqueciSenhaCliente() {
         else mostrarFormularioCliente();
         return;
       }
-      if (clientePodeEntrar(await acessoDoEmail(user.email))) liberarPortalCliente();
+      const r = await acessoDoEmail(user.email);
+      if (r.estado === ACESSO.AUTORIZADO) { liberarPortalCliente(); return; }
+
+      _semAcessoNestaEmpresa = true;   // precisa LER o motivo: nao redireciona
+      if (r.estado === ACESSO.INDISPONIVEL) cliAvisoIndisponivel();
       else {
-        _semAcessoNestaEmpresa = true;   // precisa LER o motivo: nao redireciona
         const err = document.getElementById('loginError');
-        if (err) { err.textContent = 'Este login nao tem acesso ao portal desta empresa. Fale com o gestor.'; err.style.display = 'block'; }
+        if (err) {
+          err.textContent = 'Este login nao tem acesso ao portal desta empresa. Fale com o gestor.';
+          err.style.display = 'block';
+        }
         mostrarFormularioCliente();
       }
     });
