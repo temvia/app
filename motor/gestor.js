@@ -30,14 +30,14 @@ const LOGO_MARCA = "data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1
 
 const CSS_MOTOR = "\n  /* Roteirizador */\n  .rt-veh { min-width:300px; max-width:340px; background:var(--surface); border:1px solid var(--border); border-radius:10px; flex-shrink:0; }\n  .rt-veh-head { padding:10px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }\n  .rt-veh-head input { font-weight:700; font-size:13px; background:transparent; border:1px solid transparent; padding:4px 6px; color:var(--text); border-radius:4px; flex:1; }\n  .rt-veh-head input:hover { border-color:var(--border); }\n  .rt-veh-body { padding:8px; min-height:60px; }\n  .rt-pax { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 11px; margin-bottom:7px; cursor:grab; position:relative; }\n  .rt-pax.dragging { opacity:.4; }\n  .rt-pax .rt-nm { font-weight:600; font-size:13px; }\n  .rt-pax .rt-addr { color:var(--muted); font-size:11px; margin-top:2px; line-height:1.35; }\n  .rt-pax .rt-time { position:absolute; top:9px; right:11px; font-weight:800; color:var(--accent); font-size:14px; }\n  .rt-pax.rt-unknown { border-color:var(--red); }\n  .rt-drop { border:2px dashed transparent; border-radius:8px; transition:.15s; }\n  .rt-drop.rt-over { border-color:var(--green); background:rgba(16,185,129,0.06); }\n  .rt-order { display:inline-flex; width:18px; height:18px; align-items:center; justify-content:center; background:var(--accent2); border-radius:50%; font-size:10px; font-weight:700; margin-right:6px; color:#fff; }\n  .rt-pool-pax { min-width:200px; flex:1; max-width:260px; margin:0 !important; }\n\n  .hidden { display: none !important; }\n\n  @media (max-width: 768px) {\n\n    /* ── HEADER MOBILE ── */\n    header {\n      flex-wrap: wrap;\n      gap: 6px;\n      padding: 8px 12px;\n      position: relative;\n    }\n    .header-stats { gap: 10px; }\n    .hstat-num { font-size: 18px; }\n    .hstat-label { font-size: 9px; }\n\n    /* Botões do header: esconder todos, mostrar só hamburguer */\n    .header-actions-desktop {\n      display: none !important;\n    }\n    .header-menu-toggle {\n      display: flex !important;\n    }\n\n    /* ── CONTAINER: pilha vertical ── */\n    .container {\n      grid-template-columns: 1fr;\n      grid-template-rows: auto 1fr;\n      height: calc(100vh - 56px);\n      overflow: hidden;\n    }\n\n    /* ── SIDEBAR vira barra horizontal de filtros ── */\n    .sidebar {\n      height: auto;\n      max-height: 160px;\n      border-right: none;\n      border-bottom: 1px solid var(--border);\n      overflow: hidden;\n      padding: 0;\n      display: flex;\n      flex-direction: column;\n      background: var(--surface);\n    }\n\n    .search-wrap {\n      padding: 8px 12px 6px;\n      border-bottom: none;\n      margin-bottom: 0;\n    }\n    .search-input { font-size: 13px; padding: 7px 10px; }\n\n    /* Turno filter: chips horizontais */\n    .turno-filter {\n      padding: 0 12px 6px;\n      gap: 6px;\n      flex-wrap: nowrap;\n      overflow-x: auto;\n      -webkit-overflow-scrolling: touch;\n      scrollbar-width: none;\n    }\n    .turno-filter::-webkit-scrollbar { display: none; }\n    .turno-btn {\n      flex: 0 0 auto;\n      padding: 5px 12px;\n      font-size: 12px;\n    }\n\n    /* Labels somem */\n    .sidebar-label { display: none; }\n\n    /* Status filter: chips horizontais */\n    .status-filter {\n      flex-wrap: nowrap !important;\n      overflow-x: auto !important;\n      -webkit-overflow-scrolling: touch;\n      scrollbar-width: none;\n      gap: 6px !important;\n      padding: 0 12px 8px !important;\n    }\n    .status-filter::-webkit-scrollbar { display: none; }\n    .status-filter-btn {\n      flex: 0 0 auto !important;\n      white-space: nowrap;\n      font-size: 12px;\n      padding: 5px 12px;\n    }\n\n    /* Lista de linhas: carrossel horizontal */\n    #lineList {\n      display: flex;\n      flex-direction: row;\n      overflow-x: auto;\n      -webkit-overflow-scrolling: touch;\n      scrollbar-width: none;\n      gap: 6px;\n      padding: 0 12px 10px;\n    }\n    #lineList::-webkit-scrollbar { display: none; }\n\n    .line-item {\n      flex: 0 0 auto;\n      flex-direction: column;\n      align-items: center;\n      gap: 2px;\n      padding: 8px 10px;\n      margin: 0;\n      border-radius: 10px;\n      min-width: 68px;\n      text-align: center;\n    }\n    .line-info { display: flex; flex-direction: column; gap: 0; }\n    .line-name { font-size: 10px; white-space: nowrap; }\n    .line-meta { display: none; }\n    .line-count { font-size: 13px; }\n\n    /* ── MAIN: scroll livre ── */\n    .main {\n      overflow-y: auto;\n      -webkit-overflow-scrolling: touch;\n      padding: 12px;\n      min-height: 0;\n    }\n\n    /* Tabela de passageiros */\n    .pass-table th, .pass-table td {\n      padding: 8px 6px;\n      font-size: 12px;\n    }\n\n    /* Route header mais compacto */\n    .route-header { padding: 14px 16px; }\n    .rh-chips { flex-wrap: wrap; gap: 4px; }\n\n    /* Turno times: coluna */\n    .turno-times { flex-direction: column; }\n\n    /* form-row: coluna no mobile */\n    .form-row { grid-template-columns: 1fr !important; }\n\n    /* Menu dropdown mobile */\n    .mobile-menu {\n      display: none;\n      position: fixed;\n      top: 0; left: 0; right: 0; bottom: 0;\n      z-index: 8000;\n    }\n    .mobile-menu.open { display: block; }\n    .mobile-menu-backdrop {\n      position: absolute;\n      inset: 0;\n      background: rgba(0,0,0,0.6);\n    }\n    .mobile-menu-panel {\n      position: absolute;\n      top: 0; right: 0; bottom: 0;\n      width: 280px;\n      background: var(--surface);\n      padding: 20px 16px;\n      overflow-y: auto;\n      display: flex;\n      flex-direction: column;\n      gap: 8px;\n      box-shadow: -4px 0 24px rgba(0,0,0,0.4);\n    }\n    .mobile-menu-title {\n      font-family: 'Barlow', sans-serif;\n      font-weight: 800;\n      font-size: 14px;\n      color: var(--accent);\n      letter-spacing: 1px;\n      margin-bottom: 8px;\n      padding-bottom: 12px;\n      border-bottom: 1px solid var(--border);\n    }\n    .mobile-menu-btn {\n      display: flex;\n      align-items: center;\n      gap: 10px;\n      padding: 12px 14px;\n      border-radius: 10px;\n      border: 1px solid var(--border);\n      background: var(--surface2);\n      color: var(--text);\n      font-size: 14px;\n      font-family: 'DM Sans', sans-serif;\n      cursor: pointer;\n      text-align: left;\n      width: 100%;\n      transition: all 0.15s;\n    }\n    .mobile-menu-btn:active { opacity: 0.7; }\n  }\n\n  /* ── ELEMENTOS MOBILE-ONLY (escondidos no desktop) ── */\n  .header-menu-toggle { display: none; }\n  .mobile-menu { display: none; }\n\n\n/* Safe-area: evita que o cabecalho fique atras da barra de status do celular */\n.header { padding-top: calc(16px + env(safe-area-inset-top)) !important; }\n";
 
-const HTML_MOTOR = "\n\n<!-- ===== TELA DE LOGIN (GESTOR) ===== -->\n<div id=\"loginOverlay\" style=\"position:fixed;inset:0;z-index:100000;background:#0f1115;display:flex;align-items:center;justify-content:center;padding:20px\">\n  <div id=\"loginChecando\" style=\"color:#8a90a0;font-size:14px\">Verificando acesso...</div>\n  <div id=\"loginBox\" style=\"display:none;width:100%;max-width:360px;background:#171a21;border:1px solid #262b36;border-radius:16px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,0.5)\">\n    <div style=\"text-align:center;margin-bottom:20px\">\n      <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:22px;color:#f5f5f5;letter-spacing:1px\" id=\"brandLogin\"></div>\n      <div style=\"font-size:10px;font-weight:400;color:#8a90a0;letter-spacing:3px\">FRETAMENTO</div>\n      <div style=\"margin-top:14px;font-size:13px;color:#8a90a0\">Acesso do Gestor</div>\n    </div>\n    <label style=\"display:block;font-size:11px;color:#8a90a0;margin-bottom:4px\">E-mail</label>\n    <input id=\"loginEmail\" type=\"email\" autocomplete=\"username\" placeholder=\"seu@email.com\"\n      onkeydown=\"if(event.key==='Enter'){event.preventDefault();document.getElementById('loginPassword').focus();}\"\n      style=\"width:100%;background:#0f1115;border:1px solid #262b36;border-radius:8px;padding:11px;color:#f5f5f5;font-size:14px;margin-bottom:12px\">\n    <label style=\"display:block;font-size:11px;color:#8a90a0;margin-bottom:4px\">Senha</label>\n    <div style=\"position:relative;margin-bottom:8px\">\n      <input id=\"loginPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"••••••••\"\n        style=\"width:100%;background:#0f1115;border:1px solid #262b36;border-radius:8px;padding:11px;padding-right:42px;color:#f5f5f5;font-size:14px\"\n        onkeydown=\"if(event.key==='Enter')fazerLogin()\">\n      <button type=\"button\" id=\"loginEye\" onclick=\"toggleSenha()\" title=\"Mostrar senha\"\n        style=\"position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;color:#8a90a0;font-size:18px;cursor:pointer;padding:6px;line-height:1\"><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-3px'><path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg></button>\n    </div>\n    <div id=\"loginErro\" style=\"min-height:18px;font-size:12px;color:#ef4444;margin-bottom:8px\"></div>\n    <button id=\"loginBtn\" onclick=\"fazerLogin()\"\n      style=\"width:100%;background:#f59e0b;color:#000;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif\">Entrar</button>\n    <div style=\"text-align:center;margin-top:14px\">\n      <a href=\"#\" onclick=\"esqueciSenha();return false\" style=\"font-size:12px;color:#8a90a0;text-decoration:none\">Esqueci minha senha</a>\n    </div>\n  </div>\n</div>\n\n\n\n<!-- MENU MOBILE -->\n<div class=\"mobile-menu\" id=\"mobileMenu\">\n  <div class=\"mobile-menu-backdrop\" onclick=\"document.getElementById('mobileMenu').classList.remove('open')\"></div>\n  <div class=\"mobile-menu-panel\">\n    <div class=\"mobile-menu-title\">MENU</div>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.15);border-color:var(--accent);color:var(--accent)\" onclick=\"openAddNovoModal();document.getElementById('mobileMenu').classList.remove('open')\">Adicionar Novo Passageiro</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);color:var(--accent)\" onclick=\"openServicosExtras();document.getElementById('mobileMenu').classList.remove('open')\">Serviços Extras</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:var(--green)\" onclick=\"openRoteirizador();document.getElementById('mobileMenu').classList.remove('open')\">Roteirizar</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(168,85,247,0.12);border-color:rgba(168,85,247,0.3);color:#a855f7\" onclick=\"openAvisos();document.getElementById('mobileMenu').classList.remove('open')\">Avisos</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(37,211,102,0.12);border-color:rgba(37,211,102,0.3);color:#25D366\" onclick=\"openChats();document.getElementById('mobileMenu').classList.remove('open')\">Chats</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);color:var(--accent2)\" onclick=\"openConfirmacoes();document.getElementById('mobileMenu').classList.remove('open')\">Confirmações</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#ef4444\" onclick=\"openReclamacoesGestor();document.getElementById('mobileMenu').classList.remove('open')\">Reclamações Cliente</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3);color:#f59e0b\" onclick=\"openAvaliacoes();document.getElementById('mobileMenu').classList.remove('open')\">Avaliações</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openConfig();document.getElementById('mobileMenu').classList.remove('open')\">Configurações</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openPainel();document.getElementById('mobileMenu').classList.remove('open')\">Painel Geral</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMapaGeral();document.getElementById('mobileMenu').classList.remove('open')\">Mapa Geral</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMotoristas();document.getElementById('mobileMenu').classList.remove('open')\">Motoristas</button>\n    <button class=\"mobile-menu-btn\" onclick=\"impAbrir();document.getElementById('mobileMenu').classList.remove('open')\" style=\"background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:var(--green)\">Importar Passageiros</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMotoristView();document.getElementById('mobileMenu').classList.remove('open')\">Visão Motorista</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openGerLinhas();document.getElementById('mobileMenu').classList.remove('open')\" style=\"background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);color:var(--accent2)\">Gerenciar Linhas</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openSemRota();document.getElementById('mobileMenu').classList.remove('open')\">Sem Rota</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportExcel();document.getElementById('mobileMenu').classList.remove('open')\">Exportar Excel</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportPDF();document.getElementById('mobileMenu').classList.remove('open')\">PDF Linha</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportBackup();document.getElementById('mobileMenu').classList.remove('open')\">Backup JSON</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openReport();document.getElementById('mobileMenu').classList.remove('open')\">Relatório</button>\n    <button class=\"mobile-menu-btn\" onclick=\"logout()\" style=\"background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#ef4444\">Sair</button>\n  </div>\n</div>\n\n<div class=\"tv-shell\" id=\"tvShell\"><aside class=\"tv-side\"><div class=\"tv-brand\"><img class=\"tv-brand-mark\" src=\"/marca/temvia-simbolo.png\" alt=\"temvia\" width=\"26\" height=\"26\"><img class=\"tv-brand-lockup\" src=\"/marca/temvia-horizontal.png\" alt=\"temvia\"><div class=\"tv-brand-txt\"><div class=\"tv-brand-sub\" id=\"tvContextoConta\">&nbsp;</div><div class=\"tv-brand-op\" id=\"tvOperacaoAtendida\" style=\"display:none\"></div></div></div><nav class=\"tv-nav\" aria-label=\"Navegação principal\"><div class=\"tv-nav-grp\">Painel</div><button class=\"tv-nav-item\" type=\"button\" title=\"Painel Geral\" onclick=\"openPainel()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M5 20V11M12 20V4M19 20v-6'/></svg></span><span class=\"tv-lbl\">Painel Geral</span></button><div class=\"tv-nav-grp\">Operação</div><button class=\"tv-nav-item tv-on\" type=\"button\" title=\"Linhas e Rotas\" onclick=\"tvIrParaLinhas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 7h16M4 12h16M4 17h10'/></svg></span><span class=\"tv-lbl\">Linhas e Rotas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Roteirizador\" onclick=\"openRoteirizador()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 6h6l6 12h4'/><circle cx='4' cy='6' r='1.6'/><circle cx='20' cy='18' r='1.6'/></svg></span><span class=\"tv-lbl\">Roteirizador</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Rotas Extras Publicadas\" onclick=\"rtAbrirPublicadas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 6 9 17l-5-5'/><path d='M4 6h5'/></svg></span><span class=\"tv-lbl\">Rotas Extras Publicadas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Serviços Extras\" onclick=\"openServicosExtras()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 3v18'/><path d='M7.5 7h7a3 3 0 0 1 0 6H8.5a3 3 0 0 0 0 6H17'/></svg></span><span class=\"tv-lbl\">Serviços Extras</span><span id=\"seBadge\" class=\"tv-pill\" style=\"display:none\">0</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Passageiros sem Rota\" onclick=\"openSemRota()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='12' r='8.5'/><path d='M8.5 12h7'/></svg></span><span class=\"tv-lbl\">Passageiros sem Rota</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Mapa Geral\" onclick=\"openMapaGeral()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M9 4 3 6.5v13L9 17l6 3 6-2.5v-13L15 7 9 4Z'/><path d='M9 4v13M15 7v13'/></svg></span><span class=\"tv-lbl\">Mapa Geral</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Gerenciar Linhas\" onclick=\"openGerLinhas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x='3.5' y='4.5' width='17' height='15' rx='2.5'/><path d='M8 9h8M8 13h5'/></svg></span><span class=\"tv-lbl\">Gerenciar Linhas</span></button><div class=\"tv-nav-grp\">Pessoas</div><button class=\"tv-nav-item\" type=\"button\" title=\"Motoristas\" onclick=\"openMotoristas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x='3' y='7' width='18' height='10' rx='2.5'/><path d='M7 17v2M17 17v2M6.5 11h5'/></svg></span><span class=\"tv-lbl\">Motoristas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Importar Passageiros\" onclick=\"impAbrir()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 15V3'/><path d='M8 11l4 4 4-4'/><path d='M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2'/></svg></span><span class=\"tv-lbl\">Importar Passageiros</span></button><div class=\"tv-nav-grp\">Relacionamento</div><button class=\"tv-nav-item\" type=\"button\" title=\"Avisos\" onclick=\"openAvisos()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6'/><path d='M10 19a2.2 2.2 0 0 0 4 0'/></svg></span><span class=\"tv-lbl\">Avisos</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Chats\" onclick=\"openChats()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z'/></svg></span><span class=\"tv-lbl\">Chats</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Confirmações\" onclick=\"openConfirmacoes()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 6 9 17l-5-5'/></svg></span><span class=\"tv-lbl\">Confirmações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Reclamações\" onclick=\"openReclamacoesGestor()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 9v4.5M12 17v.5'/><path d='M10.3 3.9 2.6 17.4A2 2 0 0 0 4.3 20.5h15.4a2 2 0 0 0 1.7-3.1L13.7 3.9a2 2 0 0 0-3.4 0Z'/></svg></span><span class=\"tv-lbl\">Reclamações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Avaliações\" onclick=\"openAvaliacoes()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='m12 4 2.5 5 5.5.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.5-.8Z'/></svg></span><span class=\"tv-lbl\">Avaliações</span></button><div class=\"tv-nav-grp\">Análises</div><button class=\"tv-nav-item\" type=\"button\" title=\"Relatórios\" onclick=\"openReport()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M6.5 3.5h7l5 5v12a1.5 1.5 0 0 1-1.5 1.5H6.5A1.5 1.5 0 0 1 5 20.5v-15A1.5 1.5 0 0 1 6.5 3.5Z'/><path d='M13 3.5v5.5h5.5M8.5 13h7M8.5 17h5'/></svg></span><span class=\"tv-lbl\">Relatórios</span></button><div class=\"tv-nav-grp\">Sistema</div><button class=\"tv-nav-item\" type=\"button\" title=\"Configurações\" onclick=\"openConfig()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='12' r='3.2'/><path d='M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4'/></svg></span><span class=\"tv-lbl\">Configurações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Visão Motorista\" onclick=\"openMotoristView()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg></span><span class=\"tv-lbl\">Visão Motorista</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Backup\" onclick=\"exportBackup()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 3v12M8 11l4 4 4-4M4 19h16'/></svg></span><span class=\"tv-lbl\">Backup</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Restaurar Backup\" onclick=\"document.getElementById('restoreFile').click()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 21V9M8 13l4-4 4 4M4 5h16'/></svg></span><span class=\"tv-lbl\">Restaurar Backup</span></button><input type=\"file\" id=\"restoreFile\" accept=\".json\" style=\"display:none\" onchange=\"importBackup(event)\"></nav><div class=\"tv-side-foot\"><div class=\"tv-usermenu\" id=\"tvUserMenu\"><button type=\"button\" onclick=\"openConfig();tvToggleUser()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='12' r='3.2'/><path d='M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4'/></svg>Configurações</button><button type=\"button\" onclick=\"logout()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M15 17l5-5-5-5M20 12H9M11 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5'/></svg>Sair</button></div><div class=\"tv-avatar\" id=\"tvAvatar\">--</div><div class=\"tv-who\"><b id=\"tvUserNome\">Gestor</b><small id=\"tvUserPapel\">Administrador</small></div><button class=\"tv-iconbtn tv-usercaret\" type=\"button\" title=\"Menu do usuário\" onclick=\"tvToggleUser()\" style=\"width:26px;height:26px\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='5' r='1.3'/><circle cx='12' cy='12' r='1.3'/><circle cx='12' cy='19' r='1.3'/></svg></button></div></aside><div class=\"tv-main\"><header class=\"tv-top\"><button class=\"tv-iconbtn tv-topbar-only-desktop\" id=\"tvBtnRecolher\" type=\"button\" title=\"Recolher menu\" onclick=\"tvToggleSidebar()\"><svg id=\"tvSetaRecolher\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M14 6l-6 6 6 6'/></svg></button><button class=\"tv-iconbtn tv-mobile-only\" type=\"button\" title=\"Menu\" onclick=\"document.getElementById('mobileMenu').classList.toggle('open')\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 6h16M4 12h16M4 18h16'/></svg></button><div class=\"tv-crumb\">Operação <i>/</i> <b>Linhas e Rotas</b></div><div class=\"tv-search\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='11' cy='11' r='7'/><path d='m20 20-3.6-3.6'/></svg><input type=\"text\" id=\"searchInput\" oninput=\"filterSidebar()\" placeholder=\"Buscar passageiro, bairro, cidade ou ponto de embarque...\"></div><button class=\"tv-btn tv-btn-primary\" type=\"button\" onclick=\"openAddNovoModal()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 5v14M5 12h14'/></svg>Novo</button></header><div class=\"container\">\n  <aside class=\"sidebar\">\n    <div class=\"tv-rail-head\">\n      <div class=\"tv-rail-title\">Linhas e turnos</div>\n      <div class=\"tv-stats\">\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-func\">0</div><div class=\"tv-stat-l\">Ativos</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-lines\">0</div><div class=\"tv-stat-l\">Linhas</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-turnos\">0</div><div class=\"tv-stat-l\">Turnos</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-rotas\">0</div><div class=\"tv-stat-l\">Rotas</div></div>\n      </div>\n    </div>\n    <div class=\"turno-filter\" id=\"turnoFilterBar\">\n      <button class=\"turno-btn active\" onclick=\"setTurnoFilter('todos', this)\">Todos</button>\n    </div>\n    <div class=\"sidebar-label\">Status</div>\n    <div class=\"status-filter\" id=\"statusFilter\">\n      <button class=\"status-filter-btn active\" onclick=\"setStatusFilter('todos', this)\">Todos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ativo', this)\">Ativos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ferias', this)\">Férias</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('afastado', this)\">Afastados</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('desligado', this)\">Desligados</button>\n      <button class=\"status-filter-btn sem-rota\" onclick=\"setStatusFilter('sem-rota', this)\">Sem Rota</button>\n    </div>\n    <div class=\"sidebar-label\" style=\"margin-top:4px\">Linhas</div>\n    <div id=\"lineList\"></div>\n  </aside>\n\n  <main class=\"main\" id=\"mainContent\">\n    <div class=\"welcome\">\n      <div class=\"tv-empty-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 7h16M4 12h16M4 17h10'/></svg></div>\n      <h3>Selecione uma linha</h3>\n      <p>Escolha uma linha no painel ao lado para ver passageiros, horários e dados da rota.</p>\n    </div>\n  </main>\n</div></div></div>\n\n<!-- MODAL ADD/EDIT PASSAGEIRO -->\n<div class=\"modal-overlay\" id=\"modalOverlay\">\n  <div class=\"modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\" id=\"modalTitle\">Novo Passageiro</div>\n      <button class=\"modal-close\" onclick=\"closeModal()\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <input type=\"hidden\" id=\"editIdx\">\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Nome Completo</label>\n          <input class=\"form-input\" id=\"fNome\" type=\"text\" placeholder=\"Nome do funcionário\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Telefone</label>\n          <input class=\"form-input\" id=\"fTel\" type=\"text\" placeholder=\"(15) 99999-9999\">\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Endereço Residencial</label>\n        <input class=\"form-input\" id=\"fEndereco\" type=\"text\" placeholder=\"Rua, número, bairro\">\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Ponto de Embarque (se diferente)</label>\n        <input class=\"form-input\" id=\"fEmbarque\" type=\"text\" placeholder=\"Deixe vazio para usar endereço residencial\">\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Bairro</label>\n          <input class=\"form-input\" id=\"fBairro\" type=\"text\" placeholder=\"Bairro\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Cidade</label>\n          <input class=\"form-input\" id=\"fCidade\" type=\"text\" placeholder=\"Cidade\">\n        </div>\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\" id=\"turnoGroup\">\n          <label class=\"form-label\">Turno</label>\n          <select class=\"form-select\" id=\"fTurno\" onchange=\"updateLinhaOptions()\">\n            <option value=\"1°\">1° Turno — chegada 05:45</option>\n            <option value=\"2°\">2° Turno — chegada 14:45</option>\n            <option value=\"3°\">3° Turno — chegada 20:55</option>\n            <option value=\"A Definir\">A Definir (sem rota ainda)</option>\n          </select>\n        </div>\n        <div class=\"form-group\" id=\"linhaGroup\">\n          <label class=\"form-label\">Linha</label>\n          <select class=\"form-select\" id=\"fLinha\">\n          </select>\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Coordenadas do Ponto de Embarque <span style=\"color:var(--muted);font-size:10px;font-weight:400\">(lat, lng — ex: -23.514606, -47.516711)</span></label>\n        <input class=\"form-input\" id=\"fCoords\" type=\"text\" placeholder=\"-23.000000, -47.000000\" style=\"font-family:monospace;font-size:12px\" oninput=\"validateCoords()\">\n        <div id=\"fCoordsStatus\" style=\"font-size:11px;margin-top:4px;display:none\"></div>\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Status</label>\n          <select class=\"form-select\" id=\"fStatus\" onchange=\"toggleRetorno(); toggleSemRota()\">\n            <option value=\"ativo\">Ativo</option>\n            <option value=\"ferias\">Férias</option>\n            <option value=\"afastado\">Afastado</option>\n            <option value=\"desligado\">Desligado</option>\n            <option value=\"sem-rota\">Sem Rota (aguardando alocação)</option>\n          </select>\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Horário de Embarque</label>\n          <input class=\"form-input\" id=\"fHorario\" type=\"time\" placeholder=\"HH:MM\">\n        </div>\n      </div>\n      <div class=\"form-group\" id=\"retornoGroup\" style=\"display:none\">\n        <label class=\"form-label\">Data de Retorno Prevista</label>\n        <input class=\"form-input\" id=\"fRetorno\" type=\"date\">\n      </div>\n      <!-- Bloco duplicado de coordenadas ocultado: o campo fCoords acima é o oficial -->\n      <div class=\"form-group\" style=\"display:none\">\n        <input class=\"form-input\" id=\"fLat\" type=\"number\" step=\"any\" style=\"flex:1\">\n        <input class=\"form-input\" id=\"fLng\" type=\"number\" step=\"any\" style=\"flex:1\">\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" id=\"btnExcluirPass\" onclick=\"excluirPassageiroAtual()\" style=\"display:none;color:var(--red);border-color:rgba(239,68,68,0.4)\">Excluir</button>\n      <button class=\"btn-cancel\" id=\"btnSugerirModal\" onclick=\"sugerirDoModal()\" style=\"display:none;color:var(--green);border-color:rgba(16,185,129,0.5)\">Sugerir linha</button>\n      <button class=\"btn-cancel\" onclick=\"closeModal()\">Cancelar</button>\n      <button class=\"btn-save\" onclick=\"savePassageiro()\">Salvar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL SELECIONAR MOTORISTA -->\n<div class=\"modal-overlay\" id=\"modalMotorista\">\n  <div class=\"modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Atribuir Motorista</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMotorista').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-group\">\n        <label class=\"form-label\">Motorista de Entrada</label>\n        <select class=\"form-select\" id=\"fMotoristaEntrada\">\n          <option value=\"\">— A definir —</option>\n        </select>\n      </div>\n      <div class=\"form-group\" style=\"margin-top:12px\">\n        <label class=\"form-label\">Motorista de Saída <span style=\"color:var(--muted);font-size:11px;font-weight:400\">(deixe vazio se for o mesmo da entrada)</span></label>\n        <select class=\"form-select\" id=\"fMotoristaSaida\">\n          <option value=\"\">— Mesmo da entrada —</option>\n        </select>\n      </div>\n      <div style=\"text-align:center;margin-top:12px\">\n        <button class=\"export-btn\" onclick=\"document.getElementById('modalMotorista').classList.remove('open');openMotoristas()\">\n          Gerenciar cadastro de motoristas\n        </button>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalMotorista').classList.remove('open')\">Cancelar</button>\n      <button class=\"btn-save\" onclick=\"saveMotorista()\">Salvar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL GERENCIAR MOTORISTAS -->\n<div class=\"modal-overlay\" id=\"modalMotoristasGerenciar\">\n  <div class=\"modal\" style=\"width:520px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Cadastro de Motoristas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Nome</label>\n          <input class=\"form-input\" id=\"fMNome\" type=\"text\" placeholder=\"Nome do motorista\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Telefone</label>\n          <input class=\"form-input\" id=\"fMTel\" type=\"text\" placeholder=\"(15) 99999-9999\">\n        </div>\n      </div>\n      <div style=\"font-size:11px;color:var(--muted);margin:-8px 0 10px\">O PIN e criado pelo proprio motorista no primeiro acesso no app.</div>\n      <button class=\"btn-save\" style=\"width:100%;margin-bottom:16px\" onclick=\"addMotorista()\">Adicionar Motorista</button>\n      <div id=\"motoristaListBody\"></div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL PAINEL GERAL -->\n<div class=\"modal-overlay\" id=\"modalPainel\">\n  <div class=\"modal\" style=\"width:780px;max-width:97vw\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Painel Geral</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"painelBody\" style=\"padding:16px 20px\"></div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- ===== MODAL IMPORTAÇÃO DE PASSAGEIROS ===== -->\n<div class=\"modal-overlay\" id=\"modalImport\">\n  <div class=\"modal\" style=\"width:880px;max-width:95vw\">\n    <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px\">\n      <div style=\"font-family:Barlow;font-weight:800;font-size:20px\">Importar Passageiros</div>\n      <button onclick=\"document.getElementById('modalImport').classList.remove('open')\" style=\"background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer\">✕</button>\n    </div>\n\n    <div id=\"impPasso1\">\n      <p style=\"font-size:14px;color:var(--muted);margin-bottom:14px\">\n        Importe seus passageiros a partir de uma planilha. Baixe o modelo, preencha e envie (aceita <b>Excel .xlsx</b> ou <b>CSV</b>).\n        As coordenadas (lat, lng) devem estar preenchidas na planilha.\n      </p>\n      <button class=\"add-btn\" onclick=\"impBaixarModelo()\" style=\"background:rgba(59,130,246,0.12);color:var(--accent2);border:1px solid rgba(59,130,246,0.3);margin-bottom:14px\">Baixar planilha-modelo</button>\n\n      <div style=\"border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;background:var(--surface2)\">\n        <input type=\"file\" id=\"impArquivo\" accept=\".xlsx,.xls,.csv\" style=\"display:none\" onchange=\"impLerArquivo(event)\">\n        <div style=\"font-size:40px;margin-bottom:8px\"></div>\n        <button class=\"add-btn\" onclick=\"document.getElementById('impArquivo').click()\">Escolher arquivo (.xlsx ou .csv)</button>\n        <div id=\"impNomeArquivo\" style=\"font-size:12px;color:var(--muted);margin-top:8px\"></div>\n      </div>\n      <div id=\"impErro\" style=\"color:var(--red);font-size:13px;margin-top:10px\"></div>\n    </div>\n\n    <div id=\"impPasso2\" style=\"display:none\">\n      <div id=\"impResumo\" style=\"font-size:14px;margin-bottom:12px\"></div>\n      <div style=\"max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:10px\">\n        <table style=\"width:100%;border-collapse:collapse;font-size:12px\" id=\"impPreviaTabela\"></table>\n      </div>\n      <div id=\"impAvisos\" style=\"font-size:12px;color:var(--accent);margin-top:10px\"></div>\n\n      <div style=\"margin-top:16px;padding-top:14px;border-top:1px solid var(--border)\">\n        <div style=\"font-size:13px;font-weight:700;margin-bottom:8px\">Como aplicar a importação?</div>\n        <label style=\"display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;cursor:pointer\">\n          <input type=\"radio\" name=\"impModo\" value=\"acrescentar\" checked> Acrescentar aos passageiros já existentes\n        </label>\n        <label style=\"display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer\">\n          <input type=\"radio\" name=\"impModo\" value=\"substituir\"> Substituir tudo (apaga os atuais e põe os importados)\n        </label>\n      </div>\n\n      <div style=\"display:flex;gap:10px;margin-top:16px\">\n        <button class=\"add-btn\" onclick=\"impVoltar()\" style=\"background:var(--surface2);color:var(--text);border:1px solid var(--border)\">← Voltar</button>\n        <button class=\"add-btn\" id=\"impBtnConfirmar\" onclick=\"impConfirmar()\" style=\"flex:1;background:var(--green);color:#fff\">Confirmar importação</button>\n      </div>\n    </div>\n\n    <div id=\"impStatus\" style=\"font-size:13px;text-align:center;margin-top:12px\"></div>\n  </div>\n</div>\n\n<!-- MODAL GERENCIAR LINHAS -->\n<div class=\"modal-overlay\" id=\"modalGerLinhas\">\n  <div class=\"modal\" style=\"width:760px;max-width:95vw\">\n    <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px\">\n      <div style=\"font-family:Barlow;font-weight:800;font-size:20px\">Gerenciar Linhas</div>\n      <button onclick=\"document.getElementById('modalGerLinhas').classList.remove('open')\" style=\"background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer\">✕</button>\n    </div>\n\n    <!-- Formulário de criar/editar -->\n    <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px\">\n      <div style=\"font-size:13px;font-weight:700;margin-bottom:10px\" id=\"glFormTitulo\">Criar nova linha</div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Número da Linha</label>\n          <input class=\"form-input\" id=\"glLinha\" type=\"text\" placeholder=\"Ex: 8\" />\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Turno</label>\n          <select class=\"form-select\" id=\"glTurno\">\n            <option value=\"1°\">1° Turno</option>\n            <option value=\"2°\">2° Turno</option>\n            <option value=\"3°\">3° Turno</option>\n            <option value=\"__novo__\">Outro turno (digitar)</option>\n          </select>\n        </div>\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\" id=\"glTurnoNovoGroup\" style=\"display:none\">\n          <label class=\"form-label\">Nome do novo turno</label>\n          <input class=\"form-input\" id=\"glTurnoNovo\" type=\"text\" placeholder=\"Ex: ADM, Especial\" />\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Veículo</label>\n          <select class=\"form-select\" id=\"glVeiculo\"></select>\n          <div id=\"glVeiculoDica\" style=\"font-size:10.5px;color:var(--muted);margin-top:4px\"></div>\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Motorista (opcional)</label>\n          <input class=\"form-input\" id=\"glMotorista\" type=\"text\" placeholder=\"Nome do motorista\" />\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Cor da linha</label>\n          <div id=\"glCores\" class=\"gl-cores\"></div>\n        </div>\n      </div>\n      <div style=\"display:flex;gap:8px;margin-top:8px\">\n        <button class=\"add-btn\" id=\"glBtnSalvar\" onclick=\"glSalvar()\" style=\"flex:1;background:var(--green);color:#fff\">Criar linha</button>\n        <button class=\"add-btn\" id=\"glBtnCancelar\" onclick=\"glCancelarEdicao()\" style=\"display:none;background:var(--surface3);color:var(--text);border:1px solid var(--border)\">Cancelar edição</button>\n      </div>\n      <div id=\"glFormMsg\" style=\"font-size:12px;margin-top:8px\"></div>\n    </div>\n\n    <!-- Lista de linhas existentes -->\n    <div style=\"font-size:13px;font-weight:700;margin-bottom:8px\">Linhas cadastradas</div>\n    <div id=\"glLista\" style=\"max-height:320px;overflow:auto\"></div>\n  </div>\n</div>\n\n<!-- MODAL CONFIGURAÇÕES (API Key) -->\n<div class=\"modal-overlay\" id=\"modalConfig\">\n  <div class=\"modal\" style=\"width:480px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Configurações</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalConfig').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Google Maps API Key</div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Chave de API</label>\n          <input class=\"form-input config-key-input\" id=\"fApiKey\" type=\"password\"\n            placeholder=\"AIza...\" autocomplete=\"off\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:6px\">\n            A chave é salva apenas neste navegador (localStorage). Nunca é enviada para nossos servidores.\n          </div>\n        </div>\n        <button class=\"opt-btn\" onclick=\"saveApiKey()\">Salvar chave</button>\n        <div id=\"apiKeyStatus\" class=\"opt-status\"></div>\n      </div>\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Dados da Empresa</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          Estas configurações valem para todo o sistema. Ao salvar, são gravadas no servidor.\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Nome da empresa</label>\n          <input class=\"form-input\" id=\"cfgNome\" type=\"text\" placeholder=\"Ex.: Redentor Fretamento\">\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Operação (empresa atendida)</label>\n          <input class=\"form-input\" id=\"cfgOperacaoNome\" type=\"text\" placeholder=\"Ex.: Toyota\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\">\n            Aparece no cabeçalho do PDF, abaixo do nome da transportadora. Em branco, usa o nome da operação (DSV, Evamo).\n          </div>\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\" id=\"lblWhatsCliente\"></label>\n          <input class=\"form-input\" id=\"cfgWhatsCliente\" type=\"text\" placeholder=\"Ex.: 15 99999-9999\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\" id=\"subWhatsCliente\"></div>\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">WhatsApp da Redentor (transportadora)</label>\n          <input class=\"form-input\" id=\"cfgWhatsRedentor\" type=\"text\" placeholder=\"Ex.: 15 99999-9999\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\">Contato da Redentor (transportadora). Aparece no botão \"Falar com Gestor (Redentor)\" do passageiro.</div>\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Senha da empresa cliente</label>\n          <input class=\"form-input\" id=\"cfgSenhaCliente\" type=\"text\" placeholder=\"Senha do app da empresa cliente\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\">Senha pedida na tela de entrada do app da empresa cliente. Troque quando precisar.</div>\n        </div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Logins da empresa cliente</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:8px\">Uma conta por pessoa. Ela mesma troca a senha depois, pelo \"Esqueci minha senha\" — você não precisa saber a senha de ninguém.</div>\n        <div id=\"acessosLista\" style=\"margin-bottom:10px\"></div>\n        <div style=\"display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end\">\n          <div class=\"config-field\" style=\"flex:1;min-width:120px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">Nome</label>\n            <input class=\"form-input\" id=\"novoAcNome\" type=\"text\" placeholder=\"Maria Silva\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1.4;min-width:150px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">E-mail</label>\n            <input class=\"form-input\" id=\"novoAcEmail\" type=\"email\" placeholder=\"maria@empresa.com\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:120px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">Senha inicial</label>\n            <input class=\"form-input\" id=\"novoAcSenha\" type=\"text\" placeholder=\"mín. 6 caracteres\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <button class=\"add-btn\" id=\"novoAcBtn\" onclick=\"criarAcessoCliente()\" style=\"font-size:12px;padding:8px 14px\">Criar</button>\n        </div>\n        <div id=\"acessosMsg\" style=\"font-size:12px;margin-top:8px;min-height:16px\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Frota</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          A capacidade de cada linha vem daqui. Informe os assentos do veículo e quantos ficam\n          reservados à tripulação — o sistema calcula quantos passageiros cabem.\n        </div>\n        <div id=\"frotaLista\" style=\"margin-bottom:12px\"></div>\n        <div class=\"fr-form\">\n          <div class=\"fr-campo\" style=\"flex:1.1;min-width:120px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Tipo</label>\n            <select class=\"form-input\" id=\"frTipo\" style=\"padding:8px 10px;font-size:13px\">\n              <option value=\"Carro\">Carro</option>\n              <option value=\"Van\" selected>Van</option>\n              <option value=\"Micro-ônibus\">Micro-ônibus</option>\n              <option value=\"Ônibus\">Ônibus</option>\n            </select>\n          </div>\n          <div class=\"fr-campo\" style=\"flex:1.6;min-width:150px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Modelo</label>\n            <input class=\"form-input\" id=\"frModelo\" type=\"text\" placeholder=\"Ex.: Mercedes-Benz Sprinter\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:1;min-width:110px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Apelido</label>\n            <input class=\"form-input\" id=\"frApelido\" type=\"text\" placeholder=\"Ex.: Van 07\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 96px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Assentos</label>\n            <input class=\"form-input\" id=\"frAssentos\" type=\"number\" min=\"1\" value=\"16\" oninput=\"frCalcular()\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 104px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Tripulação</label>\n            <input class=\"form-input\" id=\"frTripulacao\" type=\"number\" min=\"0\" value=\"1\" oninput=\"frCalcular()\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 118px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Passageiros</label>\n            <input class=\"form-input\" id=\"frCapacidade\" type=\"number\" min=\"0\" disabled style=\"padding:8px 10px;font-size:13px;font-weight:700\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 100%\">\n            <label class=\"fr-manual\" style=\"margin:0\">\n              <input type=\"checkbox\" id=\"frAtivo\" checked>\n              Em operação\n              <span style=\"color:var(--muted);font-weight:400\">— desmarque se o veículo saiu da frota ou está parado por tempo indeterminado</span>\n            </label>\n          </div>\n        </div>\n        <label class=\"fr-manual\">\n          <input type=\"checkbox\" id=\"frManual\" onchange=\"frCalcular()\">\n          Ajustar a capacidade manualmente\n          <span style=\"color:var(--muted);font-weight:400\">— use quando o veículo perdeu poltronas (área PCD, por exemplo)</span>\n        </label>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <button class=\"add-btn\" id=\"frBtnSalvar\" onclick=\"frSalvar()\" style=\"flex:1\">Adicionar veículo</button>\n          <button class=\"btn-cancel\" id=\"frBtnCancelar\" onclick=\"frCancelar()\" style=\"display:none\">Cancelar edição</button>\n        </div>\n        <div id=\"frMsg\" style=\"font-size:12px;margin-top:8px;min-height:16px\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Otimização de rotas</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          Regras da sua operação. Valem para o botão <b>Analisar melhor rota</b> e para o\n          recálculo de horários. Em branco ou inválido, o sistema usa o valor padrão.\n        </div>\n\n        <div class=\"ot-cfg-sub\">Regras operacionais</div>\n        <div class=\"ot-cfg-grid\">\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Tempo máximo em rota</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocMaxRide\" type=\"number\" min=\"5\" max=\"300\"><span>min</span></div>\n          </div>\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Margem de chegada</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocMargem\" type=\"number\" min=\"0\" max=\"120\"><span>min</span></div>\n            <div class=\"ot-cfg-dica\">O veículo chega esta folga antes do horário obrigatório.</div>\n          </div>\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Tempo por parada</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocParada\" type=\"number\" min=\"0\" max=\"900\"><span>s</span></div>\n          </div>\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Adicional por passageiro</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocAdicional\" type=\"number\" min=\"0\" max=\"300\"><span>s</span></div>\n            <div class=\"ot-cfg-dica\">Quando há mais de um embarque no mesmo ponto.</div>\n          </div>\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Reserva de vagas por veículo</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocReserva\" type=\"number\" min=\"0\" max=\"20\"><span>vagas</span></div>\n            <div class=\"ot-cfg-dica\">Vagas deixadas livres. O planejador trata uma van de 15 como 14 se a reserva for 1.</div>\n          </div>\n        </div>\n\n        <div class=\"ot-cfg-sub\">Comportamento</div>\n        <label class=\"ot-cfg-check\">\n          <input type=\"checkbox\" id=\"ocAgrupar\" onchange=\"ocAtualizarDependentes()\">\n          Agrupar passageiros no mesmo ponto\n        </label>\n        <div class=\"ot-cfg-grid\">\n          <div class=\"ot-cfg-campo\" id=\"ocTolBox\">\n            <label class=\"form-label\">Distância para considerar mesmo ponto</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocTolerancia\" type=\"number\" min=\"0\" max=\"500\"><span>m</span></div>\n          </div>\n        </div>\n        <label class=\"ot-cfg-check\">\n          <input type=\"checkbox\" id=\"ocPreservar\" onchange=\"ocAtualizarDependentes()\">\n          Manter a ordem atual quando o ganho for pequeno\n        </label>\n        <div class=\"ot-cfg-grid\" id=\"ocGanhoBox\">\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Ganho mínimo de tempo</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocGanhoMin\" type=\"number\" min=\"0\" max=\"60\"><span>min</span></div>\n          </div>\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Ou ganho mínimo de distância</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocGanhoKm\" type=\"number\" min=\"0\" max=\"50\" step=\"0.1\"><span>km</span></div>\n            <div class=\"ot-cfg-dica\">Vale quando o tempo empata.</div>\n          </div>\n        </div>\n        <label class=\"ot-cfg-check\">\n          <input type=\"checkbox\" id=\"ocPermitirAcima\">\n          Aplicar sem confirmar quando houver passageiro acima do limite\n        </label>\n\n        <div class=\"ot-cfg-sub\">Objetivo</div>\n        <div class=\"ot-cfg-radios\">\n          <label><input type=\"radio\" name=\"ocObjetivo\" value=\"tempo\"> Menor tempo</label>\n          <label><input type=\"radio\" name=\"ocObjetivo\" value=\"distancia\"> Menor distância</label>\n          <label><input type=\"radio\" name=\"ocObjetivo\" value=\"equilibrado\"> Equilibrado</label>\n        </div>\n        <div class=\"ot-cfg-dica\" style=\"margin-top:6px\">\n          A ordem de decisão é sempre: sem passageiro acima do limite → objetivo escolhido →\n          o outro critério → menor mudança na sequência atual.\n        </div>\n\n        <div style=\"display:flex;gap:8px;margin-top:12px\">\n          <button class=\"opt-btn\" onclick=\"ocSalvar()\" style=\"flex:1\">Salvar regras de otimização</button>\n          <button class=\"btn-cancel\" onclick=\"ocRestaurarPadroes()\">Restaurar padrões</button>\n        </div>\n        <div id=\"ocMsg\" class=\"opt-status\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Horários de chegada por turno</div>\n        <div style=\"display:flex;gap:8px;flex-wrap:wrap\">\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">1º Turno</label>\n            <input class=\"form-input\" id=\"cfgT1\" type=\"time\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">2º Turno</label>\n            <input class=\"form-input\" id=\"cfgT2\" type=\"time\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">3º Turno</label>\n            <input class=\"form-input\" id=\"cfgT3\" type=\"time\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:90px\">\n            <label class=\"form-label\">ADM</label>\n            <input class=\"form-input\" id=\"cfgTA\" type=\"time\">\n          </div>\n        </div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Pontos de origem e destino</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          Os lugares onde uma rota pode começar ou terminar: garagem, empresa atendida, terminal.\n          <b>Este é o único lugar onde se edita origem e destino</b> — vale para as linhas fixas e\n          para as rotas do roteirizador. Em breve dará para escolher o início e o fim de cada rota,\n          que é o que vai permitir montar as rotas de saída.\n        </div>\n        <div id=\"ptLista\" style=\"margin-bottom:12px\"></div>\n        <div class=\"fr-form\">\n          <div class=\"fr-campo\" style=\"flex:1.4;min-width:150px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Nome</label>\n            <input class=\"form-input\" id=\"ptNome\" type=\"text\" placeholder=\"Ex.: Garagem, Toyota, Terminal\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:2;min-width:180px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Endereço</label>\n            <input class=\"form-input\" id=\"ptEndereco\" type=\"text\" placeholder=\"Rua, número — bairro, cidade\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:1.2;min-width:150px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Coordenadas (lat, lng)</label>\n            <input class=\"form-input\" id=\"ptCoords\" type=\"text\" placeholder=\"-23.5146, -47.5167\" style=\"padding:8px 10px;font-size:12px;font-family:monospace\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 140px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Tipo</label>\n            <select class=\"form-input\" id=\"ptTipo\" style=\"padding:8px 10px;font-size:13px\">\n              <option value=\"garagem\">Garagem</option>\n              <option value=\"empresa\">Empresa atendida</option>\n              <option value=\"outro\">Outro</option>\n            </select>\n          </div>\n        </div>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <button class=\"add-btn\" id=\"ptBtnSalvar\" onclick=\"ptSalvar()\" style=\"flex:1\">Adicionar ponto</button>\n          <button class=\"btn-cancel\" id=\"ptBtnCancelar\" onclick=\"ptCancelar()\" style=\"display:none\">Cancelar edição</button>\n        </div>\n        <div id=\"ptMsg\" style=\"font-size:12px;margin-top:8px;min-height:16px\"></div>\n\n        <div style=\"display:none\">\n          <input class=\"form-input\" id=\"cfgGarCoords\" type=\"text\">\n          <input class=\"form-input\" id=\"cfgDestCoords\" type=\"text\">\n        </div>\n\n        <button class=\"opt-btn\" style=\"margin-top:14px\" onclick=\"salvarEmpresaConfig()\">Salvar dados da empresa</button>\n        <div id=\"cfgEmpresaStatus\" class=\"opt-status\"></div>\n        <div style=\"font-size:11px;color:var(--muted);margin-top:8px\">\n          ℹ️ Os endereços em texto (telas e PDFs) ainda são ajustados no código por enquanto. As coordenadas e horários acima já têm efeito imediato no sistema.\n        </div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalConfig').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL OTIMIZAÇÃO DE ROTA -->\n<div class=\"modal-overlay\" id=\"modalOtimizar\">\n  <div class=\"modal\" style=\"width:640px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\" id=\"otimizarTitle\">Otimização inteligente da rota</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Parâmetros da operação</div>\n        <div class=\"ot-fatos\" id=\"otFatos\"></div>\n      </div>\n\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Ações</div>\n        <button class=\"opt-btn\" id=\"btnAnalisarRota\" onclick=\"analisarMelhorRota()\">\n          Analisar melhor rota\n        </button>\n        <button class=\"opt-btn opt-btn-secondary\" id=\"btnRecalcHorarios\" onclick=\"recalcularApenasHorarios()\">\n          Recalcular horários (manter ordem atual)\n        </button>\n        <div class=\"ot-passos\" id=\"otPassos\"></div>\n        <div id=\"optStatus\" class=\"opt-status\">Aguardando...</div>\n      </div>\n\n      <div class=\"opt-section\" id=\"optResultSection\" style=\"display:none\">\n        <div class=\"opt-title\">Resultado</div>\n        <div id=\"optResultBody\"></div>\n      </div>\n\n      <div class=\"opt-section\" id=\"optMapSection\" style=\"display:none\">\n        <div class=\"opt-title\">Mapa da rota</div>\n        <div id=\"optMapDiv\" style=\"width:100%;height:320px;border-radius:10px;overflow:hidden;border:1px solid var(--border)\"></div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" id=\"btnManterAtual\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">Fechar</button>\n      <button class=\"export-btn\" id=\"btnVerMapa\" style=\"display:none\" onclick=\"toggleOptMap()\">Ver mapa</button>\n      <button class=\"btn-save\" id=\"btnAplicar\" style=\"display:none\" onclick=\"aplicarOtimizacao()\">Aplicar otimização</button>\n    </div>\n  </div>\n</div>\n\n<!-- MOTORISTA VIEW -->\n<div class=\"moto-overlay\" id=\"motoView\">\n  <div class=\"moto-header\">\n    <div>\n      <div class=\"moto-title\">Visão do Motorista</div>\n      <div class=\"moto-subtitle\">Selecione sua linha para iniciar a rota</div>\n    </div>\n    <button class=\"moto-back\" onclick=\"document.getElementById('motoView').classList.remove('open')\">Fechar</button>\n  </div>\n  <div class=\"moto-body\">\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Motorista</label>\n      <select class=\"moto-select\" id=\"motoSelectMotorista\" onchange=\"motoFilterLinhas()\">\n        <option value=\"\">— Todos os motoristas —</option>\n      </select>\n    </div>\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Linha e Turno</label>\n      <select class=\"moto-select\" id=\"motoSelectLinha\" onchange=\"motoLoadRota()\">\n        <option value=\"\">— Selecione uma linha —</option>\n      </select>\n    </div>\n    <div id=\"motoRotaContent\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL MAPA GERAL -->\n<div class=\"modal-overlay\" id=\"modalMapaGeral\">\n  <div class=\"modal\" style=\"max-width:1100px;width:97%;height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\" style=\"flex-shrink:0\">\n      <div class=\"modal-title\">Mapa Geral de Rotas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMapaGeral').classList.remove('open')\">×</button>\n    </div>\n    <div style=\"flex-shrink:0;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center\">\n      <!-- Turno filter -->\n      <div style=\"display:flex;gap:6px;align-items:center\" id=\"mgTurnoBar\">\n        <span style=\"font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px\">Turno:</span>\n      </div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Line checkboxes -->\n      <div style=\"display:flex;gap:6px;align-items:center;flex-wrap:wrap\" id=\"mgLinhasCheck\"></div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Select all / none -->\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectAll()\">Todas</button>\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectNone()\">Nenhuma</button>\n      <!-- Route toggle -->\n      <div style=\"margin-left:auto;display:flex;gap:8px;align-items:center\">\n        <label style=\"font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px\">\n          <input type=\"checkbox\" id=\"mgShowRoutes\" checked onchange=\"renderMapaGeral()\" style=\"cursor:pointer\">\n          Mostrar rotas traçadas\n        </label>\n      </div>\n    </div>\n    <div style=\"flex:1;position:relative;min-height:0\">  <div id=\"mapaGeralDiv\" style=\"position:absolute;inset:0\"></div>  <div id=\"mgVazio\" style=\"position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--bg);z-index:2;padding:24px\">    <div style=\"font-size:15px;font-weight:600;margin-bottom:6px\">Selecione a rota desejada</div>    <div style=\"font-size:13px;color:var(--muted);max-width:380px;line-height:1.6\">Marque as linhas que quer ver no mapa, ou use <b>Todas</b> ali em cima.</div>  </div></div>\n    <div id=\"mgLegend\" style=\"flex-shrink:0;padding:10px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;font-size:12px\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL ROTAS EXTRAS -->\n<div class=\"modal-overlay\" id=\"modalRotasExtras\">\n  <div class=\"modal\" style=\"max-width:800px;width:95%\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Rotas Extras</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalRotasExtras').classList.remove('open')\">×</button>\n    </div>\n    <div class=\"modal-body\">\n      <!-- Lista de rotas extras existentes -->\n      <div id=\"rotasExtrasList\" style=\"margin-bottom:16px\"></div>\n      <!-- Criar nova rota extra -->\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px\">\n        <div style=\"font-weight:700;font-size:14px;margin-bottom:14px;color:var(--accent)\">Nova Rota Extra</div>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px\">\n          <div>\n            <label class=\"form-label\">Nome da Rota</label>\n            <input class=\"form-input\" id=\"reNome\" placeholder=\"Ex: Extra Sexta 02/05\">\n          </div>\n          <div>\n            <label class=\"form-label\">Data</label>\n            <input class=\"form-input\" type=\"date\" id=\"reData\">\n          </div>\n        </div>\n        <div style=\"background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;color:var(--muted)\">\n          <strong>Início:</strong> Garagem Redentor &nbsp;→&nbsp; Passageiros &nbsp;→&nbsp; <strong>Destino:</strong> Empresa\n        </div>\n        <label class=\"form-label\">Buscar e selecionar passageiros</label>\n        <input class=\"form-input\" id=\"reBusca\" placeholder=\"Digite nome, bairro ou cidade...\" oninput=\"filtrarPassRotaExtra()\" style=\"margin-bottom:10px\">\n        <div id=\"reResultados\" style=\"max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px\"></div>\n        <div style=\"margin-bottom:12px\">\n          <div style=\"font-size:12px;color:var(--muted);margin-bottom:6px\">Selecionados:</div>\n          <div id=\"reSelecionados\" style=\"display:flex;flex-wrap:wrap;gap:6px;min-height:32px\"></div>\n        </div>\n        <button class=\"add-btn\" onclick=\"criarRotaExtra()\" style=\"width:100%\">Criar Rota Extra</button>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL SEM ROTA -->\n<div class=\"modal-overlay\" id=\"modalSemRota\">\n  <div class=\"modal\" style=\"max-width:700px;width:95%\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Passageiros Sem Rota</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalSemRota').classList.remove('open')\">×</button>\n    </div>\n    <div class=\"modal-body\">\n      <div style=\"font-size:13px;color:var(--muted);margin-bottom:12px\">\n        Use <b>Encaixar nas linhas</b> para a temvia distribuir todos automaticamente, ou clique nos passageiros para tratá-los um a um.\n      </div>\n      <div id=\"semRotaActionsBar\" style=\"display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap\">\n        <button onclick=\"absAbrirPainel()\" class=\"add-btn\" style=\"background:var(--accent2)\">Encaixar nas linhas (temvia)</button>\n        <button onclick=\"criarRotaExtraDeSemRota()\" class=\"add-btn\" style=\"background:rgba(236,72,153,0.8)\">Criar Rota Extra com Selecionados</button>\n        <button onclick=\"alocarTodosParaRota()\" class=\"export-btn\" style=\"color:var(--accent);border-color:var(--accent)\">Alocar Selecionados em Linha</button>\n        <button onclick=\"semRotaSelecionados&&semRotaSelecionados.clear();renderSemRotaList()\" class=\"export-btn\" style=\"color:var(--muted)\">Limpar seleção</button>\n      </div>\n      <div id=\"semRotaList\"></div>\n      <!-- Alocação -->\n      <div id=\"semRotaAlocarBox\" style=\"display:none;background:var(--surface2);border:1px solid var(--accent);border-radius:12px;padding:14px;margin-top:14px\">\n        <div style=\"font-weight:600;font-size:13px;margin-bottom:10px\">Alocar <span id=\"semRotaAlocarNome\" style=\"color:var(--accent)\"></span> para:</div>\n        <div style=\"display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end\">\n          <div>\n            <label class=\"form-label\">Linha e Turno</label>\n            <select class=\"form-input\" id=\"semRotaLinhaSelect\"></select>\n          </div>\n          <button class=\"add-btn\" onclick=\"confirmarAlocacao()\">Confirmar</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL SERVIÇOS EXTRAS -->\n<div class=\"modal-overlay\" id=\"modalServicosExtras\">\n  <div class=\"modal-box\" style=\"max-width:900px;width:96%;max-height:92vh;display:flex;flex-direction:column;overflow:hidden\">\n    <div class=\"modal-header\" style=\"flex-shrink:0\">\n      <div class=\"modal-title\">Serviços Extras</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalServicosExtras').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:0;display:flex;flex-direction:column;flex:1;overflow:hidden\">\n\n      <!-- ABAS -->\n      <div style=\"display:flex;border-bottom:1px solid var(--border);background:var(--surface)\">\n        <button id=\"seTab1\" onclick=\"seAba('lancar')\" style=\"flex:1;padding:12px;background:var(--accent);color:#000;border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Lançar</button>\n        <button id=\"seTab2\" onclick=\"seAba('historico')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Histórico</button>\n        <button id=\"seTab4\" onclick=\"seAba('solicitacoes')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer;position:relative\">Solicitações<span id=\"seTabBadge\" style=\"display:none;position:absolute;top:6px;right:6px;background:var(--red);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:800;align-items:center;justify-content:center;font-family:'Barlow',sans-serif\">0</span></button>\n        <button id=\"seTab5\" onclick=\"seAba('cadastro')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer;position:relative\">Cadastro<span id=\"cadBadge\" style=\"display:none;position:absolute;top:6px;right:6px;background:var(--accent2);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:800;align-items:center;justify-content:center;font-family:'Barlow',sans-serif\">0</span></button>\n        <button id=\"seTab3\" onclick=\"seAba('relatorio')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Relatórios</button>\n      </div>\n\n      <!-- ABA LANÇAR -->\n      <div id=\"seAbaLancar\" style=\"padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px\">\n          <div>\n            <label class=\"form-label\">Data do Serviço</label>\n            <input class=\"form-input\" type=\"date\" id=\"seData\">\n          </div>\n          <div>\n            <label class=\"form-label\">Horário de Atendimento</label>\n            <input class=\"form-input\" type=\"time\" id=\"seHorario\">\n          </div>\n          <div>\n            <label class=\"form-label\">Tipo de Serviço</label>\n            <select class=\"form-input\" id=\"seTipo\" onchange=\"seTipoChange()\"></select>\n          </div>\n          <div>\n            <label class=\"form-label\">Turno</label>\n            <select class=\"form-input\" id=\"seDestino\">\n              <option value=\"\">— Selecione —</option>\n              <option value=\"1º Turno\">1º Turno</option>\n              <option value=\"2º Turno\">2º Turno</option>\n              <option value=\"3º Turno\">3º Turno</option>\n              <option value=\"Diurno\">Diurno</option>\n              <option value=\"Noturno\">Noturno</option>\n              <option value=\"Adm\">Adm</option>\n            </select>\n          </div>\n          <div>\n            <label class=\"form-label\">Roteiro</label>\n            <select class=\"form-input\" id=\"seRoteiro\">\n              <option value=\"\">— Selecione —</option>\n              <option value=\"Entrada\">Entrada</option>\n              <option value=\"Saída\">Saída</option>\n              <option value=\"Ida e Volta\">Ida e Volta</option>\n            </select>\n          </div>\n          <div>\n            <label class=\"form-label\">Adicional (R$)</label>\n            <input class=\"form-input\" type=\"number\" id=\"seAdicional\" value=\"0\" onchange=\"seCalcularTotal()\">\n          </div>\n          <div style=\"background:var(--surface2);border-radius:10px;padding:14px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center\">\n            <div style=\"font-size:11px;color:var(--muted);margin-bottom:4px\">TOTAL DO SERVIÇO</div>\n            <div id=\"seTotal\" style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:28px;color:var(--accent)\">R$ 0,00</div>\n          </div>\n        </div>\n\n        <!-- Lista de veículos dinâmica -->\n        <div style=\"margin-bottom:12px\">\n          <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:8px\">\n            <label class=\"form-label\" style=\"margin:0\">Veículos e Motoristas</label>\n            <button onclick=\"seAdicionarVeiculo()\" class=\"export-btn\" style=\"font-size:12px;padding:5px 12px;color:var(--accent);border-color:var(--accent)\">＋ Adicionar Veículo</button>\n          </div>\n          <div id=\"seVeiculosList\"></div>\n        </div>\n\n        <!-- Motoristas dinâmicos (1 por veículo) -->\n        <div id=\"seMotoristasList\" style=\"margin-bottom:12px\"></div>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px\">\n          <div>\n            <label class=\"form-label\">Observação</label>\n            <input class=\"form-input\" id=\"seObs\" placeholder=\"Ex: Saída extra demissão\">\n          </div>\n          <div>\n            <label class=\"form-label\">Repetição — Marque os dias</label>\n            <div id=\"seCalendarioRepet\" style=\"background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px\"></div>\n          </div>\n        </div>\n        <div style=\"display:flex;gap:10px\">\n          <button class=\"add-btn\" style=\"flex:1\" onclick=\"seSalvar()\">Salvar Serviço</button>\n          <button class=\"btn-cancel\" onclick=\"seLimpar()\">Limpar</button>\n        </div>\n        <div id=\"seMsg\" style=\"margin-top:10px;font-size:13px;text-align:center\"></div>\n      </div>\n\n      <!-- ABA HISTÓRICO -->\n      <div id=\"seAbaHistorico\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap\">\n          <input class=\"form-input\" type=\"month\" id=\"seFiltroMes\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\">\n          <select class=\"form-input\" id=\"seFiltroTipo\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\"></select>\n          <select class=\"form-input\" id=\"seFiltroMotorista\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\">\n            <option value=\"\">Todos os motoristas</option>\n          </select>\n          <button class=\"export-btn\" onclick=\"seAba('relatorio')\" style=\"color:var(--accent);border-color:var(--accent)\">Por Período</button>\n          <button class=\"export-btn\" onclick=\"seExportarExcel('mes')\" style=\"color:var(--accent);border-color:var(--accent)\">Excel Mês</button>\n        </div>\n        <div id=\"seResumoHistorico\" style=\"margin-bottom:12px\"></div>\n        <div id=\"seListaHistorico\" style=\"max-height:420px;overflow-y:auto\"></div>\n      </div>\n\n      <!-- ABA RELATÓRIOS -->\n      <div id=\"seAbaRelatorio\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px\">\n          <div style=\"background:var(--surface2);border-radius:12px;padding:16px\">\n            <div style=\"font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;color:var(--accent);margin-bottom:12px\">Relatório por Período</div>\n            <p style=\"font-size:12px;color:var(--muted);margin-bottom:12px\">Escolha o intervalo de datas para gerar o relatório.</p>\n            <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px\">\n              <div>\n                <div style=\"font-size:10px;color:var(--muted);margin-bottom:4px\">DATA INÍCIO</div>\n                <input class=\"form-input\" type=\"date\" id=\"seDataInicio\">\n              </div>\n              <div>\n                <div style=\"font-size:10px;color:var(--muted);margin-bottom:4px\">DATA FIM</div>\n                <input class=\"form-input\" type=\"date\" id=\"seDataFim\">\n              </div>\n            </div>\n            <button class=\"add-btn\" style=\"width:100%\" onclick=\"seExportarExcel('periodo')\">Gerar Excel por Período</button>\n          </div>\n          <div style=\"background:var(--surface2);border-radius:12px;padding:16px\">\n            <div style=\"font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;color:var(--green);margin-bottom:12px\">Relatório Mensal</div>\n            <p style=\"font-size:12px;color:var(--muted);margin-bottom:12px\">Todos os serviços do mês. Enviar no dia 1º para aprovação.</p>\n            <input class=\"form-input\" type=\"month\" id=\"seDataMes\" style=\"margin-bottom:10px\">\n            <button class=\"add-btn\" style=\"width:100%;background:var(--green)\" onclick=\"seExportarExcel('mes')\">Gerar Excel Mensal</button>\n          </div>\n        </div>\n        <div id=\"seResumoRelatorio\"></div>\n      </div>\n\n      <!-- ABA SOLICITAÇÕES -->\n      <div id=\"seAbaSolicitacoes\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center\">\n          <select class=\"form-input\" id=\"solFiltroStatus\" style=\"flex:1;min-width:140px\" onchange=\"solRenderGestor()\">\n            <option value=\"\">Todos os status</option>\n            <option value=\"pendente\">Pendentes</option>\n            <option value=\"confirmada\">Confirmadas</option>\n            <option value=\"atendida\">Atendidas</option>\n            <option value=\"cancelada\">Canceladas</option>\n          </select>\n          <input class=\"form-input\" type=\"month\" id=\"solFiltroMes\" style=\"flex:1;min-width:130px\" onchange=\"solRenderGestor()\">\n          <span id=\"solResumoCount\" style=\"font-size:12px;color:var(--muted)\"></span>\n        </div>\n        <div id=\"solListaGestor\" style=\"max-height:460px;overflow-y:auto\"></div>\n      </div>\n\n      <!-- ABA CADASTRO -->\n      <div id=\"seAbaCadastro\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center\">\n          <select class=\"form-input\" id=\"cadGestorFiltroTipo\" style=\"flex:1;min-width:140px\" onchange=\"cadGestorRender()\">\n            <option value=\"\">Todos os tipos</option>\n            <option value=\"novo\">Novo Passageiro</option>\n            <option value=\"turno\">Alteração de Turno</option>\n            <option value=\"endereco\">Alteração de Endereço</option>\n            <option value=\"desligamento\">Desligamento</option>\n          </select>\n          <select class=\"form-input\" id=\"cadGestorFiltroStatus\" style=\"flex:1;min-width:120px\" onchange=\"cadGestorRender()\">\n            <option value=\"\">Todos os status</option>\n            <option value=\"pendente\">Pendentes</option>\n            <option value=\"atendida\">Atendidas</option>\n          </select>\n          <span id=\"cadGestorCount\" style=\"font-size:12px;color:var(--muted)\"></span>\n        </div>\n        <div id=\"cadGestorLista\" style=\"max-height:460px;overflow-y:auto\"></div>\n      </div>\n\n    </div>\n  </div>\n</div>\n<div class=\"modal-overlay\" id=\"modalReport\">\n  <div class=\"modal report-modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Relatório de Alterações</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"reportBody\">\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">Fechar</button>\n      <button class=\"btn-save\" onclick=\"clearLog()\">Limpar histórico</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL ROTEIRIZADOR -->\n<div class=\"modal-overlay\" id=\"modalRoteirizador\">\n  <div class=\"modal\" style=\"max-width:1400px;width:97%;max-height:94vh;display:flex;flex-direction:column;padding:0;overflow:hidden\">\n    <div class=\"modal-header\" style=\"padding:16px 20px;flex-shrink:0\">\n      <div class=\"modal-title\">Roteirizador Inteligente</div>\n      <div style=\"display:flex;gap:8px;align-items:center\">\n        <button onclick=\"rtAbrirPublicadas()\" class=\"export-btn\" style=\"font-size:12px;padding:6px 12px;background:rgba(16,185,129,0.12);color:var(--green);border-color:rgba(16,185,129,0.3)\">Rotas Publicadas</button>\n        <button class=\"export-btn\" onclick=\"rtNovaRoteirizacao()\" title=\"Limpar tudo e começar do zero\" style=\"margin-right:8px\">Nova roteirização</button><button class=\"modal-close\" onclick=\"rtFechar()\" title=\"Fechar\">✕</button>\n      </div>\n    </div>\n\n    <div style=\"overflow-y:auto;flex:1;padding:20px\"><div class=\"rt-layout\"><aside class=\"rt-etapas\" id=\"rtEtapas\"><button class=\"rt-passo\" data-etapa=\"conf\" onclick=\"rtIrEtapa('conf')\"><span class=\"rt-passo-n\">1</span><span class=\"rt-passo-txt\"><b>Configurar</b><small>Informe os passageiros e as regras da operação.</small></span></button><button class=\"rt-passo\" data-etapa=\"plan\" onclick=\"rtIrEtapa('plan')\"><span class=\"rt-passo-n\">2</span><span class=\"rt-passo-txt\"><b>Planejar</b><small>A temvia calcula o melhor plano para você.</small></span></button><button class=\"rt-passo\" data-etapa=\"sug\" onclick=\"rtIrEtapa('sug')\"><span class=\"rt-passo-n\">3</span><span class=\"rt-passo-txt\"><b>Plano sugerido</b><small>Revise as rotas, métricas e restrições.</small></span></button><button class=\"rt-passo\" data-etapa=\"edit\" onclick=\"rtIrEtapa('edit')\"><span class=\"rt-passo-n\">4</span><span class=\"rt-passo-txt\"><b>Editar plano</b><small>Faça ajustes manuais se necessário.</small></span></button><button class=\"rt-passo\" data-etapa=\"pub\" onclick=\"rtIrEtapa('pub')\"><span class=\"rt-passo-n\">5</span><span class=\"rt-passo-txt\"><b>Publicar</b><small>Publique o plano final para a operação.</small></span></button></aside><div class=\"rt-fluxo\"><section class=\"rt-etapa\" id=\"rtEtconf\"><div class=\"rt-etapa-cab\"><span class=\"rt-etapa-n\">1</span><div><div class=\"rt-etapa-t\">Configurar</div><div class=\"rt-etapa-s\">Informe para quais passageiros quer criar uma rota e os dados da rota.</div></div></div><div class=\"rt-etapa-corpo\"><div class=\"rt-sub\">Para quais passageiros quer criar uma rota?</div><div style=\"display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap\">\n          <button onclick=\"rtModoEntrada('solicitacao')\" id=\"rtBtnSol\" class=\"export-btn\" style=\"font-size:12px;color:var(--accent);border-color:var(--accent)\">De uma Solicitação</button>\n          <button onclick=\"rtModoEntrada('colar')\" id=\"rtBtnColar\" class=\"export-btn\" style=\"font-size:12px\">Colar nomes</button>\n          <button onclick=\"rtModoEntrada('linha')\" id=\"rtBtnLinha\" class=\"export-btn\" style=\"font-size:12px\">De uma Linha</button>\n        </div>\n\n        <!-- Modo: solicitação -->\n        <div id=\"rtEntradaSolicitacao\" style=\"display:none\">\n          <label class=\"form-label\">Selecione a solicitação de serviço</label>\n          <select class=\"form-input\" id=\"rtSelSolicitacao\" onchange=\"rtCarregarDaSolicitacao()\">\n            <option value=\"\">— Selecione —</option>\n          </select>\n        </div>\n\n        <!-- Modo: colar / buscar -->\n        <div id=\"rtEntradaColar\" style=\"display:none\">\n          <label class=\"form-label\">Buscar e adicionar passageiros</label>\n          <input class=\"form-input\" id=\"rtBuscaPax\" type=\"text\" placeholder=\"Digite o nome...\" oninput=\"rtBuscarPax()\" style=\"margin-bottom:8px;font-size:15px\">\n          <div id=\"rtResultadoPax\" style=\"max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;display:none\"></div>\n          <div style=\"font-size:11px;color:var(--muted);margin-bottom:6px\">Adicionados:</div>\n          <div id=\"rtSelecionados\" style=\"display:flex;flex-wrap:wrap;gap:6px;min-height:30px;margin-bottom:10px\"></div>\n          <div style=\"display:flex;gap:8px\">\n            <button onclick=\"rtCarregarSelecionados()\" class=\"add-btn\" style=\"flex:2\">Carregar selecionados →</button>\n          </div>\n          <div style=\"margin-top:10px;padding-top:10px;border-top:1px solid var(--border)\">\n            <label class=\"form-label\">Ou cole uma lista (um nome por linha)</label>\n            <textarea class=\"form-input\" id=\"rtNomes\" rows=\"4\" placeholder=\"João Silva&#10;Maria Santos&#10;...\" style=\"resize:vertical;font-size:14px\"></textarea>\n            <button onclick=\"rtCarregarDeColar()\" class=\"export-btn\" style=\"margin-top:8px;font-size:12px\">Buscar lista colada →</button>\n          </div>\n        </div>\n\n        <!-- Modo: linha -->\n        <div id=\"rtEntradaLinha\" style=\"display:none\">\n          <label class=\"form-label\">Selecione a linha/turno</label>\n          <select class=\"form-input\" id=\"rtSelLinha\" onchange=\"rtCarregarDaLinha()\">\n            <option value=\"\">— Selecione —</option>\n          </select>\n          <div style=\"font-size:11px;color:var(--accent);margin-top:6px\">Você pode adicionar várias linhas (cada uma vira um veículo) para comparar e trocar passageiros entre elas.</div>\n        </div>\n\n        <div style=\"display:flex;gap:8px;margin-top:14px;margin-bottom:6px\">\n          <button onclick=\"rtSetModo('entrada')\" id=\"rtModoEntradaBtn\" class=\"export-btn\" style=\"flex:1;font-size:12px;color:var(--accent);border-color:var(--accent)\">Entrada (chega na empresa)</button>\n          <button onclick=\"rtSetModo('saida')\" id=\"rtModoSaidaBtn\" class=\"export-btn\" style=\"flex:1;font-size:12px\">Saída (sai da empresa)</button>\n        </div>\n        <div class=\"rt-sub rt-sub-2\">Dados da rota</div><div style=\"display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px\">\n          <div>\n            <label class=\"form-label\">Data da rota</label>\n            <input class=\"form-input\" type=\"date\" id=\"rtData\">\n          </div>\n          <div>\n            <label class=\"form-label\" id=\"rtChegadaLabel\">Horário de chegada na empresa</label><div style=\"font-size:10.5px;color:var(--muted);margin:-2px 0 4px\">Preenchido sozinho quando você carrega uma linha.</div>\n            <input class=\"form-input\" type=\"time\" id=\"rtChegada\" onchange=\"plAtualizarControles()\">\n          </div>\n          <div>\n            <label class=\"form-label\">Folga de segurança (min)</label>\n            <input class=\"form-input\" type=\"number\" id=\"rtBuffer\" value=\"5\" min=\"0\">\n          </div>\n        </div>\n        <div style=\"margin-top:12px\">\n          <label class=\"form-label\">Nome da rota (para o motorista identificar)</label>\n          <input class=\"form-input\" id=\"rtNomeRota\" placeholder=\"Ex: Entrada Extra · Saída 2º Turno · Rota Vertiv...\">\n        </div>\n      </div></section><section class=\"rt-etapa\" id=\"rtEtplan\"><div class=\"rt-etapa-cab\"><span class=\"rt-etapa-n\">2</span><div><div class=\"rt-etapa-t\">Planejar</div><div class=\"rt-etapa-s\">Informe as métricas e o objetivo da operação.</div></div></div><div class=\"rt-etapa-corpo\"><div class=\"pl-painel\" id=\"plPainel\">\n        \n\n        <div class=\"pl-restricoes\">\n          <div class=\"pl-campo\">\n            <label class=\"form-label\">Número de rotas</label>\n            <select class=\"form-input\" id=\"plModoRotas\" onchange=\"plAtualizarControles()\">\n              <option value=\"auto\">Automático</option>\n              <option value=\"max\">No máximo…</option>\n              <option value=\"exato\">Exatamente…</option>\n            </select>\n          </div>\n          <div class=\"pl-campo\" id=\"plNumBox\" style=\"display:none\">\n            <label class=\"form-label\">Quantas</label>\n            <input class=\"form-input\" id=\"plNumRotas\" type=\"number\" min=\"1\" max=\"30\" value=\"2\">\n          </div>\n          <div class=\"pl-campo\">\n            <label class=\"form-label\">Reserva de vagas</label>\n            <input class=\"form-input\" id=\"plReserva\" type=\"number\" min=\"0\" max=\"20\">\n            <div class=\"pl-dica\">Só para este planejamento.</div>\n          </div>\n          <div class=\"pl-campo\">\n            <label class=\"form-label\">Máx. por passageiro</label>\n            <div class=\"ot-cfg-num\">\n              <input class=\"form-input\" id=\"plMaxRide\" type=\"number\" min=\"5\" max=\"300\"><span>min</span>\n            </div>\n          </div>\n          <div class=\"pl-campo\">\n            <label class=\"form-label\">Objetivo</label>\n            <select class=\"form-input\" id=\"plObjetivo\">\n              <option value=\"tempo\">Menor tempo</option>\n              <option value=\"distancia\">Menor distância</option>\n              <option value=\"equilibrado\">Equilibrado</option>\n            </select>\n          </div>\n          <div class=\"pl-campo\">\n            <label class=\"form-label\">Mesmo ponto</label>\n            <div class=\"pl-inline\">\n              <label class=\"pl-check\"><input type=\"checkbox\" id=\"plAgrupar\" onchange=\"plAtualizarControles()\"> Agrupar</label>\n              <div class=\"ot-cfg-num\">\n                <input class=\"form-input\" id=\"plTolerancia\" type=\"number\" min=\"0\" max=\"500\"><span>m</span>\n              </div>\n            </div>\n          </div>\n          <div class=\"pl-campo pl-campo-larga\">\n            <label class=\"form-label\">Frota livre para este planejamento</label>\n            <div class=\"pl-frota\" id=\"plFrotaLivre\"></div>\n          </div>\n          <div class=\"pl-campo pl-campo-larga\">\n            <div class=\"pl-dica\" style=\"margin:0 0 6px\">\n              Estes valores valem só para este planejamento. O padrão está em\n              Configurações › Otimização de rotas.\n            </div>\n            <div class=\"pl-chips\" id=\"plChips\"></div>\n          </div>\n        </div>\n\n        <div class=\"pl-travas-acoes\" id=\"plTravasAcoes\" style=\"display:none\">\n          <button class=\"tv-btn\" onclick=\"plTravarJuntos()\">Travar selecionados juntos</button>\n          <span class=\"pl-dica\" id=\"plSelecaoInfo\"></span>\n        </div>\n\n        <div class=\"rt-gerar\"><button class=\"tv-btn tv-btn-primary\" id=\"plBtnGerar\" onclick=\"plGerarPlano()\" disabled>Gerar plano de rotas</button><span class=\"pl-dica\" id=\"plSubtitulo\"></span></div></div></div></section><section class=\"rt-etapa\" id=\"rtEtsug\" style=\"display:none\"><div class=\"rt-etapa-cab\"><span class=\"rt-etapa-n\">3</span><div><div class=\"rt-etapa-t\">Plano sugerido</div><div class=\"rt-etapa-s\">O que a temvia calculou, com as métricas da operação.</div></div></div><div class=\"rt-etapa-corpo\"><div class=\"ot-passos\" id=\"plPassos\"></div>\n        <div class=\"pl-erro\" id=\"plErro\" style=\"display:none\"></div>\n\n        <div class=\"pl-resumo\" id=\"plResumo\" style=\"display:none\"></div>\n        <div class=\"pl-nota\" id=\"plNota\" style=\"display:none\">\n          <b>O plano considera</b> distância, tempo, capacidade e o limite de tempo em viagem.\n          <b>Não considera</b> trânsito do dia, obras ou restrições que só você conhece.\n          Confira antes de publicar.\n        </div>\n        <div class=\"pl-acoes\" id=\"plAcoes\" style=\"display:none\">\n          <button class=\"tv-btn\" onclick=\"plReplanejar()\">Replanejar tudo</button>\n          <button class=\"tv-btn\" onclick=\"plRecalcularTudo()\" id=\"plBtnRecalcTudo\">Recalcular métricas</button>\n          \n        </div>\n      </div></section><section class=\"rt-etapa\" id=\"rtEtedit\" style=\"display:none\"><div class=\"rt-etapa-cab\"><span class=\"rt-etapa-n\">4</span><div><div class=\"rt-etapa-t\">Editar plano</div><div class=\"rt-etapa-s\">Arraste passageiros entre as rotas ou reordene dentro de uma.</div></div></div><div class=\"rt-etapa-corpo\"><!-- Área de trabalho -->\n      <div id=\"rtWorkArea\">\n        <div class=\"rt-recalc\" id=\"rtRecalcBarra\" style=\"display:none\"><span>Você mudou a composição das rotas. Os horários, a duração e a distância na tela não valem mais.</span><button class=\"tv-btn tv-btn-primary\" onclick=\"plRecalcularTudo()\">Recalcular métricas</button></div>\n        <div class=\"rt-secao-titulo\">Rascunho editável das rotas\n          <span>Arraste passageiros entre as caixas ou para reordenar dentro de uma rota</span>\n        </div>\n\n        <!-- Não alocados -->\n        <div style=\"background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px\">\n          <div style=\"display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap\">\n            <strong style=\"font-size:13px\">Não alocados</strong>\n            <span style=\"font-size:12px;color:var(--muted)\" id=\"rtPoolCount\"></span>\n            <div style=\"flex:1\"></div>\n            <button onclick=\"rtAddVeiculo()\" class=\"export-btn\" style=\"font-size:11px;padding:5px 10px\">＋ Veículo</button>\n            <button class=\"export-btn\" style=\"font-size:11px;padding:5px 10px\" onclick=\"rtToggleManual()\"\n              id=\"rtBtnManual\" title=\"Montar as rotas à mão, sem o planejamento automático\">Montar manualmente ▾</button>\n          </div>\n          <div id=\"rtBarraManual\" class=\"rt-barra-manual\" style=\"display:none\">\n            <div class=\"rt-manual-nota\">Aqui você monta tudo à mão: cria os veículos, arrasta os\n              passageiros e pede o cálculo. O planejamento automático acima faz isso sozinho.</div>\n            <div class=\"rt-manual-acoes\">\n              <label class=\"rt-manual-check\"><input type=\"checkbox\" id=\"rtTravarOrdem\" checked>Travar ordem manual</label>\n              <button onclick=\"rtCalcular()\" class=\"export-btn\">Calcular rotas manualmente</button>\n              <button onclick=\"rtLimparTudo()\" class=\"export-btn\" style=\"color:var(--red);border-color:var(--red)\">Limpar tudo</button>\n            </div>\n          </div>\n          <div class=\"rt-drop\" id=\"rtPoolBody\" data-veh=\"pool\" style=\"min-height:50px;display:flex;flex-wrap:wrap;gap:7px\"></div>\n        </div>\n\n        <!-- Veículos -->\n        <div class=\"rt-veh-cols\" id=\"rtVehCols\" style=\"display:flex;gap:14px;overflow-x:auto;padding-bottom:10px\"></div>\n<!-- Mapa -->\n        <div style=\"background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px\">\n          <div style=\"display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap\">\n            <strong style=\"font-size:13px\">Mapa dos passageiros</strong>\n            <span style=\"font-size:11px;color:var(--muted)\">Cores = veículo</span>\n            <div style=\"flex:1\"></div>\n            <button onclick=\"rtRenderMap()\" class=\"export-btn\" style=\"font-size:11px;padding:4px 10px\">↻ Atualizar</button>\n          </div>\n          <div id=\"rtMap\" style=\"height:380px;width:100%;background:var(--surface2)\"></div>\n          <div id=\"rtMapLegend\" style=\"padding:8px 14px;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;border-top:1px solid var(--border)\"></div>\n        </div>\n\n        \n      </div>\n    </div></section><section class=\"rt-etapa\" id=\"rtEtpub\" style=\"display:none\"><div class=\"rt-etapa-cab\"><span class=\"rt-etapa-n\">5</span><div><div class=\"rt-etapa-t\">Publicar</div><div class=\"rt-etapa-s\">Envie o plano para os motoristas.</div></div></div><div class=\"rt-etapa-corpo\"><div id=\"rtPubCorpo\"></div>\n<div class=\"rt-pub-acoes\"><button class=\"tv-btn tv-btn-primary\" id=\"plBtnPublicar\" onclick=\"plPublicar()\">Publicar rotas</button></div></div></section></div></div></div>\n  </div>\n</div>\n\n<!-- MODAL ROTAS PUBLICADAS -->\n<div class=\"modal-overlay\" id=\"modalRotasPublicadas\">\n  <div class=\"modal\" style=\"max-width:760px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Rotas Publicadas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalRotasPublicadas').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"rotasPublicadasBody\" style=\"padding:16px 20px\">\n      <div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL AVISOS (gestor) -->\n<div class=\"modal-overlay\" id=\"modalAvisos\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Avisos aos Passageiros</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalAvisos').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px\">\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px\">\n        <div style=\"font-family:Barlow;font-weight:700;margin-bottom:12px\">Novo aviso</div>\n        <label class=\"form-label\">Destinatário</label>\n        <select class=\"form-input\" id=\"avDestino\">\n          <option value=\"\">Todas as linhas (aviso geral)</option>\n        </select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Tipo</label>\n        <select class=\"form-input\" id=\"avTipo\">\n          <option value=\"aviso\">Aviso de texto</option>\n          <option value=\"pdf\">Link/PDF</option>\n        </select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Mensagem</label>\n        <textarea class=\"form-input\" id=\"avTexto\" rows=\"3\" placeholder=\"Digite o aviso...\" style=\"resize:vertical\"></textarea>\n        <label class=\"form-label\" style=\"margin-top:10px\">Link (opcional — PDF, formulário, etc.)</label>\n        <input class=\"form-input\" id=\"avLink\" placeholder=\"https://...\">\n        <div style=\"font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5\">Para anexar um PDF: suba o arquivo no Google Drive (ou outro), copie o link de compartilhamento e cole aqui. O passageiro abre o documento ao tocar no aviso.</div>\n        <button class=\"add-btn\" style=\"margin-top:14px;width:100%\" onclick=\"avPublicar()\">Publicar aviso</button>\n      </div>\n      <div style=\"font-family:Barlow;font-weight:700;margin-bottom:10px\">Avisos publicados</div>\n      <div id=\"avLista\"><div style=\"text-align:center;color:var(--muted);padding:20px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL CHATS DAS LINHAS -->\n<div class=\"modal-overlay\" id=\"modalChats\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Chats das Linhas</div>\n      <button class=\"modal-close\" onclick=\"chatsFechar()\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;display:flex;flex-direction:column;flex:1;overflow:hidden\">\n      <div id=\"chatsSeletor\">\n        <label class=\"form-label\">Selecione a linha/turno</label>\n        <select class=\"form-input\" id=\"chatSelLinha\" onchange=\"chatAbrirLinha()\">\n          <option value=\"\">— Selecione —</option>\n        </select>\n        <div style=\"font-size:12px;color:var(--muted);margin-top:10px\">Escolha uma linha para ver e participar do chat dos passageiros.</div>\n      </div>\n      <div id=\"chatsConversa\" style=\"display:none;flex-direction:column;flex:1;overflow:hidden\">\n        <div style=\"display:flex;align-items:center;gap:8px;margin-bottom:10px\">\n          <button class=\"export-btn\" style=\"font-size:12px;padding:5px 10px\" onclick=\"chatVoltarSeletor()\">← Linhas</button>\n          <strong id=\"chatTituloLinha\" style=\"font-size:14px\"></strong>\n        </div>\n        <div id=\"chatGestorMsgs\" style=\"flex:1;overflow-y:auto;background:var(--surface2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:300px;max-height:50vh\"></div>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <input id=\"chatGestorInput\" placeholder=\"Mensagem como gestor...\" style=\"flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:11px 16px;color:var(--text);font-size:14px;font-family:inherit\" onkeypress=\"if(event.key==='Enter')chatGestorEnviar()\">\n          <button onclick=\"chatGestorEnviar()\" style=\"background:var(--accent);border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer\">➤</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL CONFIRMAÇÕES (relatório de presenças) -->\n<div class=\"modal-overlay\" id=\"modalConfirmacoes\">\n  <div class=\"modal\" style=\"max-width:820px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Confirmações de Presença</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalConfirmacoes').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px\">\n      <div style=\"display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end\">\n        <div style=\"flex:1;min-width:160px\">\n          <label class=\"form-label\">Linha / Turno</label>\n          <select class=\"form-input\" id=\"cfLinha\" onchange=\"cfRender()\"><option value=\"\">Todas</option></select>\n        </div>\n        <div style=\"flex:1;min-width:120px\">\n          <label class=\"form-label\">Data</label>\n          <select class=\"form-input\" id=\"cfData\" onchange=\"cfRender()\"></select>\n        </div>\n        <button class=\"export-btn\" style=\"font-size:12px\" onclick=\"cfCarregar()\">↻ Atualizar</button>\n      </div>\n      <div style=\"font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5\">\n        = confirmou com <strong>menos de 1h</strong> antes do horário de chegada da rota (em cima da hora). O histórico mostra cada vez que o passageiro mudou a resposta, com horário.\n      </div>\n      <div id=\"cfBody\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL RECLAMAÇÕES CLIENTE (Gestor Redentor responde) -->\n<div class=\"modal-overlay\" id=\"modalReclamacoesGestor\">\n  <div class=\"modal\" style=\"max-width:920px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Reclamações do Cliente</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReclamacoesGestor').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;overflow-y:auto\">\n      <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px\">\n        <div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap\">\n          <select class=\"form-input\" id=\"rcgFiltroStatus\" onchange=\"rcgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os status</option><option value=\"aberta\">Aberta</option><option value=\"respondida\">Respondida</option><option value=\"resolvida\">Resolvida</option><option value=\"nao_resolvida\">Não resolvida</option><option value=\"improcedente\">Improcedente</option></select>\n          <select class=\"form-input\" id=\"rcgFiltroMes\" onchange=\"rcgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os meses</option></select>\n        </div>\n        <button class=\"export-btn\" onclick=\"rcgExportar()\" style=\"background:rgba(16,185,129,0.12);color:#10b981;border-color:rgba(16,185,129,0.3)\">Exportar relatório (CSV)</button>\n      </div>\n      <div id=\"rcgResumo\" style=\"display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px\"></div>\n      <div id=\"rcgLista\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL AVALIAÇÕES PASSAGEIROS -->\n<div class=\"modal-overlay\" id=\"modalAvaliacoes\">\n  <div class=\"modal\" style=\"max-width:900px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Avaliações dos Passageiros</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalAvaliacoes').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;overflow-y:auto\">\n      <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px\">\n        <div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap\">\n          <select class=\"form-input\" id=\"avFiltroLinha\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todas as linhas</option></select>\n          <select class=\"form-input\" id=\"avFiltroMes\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os meses</option></select>\n          <select class=\"form-input\" id=\"avFiltroNota\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todas as notas</option><option value=\"5\">5 </option><option value=\"4\">4 </option><option value=\"3\">3 </option><option value=\"2\">2 </option><option value=\"1\">1 </option><option value=\"baixa\">≤ 3 (atenção)</option></select>\n        </div>\n        <button class=\"export-btn\" onclick=\"avgExportar()\" style=\"background:rgba(16,185,129,0.12);color:#10b981;border-color:rgba(16,185,129,0.3)\">Exportar (CSV)</button>\n      </div>\n      <div id=\"avgResumo\" style=\"margin-bottom:16px\"></div>\n      <div id=\"avgLista\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n";
+const HTML_MOTOR = "\n\n<!-- ===== TELA DE LOGIN (GESTOR) ===== -->\n<div id=\"loginOverlay\" style=\"position:fixed;inset:0;z-index:100000;background:#0f1115;display:flex;align-items:center;justify-content:center;padding:20px\">\n  <div id=\"loginChecando\" style=\"color:#8a90a0;font-size:14px\">Verificando acesso...</div>\n  <div id=\"loginBox\" style=\"display:none;width:100%;max-width:360px;background:#171a21;border:1px solid #262b36;border-radius:16px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,0.5)\">\n    <div style=\"text-align:center;margin-bottom:20px\">\n      <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:22px;color:#f5f5f5;letter-spacing:1px\" id=\"brandLogin\"></div>\n      <div style=\"font-size:10px;font-weight:400;color:#8a90a0;letter-spacing:3px\">FRETAMENTO</div>\n      <div style=\"margin-top:14px;font-size:13px;color:#8a90a0\">Acesso do Gestor</div>\n    </div>\n    <label style=\"display:block;font-size:11px;color:#8a90a0;margin-bottom:4px\">E-mail</label>\n    <input id=\"loginEmail\" type=\"email\" autocomplete=\"username\" placeholder=\"seu@email.com\"\n      onkeydown=\"if(event.key==='Enter'){event.preventDefault();document.getElementById('loginPassword').focus();}\"\n      style=\"width:100%;background:#0f1115;border:1px solid #262b36;border-radius:8px;padding:11px;color:#f5f5f5;font-size:14px;margin-bottom:12px\">\n    <label style=\"display:block;font-size:11px;color:#8a90a0;margin-bottom:4px\">Senha</label>\n    <div style=\"position:relative;margin-bottom:8px\">\n      <input id=\"loginPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"••••••••\"\n        style=\"width:100%;background:#0f1115;border:1px solid #262b36;border-radius:8px;padding:11px;padding-right:42px;color:#f5f5f5;font-size:14px\"\n        onkeydown=\"if(event.key==='Enter')fazerLogin()\">\n      <button type=\"button\" id=\"loginEye\" onclick=\"toggleSenha()\" title=\"Mostrar senha\"\n        style=\"position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;color:#8a90a0;font-size:18px;cursor:pointer;padding:6px;line-height:1\"><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-3px'><path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg></button>\n    </div>\n    <div id=\"loginErro\" style=\"min-height:18px;font-size:12px;color:#ef4444;margin-bottom:8px\"></div>\n    <button id=\"loginBtn\" onclick=\"fazerLogin()\"\n      style=\"width:100%;background:#f59e0b;color:#000;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif\">Entrar</button>\n    <div style=\"text-align:center;margin-top:14px\">\n      <a href=\"#\" onclick=\"esqueciSenha();return false\" style=\"font-size:12px;color:#8a90a0;text-decoration:none\">Esqueci minha senha</a>\n    </div>\n  </div>\n</div>\n\n\n\n<!-- MENU MOBILE -->\n<div class=\"mobile-menu\" id=\"mobileMenu\">\n  <div class=\"mobile-menu-backdrop\" onclick=\"document.getElementById('mobileMenu').classList.remove('open')\"></div>\n  <div class=\"mobile-menu-panel\">\n    <div class=\"mobile-menu-title\">MENU</div>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.15);border-color:var(--accent);color:var(--accent)\" onclick=\"openAddNovoModal();document.getElementById('mobileMenu').classList.remove('open')\">Adicionar Novo Passageiro</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);color:var(--accent)\" onclick=\"openServicosExtras();document.getElementById('mobileMenu').classList.remove('open')\">Serviços Extras</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:var(--green)\" onclick=\"openRoteirizador();document.getElementById('mobileMenu').classList.remove('open')\">Roteirizar</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(168,85,247,0.12);border-color:rgba(168,85,247,0.3);color:#a855f7\" onclick=\"openAvisos();document.getElementById('mobileMenu').classList.remove('open')\">Avisos</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(37,211,102,0.12);border-color:rgba(37,211,102,0.3);color:#25D366\" onclick=\"openChats();document.getElementById('mobileMenu').classList.remove('open')\">Chats</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);color:var(--accent2)\" onclick=\"openConfirmacoes();document.getElementById('mobileMenu').classList.remove('open')\">Confirmações</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#ef4444\" onclick=\"openReclamacoesGestor();document.getElementById('mobileMenu').classList.remove('open')\">Reclamações Cliente</button>\n    <button class=\"mobile-menu-btn\" style=\"background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3);color:#f59e0b\" onclick=\"openAvaliacoes();document.getElementById('mobileMenu').classList.remove('open')\">Avaliações</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openConfig();document.getElementById('mobileMenu').classList.remove('open')\">Configurações</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openPainel();document.getElementById('mobileMenu').classList.remove('open')\">Painel Geral</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMapaGeral();document.getElementById('mobileMenu').classList.remove('open')\">Mapa Geral</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMotoristas();document.getElementById('mobileMenu').classList.remove('open')\">Motoristas</button>\n    <button class=\"mobile-menu-btn\" onclick=\"impAbrir();document.getElementById('mobileMenu').classList.remove('open')\" style=\"background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:var(--green)\">Importar Passageiros</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openMotoristView();document.getElementById('mobileMenu').classList.remove('open')\">Visão Motorista</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openGerLinhas();document.getElementById('mobileMenu').classList.remove('open')\" style=\"background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);color:var(--accent2)\">Gerenciar Linhas</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openSemRota();document.getElementById('mobileMenu').classList.remove('open')\">Sem Rota</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportExcel();document.getElementById('mobileMenu').classList.remove('open')\">Exportar Excel</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportPDF();document.getElementById('mobileMenu').classList.remove('open')\">PDF Linha</button>\n    <button class=\"mobile-menu-btn\" onclick=\"exportBackup();document.getElementById('mobileMenu').classList.remove('open')\">Backup JSON</button>\n    <button class=\"mobile-menu-btn\" onclick=\"openReport();document.getElementById('mobileMenu').classList.remove('open')\">Relatório</button>\n    <button class=\"mobile-menu-btn\" onclick=\"logout()\" style=\"background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#ef4444\">Sair</button>\n  </div>\n</div>\n\n<div class=\"tv-shell\" id=\"tvShell\"><aside class=\"tv-side\"><div class=\"tv-brand\"><img class=\"tv-brand-mark\" src=\"/marca/temvia-simbolo.png\" alt=\"temvia\" width=\"26\" height=\"26\"><img class=\"tv-brand-lockup\" src=\"/marca/temvia-horizontal.png\" alt=\"temvia\"><div class=\"tv-brand-txt\"><div class=\"tv-brand-sub\" id=\"tvContextoConta\">&nbsp;</div><div class=\"tv-brand-op\" id=\"tvOperacaoAtendida\" style=\"display:none\"></div></div></div><nav class=\"tv-nav\" aria-label=\"Navegação principal\"><div class=\"tv-nav-grp\">Painel</div><button class=\"tv-nav-item\" type=\"button\" title=\"Painel Geral\" onclick=\"openPainel()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M5 20V11M12 20V4M19 20v-6'/></svg></span><span class=\"tv-lbl\">Painel Geral</span></button><div class=\"tv-nav-grp\">Operação</div><button class=\"tv-nav-item tv-on\" type=\"button\" title=\"Linhas e Rotas\" onclick=\"tvIrParaLinhas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 7h16M4 12h16M4 17h10'/></svg></span><span class=\"tv-lbl\">Linhas e Rotas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Roteirizador\" onclick=\"openRoteirizador()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 6h6l6 12h4'/><circle cx='4' cy='6' r='1.6'/><circle cx='20' cy='18' r='1.6'/></svg></span><span class=\"tv-lbl\">Roteirizador</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Rotas Extras Publicadas\" onclick=\"rtAbrirPublicadas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 6 9 17l-5-5'/><path d='M4 6h5'/></svg></span><span class=\"tv-lbl\">Rotas Extras Publicadas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Serviços Extras\" onclick=\"openServicosExtras()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 3v18'/><path d='M7.5 7h7a3 3 0 0 1 0 6H8.5a3 3 0 0 0 0 6H17'/></svg></span><span class=\"tv-lbl\">Serviços Extras</span><span id=\"seBadge\" class=\"tv-pill\" style=\"display:none\">0</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Passageiros sem Rota\" onclick=\"openSemRota()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='12' r='8.5'/><path d='M8.5 12h7'/></svg></span><span class=\"tv-lbl\">Passageiros sem Rota</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Mapa Geral\" onclick=\"openMapaGeral()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M9 4 3 6.5v13L9 17l6 3 6-2.5v-13L15 7 9 4Z'/><path d='M9 4v13M15 7v13'/></svg></span><span class=\"tv-lbl\">Mapa Geral</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Gerenciar Linhas\" onclick=\"openGerLinhas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x='3.5' y='4.5' width='17' height='15' rx='2.5'/><path d='M8 9h8M8 13h5'/></svg></span><span class=\"tv-lbl\">Gerenciar Linhas</span></button><div class=\"tv-nav-grp\">Pessoas</div><button class=\"tv-nav-item\" type=\"button\" title=\"Motoristas\" onclick=\"openMotoristas()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x='3' y='7' width='18' height='10' rx='2.5'/><path d='M7 17v2M17 17v2M6.5 11h5'/></svg></span><span class=\"tv-lbl\">Motoristas</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Importar Passageiros\" onclick=\"impAbrir()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 15V3'/><path d='M8 11l4 4 4-4'/><path d='M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2'/></svg></span><span class=\"tv-lbl\">Importar Passageiros</span></button><div class=\"tv-nav-grp\">Relacionamento</div><button class=\"tv-nav-item\" type=\"button\" title=\"Avisos\" onclick=\"openAvisos()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6'/><path d='M10 19a2.2 2.2 0 0 0 4 0'/></svg></span><span class=\"tv-lbl\">Avisos</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Chats\" onclick=\"openChats()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z'/></svg></span><span class=\"tv-lbl\">Chats</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Confirmações\" onclick=\"openConfirmacoes()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M20 6 9 17l-5-5'/></svg></span><span class=\"tv-lbl\">Confirmações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Reclamações\" onclick=\"openReclamacoesGestor()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 9v4.5M12 17v.5'/><path d='M10.3 3.9 2.6 17.4A2 2 0 0 0 4.3 20.5h15.4a2 2 0 0 0 1.7-3.1L13.7 3.9a2 2 0 0 0-3.4 0Z'/></svg></span><span class=\"tv-lbl\">Reclamações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Avaliações\" onclick=\"openAvaliacoes()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='m12 4 2.5 5 5.5.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.5-.8Z'/></svg></span><span class=\"tv-lbl\">Avaliações</span></button><div class=\"tv-nav-grp\">Análises</div><button class=\"tv-nav-item\" type=\"button\" title=\"Relatórios\" onclick=\"openReport()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M6.5 3.5h7l5 5v12a1.5 1.5 0 0 1-1.5 1.5H6.5A1.5 1.5 0 0 1 5 20.5v-15A1.5 1.5 0 0 1 6.5 3.5Z'/><path d='M13 3.5v5.5h5.5M8.5 13h7M8.5 17h5'/></svg></span><span class=\"tv-lbl\">Relatórios</span></button><div class=\"tv-nav-grp\">Sistema</div><button class=\"tv-nav-item\" type=\"button\" title=\"Configurações\" onclick=\"openConfig()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='12' r='3.2'/><path d='M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4'/></svg></span><span class=\"tv-lbl\">Configurações</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Visão Motorista\" onclick=\"openMotoristView()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg></span><span class=\"tv-lbl\">Visão Motorista</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Backup\" onclick=\"exportBackup()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 3v12M8 11l4 4 4-4M4 19h16'/></svg></span><span class=\"tv-lbl\">Backup</span></button><button class=\"tv-nav-item\" type=\"button\" title=\"Restaurar Backup\" onclick=\"document.getElementById('restoreFile').click()\"><span class=\"tv-nav-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 21V9M8 13l4-4 4 4M4 5h16'/></svg></span><span class=\"tv-lbl\">Restaurar Backup</span></button><input type=\"file\" id=\"restoreFile\" accept=\".json\" style=\"display:none\" onchange=\"importBackup(event)\"></nav><div class=\"tv-side-foot\"><div class=\"tv-usermenu\" id=\"tvUserMenu\"></div><div class=\"tv-avatar\" id=\"tvAvatar\">--</div><div class=\"tv-who\"><b id=\"tvUserNome\">—</b><small id=\"tvUserPapel\">—</small></div><button class=\"tv-iconbtn tv-usercaret\" type=\"button\" title=\"Trocar de cliente\" onclick=\"tvToggleUser()\" style=\"width:26px;height:26px\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='12' cy='5' r='1.3'/><circle cx='12' cy='12' r='1.3'/><circle cx='12' cy='19' r='1.3'/></svg></button></div></aside><div class=\"tv-main\"><header class=\"tv-top\"><button class=\"tv-iconbtn tv-topbar-only-desktop\" id=\"tvBtnRecolher\" type=\"button\" title=\"Recolher menu\" onclick=\"tvToggleSidebar()\"><svg id=\"tvSetaRecolher\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M14 6l-6 6 6 6'/></svg></button><button class=\"tv-iconbtn tv-mobile-only\" type=\"button\" title=\"Menu\" onclick=\"document.getElementById('mobileMenu').classList.toggle('open')\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 6h16M4 12h16M4 18h16'/></svg></button><div class=\"tv-crumb\">Operação <i>/</i> <b>Linhas e Rotas</b></div><div class=\"tv-search\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx='11' cy='11' r='7'/><path d='m20 20-3.6-3.6'/></svg><input type=\"text\" id=\"searchInput\" oninput=\"filterSidebar()\" placeholder=\"Buscar passageiro, bairro, cidade ou ponto de embarque...\"></div><button class=\"tv-btn tv-btn-primary\" type=\"button\" onclick=\"openAddNovoModal()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M12 5v14M5 12h14'/></svg>Novo</button></header><div class=\"container\">\n  <aside class=\"sidebar\">\n    <div class=\"tv-rail-head\">\n      <div class=\"tv-rail-title\">Linhas e turnos</div>\n      <div class=\"tv-stats\">\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-func\">0</div><div class=\"tv-stat-l\">Ativos</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-lines\">0</div><div class=\"tv-stat-l\">Linhas</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-turnos\">0</div><div class=\"tv-stat-l\">Turnos</div></div>\n        <div class=\"tv-stat\"><div class=\"tv-stat-n\" id=\"stat-rotas\">0</div><div class=\"tv-stat-l\">Rotas</div></div>\n      </div>\n    </div>\n    <div class=\"turno-filter\" id=\"turnoFilterBar\">\n      <button class=\"turno-btn active\" onclick=\"setTurnoFilter('todos', this)\">Todos</button>\n    </div>\n    <div class=\"sidebar-label\">Status</div>\n    <div class=\"status-filter\" id=\"statusFilter\">\n      <button class=\"status-filter-btn active\" onclick=\"setStatusFilter('todos', this)\">Todos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ativo', this)\">Ativos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ferias', this)\">Férias</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('afastado', this)\">Afastados</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('desligado', this)\">Desligados</button>\n      <button class=\"status-filter-btn sem-rota\" onclick=\"setStatusFilter('sem-rota', this)\">Sem Rota</button>\n    </div>\n    <div class=\"sidebar-label\" style=\"margin-top:4px\">Linhas</div>\n    <div id=\"lineList\"></div>\n  </aside>\n\n  <main class=\"main\" id=\"mainContent\">\n    <div class=\"welcome\">\n      <div class=\"tv-empty-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d='M4 7h16M4 12h16M4 17h10'/></svg></div>\n      <h3>Selecione uma linha</h3>\n      <p>Escolha uma linha no painel ao lado para ver passageiros, horários e dados da rota.</p>\n    </div>\n  </main>\n</div></div></div>\n\n<!-- MODAL ADD/EDIT PASSAGEIRO -->\n<div class=\"modal-overlay\" id=\"modalOverlay\">\n  <div class=\"modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\" id=\"modalTitle\">Novo Passageiro</div>\n      <button class=\"modal-close\" onclick=\"closeModal()\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <input type=\"hidden\" id=\"editIdx\">\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Nome Completo</label>\n          <input class=\"form-input\" id=\"fNome\" type=\"text\" placeholder=\"Nome do funcionário\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Telefone</label>\n          <input class=\"form-input\" id=\"fTel\" type=\"text\" placeholder=\"(15) 99999-9999\">\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Endereço Residencial</label>\n        <input class=\"form-input\" id=\"fEndereco\" type=\"text\" placeholder=\"Rua, número, bairro\">\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Ponto de Embarque (se diferente)</label>\n        <input class=\"form-input\" id=\"fEmbarque\" type=\"text\" placeholder=\"Deixe vazio para usar endereço residencial\">\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Bairro</label>\n          <input class=\"form-input\" id=\"fBairro\" type=\"text\" placeholder=\"Bairro\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Cidade</label>\n          <input class=\"form-input\" id=\"fCidade\" type=\"text\" placeholder=\"Cidade\">\n        </div>\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\" id=\"turnoGroup\">\n          <label class=\"form-label\">Turno</label>\n          <select class=\"form-select\" id=\"fTurno\" onchange=\"updateLinhaOptions()\">\n            <option value=\"1°\">1° Turno — chegada 05:45</option>\n            <option value=\"2°\">2° Turno — chegada 14:45</option>\n            <option value=\"3°\">3° Turno — chegada 20:55</option>\n            <option value=\"A Definir\">A Definir (sem rota ainda)</option>\n          </select>\n        </div>\n        <div class=\"form-group\" id=\"linhaGroup\">\n          <label class=\"form-label\">Linha</label>\n          <select class=\"form-select\" id=\"fLinha\">\n          </select>\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label class=\"form-label\">Coordenadas do Ponto de Embarque <span style=\"color:var(--muted);font-size:10px;font-weight:400\">(lat, lng — ex: -23.514606, -47.516711)</span></label>\n        <input class=\"form-input\" id=\"fCoords\" type=\"text\" placeholder=\"-23.000000, -47.000000\" style=\"font-family:monospace;font-size:12px\" oninput=\"validateCoords()\">\n        <div id=\"fCoordsStatus\" style=\"font-size:11px;margin-top:4px;display:none\"></div>\n      </div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Status</label>\n          <select class=\"form-select\" id=\"fStatus\" onchange=\"toggleRetorno(); toggleSemRota()\">\n            <option value=\"ativo\">Ativo</option>\n            <option value=\"ferias\">Férias</option>\n            <option value=\"afastado\">Afastado</option>\n            <option value=\"desligado\">Desligado</option>\n            <option value=\"sem-rota\">Sem Rota (aguardando alocação)</option>\n          </select>\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Horário de Embarque</label>\n          <input class=\"form-input\" id=\"fHorario\" type=\"time\" placeholder=\"HH:MM\">\n        </div>\n      </div>\n      <div class=\"form-group\" id=\"retornoGroup\" style=\"display:none\">\n        <label class=\"form-label\">Data de Retorno Prevista</label>\n        <input class=\"form-input\" id=\"fRetorno\" type=\"date\">\n      </div>\n      <!-- Bloco duplicado de coordenadas ocultado: o campo fCoords acima é o oficial -->\n      <div class=\"form-group\" style=\"display:none\">\n        <input class=\"form-input\" id=\"fLat\" type=\"number\" step=\"any\" style=\"flex:1\">\n        <input class=\"form-input\" id=\"fLng\" type=\"number\" step=\"any\" style=\"flex:1\">\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" id=\"btnExcluirPass\" onclick=\"excluirPassageiroAtual()\" style=\"display:none;color:var(--red);border-color:rgba(239,68,68,0.4)\">Excluir</button>\n      <button class=\"btn-cancel\" id=\"btnSugerirModal\" onclick=\"sugerirDoModal()\" style=\"display:none;color:var(--green);border-color:rgba(16,185,129,0.5)\">Sugerir linha</button>\n      <button class=\"btn-cancel\" onclick=\"closeModal()\">Cancelar</button>\n      <button class=\"btn-save\" onclick=\"savePassageiro()\">Salvar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL SELECIONAR MOTORISTA -->\n<div class=\"modal-overlay\" id=\"modalMotorista\">\n  <div class=\"modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Atribuir Motorista</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMotorista').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-group\">\n        <label class=\"form-label\">Motorista de Entrada</label>\n        <select class=\"form-select\" id=\"fMotoristaEntrada\">\n          <option value=\"\">— A definir —</option>\n        </select>\n      </div>\n      <div class=\"form-group\" style=\"margin-top:12px\">\n        <label class=\"form-label\">Motorista de Saída <span style=\"color:var(--muted);font-size:11px;font-weight:400\">(deixe vazio se for o mesmo da entrada)</span></label>\n        <select class=\"form-select\" id=\"fMotoristaSaida\">\n          <option value=\"\">— Mesmo da entrada —</option>\n        </select>\n      </div>\n      <div style=\"text-align:center;margin-top:12px\">\n        <button class=\"export-btn\" onclick=\"document.getElementById('modalMotorista').classList.remove('open');openMotoristas()\">\n          Gerenciar cadastro de motoristas\n        </button>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalMotorista').classList.remove('open')\">Cancelar</button>\n      <button class=\"btn-save\" onclick=\"saveMotorista()\">Salvar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL GERENCIAR MOTORISTAS -->\n<div class=\"modal-overlay\" id=\"modalMotoristasGerenciar\">\n  <div class=\"modal\" style=\"width:520px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Cadastro de Motoristas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Nome</label>\n          <input class=\"form-input\" id=\"fMNome\" type=\"text\" placeholder=\"Nome do motorista\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Telefone</label>\n          <input class=\"form-input\" id=\"fMTel\" type=\"text\" placeholder=\"(15) 99999-9999\">\n        </div>\n      </div>\n      <div style=\"font-size:11px;color:var(--muted);margin:-8px 0 10px\">O PIN e criado pelo proprio motorista no primeiro acesso no app.</div>\n      <button class=\"btn-save\" style=\"width:100%;margin-bottom:16px\" onclick=\"addMotorista()\">Adicionar Motorista</button>\n      <div id=\"motoristaListBody\"></div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL PAINEL GERAL -->\n<div class=\"modal-overlay\" id=\"modalPainel\">\n  <div class=\"modal\" style=\"width:780px;max-width:97vw\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Painel Geral</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"painelBody\" style=\"padding:16px 20px\"></div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- ===== MODAL IMPORTAÇÃO DE PASSAGEIROS ===== -->\n<div class=\"modal-overlay\" id=\"modalImport\">\n  <div class=\"modal\" style=\"width:880px;max-width:95vw\">\n    <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px\">\n      <div style=\"font-family:Barlow;font-weight:800;font-size:20px\">Importar Passageiros</div>\n      <button onclick=\"document.getElementById('modalImport').classList.remove('open')\" style=\"background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer\">✕</button>\n    </div>\n\n    <div id=\"impPasso1\">\n      <p style=\"font-size:14px;color:var(--muted);margin-bottom:14px\">\n        Importe seus passageiros a partir de uma planilha. Baixe o modelo, preencha e envie (aceita <b>Excel .xlsx</b> ou <b>CSV</b>).\n        As coordenadas (lat, lng) devem estar preenchidas na planilha.\n      </p>\n      <button class=\"add-btn\" onclick=\"impBaixarModelo()\" style=\"background:rgba(59,130,246,0.12);color:var(--accent2);border:1px solid rgba(59,130,246,0.3);margin-bottom:14px\">Baixar planilha-modelo</button>\n\n      <div style=\"border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;background:var(--surface2)\">\n        <input type=\"file\" id=\"impArquivo\" accept=\".xlsx,.xls,.csv\" style=\"display:none\" onchange=\"impLerArquivo(event)\">\n        <div style=\"font-size:40px;margin-bottom:8px\"></div>\n        <button class=\"add-btn\" onclick=\"document.getElementById('impArquivo').click()\">Escolher arquivo (.xlsx ou .csv)</button>\n        <div id=\"impNomeArquivo\" style=\"font-size:12px;color:var(--muted);margin-top:8px\"></div>\n      </div>\n      <div id=\"impErro\" style=\"color:var(--red);font-size:13px;margin-top:10px\"></div>\n    </div>\n\n    <div id=\"impPasso2\" style=\"display:none\">\n      <div id=\"impResumo\" style=\"font-size:14px;margin-bottom:12px\"></div>\n      <div style=\"max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:10px\">\n        <table style=\"width:100%;border-collapse:collapse;font-size:12px\" id=\"impPreviaTabela\"></table>\n      </div>\n      <div id=\"impAvisos\" style=\"font-size:12px;color:var(--accent);margin-top:10px\"></div>\n\n      <div style=\"margin-top:16px;padding-top:14px;border-top:1px solid var(--border)\">\n        <div style=\"font-size:13px;font-weight:700;margin-bottom:8px\">Como aplicar a importação?</div>\n        <label style=\"display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;cursor:pointer\">\n          <input type=\"radio\" name=\"impModo\" value=\"acrescentar\" checked> Acrescentar aos passageiros já existentes\n        </label>\n        <label style=\"display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer\">\n          <input type=\"radio\" name=\"impModo\" value=\"substituir\"> Substituir tudo (apaga os atuais e põe os importados)\n        </label>\n      </div>\n\n      <div style=\"display:flex;gap:10px;margin-top:16px\">\n        <button class=\"add-btn\" onclick=\"impVoltar()\" style=\"background:var(--surface2);color:var(--text);border:1px solid var(--border)\">← Voltar</button>\n        <button class=\"add-btn\" id=\"impBtnConfirmar\" onclick=\"impConfirmar()\" style=\"flex:1;background:var(--green);color:#fff\">Confirmar importação</button>\n      </div>\n    </div>\n\n    <div id=\"impStatus\" style=\"font-size:13px;text-align:center;margin-top:12px\"></div>\n  </div>\n</div>\n\n<!-- MODAL GERENCIAR LINHAS -->\n<div class=\"modal-overlay\" id=\"modalGerLinhas\">\n  <div class=\"modal\" style=\"width:760px;max-width:95vw\">\n    <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px\">\n      <div style=\"font-family:Barlow;font-weight:800;font-size:20px\">Gerenciar Linhas</div>\n      <button onclick=\"document.getElementById('modalGerLinhas').classList.remove('open')\" style=\"background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer\">✕</button>\n    </div>\n\n    <!-- Formulário de criar/editar -->\n    <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px\">\n      <div style=\"font-size:13px;font-weight:700;margin-bottom:10px\" id=\"glFormTitulo\">Criar nova linha</div>\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Número da Linha</label>\n          <input class=\"form-input\" id=\"glLinha\" type=\"text\" placeholder=\"Ex: 8\" />\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Turno</label>\n          <select class=\"form-select\" id=\"glTurno\"></select>\n          <div id=\"glTurnoDica\" style=\"font-size:10.5px;color:var(--muted);margin-top:4px\"></div>\n        </div>\n      </div>\n      <div class=\"form-row\">\n        \n        <div class=\"form-group\">\n          <label class=\"form-label\">Veículo</label>\n          <select class=\"form-select\" id=\"glVeiculo\"></select>\n          <div id=\"glVeiculoDica\" style=\"font-size:10.5px;color:var(--muted);margin-top:4px\"></div>\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Motorista (opcional)</label>\n          <input class=\"form-input\" id=\"glMotorista\" type=\"text\" placeholder=\"Nome do motorista\" />\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Cor da linha</label>\n          <div id=\"glCores\" class=\"gl-cores\"></div>\n        </div>\n      </div>\n      <div style=\"display:flex;gap:8px;margin-top:8px\">\n        <button class=\"add-btn\" id=\"glBtnSalvar\" onclick=\"glSalvar()\" style=\"flex:1;background:var(--green);color:#fff\">Criar linha</button>\n        <button class=\"add-btn\" id=\"glBtnCancelar\" onclick=\"glCancelarEdicao()\" style=\"display:none;background:var(--surface3);color:var(--text);border:1px solid var(--border)\">Cancelar edição</button>\n      </div>\n      <div id=\"glFormMsg\" style=\"font-size:12px;margin-top:8px\"></div>\n    </div>\n\n    <!-- Lista de linhas existentes -->\n    <div style=\"font-size:13px;font-weight:700;margin-bottom:8px\">Linhas cadastradas</div>\n    <div id=\"glLista\" style=\"max-height:320px;overflow:auto\"></div>\n  </div>\n</div>\n\n<!-- MODAL CONFIGURAÇÕES (API Key) -->\n<div class=\"modal-overlay\" id=\"modalConfig\">\n  <div class=\"modal\" style=\"width:920px;max-width:96vw\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Configurações</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalConfig').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\"><div class=\"cfg-topo\" id=\"cfgTopo\"></div><div class=\"cfg-layout\"><aside class=\"cfg-rail\"><button class=\"cfg-passo\" data-sec=\"oper\" onclick=\"cfgIr('oper')\"><b>Operação</b><small>Dados da empresa e horários dos turnos</small></button><button class=\"cfg-passo\" data-sec=\"pontos\" onclick=\"cfgIr('pontos')\"><b>Pontos</b><small>Origem e destino das rotas</small></button><button class=\"cfg-passo\" data-sec=\"frota\" onclick=\"cfgIr('frota')\"><b>Frota</b><small>Veículos e capacidades</small></button><button class=\"cfg-passo\" data-sec=\"otim\" onclick=\"cfgIr('otim')\"><b>Otimização</b><small>Regras do planejamento de rotas</small></button><button class=\"cfg-passo\" data-sec=\"acesso\" onclick=\"cfgIr('acesso')\"><b>Acesso</b><small>Logins e senhas da opera\u00e7\u00e3o</small></button><button class=\"cfg-passo\" data-sec=\"dados\" onclick=\"cfgIr('dados')\"><b>Dados</b><small>Backup e restauração</small></button></aside><div class=\"cfg-conteudo\" id=\"cfgConteudo\">\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Dados da Empresa</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          Estas configurações valem para todo o sistema. Ao salvar, são gravadas no servidor.\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Nome da empresa</label>\n          <input class=\"form-input\" id=\"cfgNome\" type=\"text\" placeholder=\"Ex.: Redentor Fretamento\">\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Operação (empresa atendida)</label>\n          <input class=\"form-input\" id=\"cfgOperacaoNome\" type=\"text\" placeholder=\"Ex.: Toyota\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\">\n            Aparece no cabeçalho do PDF, abaixo do nome da transportadora. Em branco, usa o nome da operação (DSV, Evamo).\n          </div>\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\" id=\"lblWhatsCliente\"></label>\n          <input class=\"form-input\" id=\"cfgWhatsCliente\" type=\"text\" placeholder=\"Ex.: 15 99999-9999\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\" id=\"subWhatsCliente\"></div>\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">WhatsApp da Redentor (transportadora)</label>\n          <input class=\"form-input\" id=\"cfgWhatsRedentor\" type=\"text\" placeholder=\"Ex.: 15 99999-9999\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\">Contato da Redentor (transportadora). Aparece no botão \"Falar com Gestor (Redentor)\" do passageiro.</div>\n        </div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Senha da empresa cliente</label>\n          <input class=\"form-input\" id=\"cfgSenhaCliente\" type=\"text\" placeholder=\"Senha do app da empresa cliente\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:4px\">Senha pedida na tela de entrada do app da empresa cliente. Troque quando precisar.</div>\n        </div>\n\n        <button class=\"opt-btn\" style=\"margin-top:6px\" onclick=\"salvarEmpresaConfig()\">Salvar dados da empresa</button>\n        <div id=\"cfgEmpresaStatus\" class=\"opt-status\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Logins da empresa cliente</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:8px\">Uma conta por pessoa. Ela mesma troca a senha depois, pelo \"Esqueci minha senha\" — você não precisa saber a senha de ninguém.</div>\n        <div id=\"acessosLista\" style=\"margin-bottom:10px\"></div>\n        <div style=\"display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end\">\n          <div class=\"config-field\" style=\"flex:1;min-width:120px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">Nome</label>\n            <input class=\"form-input\" id=\"novoAcNome\" type=\"text\" placeholder=\"Maria Silva\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1.4;min-width:150px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">E-mail</label>\n            <input class=\"form-input\" id=\"novoAcEmail\" type=\"email\" placeholder=\"maria@empresa.com\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"config-field\" style=\"flex:1;min-width:120px;margin:0\">\n            <label class=\"form-label\" style=\"font-size:11px\">Senha inicial</label>\n            <input class=\"form-input\" id=\"novoAcSenha\" type=\"text\" placeholder=\"mín. 6 caracteres\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <button class=\"add-btn\" id=\"novoAcBtn\" onclick=\"criarAcessoCliente()\" style=\"font-size:12px;padding:8px 14px\">Criar</button>\n        </div>\n        <div id=\"acessosMsg\" style=\"font-size:12px;margin-top:8px;min-height:16px\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Frota</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          A capacidade de cada linha vem daqui. Informe os assentos do veículo e quantos ficam\n          reservados à tripulação — o sistema calcula quantos passageiros cabem.\n        </div>\n        <div id=\"frotaLista\" style=\"margin-bottom:12px\"></div>\n        <div class=\"fr-form\">\n          <div class=\"fr-campo\" style=\"flex:1.1;min-width:120px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Tipo</label>\n            <select class=\"form-input\" id=\"frTipo\" style=\"padding:8px 10px;font-size:13px\">\n              <option value=\"Carro\">Carro</option>\n              <option value=\"Van\" selected>Van</option>\n              <option value=\"Micro-ônibus\">Micro-ônibus</option>\n              <option value=\"Ônibus\">Ônibus</option>\n            </select>\n          </div>\n          <div class=\"fr-campo\" style=\"flex:1.6;min-width:150px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Modelo</label>\n            <input class=\"form-input\" id=\"frModelo\" type=\"text\" placeholder=\"Ex.: Mercedes-Benz Sprinter\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:1;min-width:110px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Apelido</label>\n            <input class=\"form-input\" id=\"frApelido\" type=\"text\" placeholder=\"Ex.: Van 07\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 96px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Assentos</label>\n            <input class=\"form-input\" id=\"frAssentos\" type=\"number\" min=\"1\" value=\"16\" oninput=\"frCalcular()\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 104px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Tripulação</label>\n            <input class=\"form-input\" id=\"frTripulacao\" type=\"number\" min=\"0\" value=\"1\" oninput=\"frCalcular()\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 118px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Passageiros</label>\n            <input class=\"form-input\" id=\"frCapacidade\" type=\"number\" min=\"0\" disabled style=\"padding:8px 10px;font-size:13px;font-weight:700\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 100%\">\n            <label class=\"fr-manual\" style=\"margin:0\">\n              <input type=\"checkbox\" id=\"frAtivo\" checked>\n              Em operação\n              <span style=\"color:var(--muted);font-weight:400\">— desmarque se o veículo saiu da frota ou está parado por tempo indeterminado</span>\n            </label>\n          </div>\n        </div>\n        <label class=\"fr-manual\">\n          <input type=\"checkbox\" id=\"frManual\" onchange=\"frCalcular()\">\n          Ajustar a capacidade manualmente\n          <span style=\"color:var(--muted);font-weight:400\">— use quando o veículo perdeu poltronas (área PCD, por exemplo)</span>\n        </label>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <button class=\"add-btn\" id=\"frBtnSalvar\" onclick=\"frSalvar()\" style=\"flex:1\">Adicionar veículo</button>\n          <button class=\"btn-cancel\" id=\"frBtnCancelar\" onclick=\"frCancelar()\" style=\"display:none\">Cancelar edição</button>\n        </div>\n        <div id=\"frMsg\" style=\"font-size:12px;margin-top:8px;min-height:16px\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Otimização de rotas</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          Regras da sua operação. Valem para o botão <b>Analisar melhor rota</b> e para o\n          recálculo de horários. Em branco ou inválido, o sistema usa o valor padrão.\n        </div>\n\n        <div class=\"ot-cfg-sub\">Regras operacionais</div>\n        <div class=\"ot-cfg-grid\">\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Tempo máximo em rota</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocMaxRide\" type=\"number\" min=\"5\" max=\"300\"><span>min</span></div>\n          </div>\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Margem de chegada</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocMargem\" type=\"number\" min=\"0\" max=\"120\"><span>min</span></div>\n            <div class=\"ot-cfg-dica\">O veículo chega esta folga antes do horário obrigatório.</div>\n          </div>\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Tempo por parada</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocParada\" type=\"number\" min=\"0\" max=\"900\"><span>s</span></div>\n          </div>\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Adicional por passageiro</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocAdicional\" type=\"number\" min=\"0\" max=\"300\"><span>s</span></div>\n            <div class=\"ot-cfg-dica\">Quando há mais de um embarque no mesmo ponto.</div>\n          </div>\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Reserva de vagas por veículo</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocReserva\" type=\"number\" min=\"0\" max=\"20\"><span>vagas</span></div>\n            <div class=\"ot-cfg-dica\">Vagas deixadas livres. O planejador trata uma van de 15 como 14 se a reserva for 1.</div>\n          </div>\n        </div>\n\n        <div class=\"ot-cfg-sub\">Comportamento</div>\n        <label class=\"ot-cfg-check\">\n          <input type=\"checkbox\" id=\"ocAgrupar\" onchange=\"ocAtualizarDependentes()\">\n          Agrupar passageiros no mesmo ponto\n        </label>\n        <div class=\"ot-cfg-grid\">\n          <div class=\"ot-cfg-campo\" id=\"ocTolBox\">\n            <label class=\"form-label\">Distância para considerar mesmo ponto</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocTolerancia\" type=\"number\" min=\"0\" max=\"500\"><span>m</span></div>\n          </div>\n        </div>\n        <label class=\"ot-cfg-check\">\n          <input type=\"checkbox\" id=\"ocPreservar\" onchange=\"ocAtualizarDependentes()\">\n          Manter a ordem atual quando o ganho for pequeno\n        </label>\n        <div class=\"ot-cfg-grid\" id=\"ocGanhoBox\">\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Ganho mínimo de tempo</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocGanhoMin\" type=\"number\" min=\"0\" max=\"60\"><span>min</span></div>\n          </div>\n          <div class=\"ot-cfg-campo\">\n            <label class=\"form-label\">Ou ganho mínimo de distância</label>\n            <div class=\"ot-cfg-num\"><input class=\"form-input\" id=\"ocGanhoKm\" type=\"number\" min=\"0\" max=\"50\" step=\"0.1\"><span>km</span></div>\n            <div class=\"ot-cfg-dica\">Vale quando o tempo empata.</div>\n          </div>\n        </div>\n        <label class=\"ot-cfg-check\">\n          <input type=\"checkbox\" id=\"ocPermitirAcima\">\n          Aplicar sem confirmar quando houver passageiro acima do limite\n        </label>\n\n        <div class=\"ot-cfg-sub\">Objetivo</div>\n        <div class=\"ot-cfg-radios\">\n          <label><input type=\"radio\" name=\"ocObjetivo\" value=\"tempo\"> Menor tempo</label>\n          <label><input type=\"radio\" name=\"ocObjetivo\" value=\"distancia\"> Menor distância</label>\n          <label><input type=\"radio\" name=\"ocObjetivo\" value=\"equilibrado\"> Equilibrado</label>\n        </div>\n        <div class=\"ot-cfg-dica\" style=\"margin-top:6px\">\n          A ordem de decisão é sempre: sem passageiro acima do limite → objetivo escolhido →\n          o outro critério → menor mudança na sequência atual.\n        </div>\n\n        <div style=\"display:flex;gap:8px;margin-top:12px\">\n          <button class=\"opt-btn\" onclick=\"ocSalvar()\" style=\"flex:1\">Salvar regras de otimização</button>\n          <button class=\"btn-cancel\" onclick=\"ocRestaurarPadroes()\">Restaurar padrões</button>\n        </div>\n        <div id=\"ocMsg\" class=\"opt-status\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\" data-sec-fixa=\"oper\">Turnos</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\" data-sec-fixa=\"oper\">\n          Cada turno tem um horário padrão. Se algum dia é diferente — sexta que sai mais cedo,\n          sábado alternado, domingo que não opera — acrescente uma exceção. Só o que difere\n          aparece aqui.\n        </div>\n        <div id=\"tnLista\" data-sec-fixa=\"oper\" style=\"margin-bottom:12px\"></div>\n        <div class=\"fr-form\" data-sec-fixa=\"oper\">\n          <div class=\"fr-campo\" style=\"flex:1.4;min-width:130px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Nome do turno</label>\n            <input class=\"form-input\" id=\"tnNome\" type=\"text\" placeholder=\"Ex.: 1º Turno, ADM\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 130px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Chegada (entrada)</label>\n            <input class=\"form-input\" id=\"tnChegada\" type=\"time\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 130px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Saída</label>\n            <input class=\"form-input\" id=\"tnSaida\" type=\"time\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n        </div>\n        <div id=\"tnExcecoes\" data-sec-fixa=\"oper\" style=\"margin-top:10px\"></div>\n        <div style=\"display:flex;gap:8px;margin-top:10px\" data-sec-fixa=\"oper\">\n          <button class=\"add-btn\" id=\"tnBtnSalvar\" onclick=\"tnSalvar()\" style=\"flex:1\">Adicionar turno</button>\n          <button class=\"btn-cancel\" id=\"tnBtnCancelar\" onclick=\"tnCancelar()\" style=\"display:none\">Cancelar edição</button>\n        </div>\n        <div id=\"tnMsg\" data-sec-fixa=\"oper\" style=\"font-size:12px;margin-top:8px;min-height:16px\"></div>\n\n        <div class=\"cfg-oculto\" data-sec-fixa=\"oper\">\n          <input class=\"form-input\" id=\"cfgT1\" type=\"time\">\n          <input class=\"form-input\" id=\"cfgT2\" type=\"time\">\n          <input class=\"form-input\" id=\"cfgT3\" type=\"time\">\n          <input class=\"form-input\" id=\"cfgTA\" type=\"time\">\n        </div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\">Pontos de origem e destino</div>\n        <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n          Os lugares onde uma rota pode começar ou terminar: garagem, empresa atendida, terminal.\n          <b>Este é o único lugar onde se edita origem e destino</b> — vale para as linhas fixas e\n          para as rotas do roteirizador.\n        </div>\n        <div id=\"ptLista\" style=\"margin-bottom:12px\"></div>\n        <div class=\"fr-form\">\n          <div class=\"fr-campo\" style=\"flex:1.4;min-width:150px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Nome</label>\n            <input class=\"form-input\" id=\"ptNome\" type=\"text\" placeholder=\"Ex.: Garagem, Toyota, Terminal\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:2;min-width:180px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Endereço</label>\n            <input class=\"form-input\" id=\"ptEndereco\" type=\"text\" placeholder=\"Rua, número — bairro, cidade\" style=\"padding:8px 10px;font-size:13px\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:1.2;min-width:150px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Coordenadas (lat, lng)</label>\n            <input class=\"form-input\" id=\"ptCoords\" type=\"text\" placeholder=\"-23.5146, -47.5167\" style=\"padding:8px 10px;font-size:12px;font-family:monospace\">\n          </div>\n          <div class=\"fr-campo\" style=\"flex:0 0 140px\">\n            <label class=\"form-label\" style=\"font-size:11px\">Tipo</label>\n            <select class=\"form-input\" id=\"ptTipo\" style=\"padding:8px 10px;font-size:13px\">\n              <option value=\"garagem\">Garagem</option>\n              <option value=\"empresa\">Empresa atendida</option>\n              <option value=\"outro\">Outro</option>\n            </select>\n          </div>\n        </div>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <button class=\"add-btn\" id=\"ptBtnSalvar\" onclick=\"ptSalvar()\" style=\"flex:1\">Adicionar ponto</button>\n          <button class=\"btn-cancel\" id=\"ptBtnCancelar\" onclick=\"ptCancelar()\" style=\"display:none\">Cancelar edição</button>\n        </div>\n        <div id=\"ptMsg\" style=\"font-size:12px;margin-top:8px;min-height:16px\"></div>\n\n        <div class=\"opt-title\" style=\"font-size:13px;margin-top:14px\" data-sec-fixa=\"dados\">Backup e restauração</div>\n        <div data-sec-fixa=\"dados\">\n          <div style=\"font-size:11px;color:var(--muted);margin-bottom:10px\">\n            O backup baixa um arquivo com tudo desta operação: linhas, passageiros, motoristas,\n            frota e configurações. É também como se copia a produção para o ambiente de teste.\n          </div>\n          <div style=\"display:flex;gap:8px;flex-wrap:wrap\">\n            <button class=\"export-btn\" onclick=\"exportBackup()\">Baixar backup</button>\n            <button class=\"export-btn\" onclick=\"document.getElementById('cfgArquivoBackup').click()\"\n              style=\"color:var(--red);border-color:var(--red)\">Restaurar de um arquivo</button>\n            <input type=\"file\" id=\"cfgArquivoBackup\" accept=\"application/json\"\n              style=\"display:none\" onchange=\"importBackup(event)\">\n          </div>\n          <div style=\"font-size:11px;color:var(--muted);margin-top:8px\">\n            Restaurar <b>substitui</b> os dados desta operação pelos do arquivo.\n          </div>\n        </div>\n\n        <div class=\"cfg-oculto\" data-sec-fixa=\"oper\">\n          <input class=\"form-input\" id=\"cfgGarCoords\" type=\"text\">\n          <input class=\"form-input\" id=\"cfgDestCoords\" type=\"text\">\n        </div>\n\n        \n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalConfig').classList.remove('open')\">Fechar</button>\n    </div></div></div>\n  </div>\n</div>\n\n<!-- MODAL OTIMIZAÇÃO DE ROTA -->\n<div class=\"modal-overlay\" id=\"modalOtimizar\">\n  <div class=\"modal\" style=\"width:640px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\" id=\"otimizarTitle\">Otimização inteligente da rota</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Parâmetros da operação</div>\n        <div class=\"ot-fatos\" id=\"otFatos\"></div>\n      </div>\n\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Ações</div>\n        <button class=\"opt-btn\" id=\"btnAnalisarRota\" onclick=\"analisarMelhorRota()\">\n          Analisar melhor rota\n        </button>\n        <button class=\"opt-btn opt-btn-secondary\" id=\"btnRecalcHorarios\" onclick=\"recalcularApenasHorarios()\">\n          Recalcular horários (manter ordem atual)\n        </button>\n        <div class=\"ot-passos\" id=\"otPassos\"></div>\n        <div id=\"optStatus\" class=\"opt-status\">Aguardando...</div>\n      </div>\n\n      <div class=\"opt-section\" id=\"optResultSection\" style=\"display:none\">\n        <div class=\"opt-title\">Resultado</div>\n        <div id=\"optResultBody\"></div>\n      </div>\n\n      <div class=\"opt-section\" id=\"optMapSection\" style=\"display:none\">\n        <div class=\"opt-title\">Mapa da rota</div>\n        <div id=\"optMapDiv\" style=\"width:100%;height:320px;border-radius:10px;overflow:hidden;border:1px solid var(--border)\"></div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" id=\"btnManterAtual\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">Fechar</button>\n      <button class=\"export-btn\" id=\"btnVerMapa\" style=\"display:none\" onclick=\"toggleOptMap()\">Ver mapa</button>\n      <button class=\"btn-save\" id=\"btnAplicar\" style=\"display:none\" onclick=\"aplicarOtimizacao()\">Aplicar otimização</button>\n    </div>\n  </div>\n</div>\n\n<!-- MOTORISTA VIEW -->\n<div class=\"moto-overlay\" id=\"motoView\">\n  <div class=\"moto-header\">\n    <div>\n      <div class=\"moto-title\">Visão do Motorista</div>\n      <div class=\"moto-subtitle\">Selecione sua linha para iniciar a rota</div>\n    </div>\n    <button class=\"moto-back\" onclick=\"document.getElementById('motoView').classList.remove('open')\">Fechar</button>\n  </div>\n  <div class=\"moto-body\">\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Motorista</label>\n      <select class=\"moto-select\" id=\"motoSelectMotorista\" onchange=\"motoFilterLinhas()\">\n        <option value=\"\">— Todos os motoristas —</option>\n      </select>\n    </div>\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Linha e Turno</label>\n      <select class=\"moto-select\" id=\"motoSelectLinha\" onchange=\"motoLoadRota()\">\n        <option value=\"\">— Selecione uma linha —</option>\n      </select>\n    </div>\n    <div id=\"motoRotaContent\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL MAPA GERAL -->\n<div class=\"modal-overlay\" id=\"modalMapaGeral\">\n  <div class=\"modal\" style=\"max-width:1100px;width:97%;height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\" style=\"flex-shrink:0\">\n      <div class=\"modal-title\">Mapa Geral de Rotas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMapaGeral').classList.remove('open')\">×</button>\n    </div>\n    <div style=\"flex-shrink:0;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center\">\n      <!-- Turno filter -->\n      <div style=\"display:flex;gap:6px;align-items:center\" id=\"mgTurnoBar\">\n        <span style=\"font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px\">Turno:</span>\n      </div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Line checkboxes -->\n      <div style=\"display:flex;gap:6px;align-items:center;flex-wrap:wrap\" id=\"mgLinhasCheck\"></div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Select all / none -->\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectAll()\">Todas</button>\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectNone()\">Nenhuma</button>\n      <!-- Route toggle -->\n      <div style=\"margin-left:auto;display:flex;gap:8px;align-items:center\">\n        <label style=\"font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px\">\n          <input type=\"checkbox\" id=\"mgShowRoutes\" checked onchange=\"renderMapaGeral()\" style=\"cursor:pointer\">\n          Mostrar rotas traçadas\n        </label>\n      </div>\n    </div>\n    <div style=\"flex:1;position:relative;min-height:0\">  <div id=\"mapaGeralDiv\" style=\"position:absolute;inset:0\"></div>  <div id=\"mgVazio\" style=\"position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--bg);z-index:2;padding:24px\">    <div style=\"font-size:15px;font-weight:600;margin-bottom:6px\">Selecione a rota desejada</div>    <div style=\"font-size:13px;color:var(--muted);max-width:380px;line-height:1.6\">Marque as linhas que quer ver no mapa, ou use <b>Todas</b> ali em cima.</div>  </div></div>\n    <div id=\"mgLegend\" style=\"flex-shrink:0;padding:10px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;font-size:12px\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL ROTAS EXTRAS -->\n<div class=\"modal-overlay\" id=\"modalRotasExtras\">\n  <div class=\"modal\" style=\"max-width:800px;width:95%\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Rotas Extras</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalRotasExtras').classList.remove('open')\">×</button>\n    </div>\n    <div class=\"modal-body\">\n      <!-- Lista de rotas extras existentes -->\n      <div id=\"rotasExtrasList\" style=\"margin-bottom:16px\"></div>\n      <!-- Criar nova rota extra -->\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px\">\n        <div style=\"font-weight:700;font-size:14px;margin-bottom:14px;color:var(--accent)\">Nova Rota Extra</div>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px\">\n          <div>\n            <label class=\"form-label\">Nome da Rota</label>\n            <input class=\"form-input\" id=\"reNome\" placeholder=\"Ex: Extra Sexta 02/05\">\n          </div>\n          <div>\n            <label class=\"form-label\">Data</label>\n            <input class=\"form-input\" type=\"date\" id=\"reData\">\n          </div>\n        </div>\n        <div style=\"background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;color:var(--muted)\">\n          <strong>Início:</strong> Garagem Redentor &nbsp;→&nbsp; Passageiros &nbsp;→&nbsp; <strong>Destino:</strong> Empresa\n        </div>\n        <label class=\"form-label\">Buscar e selecionar passageiros</label>\n        <input class=\"form-input\" id=\"reBusca\" placeholder=\"Digite nome, bairro ou cidade...\" oninput=\"filtrarPassRotaExtra()\" style=\"margin-bottom:10px\">\n        <div id=\"reResultados\" style=\"max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px\"></div>\n        <div style=\"margin-bottom:12px\">\n          <div style=\"font-size:12px;color:var(--muted);margin-bottom:6px\">Selecionados:</div>\n          <div id=\"reSelecionados\" style=\"display:flex;flex-wrap:wrap;gap:6px;min-height:32px\"></div>\n        </div>\n        <button class=\"add-btn\" onclick=\"criarRotaExtra()\" style=\"width:100%\">Criar Rota Extra</button>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL SEM ROTA -->\n<div class=\"modal-overlay\" id=\"modalSemRota\">\n  <div class=\"modal\" style=\"max-width:700px;width:95%\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Passageiros Sem Rota</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalSemRota').classList.remove('open')\">×</button>\n    </div>\n    <div class=\"modal-body\">\n      <div style=\"font-size:13px;color:var(--muted);margin-bottom:12px\">\n        Use <b>Encaixar nas linhas</b> para a temvia distribuir todos automaticamente, ou clique nos passageiros para tratá-los um a um.\n      </div>\n      <div id=\"semRotaActionsBar\" style=\"display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap\">\n        <button onclick=\"absAbrirPainel()\" class=\"add-btn\" style=\"background:var(--accent2)\">Encaixar nas linhas (temvia)</button>\n        <button onclick=\"criarRotaExtraDeSemRota()\" class=\"add-btn\" style=\"background:rgba(236,72,153,0.8)\">Criar Rota Extra com Selecionados</button>\n        <button onclick=\"alocarTodosParaRota()\" class=\"export-btn\" style=\"color:var(--accent);border-color:var(--accent)\">Alocar Selecionados em Linha</button>\n        <button onclick=\"semRotaSelecionados&&semRotaSelecionados.clear();renderSemRotaList()\" class=\"export-btn\" style=\"color:var(--muted)\">Limpar seleção</button>\n      </div>\n      <div id=\"semRotaList\"></div>\n      <!-- Alocação -->\n      <div id=\"semRotaAlocarBox\" style=\"display:none;background:var(--surface2);border:1px solid var(--accent);border-radius:12px;padding:14px;margin-top:14px\">\n        <div style=\"font-weight:600;font-size:13px;margin-bottom:10px\">Alocar <span id=\"semRotaAlocarNome\" style=\"color:var(--accent)\"></span> para:</div>\n        <div style=\"display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end\">\n          <div>\n            <label class=\"form-label\">Linha e Turno</label>\n            <select class=\"form-input\" id=\"semRotaLinhaSelect\"></select>\n          </div>\n          <button class=\"add-btn\" onclick=\"confirmarAlocacao()\">Confirmar</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL SERVIÇOS EXTRAS -->\n<div class=\"modal-overlay\" id=\"modalServicosExtras\">\n  <div class=\"modal-box\" style=\"max-width:900px;width:96%;max-height:92vh;display:flex;flex-direction:column;overflow:hidden\">\n    <div class=\"modal-header\" style=\"flex-shrink:0\">\n      <div class=\"modal-title\">Serviços Extras</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalServicosExtras').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:0;display:flex;flex-direction:column;flex:1;overflow:hidden\">\n\n      <!-- ABAS -->\n      <div style=\"display:flex;border-bottom:1px solid var(--border);background:var(--surface)\">\n        <button id=\"seTab1\" onclick=\"seAba('lancar')\" style=\"flex:1;padding:12px;background:var(--accent);color:#000;border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Lançar</button>\n        <button id=\"seTab2\" onclick=\"seAba('historico')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Histórico</button>\n        <button id=\"seTab4\" onclick=\"seAba('solicitacoes')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer;position:relative\">Solicitações<span id=\"seTabBadge\" style=\"display:none;position:absolute;top:6px;right:6px;background:var(--red);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:800;align-items:center;justify-content:center;font-family:'Barlow',sans-serif\">0</span></button>\n        <button id=\"seTab5\" onclick=\"seAba('cadastro')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer;position:relative\">Cadastro<span id=\"cadBadge\" style=\"display:none;position:absolute;top:6px;right:6px;background:var(--accent2);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:800;align-items:center;justify-content:center;font-family:'Barlow',sans-serif\">0</span></button>\n        <button id=\"seTab3\" onclick=\"seAba('relatorio')\" style=\"flex:1;padding:12px;background:transparent;color:var(--muted);border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer\">Relatórios</button>\n      </div>\n\n      <!-- ABA LANÇAR -->\n      <div id=\"seAbaLancar\" style=\"padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px\">\n          <div>\n            <label class=\"form-label\">Data do Serviço</label>\n            <input class=\"form-input\" type=\"date\" id=\"seData\">\n          </div>\n          <div>\n            <label class=\"form-label\">Horário de Atendimento</label>\n            <input class=\"form-input\" type=\"time\" id=\"seHorario\">\n          </div>\n          <div>\n            <label class=\"form-label\">Tipo de Serviço</label>\n            <select class=\"form-input\" id=\"seTipo\" onchange=\"seTipoChange()\"></select>\n          </div>\n          <div>\n            <label class=\"form-label\">Turno</label>\n            <select class=\"form-input\" id=\"seDestino\">\n              <option value=\"\">— Selecione —</option>\n              <option value=\"1º Turno\">1º Turno</option>\n              <option value=\"2º Turno\">2º Turno</option>\n              <option value=\"3º Turno\">3º Turno</option>\n              <option value=\"Diurno\">Diurno</option>\n              <option value=\"Noturno\">Noturno</option>\n              <option value=\"Adm\">Adm</option>\n            </select>\n          </div>\n          <div>\n            <label class=\"form-label\">Roteiro</label>\n            <select class=\"form-input\" id=\"seRoteiro\">\n              <option value=\"\">— Selecione —</option>\n              <option value=\"Entrada\">Entrada</option>\n              <option value=\"Saída\">Saída</option>\n              <option value=\"Ida e Volta\">Ida e Volta</option>\n            </select>\n          </div>\n          <div>\n            <label class=\"form-label\">Adicional (R$)</label>\n            <input class=\"form-input\" type=\"number\" id=\"seAdicional\" value=\"0\" onchange=\"seCalcularTotal()\">\n          </div>\n          <div style=\"background:var(--surface2);border-radius:10px;padding:14px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center\">\n            <div style=\"font-size:11px;color:var(--muted);margin-bottom:4px\">TOTAL DO SERVIÇO</div>\n            <div id=\"seTotal\" style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:28px;color:var(--accent)\">R$ 0,00</div>\n          </div>\n        </div>\n\n        <!-- Lista de veículos dinâmica -->\n        <div style=\"margin-bottom:12px\">\n          <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:8px\">\n            <label class=\"form-label\" style=\"margin:0\">Veículos e Motoristas</label>\n            <button onclick=\"seAdicionarVeiculo()\" class=\"export-btn\" style=\"font-size:12px;padding:5px 12px;color:var(--accent);border-color:var(--accent)\">＋ Adicionar Veículo</button>\n          </div>\n          <div id=\"seVeiculosList\"></div>\n        </div>\n\n        <!-- Motoristas dinâmicos (1 por veículo) -->\n        <div id=\"seMotoristasList\" style=\"margin-bottom:12px\"></div>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px\">\n          <div>\n            <label class=\"form-label\">Observação</label>\n            <input class=\"form-input\" id=\"seObs\" placeholder=\"Ex: Saída extra demissão\">\n          </div>\n          <div>\n            <label class=\"form-label\">Repetição — Marque os dias</label>\n            <div id=\"seCalendarioRepet\" style=\"background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px\"></div>\n          </div>\n        </div>\n        <div style=\"display:flex;gap:10px\">\n          <button class=\"add-btn\" style=\"flex:1\" onclick=\"seSalvar()\">Salvar Serviço</button>\n          <button class=\"btn-cancel\" onclick=\"seLimpar()\">Limpar</button>\n        </div>\n        <div id=\"seMsg\" style=\"margin-top:10px;font-size:13px;text-align:center\"></div>\n      </div>\n\n      <!-- ABA HISTÓRICO -->\n      <div id=\"seAbaHistorico\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap\">\n          <input class=\"form-input\" type=\"month\" id=\"seFiltroMes\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\">\n          <select class=\"form-input\" id=\"seFiltroTipo\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\"></select>\n          <select class=\"form-input\" id=\"seFiltroMotorista\" style=\"flex:1;min-width:140px\" onchange=\"seRenderHistorico()\">\n            <option value=\"\">Todos os motoristas</option>\n          </select>\n          <button class=\"export-btn\" onclick=\"seAba('relatorio')\" style=\"color:var(--accent);border-color:var(--accent)\">Por Período</button>\n          <button class=\"export-btn\" onclick=\"seExportarExcel('mes')\" style=\"color:var(--accent);border-color:var(--accent)\">Excel Mês</button>\n        </div>\n        <div id=\"seResumoHistorico\" style=\"margin-bottom:12px\"></div>\n        <div id=\"seListaHistorico\" style=\"max-height:420px;overflow-y:auto\"></div>\n      </div>\n\n      <!-- ABA RELATÓRIOS -->\n      <div id=\"seAbaRelatorio\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px\">\n          <div style=\"background:var(--surface2);border-radius:12px;padding:16px\">\n            <div style=\"font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;color:var(--accent);margin-bottom:12px\">Relatório por Período</div>\n            <p style=\"font-size:12px;color:var(--muted);margin-bottom:12px\">Escolha o intervalo de datas para gerar o relatório.</p>\n            <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px\">\n              <div>\n                <div style=\"font-size:10px;color:var(--muted);margin-bottom:4px\">DATA INÍCIO</div>\n                <input class=\"form-input\" type=\"date\" id=\"seDataInicio\">\n              </div>\n              <div>\n                <div style=\"font-size:10px;color:var(--muted);margin-bottom:4px\">DATA FIM</div>\n                <input class=\"form-input\" type=\"date\" id=\"seDataFim\">\n              </div>\n            </div>\n            <button class=\"add-btn\" style=\"width:100%\" onclick=\"seExportarExcel('periodo')\">Gerar Excel por Período</button>\n          </div>\n          <div style=\"background:var(--surface2);border-radius:12px;padding:16px\">\n            <div style=\"font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;color:var(--green);margin-bottom:12px\">Relatório Mensal</div>\n            <p style=\"font-size:12px;color:var(--muted);margin-bottom:12px\">Todos os serviços do mês. Enviar no dia 1º para aprovação.</p>\n            <input class=\"form-input\" type=\"month\" id=\"seDataMes\" style=\"margin-bottom:10px\">\n            <button class=\"add-btn\" style=\"width:100%;background:var(--green)\" onclick=\"seExportarExcel('mes')\">Gerar Excel Mensal</button>\n          </div>\n        </div>\n        <div id=\"seResumoRelatorio\"></div>\n      </div>\n\n      <!-- ABA SOLICITAÇÕES -->\n      <div id=\"seAbaSolicitacoes\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center\">\n          <select class=\"form-input\" id=\"solFiltroStatus\" style=\"flex:1;min-width:140px\" onchange=\"solRenderGestor()\">\n            <option value=\"\">Todos os status</option>\n            <option value=\"pendente\">Pendentes</option>\n            <option value=\"confirmada\">Confirmadas</option>\n            <option value=\"atendida\">Atendidas</option>\n            <option value=\"cancelada\">Canceladas</option>\n          </select>\n          <input class=\"form-input\" type=\"month\" id=\"solFiltroMes\" style=\"flex:1;min-width:130px\" onchange=\"solRenderGestor()\">\n          <span id=\"solResumoCount\" style=\"font-size:12px;color:var(--muted)\"></span>\n        </div>\n        <div id=\"solListaGestor\" style=\"max-height:460px;overflow-y:auto\"></div>\n      </div>\n\n      <!-- ABA CADASTRO -->\n      <div id=\"seAbaCadastro\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n        <div style=\"display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center\">\n          <select class=\"form-input\" id=\"cadGestorFiltroTipo\" style=\"flex:1;min-width:140px\" onchange=\"cadGestorRender()\">\n            <option value=\"\">Todos os tipos</option>\n            <option value=\"novo\">Novo Passageiro</option>\n            <option value=\"turno\">Alteração de Turno</option>\n            <option value=\"endereco\">Alteração de Endereço</option>\n            <option value=\"desligamento\">Desligamento</option>\n          </select>\n          <select class=\"form-input\" id=\"cadGestorFiltroStatus\" style=\"flex:1;min-width:120px\" onchange=\"cadGestorRender()\">\n            <option value=\"\">Todos os status</option>\n            <option value=\"pendente\">Pendentes</option>\n            <option value=\"atendida\">Atendidas</option>\n          </select>\n          <span id=\"cadGestorCount\" style=\"font-size:12px;color:var(--muted)\"></span>\n        </div>\n        <div id=\"cadGestorLista\" style=\"max-height:460px;overflow-y:auto\"></div>\n      </div>\n\n    </div>\n  </div>\n</div>\n<div class=\"modal-overlay\" id=\"modalReport\">\n  <div class=\"modal report-modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Relatório de Alterações</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"reportBody\">\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">Fechar</button>\n      <button class=\"btn-save\" onclick=\"clearLog()\">Limpar histórico</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL ROTEIRIZADOR -->\n<div class=\"modal-overlay\" id=\"modalRoteirizador\">\n  <div class=\"modal\" style=\"max-width:1400px;width:97%;max-height:94vh;display:flex;flex-direction:column;padding:0;overflow:hidden\">\n    <div class=\"modal-header\" style=\"padding:16px 20px;flex-shrink:0\">\n      <div class=\"modal-title\">Roteirizador Inteligente</div>\n      <div style=\"display:flex;gap:8px;align-items:center\">\n        <button onclick=\"rtAbrirPublicadas()\" class=\"export-btn\" style=\"font-size:12px;padding:6px 12px;background:rgba(16,185,129,0.12);color:var(--green);border-color:rgba(16,185,129,0.3)\">Rotas Publicadas</button>\n        <button class=\"export-btn\" onclick=\"rtNovaRoteirizacao()\" title=\"Limpar tudo e começar do zero\" style=\"margin-right:8px\">Nova roteirização</button><button class=\"modal-close\" onclick=\"rtFechar()\" title=\"Fechar\">✕</button>\n      </div>\n    </div>\n\n    <div style=\"overflow-y:auto;flex:1;padding:20px\"><div class=\"rt-layout\"><aside class=\"rt-etapas\" id=\"rtEtapas\"><button class=\"rt-passo\" data-etapa=\"conf\" onclick=\"rtIrEtapa('conf')\"><span class=\"rt-passo-n\">1</span><span class=\"rt-passo-txt\"><b>Configurar</b><small>Informe os passageiros e as regras da operação.</small></span></button><button class=\"rt-passo\" data-etapa=\"plan\" onclick=\"rtIrEtapa('plan')\"><span class=\"rt-passo-n\">2</span><span class=\"rt-passo-txt\"><b>Planejar</b><small>A temvia calcula o melhor plano para você.</small></span></button><button class=\"rt-passo\" data-etapa=\"sug\" onclick=\"rtIrEtapa('sug')\"><span class=\"rt-passo-n\">3</span><span class=\"rt-passo-txt\"><b>Plano sugerido</b><small>Revise as rotas, métricas e restrições.</small></span></button><button class=\"rt-passo\" data-etapa=\"edit\" onclick=\"rtIrEtapa('edit')\"><span class=\"rt-passo-n\">4</span><span class=\"rt-passo-txt\"><b>Editar plano</b><small>Faça ajustes manuais se necessário.</small></span></button><button class=\"rt-passo\" data-etapa=\"pub\" onclick=\"rtIrEtapa('pub')\"><span class=\"rt-passo-n\">5</span><span class=\"rt-passo-txt\"><b>Publicar</b><small>Publique o plano final para a operação.</small></span></button></aside><div class=\"rt-fluxo\"><section class=\"rt-etapa\" id=\"rtEtconf\"><div class=\"rt-etapa-cab\"><span class=\"rt-etapa-n\">1</span><div><div class=\"rt-etapa-t\">Configurar</div><div class=\"rt-etapa-s\">Informe para quais passageiros quer criar uma rota e os dados da rota.</div></div></div><div class=\"rt-etapa-corpo\"><div class=\"rt-sub\">Para quais passageiros quer criar uma rota?</div><div style=\"display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap\">\n          <button onclick=\"rtModoEntrada('solicitacao')\" id=\"rtBtnSol\" class=\"export-btn\" style=\"font-size:12px;color:var(--accent);border-color:var(--accent)\">De uma Solicitação</button>\n          <button onclick=\"rtModoEntrada('colar')\" id=\"rtBtnColar\" class=\"export-btn\" style=\"font-size:12px\">Colar nomes</button>\n          <button onclick=\"rtModoEntrada('linha')\" id=\"rtBtnLinha\" class=\"export-btn\" style=\"font-size:12px\">De uma Linha</button>\n        </div>\n\n        <!-- Modo: solicitação -->\n        <div id=\"rtEntradaSolicitacao\" style=\"display:none\">\n          <label class=\"form-label\">Selecione a solicitação de serviço</label>\n          <select class=\"form-input\" id=\"rtSelSolicitacao\" onchange=\"rtCarregarDaSolicitacao()\">\n            <option value=\"\">— Selecione —</option>\n          </select>\n        </div>\n\n        <!-- Modo: colar / buscar -->\n        <div id=\"rtEntradaColar\" style=\"display:none\">\n          <label class=\"form-label\">Buscar e adicionar passageiros</label>\n          <input class=\"form-input\" id=\"rtBuscaPax\" type=\"text\" placeholder=\"Digite o nome...\" oninput=\"rtBuscarPax()\" style=\"margin-bottom:8px;font-size:15px\">\n          <div id=\"rtResultadoPax\" style=\"max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;display:none\"></div>\n          <div style=\"font-size:11px;color:var(--muted);margin-bottom:6px\">Adicionados:</div>\n          <div id=\"rtSelecionados\" style=\"display:flex;flex-wrap:wrap;gap:6px;min-height:30px;margin-bottom:10px\"></div>\n          <div style=\"display:flex;gap:8px\">\n            <button onclick=\"rtCarregarSelecionados()\" class=\"add-btn\" style=\"flex:2\">Carregar selecionados →</button>\n          </div>\n          <div style=\"margin-top:10px;padding-top:10px;border-top:1px solid var(--border)\">\n            <label class=\"form-label\">Ou cole uma lista (um nome por linha)</label>\n            <textarea class=\"form-input\" id=\"rtNomes\" rows=\"4\" placeholder=\"João Silva&#10;Maria Santos&#10;...\" style=\"resize:vertical;font-size:14px\"></textarea>\n            <button onclick=\"rtCarregarDeColar()\" class=\"export-btn\" style=\"margin-top:8px;font-size:12px\">Buscar lista colada →</button>\n          </div>\n        </div>\n\n        <!-- Modo: linha -->\n        <div id=\"rtEntradaLinha\" style=\"display:none\">\n          <label class=\"form-label\">Selecione a linha/turno</label>\n          <select class=\"form-input\" id=\"rtSelLinha\" onchange=\"rtCarregarDaLinha()\">\n            <option value=\"\">— Selecione —</option>\n          </select>\n          <div style=\"font-size:11px;color:var(--accent);margin-top:6px\">Você pode adicionar várias linhas (cada uma vira um veículo) para comparar e trocar passageiros entre elas.</div>\n        </div>\n\n        <div class=\"rt-sub rt-sub-2\">Trajeto</div>\n        <div class=\"rt-trajeto\">\n          <div class=\"rt-traj-campo\">\n            <label class=\"form-label\">Ponto inicial</label>\n            <select class=\"form-input\" id=\"rtPontoIni\" onchange=\"rtPontosSentido()\"></select>\n          </div>\n          <div class=\"rt-traj-seta\" aria-hidden=\"true\">→</div>\n          <div class=\"rt-traj-campo\">\n            <label class=\"form-label\">Ponto final</label>\n            <select class=\"form-input\" id=\"rtPontoFim\" onchange=\"rtPontosSentido()\"></select>\n          </div>\n          <div class=\"rt-traj-sentido\" id=\"rtSentidoAviso\"></div>\n        </div>\n        <div class=\"rt-sub rt-sub-2\">Dados da rota</div><div style=\"display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px\">\n          <div>\n            <label class=\"form-label\">Data da rota</label>\n            <input class=\"form-input\" type=\"date\" id=\"rtData\">\n          </div>\n          <div>\n            <label class=\"form-label\" id=\"rtChegadaLabel\">Horário de chegada na empresa</label><div style=\"font-size:10.5px;color:var(--muted);margin:-2px 0 4px\">Preenchido sozinho quando você carrega uma linha.</div>\n            <input class=\"form-input\" type=\"time\" id=\"rtChegada\" onchange=\"plAtualizarControles()\">\n          </div>\n          <div>\n            <label class=\"form-label\">Folga de segurança (min)</label>\n            <input class=\"form-input\" type=\"number\" id=\"rtBuffer\" value=\"5\" min=\"0\">\n          </div>\n        </div>\n        <div style=\"margin-top:12px\">\n          <label class=\"form-label\">Nome da rota (para o motorista identificar)</label>\n          <input class=\"form-input\" id=\"rtNomeRota\" placeholder=\"Ex: Entrada Extra · Saída 2º Turno · Rota Vertiv...\">\n        </div>\n      </div></section><section class=\"rt-etapa\" id=\"rtEtplan\"><div class=\"rt-etapa-cab\"><span class=\"rt-etapa-n\">2</span><div><div class=\"rt-etapa-t\">Planejar</div><div class=\"rt-etapa-s\">Informe as métricas e o objetivo da operação.</div></div></div><div class=\"rt-etapa-corpo\"><div class=\"pl-painel\" id=\"plPainel\">\n        \n\n        <div class=\"pl-restricoes\">\n          <div class=\"pl-campo\">\n            <label class=\"form-label\">Número de rotas</label>\n            <select class=\"form-input\" id=\"plModoRotas\" onchange=\"plAtualizarControles()\">\n              <option value=\"auto\">Automático</option>\n              <option value=\"max\">No máximo…</option>\n              <option value=\"exato\">Exatamente…</option>\n            </select>\n          </div>\n          <div class=\"pl-campo\" id=\"plNumBox\" style=\"display:none\">\n            <label class=\"form-label\">Quantas</label>\n            <input class=\"form-input\" id=\"plNumRotas\" type=\"number\" min=\"1\" max=\"30\" value=\"2\">\n          </div>\n          <div class=\"pl-campo\">\n            <label class=\"form-label\">Reserva de vagas</label>\n            <input class=\"form-input\" id=\"plReserva\" type=\"number\" min=\"0\" max=\"20\">\n            <div class=\"pl-dica\">Só para este planejamento.</div>\n          </div>\n          <div class=\"pl-campo\">\n            <label class=\"form-label\">Máx. por passageiro</label>\n            <div class=\"ot-cfg-num\">\n              <input class=\"form-input\" id=\"plMaxRide\" type=\"number\" min=\"5\" max=\"300\"><span>min</span>\n            </div>\n          </div>\n          <div class=\"pl-campo\">\n            <label class=\"form-label\">Objetivo</label>\n            <select class=\"form-input\" id=\"plObjetivo\">\n              <option value=\"tempo\">Menor tempo</option>\n              <option value=\"distancia\">Menor distância</option>\n              <option value=\"equilibrado\">Equilibrado</option>\n            </select>\n          </div>\n          <div class=\"pl-campo\">\n            <label class=\"form-label\">Mesmo ponto</label>\n            <div class=\"pl-inline\">\n              <label class=\"pl-check\"><input type=\"checkbox\" id=\"plAgrupar\" onchange=\"plAtualizarControles()\"> Agrupar</label>\n              <div class=\"ot-cfg-num\">\n                <input class=\"form-input\" id=\"plTolerancia\" type=\"number\" min=\"0\" max=\"500\"><span>m</span>\n              </div>\n            </div>\n          </div>\n          <div class=\"pl-campo pl-campo-larga\">\n            <label class=\"form-label\">Frota livre para este planejamento</label>\n            <div class=\"pl-frota\" id=\"plFrotaLivre\"></div>\n          </div>\n          <div class=\"pl-campo pl-campo-larga\">\n            <div class=\"pl-dica\" style=\"margin:0 0 6px\">\n              Estes valores valem só para este planejamento. O padrão está em\n              Configurações › Otimização de rotas.\n            </div>\n            <div class=\"pl-chips\" id=\"plChips\"></div>\n          </div>\n        </div>\n\n        <div class=\"pl-travas-acoes\" id=\"plTravasAcoes\" style=\"display:none\">\n          <button class=\"tv-btn\" onclick=\"plTravarJuntos()\">Travar selecionados juntos</button>\n          <span class=\"pl-dica\" id=\"plSelecaoInfo\"></span>\n        </div>\n\n        <div class=\"rt-gerar\"><button class=\"tv-btn tv-btn-primary\" id=\"plBtnGerar\" onclick=\"plGerarPlano()\" disabled>Gerar plano de rotas</button><span class=\"pl-dica\" id=\"plSubtitulo\"></span></div></div></div></section><section class=\"rt-etapa\" id=\"rtEtsug\" style=\"display:none\"><div class=\"rt-etapa-cab\"><span class=\"rt-etapa-n\">3</span><div><div class=\"rt-etapa-t\">Plano sugerido</div><div class=\"rt-etapa-s\">O que a temvia calculou, com as métricas da operação.</div></div></div><div class=\"rt-etapa-corpo\"><div class=\"ot-passos\" id=\"plPassos\"></div>\n        <div class=\"pl-erro\" id=\"plErro\" style=\"display:none\"></div>\n\n        <div class=\"pl-resumo\" id=\"plResumo\" style=\"display:none\"></div>\n        <div class=\"pl-nota\" id=\"plNota\" style=\"display:none\">\n          <b>O plano considera</b> distância, tempo, capacidade e o limite de tempo em viagem.\n          <b>Não considera</b> trânsito do dia, obras ou restrições que só você conhece.\n          Confira antes de publicar.\n        </div>\n        <div class=\"pl-acoes\" id=\"plAcoes\" style=\"display:none\">\n          <button class=\"tv-btn\" onclick=\"plReplanejar()\">Replanejar tudo</button>\n          <button class=\"tv-btn\" onclick=\"plRecalcularTudo()\" id=\"plBtnRecalcTudo\">Recalcular métricas</button>\n          \n        </div>\n      </div></section><section class=\"rt-etapa\" id=\"rtEtedit\" style=\"display:none\"><div class=\"rt-etapa-cab\"><span class=\"rt-etapa-n\">4</span><div><div class=\"rt-etapa-t\">Editar plano</div><div class=\"rt-etapa-s\">Arraste passageiros entre as rotas ou reordene dentro de uma.</div></div></div><div class=\"rt-etapa-corpo\"><!-- Área de trabalho -->\n      <div id=\"rtWorkArea\">\n        <div class=\"rt-recalc\" id=\"rtRecalcBarra\" style=\"display:none\"><span>Você mudou a composição das rotas. Os horários, a duração e a distância na tela não valem mais.</span><button class=\"tv-btn tv-btn-primary\" onclick=\"plRecalcularTudo()\">Recalcular métricas</button></div>\n        <div class=\"rt-secao-titulo\">Rascunho editável das rotas\n          <span>Arraste passageiros entre as caixas ou para reordenar dentro de uma rota</span>\n        </div>\n\n        <!-- Não alocados -->\n        <div style=\"background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px\">\n          <div style=\"display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap\">\n            <strong style=\"font-size:13px\">Não alocados</strong>\n            <span style=\"font-size:12px;color:var(--muted)\" id=\"rtPoolCount\"></span>\n            <div style=\"flex:1\"></div>\n            <button onclick=\"rtAddVeiculo()\" class=\"export-btn\" style=\"font-size:11px;padding:5px 10px\">＋ Veículo</button>\n            <button class=\"export-btn\" style=\"font-size:11px;padding:5px 10px\" onclick=\"rtToggleManual()\"\n              id=\"rtBtnManual\" title=\"Montar as rotas à mão, sem o planejamento automático\">Montar manualmente ▾</button>\n          </div>\n          <div id=\"rtBarraManual\" class=\"rt-barra-manual\" style=\"display:none\">\n            <div class=\"rt-manual-nota\">Aqui você monta tudo à mão: cria os veículos, arrasta os\n              passageiros e pede o cálculo. O planejamento automático acima faz isso sozinho.</div>\n            <div class=\"rt-manual-acoes\">\n              <label class=\"rt-manual-check\"><input type=\"checkbox\" id=\"rtTravarOrdem\" checked>Travar ordem manual</label>\n              <button onclick=\"rtCalcular()\" class=\"export-btn\">Calcular rotas manualmente</button>\n              <button onclick=\"rtLimparTudo()\" class=\"export-btn\" style=\"color:var(--red);border-color:var(--red)\">Limpar tudo</button>\n            </div>\n          </div>\n          <div class=\"rt-drop\" id=\"rtPoolBody\" data-veh=\"pool\" style=\"min-height:50px;display:flex;flex-wrap:wrap;gap:7px\"></div>\n        </div>\n\n        <!-- Veículos -->\n        <div class=\"rt-veh-cols\" id=\"rtVehCols\" style=\"display:flex;gap:14px;overflow-x:auto;padding-bottom:10px\"></div>\n<!-- Mapa -->\n        <div style=\"background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px\">\n          <div style=\"display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap\">\n            <strong style=\"font-size:13px\">Mapa dos passageiros</strong>\n            <span style=\"font-size:11px;color:var(--muted)\">Cores = veículo</span>\n            <div style=\"flex:1\"></div>\n            <button onclick=\"rtRenderMap()\" class=\"export-btn\" style=\"font-size:11px;padding:4px 10px\">↻ Atualizar</button>\n          </div>\n          <div id=\"rtMap\" style=\"height:380px;width:100%;background:var(--surface2)\"></div>\n          <div id=\"rtMapLegend\" style=\"padding:8px 14px;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;border-top:1px solid var(--border)\"></div>\n        </div>\n\n        \n      </div>\n    </div></section><section class=\"rt-etapa\" id=\"rtEtpub\" style=\"display:none\"><div class=\"rt-etapa-cab\"><span class=\"rt-etapa-n\">5</span><div><div class=\"rt-etapa-t\">Publicar</div><div class=\"rt-etapa-s\">Envie o plano para os motoristas.</div></div></div><div class=\"rt-etapa-corpo\"><div id=\"rtPubCorpo\"></div>\n<div class=\"rt-pub-acoes\"><button class=\"tv-btn tv-btn-primary\" id=\"plBtnPublicar\" onclick=\"plPublicar()\">Publicar rotas</button></div></div></section></div></div></div>\n  </div>\n</div>\n\n<!-- MODAL ROTAS PUBLICADAS -->\n<div class=\"modal-overlay\" id=\"modalRotasPublicadas\">\n  <div class=\"modal\" style=\"max-width:760px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Rotas Publicadas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalRotasPublicadas').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"rotasPublicadasBody\" style=\"padding:16px 20px\">\n      <div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL AVISOS (gestor) -->\n<div class=\"modal-overlay\" id=\"modalAvisos\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Avisos aos Passageiros</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalAvisos').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px\">\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px\">\n        <div style=\"font-family:Barlow;font-weight:700;margin-bottom:12px\">Novo aviso</div>\n        <label class=\"form-label\">Destinatário</label>\n        <select class=\"form-input\" id=\"avDestino\">\n          <option value=\"\">Todas as linhas (aviso geral)</option>\n        </select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Tipo</label>\n        <select class=\"form-input\" id=\"avTipo\">\n          <option value=\"aviso\">Aviso de texto</option>\n          <option value=\"pdf\">Link/PDF</option>\n        </select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Mensagem</label>\n        <textarea class=\"form-input\" id=\"avTexto\" rows=\"3\" placeholder=\"Digite o aviso...\" style=\"resize:vertical\"></textarea>\n        <label class=\"form-label\" style=\"margin-top:10px\">Link (opcional — PDF, formulário, etc.)</label>\n        <input class=\"form-input\" id=\"avLink\" placeholder=\"https://...\">\n        <div style=\"font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5\">Para anexar um PDF: suba o arquivo no Google Drive (ou outro), copie o link de compartilhamento e cole aqui. O passageiro abre o documento ao tocar no aviso.</div>\n        <button class=\"add-btn\" style=\"margin-top:14px;width:100%\" onclick=\"avPublicar()\">Publicar aviso</button>\n      </div>\n      <div style=\"font-family:Barlow;font-weight:700;margin-bottom:10px\">Avisos publicados</div>\n      <div id=\"avLista\"><div style=\"text-align:center;color:var(--muted);padding:20px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL CHATS DAS LINHAS -->\n<div class=\"modal-overlay\" id=\"modalChats\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Chats das Linhas</div>\n      <button class=\"modal-close\" onclick=\"chatsFechar()\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;display:flex;flex-direction:column;flex:1;overflow:hidden\">\n      <div id=\"chatsSeletor\">\n        <label class=\"form-label\">Selecione a linha/turno</label>\n        <select class=\"form-input\" id=\"chatSelLinha\" onchange=\"chatAbrirLinha()\">\n          <option value=\"\">— Selecione —</option>\n        </select>\n        <div style=\"font-size:12px;color:var(--muted);margin-top:10px\">Escolha uma linha para ver e participar do chat dos passageiros.</div>\n      </div>\n      <div id=\"chatsConversa\" style=\"display:none;flex-direction:column;flex:1;overflow:hidden\">\n        <div style=\"display:flex;align-items:center;gap:8px;margin-bottom:10px\">\n          <button class=\"export-btn\" style=\"font-size:12px;padding:5px 10px\" onclick=\"chatVoltarSeletor()\">← Linhas</button>\n          <strong id=\"chatTituloLinha\" style=\"font-size:14px\"></strong>\n        </div>\n        <div id=\"chatGestorMsgs\" style=\"flex:1;overflow-y:auto;background:var(--surface2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:300px;max-height:50vh\"></div>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <input id=\"chatGestorInput\" placeholder=\"Mensagem como gestor...\" style=\"flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:11px 16px;color:var(--text);font-size:14px;font-family:inherit\" onkeypress=\"if(event.key==='Enter')chatGestorEnviar()\">\n          <button onclick=\"chatGestorEnviar()\" style=\"background:var(--accent);border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer\">➤</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL CONFIRMAÇÕES (relatório de presenças) -->\n<div class=\"modal-overlay\" id=\"modalConfirmacoes\">\n  <div class=\"modal\" style=\"max-width:820px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Confirmações de Presença</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalConfirmacoes').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px\">\n      <div style=\"display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end\">\n        <div style=\"flex:1;min-width:160px\">\n          <label class=\"form-label\">Linha / Turno</label>\n          <select class=\"form-input\" id=\"cfLinha\" onchange=\"cfRender()\"><option value=\"\">Todas</option></select>\n        </div>\n        <div style=\"flex:1;min-width:120px\">\n          <label class=\"form-label\">Data</label>\n          <select class=\"form-input\" id=\"cfData\" onchange=\"cfRender()\"></select>\n        </div>\n        <button class=\"export-btn\" style=\"font-size:12px\" onclick=\"cfCarregar()\">↻ Atualizar</button>\n      </div>\n      <div style=\"font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5\">\n        = confirmou com <strong>menos de 1h</strong> antes do horário de chegada da rota (em cima da hora). O histórico mostra cada vez que o passageiro mudou a resposta, com horário.\n      </div>\n      <div id=\"cfBody\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL RECLAMAÇÕES CLIENTE (Gestor Redentor responde) -->\n<div class=\"modal-overlay\" id=\"modalReclamacoesGestor\">\n  <div class=\"modal\" style=\"max-width:920px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Reclamações do Cliente</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReclamacoesGestor').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;overflow-y:auto\">\n      <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px\">\n        <div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap\">\n          <select class=\"form-input\" id=\"rcgFiltroStatus\" onchange=\"rcgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os status</option><option value=\"aberta\">Aberta</option><option value=\"respondida\">Respondida</option><option value=\"resolvida\">Resolvida</option><option value=\"nao_resolvida\">Não resolvida</option><option value=\"improcedente\">Improcedente</option></select>\n          <select class=\"form-input\" id=\"rcgFiltroMes\" onchange=\"rcgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os meses</option></select>\n        </div>\n        <button class=\"export-btn\" onclick=\"rcgExportar()\" style=\"background:rgba(16,185,129,0.12);color:#10b981;border-color:rgba(16,185,129,0.3)\">Exportar relatório (CSV)</button>\n      </div>\n      <div id=\"rcgResumo\" style=\"display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px\"></div>\n      <div id=\"rcgLista\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL AVALIAÇÕES PASSAGEIROS -->\n<div class=\"modal-overlay\" id=\"modalAvaliacoes\">\n  <div class=\"modal\" style=\"max-width:900px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Avaliações dos Passageiros</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalAvaliacoes').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;overflow-y:auto\">\n      <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px\">\n        <div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap\">\n          <select class=\"form-input\" id=\"avFiltroLinha\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todas as linhas</option></select>\n          <select class=\"form-input\" id=\"avFiltroMes\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os meses</option></select>\n          <select class=\"form-input\" id=\"avFiltroNota\" onchange=\"avgRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todas as notas</option><option value=\"5\">5 </option><option value=\"4\">4 </option><option value=\"3\">3 </option><option value=\"2\">2 </option><option value=\"1\">1 </option><option value=\"baixa\">≤ 3 (atenção)</option></select>\n        </div>\n        <button class=\"export-btn\" onclick=\"avgExportar()\" style=\"background:rgba(16,185,129,0.12);color:#10b981;border-color:rgba(16,185,129,0.3)\">Exportar (CSV)</button>\n      </div>\n      <div id=\"avgResumo\" style=\"margin-bottom:16px\"></div>\n      <div id=\"avgLista\"><div style=\"text-align:center;color:var(--muted);padding:30px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n";
 
 // De onde este engine foi carregado. Sem isto, o engine de /motor/beta/
 // puxaria o CSS de producao e o ambiente de teste nao seria isolado.
 const MOTOR_BASE = (document.currentScript && document.currentScript.src)
   ? document.currentScript.src.replace(/[^/]+$/, '')
   : '/motor/';
-const TEMA_VERSAO = '2026-08-20-7';
+const TEMA_VERSAO = '2026-08-20-16';
 // Atencao: este bloco vive dentro de um IIFE que fecha na linha ~83.
 // Tudo depois disso e escopo global. Sem expor no window, qualquer uso
 // da versao la embaixo (o cache-buster do logo do PDF, por exemplo)
@@ -123,8 +123,12 @@ function loadGoogleMaps(key) {
 }
 
 // ============ APLICACAO ============
-const DESTINO = 'Av. Jerome Case, 2600 — Éden, Sorocaba-SP';
-const GARAGEM = 'R. Sebastiana Rosa Luposeli, 59 — Júlio de Mesquita Filho, Sorocaba-SP';
+// Endereços em TEXTO (telas e PDF). Eram fixos no código, mesmo depois de o
+// cadastro de pontos existir — então mudar a garagem movia a coordenada mas
+// o PDF continuava imprimindo o endereço antigo. Agora o cadastro alimenta
+// os dois. 'let' porque ptAplicarNoSistema atualiza em tempo de execução.
+let DESTINO = 'Av. Jerome Case, 2600 — Éden, Sorocaba-SP';
+let GARAGEM = 'R. Sebastiana Rosa Luposeli, 59 — Júlio de Mesquita Filho, Sorocaba-SP';
 
 // ============================================================
 // EMPRESA_CONFIG — configuração central da empresa (Fase 1)
@@ -169,6 +173,126 @@ const EMPRESA_CONFIG = {
 // (inclusive quando atualizado pelo Firebase via aplicarEmpresaConfig).
 const TURNOS_CHEGADA = EMPRESA_CONFIG.turnosChegada;
 
+// ==================================================================
+// CALENDÁRIO DOS TURNOS
+// ------------------------------------------------------------------
+// Um turno deixa de ser um horário e passa a ser uma regra por dia.
+// Quem quiser saber o horário de um dia pergunta a turnoNoDia().
+// ==================================================================
+
+const DIAS_SEMANA = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+const DIAS_NOME = { dom: 'Domingo', seg: 'Segunda', ter: 'Terça', qua: 'Quarta',
+                    qui: 'Quinta', sex: 'Sexta', sab: 'Sábado' };
+
+let TURNOS = [];
+
+// new Date('2026-08-22') é interpretado em UTC e no Brasil volta um dia.
+// Este é o erro clássico de calendário: a rota de sábado aparecendo na sexta.
+function turnoData(iso) {
+  if (iso instanceof Date) return iso;
+  const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return null;
+  return new Date(+m[1], +m[2] - 1, +m[3]);   // meia-noite local
+}
+
+function turnoDiaChave(iso) {
+  const d = turnoData(iso);
+  return d ? DIAS_SEMANA[d.getDay()] : null;
+}
+
+// Semanas inteiras entre duas datas, contando por dia e não por milissegundo:
+// horário de verão faz um dia ter 23 ou 25 horas.
+function turnoSemanasEntre(isoA, isoB) {
+  const a = turnoData(isoA), b = turnoData(isoB);
+  if (!a || !b) return null;
+  const dias = Math.round((b - a) / 86400000);
+  return Math.floor(dias / 7);
+}
+
+// Migra o mapa antigo sem mudar nada: o horário de hoje vira o padrão e
+// todos os dias operam.
+function turnosSemear() {
+  if (TURNOS.length) return TURNOS;
+  Object.keys(TURNOS_CHEGADA || {}).forEach(nome => {
+    TURNOS.push({
+      id: 'tn-' + nome.replace(/[^A-Za-z0-9]/g, '') || ('tn' + TURNOS.length),
+      nome: nome,
+      chegada: TURNOS_CHEGADA[nome] || '',
+      saida: '',
+      dias: {},          // vazio = todos os dias usam o padrão
+      alternado: null    // { dia:'sab', semanas:2, desde:'YYYY-MM-DD' }
+    });
+  });
+  return TURNOS;
+}
+
+function turnoPorNome(nome) {
+  turnosSemear();
+  return TURNOS.find(t => t.nome === nome) || null;
+}
+
+// A porta única. Devolve sempre um objeto — nunca null — para nenhum
+// chamador precisar tratar ausência.
+function turnoNoDia(nome, dataIso) {
+  const t = turnoPorNome(nome);
+  if (!t) {
+    // turno fora do cadastro: cai no mapa antigo, como sempre foi
+    const h = (TURNOS_CHEGADA || {})[nome] || '';
+    return { opera: true, chegada: h, saida: '', origem: 'legado', nome: nome };
+  }
+  const chave = turnoDiaChave(dataIso);
+  const regra = chave ? t.dias[chave] : undefined;
+
+  // dia explicitamente desligado
+  if (regra === false) {
+    return { opera: false, chegada: '', saida: '', origem: 'dia-desligado',
+             nome: nome, motivo: (DIAS_NOME[chave] || 'Este dia') + ' não opera neste turno.' };
+  }
+
+  // alternância: só vale para o dia configurado
+  if (t.alternado && chave === t.alternado.dia) {
+    const n = turnoSemanasEntre(t.alternado.desde, dataIso);
+    const passo = Math.max(1, parseInt(t.alternado.semanas, 10) || 2);
+    if (n === null) {
+      return { opera: true, chegada: (regra && regra.chegada) || t.chegada,
+               saida: (regra && regra.saida) || t.saida, origem: 'alternado-sem-referencia', nome: nome };
+    }
+    if (n < 0 || (n % passo) !== 0) {
+      return { opera: false, chegada: '', saida: '', origem: 'alternado',
+               nome: nome,
+               motivo: (DIAS_NOME[chave] || 'Este dia') + ' alternado: não é a vez deste turno.' };
+    }
+  }
+
+  const usa = (regra && typeof regra === 'object') ? regra : {};
+  return {
+    opera: true,
+    chegada: usa.chegada || t.chegada || '',
+    saida: usa.saida || t.saida || '',
+    origem: (usa.chegada || usa.saida) ? 'excecao-do-dia' : 'padrao',
+    nome: nome, dia: chave
+  };
+}
+
+// Quais turnos operam num dia. Serve para a tela de criar rota e, adiante,
+// para o app do motorista dizer "sem rota hoje" em vez de mostrar a de ontem.
+function turnosDoDia(dataIso) {
+  turnosSemear();
+  return TURNOS.map(t => Object.assign({ turno: t }, turnoNoDia(t.nome, dataIso)))
+               .filter(r => r.opera);
+}
+
+// Compatibilidade: quem só quer a chegada de hoje continua funcionando.
+function turnoChegada(nome, dataIso) {
+  const r = turnoNoDia(nome, dataIso || hojeLocal());
+  return r.opera ? r.chegada : '';
+}
+function turnoSaida(nome, dataIso) {
+  const r = turnoNoDia(nome, dataIso || hojeLocal());
+  return r.opera ? r.saida : '';
+}
+
+
 // Mescla a configuração vinda do Firebase (doc 'config') sobre os padrões,
 // sem perder nada que não tenha sido configurado. Chamado em loadData().
 function aplicarEmpresaConfig(cfgFirebase) {
@@ -198,6 +322,14 @@ function aplicarEmpresaConfig(cfgFirebase) {
     }
   } catch (e) { console.warn('operacaoNome config:', e); }
 
+  // Turnos (calendário). Sem cadastro, os turnos atuais são migrados.
+  try {
+    if (cfgFirebase && Array.isArray(cfgFirebase.turnos) && cfgFirebase.turnos.length) {
+      TURNOS = cfgFirebase.turnos;
+    }
+    turnosSemear();
+  } catch (e) { console.warn('turnos config:', e); }
+
   // Pontos de origem e destino
   try {
     if (cfgFirebase && Array.isArray(cfgFirebase.pontos) && cfgFirebase.pontos.length) {
@@ -214,7 +346,10 @@ function aplicarEmpresaConfig(cfgFirebase) {
   // Aplica a chave salva na nuvem mesmo que ainda não exista config de empresa,
   // e replica no localStorage para acelerar os próximos carregamentos neste navegador.
   try {
-    if (cfgFirebase.mapsApiKey && typeof cfgFirebase.mapsApiKey === 'string') {
+    // RESERVA: so vale se a casca ainda nao trouxer a chave.
+    if (!chaveDaCasca() && cfgFirebase.mapsApiKey && typeof cfgFirebase.mapsApiKey === 'string') {
+      console.warn('[temvia] Chave do Maps veio do Firestore. ' +
+                   'Publique mapsKey na casca desta operacao.');
       MAPS_API_KEY = cfgFirebase.mapsApiKey;
       try { localStorage.setItem('redentor_maps_key', cfgFirebase.mapsApiKey); } catch(_) {}
     }
@@ -345,6 +480,52 @@ function tvIrParaLinhas() {
 
 // Hierarquia de marca: temvia e sempre o produto; a transportadora e contexto.
 // O nome vem do cadastro da operacao (casca/config) — nada hardcoded.
+// ---------------- Seletor de cliente ----------------
+// A lista vem da casca: é ela que sabe quem são seus vizinhos. O engine é o
+// mesmo para todos, então ele não tem como adivinhar.
+function tvOperacoesIrmas() {
+  const lista = Array.isArray(C.operacoes) ? C.operacoes.slice() : [];
+  // sem cadastro na casca, ao menos a operação atual aparece
+  if (!lista.some(o => o.id === C.clienteId)) {
+    lista.unshift({ id: C.clienteId, nome: C.empresaNome || C.marca, path: C.pathPrefix });
+  }
+  return lista;
+}
+
+function tvRenderMenuCliente() {
+  const box = document.getElementById('tvUserMenu');
+  if (!box) return;
+  const ops = tvOperacoesIrmas();
+  let h = '';
+  if (ops.length > 1) {
+    h += '<div class="tv-menu-tit">Trocar de cliente</div>';
+    ops.forEach(o => {
+      const atual = o.id === C.clienteId;
+      h += '<button type="button"' + (atual ? ' class="on" disabled' : '') +
+        ' onclick="tvTrocarCliente(\'' + o.id + '\')">' +
+        '<span class="tv-menu-bola"' + (o.cor ? ' style="background:' + o.cor + '"' : '') + '></span>' +
+        esc(o.nome) + (atual ? '<small>aqui</small>' : '') + '</button>';
+    });
+    h += '<div class="tv-menu-sep"></div>';
+  }
+  h += '<button type="button" onclick="logout()">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d=\'M15 17l5-5-5-5M20 12H9M11 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5\'/></svg>Sair</button>';
+  box.innerHTML = h;
+}
+
+// Trocar de cliente é recarregar na casca do outro. Dentro do mesmo projeto
+// Firebase a sessão continua valendo, então não pede login de novo.
+function tvTrocarCliente(id) {
+  const o = tvOperacoesIrmas().find(x => x.id === id);
+  if (!o || o.id === C.clienteId) return;
+  if (typeof temAlteracaoPendente === 'function' && temAlteracaoPendente() &&
+      !confirm('Há alterações não salvas. Trocar para ' + o.nome + ' mesmo assim?')) return;
+  try { localStorage.setItem('temvia_ultima_operacao', o.id); } catch (e) {}
+  window.location.href = o.path + 'index.html';
+}
+
 function tvAplicarContextoConta() {
   var nome = (typeof EMPRESA_CONFIG !== 'undefined' && EMPRESA_CONFIG && EMPRESA_CONFIG.nome)
     ? EMPRESA_CONFIG.nome : (C.empresaNome || C.marca || '');
@@ -355,6 +536,18 @@ function tvAplicarContextoConta() {
   }
   // Quem está sendo atendido. Sem cadastro, cai no nome da pasta da operação
   // (DSV, Evamo) — assim a linha nunca fica vazia nem inventa informação.
+  // O rodapé dizia "Gestor / Administrador" — não muda e não ajuda. Passa a
+  // dizer qual cliente está aberto, que é a dúvida real de quem atende vários.
+  var elNome = document.getElementById('tvUserNome');
+  var elPapel = document.getElementById('tvUserPapel');
+  var opAtual = tvOperacoesIrmas().find(function (o) { return o.id === C.clienteId; });
+  if (elNome) elNome.textContent = (opAtual && opAtual.nome) || C.empresaNome || C.marca || '—';
+  if (elPapel) elPapel.textContent = nome || 'Gestor';
+  var elAv = document.getElementById('tvAvatar');
+  if (elAv) elAv.textContent = ((opAtual && opAtual.nome) || C.marca || '--')
+    .replace(/[^A-Za-zÀ-ÿ ]/g, '').trim().slice(0, 2).toUpperCase();
+  tvRenderMenuCliente();
+
   var elOp = document.getElementById('tvOperacaoAtendida');
   if (elOp) {
     var op = (typeof EMPRESA_CONFIG !== 'undefined' && EMPRESA_CONFIG && EMPRESA_CONFIG.operacaoNome)
@@ -1043,15 +1236,21 @@ function glPopularTurnos() {
   const atual = sel.value;
   const turnos = [];
   const add = (t) => { if (t && turnos.indexOf(t) === -1) turnos.push(t); };
-  ['1°', '2°', '3°'].forEach(add);            // padrões sempre disponíveis
-  DATA.forEach(r => add(r.turno));            // turnos já usados nas linhas
+  // O turno agora tem cadastro próprio (Configurações › Operação). Digitar um
+  // nome aqui criaria turno sem horário, sem dias e sem calendário — o que o
+  // motorista e o passageiro precisam ler. A lista vem só do cadastro.
+  try { turnosSemear(); TURNOS.forEach(t => add(t.nome)); } catch (e) {}
+  DATA.forEach(r => add(r.turno));            // e os já usados, para não sumir nenhum
   const ordemPadrao = { '1°': 1, '2°': 2, '3°': 3, 'ADM': 4 };
   turnos.sort((a, b) => (ordemPadrao[a] || 99) - (ordemPadrao[b] || 99) || String(a).localeCompare(String(b)));
   const rotulo = (t) => (t === 'ADM' ? 'ADM' : t + (/^\d/.test(t) ? ' Turno' : ''));
   let html = '';
   turnos.forEach(t => { html += '<option value="' + esc(t) + '">' + esc(rotulo(t)) + '</option>'; });
-  html += '<option value="__novo__">Outro turno (digitar)</option>';
   sel.innerHTML = html;
+  const dica = document.getElementById('glTurnoDica');
+  if (dica) dica.innerHTML = 'Para criar ou mudar um turno, use ' +
+    '<a href="#" onclick="document.getElementById(\'modalGerLinhas\').classList.remove(\'open\');' +
+    'openConfig();cfgIr(\'oper\');return false" style="color:var(--accent)">Configurações › Operação</a>.';
   if (atual && Array.from(sel.options).some(o => o.value === atual)) sel.value = atual;
 }
 
@@ -1066,7 +1265,8 @@ function openGerLinhas() {
   // toggle do campo "turno novo"
   const selT = document.getElementById('glTurno');
   selT.onchange = function() {
-    document.getElementById('glTurnoNovoGroup').style.display = (selT.value === '__novo__') ? 'block' : 'none';
+    const _g = document.getElementById('glTurnoNovoGroup');
+    if (_g) _g.style.display = (selT.value === '__novo__') ? 'block' : 'none';
   };
   document.getElementById('modalGerLinhas').classList.add('open');
 }
@@ -1077,8 +1277,9 @@ function glResetForm() {
   document.getElementById('glFormTitulo').textContent = 'Criar nova linha';
   document.getElementById('glLinha').value = '';
   document.getElementById('glTurno').value = '1°';
-  document.getElementById('glTurnoNovo').value = '';
-  document.getElementById('glTurnoNovoGroup').style.display = 'none';
+  // o campo de digitar turno saiu: o turno agora vem do cadastro
+  const _tn = document.getElementById('glTurnoNovo'); if (_tn) _tn.value = '';
+  const _tg = document.getElementById('glTurnoNovoGroup'); if (_tg) _tg.style.display = 'none';
   document.getElementById('glVeiculo').value = 'Van';
   document.getElementById('glMotorista').value = '';
   document.getElementById('glBtnSalvar').textContent = 'Criar linha';
@@ -1134,8 +1335,8 @@ function glSetCor(c) { glCorSel = c || ''; glRenderCores(); }
 function glSalvar() {
   const linhaRaw = document.getElementById('glLinha').value.trim();
   let turno = document.getElementById('glTurno').value;
-  if (turno === '__novo__') {
-    turno = document.getElementById('glTurnoNovo').value.trim();
+  if (turno === '__novo__') {   // caminho antigo: não existe mais na tela
+    turno = (document.getElementById('glTurnoNovo') || { value: '' }).value.trim();
     if (!turno) { glMsg('Digite o nome do novo turno.', true); return; }
   }
   // O select guarda o id do veiculo quando ha frota; sem frota, guarda o rotulo
@@ -1219,7 +1420,8 @@ function glEditar(id) {
   const existeNaLista = Array.from(selT.options).some(o => o.value === rota.turno);
   if (existeNaLista) {
     selT.value = rota.turno;
-    document.getElementById('glTurnoNovoGroup').style.display = 'none';
+    const _g2 = document.getElementById('glTurnoNovoGroup');
+    if (_g2) _g2.style.display = 'none';
   } else {
     selT.value = '__novo__';
     document.getElementById('glTurnoNovoGroup').style.display = 'block';
@@ -1277,6 +1479,8 @@ function popularTurnoOptions() {
   const atual = sel.value; // preserva seleção atual, se houver
   // Coleta turnos distintos presentes nas linhas cadastradas
   const turnos = [];
+  // mesma fonte do Gerenciar Linhas: o cadastro manda, as linhas complementam
+  try { turnosSemear(); TURNOS.forEach(t => { if (turnos.indexOf(t.nome) === -1) turnos.push(t.nome); }); } catch (e) {}
   DATA.forEach(r => { if (r.turno && turnos.indexOf(r.turno) === -1) turnos.push(r.turno); });
   // Ordena pelos turnos padrão primeiro, depois alfabético para os customizados
   const ordemPadrao = { '1°': 1, '2°': 2, '3°': 3, 'ADM': 4 };
@@ -1686,11 +1890,11 @@ function renderMotoristaList() {
         '<div class="motorista-avatar"></div>' +
         '<div style="flex:1">' +
           '<div class="motorista-nome">' + m.nome + '</div>' +
-          '<div class="motorista-tel">' + (m.tel || '—') + (pinAtivo(m) ? ' · PIN definido' : ' · <span style=\"color:var(--muted)\">sem PIN</span>') + '</div>' +
+          '<div class="motorista-tel">' + (m.tel || '\u2014') + ' \u00b7 ' + estadoAcessoTexto(m) + '</div>' +
           (todasLinhas ? '<div class="motorista-linhas">' + todasLinhas + '</div>' : '') +
         '</div>' +
         '<div style="display:flex;gap:4px">' +
-          (pinAtivo(m) ? '<button class="action-btn" onclick="zerarPinMotorista(' + m.id + ')" title="Zerar PIN" style="color:var(--accent)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/><path d="m15.5 7.5 3 3"/></svg></button>' : '') +
+          botoesAcesso(m) +
           '<button class="action-btn" onclick="startMotoEdit(' + m.id + ')" title="Editar" style="color:var(--accent2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>' +
           '<button class="action-btn" onclick="removeMotorista(' + m.id + ')" title="Remover" style="color:var(--red)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
         '</div>';
@@ -2611,8 +2815,43 @@ function aplicarOtimizacao() {
 // ---- API KEY CONFIG ----
 let MAPS_API_KEY = '';
 
+// ---------------------------------------------------------------------------
+// CHAVE DO GOOGLE MAPS
+// Infraestrutura da temvia, nao configuracao da operacao. A fonte e a casca
+// (arquivo do repositorio, so a temvia edita). Nao ha editor em tela nenhuma.
+//
+// TRANSICAO: enquanto houver casca sem `mapsKey`, o Firestore e o localStorage
+// continuam valendo como reserva de LEITURA, com aviso no console. Remover as
+// duas reservas assim que todas as operacoes estiverem publicadas.
+// ---------------------------------------------------------------------------
+function chaveFirebaseLocal() {
+  try { return (C && C.fb && C.fb.apiKey) || ''; } catch (e) { return ''; }
+}
+
+function chaveDaCasca() {
+  try {
+    var k = window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.mapsKey;
+    return (typeof k === 'string' && k.indexOf('AIza') === 0) ? k : '';
+  } catch (e) { return ''; }
+}
+
 function getApiKey() {
-  if (!MAPS_API_KEY) MAPS_API_KEY = localStorage.getItem('redentor_maps_key') || '';
+  if (MAPS_API_KEY) return MAPS_API_KEY;
+
+  var daCasca = chaveDaCasca();
+  if (daCasca) { MAPS_API_KEY = daCasca; return MAPS_API_KEY; }
+
+  // --- reserva temporaria ---
+  var cache = '';
+  try { cache = localStorage.getItem('redentor_maps_key') || ''; } catch (e) {}
+  if (cache && cache !== chaveFirebaseLocal()) {
+    console.warn('[temvia] Chave do Maps veio do cache local. ' +
+                 'Publique mapsKey na casca desta operacao.');
+    MAPS_API_KEY = cache;
+  } else if (cache === chaveFirebaseLocal()) {
+    // Cache corrompido de versoes antigas guardava a chave do Firebase aqui.
+    try { localStorage.removeItem('redentor_maps_key'); } catch (e) {}
+  }
   return MAPS_API_KEY;
 }
 
@@ -2732,7 +2971,119 @@ function ocRestaurarPadroes() {
   ocMsg('Padrões restaurados. Clique em salvar para gravar no servidor.', false);
 }
 
+// A coluna agrupa as seções que já existem: marca cada bloco com a seção a
+// que pertence e mostra uma de cada vez. Sem reescrever o conteúdo — só a
+// navegação, que é onde estava o problema.
+const CFG_SECOES = [["oper", "Operação", "Dados da empresa e horários dos turnos", ["DADOS DA EMPRESA", "Horários de chegada por turno"]], ["pontos", "Pontos", "Origem e destino das rotas", ["Pontos de origem e destino"]], ["frota", "Frota", "Veículos e capacidades", ["Frota"]], ["otim", "Otimização", "Regras do planejamento de rotas", ["Otimização de rotas"]], ["acesso", "Acesso", "Chave do Google Maps e logins", ["GOOGLE MAPS API KEY", "LOGINS DA EMPRESA CLIENTE"]], ["dados", "Dados", "Backup e restauração", []]];
+let CFG_ATUAL = 'oper';
+
+function cfgClassificar() {
+  const cont = document.getElementById('cfgConteudo');
+  if (!cont || cont.dataset.pronto) return;
+
+  // Passo 1: herança pelo título. Serve para os campos, que não têm ação.
+  const alvos = {};
+  CFG_SECOES.forEach(([k, , , lista]) => lista.forEach(a => { alvos[a.toLowerCase()] = k; }));
+  const pais = new Set();
+  cont.querySelectorAll('.opt-title').forEach(t => pais.add(t.parentElement));
+  let sec = 'oper';
+  pais.forEach(pai => {
+    [...pai.children].forEach(el => {
+      if (el.classList.contains('opt-title')) {
+        const txt = (el.textContent || '').trim().toLowerCase();
+        const achou = Object.keys(alvos).find(a => txt.indexOf(a) === 0);
+        if (achou) sec = alvos[achou];
+      }
+      el.dataset.sec = sec;
+    });
+  });
+
+  // Passo 2: quem TEM ação é classificado pela ação, não pela posição.
+  // Herdar do título anterior punha "Salvar dados da empresa" em Pontos e
+  // "Restaurar padrões" em Dados — só porque vinham depois na página.
+  const porAcao = {
+    criarAcessoCliente: 'acesso',
+    salvarEmpresaConfig: 'oper',
+    ptSalvar: 'pontos', ptCancelar: 'pontos',
+    frSalvar: 'frota', frCancelar: 'frota',
+    ocSalvar: 'otim', ocRestaurarPadroes: 'otim',
+    exportBackup: 'dados', importBackup: 'dados'
+  };
+  [...cont.querySelectorAll('*')].forEach(el => {
+    const acoes = [el].concat([...el.querySelectorAll('[onclick],[onchange]')])
+      .map(x => (x.getAttribute && (x.getAttribute('onclick') || x.getAttribute('onchange'))) || '')
+      .join(' ');
+    const achadas = Object.keys(porAcao).filter(fn => acoes.indexOf(fn + '(') >= 0);
+    // só decide quando todas as ações do bloco pertencem à MESMA seção
+    const secs = [...new Set(achadas.map(fn => porAcao[fn]))];
+    if (secs.length === 1) el.dataset.sec = secs[0];
+  });
+
+  // Passo 3: marcação explícita vence tudo.
+  cont.querySelectorAll('[data-sec-fixa]').forEach(el => { el.dataset.sec = el.dataset.secFixa; });
+
+  [...cont.children].forEach(el => { if (!el.dataset.sec) el.dataset.sec = 'oper'; });
+  cont.dataset.pronto = '1';
+}
+
+function cfgIr(k) {
+  if (CFG_ATUAL !== k) ['ocMsg', 'ptMsg', 'frMsg'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.textContent = '';
+  });
+  CFG_ATUAL = k;
+  cfgClassificar();
+  const cont = document.getElementById('cfgConteudo');
+  // Duas regras, nesta ordem:
+  //  1. cada bloco marcado aparece só na sua seção;
+  //  2. quem é apenas caminho até um bloco visível reabre.
+  // Sem a regra 2, os contêineres somem e levam o conteúdo junto. Sem a
+  // regra 1, um contêiner visível arrasta irmãos de outras seções — foi
+  // assim que o backup apareceu dentro de Otimização.
+  if (cont) {
+    cont.querySelectorAll('[data-sec]').forEach(el => {
+      el.style.display = (el.dataset.sec === k) ? '' : 'none';
+    });
+    cont.querySelectorAll('[data-sec="' + k + '"]').forEach(el => {
+      let n = el.parentElement;
+      // .cfg-oculto e escondido de proposito: campos legados que so existem
+      // para o salvar continuar lendo. Reabri-los mostrava coordenada solta.
+      while (n && n !== cont) {
+        if (!n.classList.contains('cfg-oculto')) n.style.display = '';
+        n = n.parentElement;
+      }
+    });
+    [...cont.children].forEach(el => {
+      if (el.dataset.sec === k) return;
+      if (!el.querySelector('[data-sec="' + k + '"]')) el.style.display = 'none';
+    });
+  }
+  document.querySelectorAll('.cfg-passo').forEach(b =>
+    b.classList.toggle('on', b.dataset.sec === k));
+  const body = cont && cont.closest('.modal-body');
+  if (body) body.scrollTop = 0;
+}
+
+function cfgCabecalho() {
+  const el = document.getElementById('cfgTopo');
+  if (!el) return;
+  const op = tvOperacoesIrmas().find(o => o.id === C.clienteId);
+  el.innerHTML = '<span>Estas configurações valem para</span><b>' +
+    esc((op && op.nome) || C.empresaNome || C.marca) + '</b>' +
+    '<code>' + esc(C.clienteId) + '</code>';
+}
+
 function openConfig() {
+  tnLimparForm();
+  tnRenderLista();
+  try { tnAplicarNoSistema(); } catch (e) {}
+  // Aviso de "salvo" é de um clique específico. Ao reabrir a tela ele não
+  // vale mais — ficava lá dizendo que algo foi salvo agora há pouco.
+  ['ocMsg', 'ptMsg', 'frMsg', 'cfgMsg', 'apiKeyMsg'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.className = el.className.replace(/\b(success|error)\b/g, ''); }
+  });
+  cfgCabecalho();
+  cfgIr(CFG_ATUAL);
   ocPreencher();
   ptLimparForm();
   ptRenderLista();
@@ -2741,15 +3092,6 @@ function openConfig() {
         if (_op) _op.value = EMPRESA_CONFIG.operacaoNome || ''; } catch (e) {}
   frLimparForm();
   frRenderLista();
-  const saved = localStorage.getItem('redentor_maps_key') || '';
-  const inp = document.getElementById('fApiKey');
-  if (inp) inp.value = saved ? '••••••••••••••••' : '';
-  const status = document.getElementById('apiKeyStatus');
-  if (status) {
-    status.textContent = saved ? 'Chave salva. Google Maps pronto para uso.' : 'Nenhuma chave configurada.';
-    status.className = 'opt-status ' + (saved ? 'success' : '');
-  }
-  MAPS_API_KEY = saved;
   // Preencher campos de Dados da Empresa com os valores atuais
   try {
     const c = EMPRESA_CONFIG;
@@ -2768,40 +3110,262 @@ function openConfig() {
   document.getElementById('modalConfig').classList.add('open');
 }
 
-async function saveApiKey() {
-  const val = document.getElementById('fApiKey').value.trim();
-  if (!val || val.startsWith('•')) {
-    document.getElementById('apiKeyStatus').textContent = 'Digite a chave para salvar.';
-    document.getElementById('apiKeyStatus').className = 'opt-status error';
-    return;
-  }
-  if (!val.startsWith('AIza')) {
-    document.getElementById('apiKeyStatus').textContent = 'Chave inválida. Deve começar com AIza...';
-    document.getElementById('apiKeyStatus').className = 'opt-status error';
-    return;
-  }
-  localStorage.setItem('redentor_maps_key', val);
-  MAPS_API_KEY = val;
-  document.getElementById('apiKeyStatus').textContent = 'Salvando no servidor...';
-  document.getElementById('apiKeyStatus').className = 'opt-status';
-  // Salvar também no Firebase para que cliente.html possa ler
-  try {
-    if (!fbDb) await initFirebase();
-    if (fbDb) {
-      const { setDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      const configRef = doc(fbDb, CLIENTE_ID, 'config');
-      await setDoc(configRef, { mapsApiKey: val, updatedAt: new Date().toISOString() }, { merge: true });
-      document.getElementById('apiKeyStatus').textContent = 'Chave salva localmente e no servidor!';
-    } else {
-      document.getElementById('apiKeyStatus').textContent = 'Chave salva localmente (Firebase indisponível)';
+// 1E: salva os dados da empresa (nome, horários, coordenadas) no config do Firebase
+// ---------------- Cadastro de turnos (Config > Operação) ----------------
+// Compacto: o turno normal ocupa duas linhas. Só o que difere do padrão
+// aparece — sete dias por turno em quatro turnos seriam 28 linhas na tela.
+
+let tnEditandoId = null;
+let tnRascunhoDias = {};      // exceções em edição
+let tnRascunhoAlt = null;     // alternância em edição
+
+function tnResumo(t) {
+  const partes = [];
+  DIAS_SEMANA.forEach(d => {
+    const r = t.dias[d];
+    if (r === false) partes.push(DIAS_NOME[d] + ' não opera');
+    else if (r && typeof r === 'object') {
+      const p = [];
+      if (r.chegada) p.push('chega ' + r.chegada);
+      if (r.saida) p.push('sai ' + r.saida);
+      if (p.length) partes.push(DIAS_NOME[d] + ' ' + p.join(' e '));
     }
-  } catch(e) {
-    document.getElementById('apiKeyStatus').textContent = 'Chave salva localmente (erro ao sincronizar: ' + e.message + ')';
+  });
+  if (t.alternado && t.alternado.dia) {
+    partes.push(DIAS_NOME[t.alternado.dia] + ' a cada ' + (t.alternado.semanas || 2) +
+      ' semanas' + (t.alternado.desde ? ' desde ' + tnDataBr(t.alternado.desde) : ''));
   }
-  document.getElementById('apiKeyStatus').className = 'opt-status success';
+  return partes.length ? partes.join(' · ') : 'Todos os dias no horário padrão';
+}
+function tnDataBr(iso) {
+  const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? (m[3] + '/' + m[2]) : iso;
 }
 
-// 1E: salva os dados da empresa (nome, horários, coordenadas) no config do Firebase
+function tnRenderLista() {
+  const box = document.getElementById('tnLista');
+  if (!box) return;
+  turnosSemear();
+  if (!TURNOS.length) {
+    box.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:10px;' +
+      'border:1px dashed var(--border);border-radius:10px">Nenhum turno cadastrado.</div>';
+    return;
+  }
+  box.innerHTML = TURNOS.map(t =>
+    '<div class="fr-item">' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-weight:600;font-size:13px">' + esc(t.nome) + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted)">' + esc(tnResumo(t)) + '</div>' +
+      '</div>' +
+      '<div class="fr-cap" style="font-size:11px;font-weight:600">' +
+        (t.chegada || '—') + '<span>' + (t.saida || 'sem saída') + '</span></div>' +
+      '<button onclick="tnEditar(\'' + t.id + '\')" class="ico-btn ico-editar" title="Editar turno" aria-label="Editar turno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="M14.5 6.5 17.5 9.5"/></svg></button>' +
+      '<button onclick="tnExcluir(\'' + t.id + '\')" class="ico-btn ico-excluir" title="Excluir turno" aria-label="Excluir turno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9.5 7V5h5v2M6.5 7l.8 13h9.4l.8-13"/><path d="M10 11v6M14 11v6"/></svg></button>' +
+    '</div>').join('');
+}
+
+// As exceções só aparecem quando existem. O botão de acrescentar fica sempre.
+function tnRenderExcecoes() {
+  const box = document.getElementById('tnExcecoes');
+  if (!box) return;
+  let h = '<div class="tn-exc-tit">Exceções por dia <span>o que difere do horário padrão</span></div>';
+  const linhas = [];
+  DIAS_SEMANA.forEach(d => {
+    const r = tnRascunhoDias[d];
+    if (r === undefined) return;
+    linhas.push('<div class="tn-exc">' +
+      '<b>' + DIAS_NOME[d] + '</b>' +
+      '<select class="form-input" onchange="tnMudarTipo(\'' + d + '\', this.value)">' +
+        '<option value="horario"' + (r !== false ? ' selected' : '') + '>Horário próprio</option>' +
+        '<option value="folga"' + (r === false ? ' selected' : '') + '>Não opera</option>' +
+      '</select>' +
+      (r === false ? '<span class="tn-exc-obs">nenhuma rota neste dia</span>' :
+        '<input class="form-input" type="time" value="' + ((r && r.chegada) || '') + '" ' +
+          'onchange="tnMudarHora(\'' + d + '\', \'chegada\', this.value)" title="Chegada">' +
+        '<input class="form-input" type="time" value="' + ((r && r.saida) || '') + '" ' +
+          'onchange="tnMudarHora(\'' + d + '\', \'saida\', this.value)" title="Saída">') +
+      '<button class="ico-btn ico-excluir" onclick="tnRemoverExcecao(\'' + d + '\')" ' +
+        'title="Remover exceção" aria-label="Remover exceção">×</button>' +
+      '</div>');
+  });
+  h += linhas.length ? linhas.join('') :
+    '<div class="tn-exc-vazio">Nenhuma exceção: todos os dias usam o horário padrão.</div>';
+
+  h += '<div class="tn-exc-add">' +
+    '<select class="form-input" id="tnNovoDia">' +
+      DIAS_SEMANA.filter(d => tnRascunhoDias[d] === undefined)
+        .map(d => '<option value="' + d + '">' + DIAS_NOME[d] + '</option>').join('') +
+    '</select>' +
+    '<button class="export-btn" onclick="tnAddExcecao()">Acrescentar exceção</button>' +
+    '</div>';
+
+  // alternância
+  const alt = tnRascunhoAlt || {};
+  h += '<div class="tn-exc-tit" style="margin-top:12px">Dia alternado ' +
+       '<span>sábado sim, sábado não — e o outro turno na semana seguinte</span></div>';
+  h += '<div class="tn-alt">' +
+    '<label class="pl-check"><input type="checkbox" id="tnAltOn"' + (tnRascunhoAlt ? ' checked' : '') +
+      ' onchange="tnAltToggle()"> Este turno opera em semanas alternadas num dia</label>' +
+    (tnRascunhoAlt ?
+      '<div class="tn-alt-campos">' +
+        '<select class="form-input" onchange="tnAltCampo(\'dia\', this.value)">' +
+          DIAS_SEMANA.map(d => '<option value="' + d + '"' + (alt.dia === d ? ' selected' : '') +
+            '>' + DIAS_NOME[d] + '</option>').join('') +
+        '</select>' +
+        '<span>a cada</span>' +
+        '<input class="form-input" type="number" min="1" max="8" value="' + (alt.semanas || 2) + '" ' +
+          'onchange="tnAltCampo(\'semanas\', this.value)" style="width:64px">' +
+        '<span>semanas, a partir de</span>' +
+        '<input class="form-input" type="date" value="' + (alt.desde || '') + '" ' +
+          'onchange="tnAltCampo(\'desde\', this.value)">' +
+      '</div>' +
+      '<div class="tn-exc-vazio">Escolha um dia em que este turno realmente opera. Para revezar ' +
+      'com outro turno, use a mesma data mais uma semana no outro.</div>'
+      : '') +
+    '</div>';
+  box.innerHTML = h;
+}
+
+function tnAddExcecao() {
+  const d = (document.getElementById('tnNovoDia') || {}).value;
+  if (!d) return;
+  tnRascunhoDias[d] = { chegada: '', saida: '' };
+  tnRenderExcecoes();
+}
+function tnRemoverExcecao(d) { delete tnRascunhoDias[d]; tnRenderExcecoes(); }
+function tnMudarTipo(d, v) {
+  tnRascunhoDias[d] = (v === 'folga') ? false : { chegada: '', saida: '' };
+  tnRenderExcecoes();
+}
+function tnMudarHora(d, campo, v) {
+  if (!tnRascunhoDias[d] || typeof tnRascunhoDias[d] !== 'object') tnRascunhoDias[d] = {};
+  tnRascunhoDias[d][campo] = v;
+}
+function tnAltToggle() {
+  const on = (document.getElementById('tnAltOn') || {}).checked;
+  tnRascunhoAlt = on ? { dia: 'sab', semanas: 2, desde: '' } : null;
+  tnRenderExcecoes();
+}
+function tnAltCampo(campo, v) {
+  if (!tnRascunhoAlt) return;
+  tnRascunhoAlt[campo] = (campo === 'semanas') ? (parseInt(v, 10) || 2) : v;
+}
+
+function tnMsg(txt, erro) {
+  const el = document.getElementById('tnMsg');
+  if (!el) return;
+  el.textContent = txt || '';
+  el.style.color = erro ? 'var(--red)' : 'var(--green)';
+}
+
+function tnLimparForm() {
+  tnEditandoId = null;
+  tnRascunhoDias = {};
+  tnRascunhoAlt = null;
+  ['tnNome', 'tnChegada', 'tnSaida'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  const b = document.getElementById('tnBtnSalvar'); if (b) b.textContent = 'Adicionar turno';
+  const c = document.getElementById('tnBtnCancelar'); if (c) c.style.display = 'none';
+  tnRenderExcecoes();
+}
+function tnCancelar() { tnLimparForm(); tnMsg(''); }
+
+function tnEditar(id) {
+  const t = TURNOS.find(x => x.id === id);
+  if (!t) return;
+  tnEditandoId = id;
+  document.getElementById('tnNome').value = t.nome || '';
+  document.getElementById('tnChegada').value = t.chegada || '';
+  document.getElementById('tnSaida').value = t.saida || '';
+  tnRascunhoDias = JSON.parse(JSON.stringify(t.dias || {}));
+  tnRascunhoAlt = t.alternado ? JSON.parse(JSON.stringify(t.alternado)) : null;
+  document.getElementById('tnBtnSalvar').textContent = 'Salvar alterações';
+  document.getElementById('tnBtnCancelar').style.display = '';
+  tnRenderExcecoes();
+  tnMsg('Editando ' + t.nome + '.', false);
+  const campo = document.getElementById('tnNome');
+  if (campo) campo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function tnSalvar() {
+  const nome = (document.getElementById('tnNome').value || '').trim();
+  const chegada = document.getElementById('tnChegada').value;
+  const saida = document.getElementById('tnSaida').value;
+  if (!nome) { tnMsg('Dê um nome ao turno.', true); return; }
+  if (!chegada && !saida) { tnMsg('Informe ao menos um horário: chegada ou saída.', true); return; }
+  const repetido = TURNOS.find(t => t.nome === nome && t.id !== tnEditandoId);
+  if (repetido) { tnMsg('Já existe um turno chamado "' + nome + '".', true); return; }
+  if (tnRascunhoAlt && !tnRascunhoAlt.desde) {
+    tnMsg('O dia alternado precisa de uma data de referência — um dia em que ele realmente opera.', true);
+    return;
+  }
+
+  const dados = { nome: nome, chegada: chegada, saida: saida,
+                  dias: tnRascunhoDias, alternado: tnRascunhoAlt };
+  if (tnEditandoId) {
+    const t = TURNOS.find(x => x.id === tnEditandoId);
+    const antigo = t.nome;
+    Object.assign(t, dados);
+    // renomear turno mexeria nas linhas: por ora, mantemos o nome ligado
+    if (antigo !== nome) {
+      DATA.forEach(r => { if (r.turno === antigo) r.turno = nome; });
+      logChange('alteracao', 'Turno ' + antigo, antigo, nome, 'Renomeado nas linhas também');
+    }
+    logChange('alteracao', 'Turno ' + nome, '—', tnResumo(t), '');
+  } else {
+    TURNOS.push(Object.assign({ id: 'tn' + Date.now().toString(36) }, dados));
+    logChange('inclusao', 'Turno ' + nome, '—', 'Novo turno cadastrado', '');
+  }
+  tnAplicarNoSistema();
+  tnSalvarNaNuvem();
+  tnLimparForm();
+  tnRenderLista();
+  tnMsg('Turnos atualizados.', false);
+}
+
+function tnExcluir(id) {
+  const t = TURNOS.find(x => x.id === id);
+  if (!t) return;
+  const emUso = DATA.filter(r => r.turno === t.nome).length;
+  if (emUso) {
+    tnMsg('Não dá para excluir: ' + emUso + ' linha(s) usam o turno "' + t.nome + '".', true);
+    return;
+  }
+  if (!confirm('Excluir o turno ' + t.nome + '?')) return;
+  TURNOS = TURNOS.filter(x => x.id !== id);
+  logChange('exclusao', 'Turno ' + t.nome, t.nome, '—', '');
+  tnAplicarNoSistema();
+  tnSalvarNaNuvem();
+  tnRenderLista();
+  tnMsg('Turno removido.', false);
+}
+
+// Sete lugares do sistema leem TURNOS_CHEGADA. Mantê-lo em sincronia é o que
+// permite trocar o modelo sem reescrever todos eles de uma vez.
+function tnAplicarNoSistema() {
+  Object.keys(TURNOS_CHEGADA).forEach(k => { delete TURNOS_CHEGADA[k]; });
+  TURNOS.forEach(t => { TURNOS_CHEGADA[t.nome] = t.chegada || ''; });
+  // e os campos escondidos que salvarEmpresaConfig ainda lê
+  const par = [['cfgT1', '1°'], ['cfgT2', '2°'], ['cfgT3', '3°'], ['cfgTA', 'ADM']];
+  par.forEach(([id, nome]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = TURNOS_CHEGADA[nome] || '';
+  });
+}
+
+async function tnSalvarNaNuvem() {
+  try {
+    if (!fbDb) await initFirebase();
+    if (!fbDb) { tnMsg('Salvo nesta sessão, mas o servidor está indisponível.', true); return; }
+    const { setDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await setDoc(doc(fbDb, CLIENTE_ID, 'config'),
+      { turnos: TURNOS, updatedAt: new Date().toISOString() }, { merge: true });
+  } catch (e) {
+    tnMsg('Salvo nesta sessão (erro ao gravar no servidor: ' + e.message + ')', true);
+  }
+}
+
 // ---------------- Cadastro de pontos (Config) ----------------
 // Origem e destino deixam de ser duas variaveis presas no codigo. Enquanto os
 // seletores por rota nao chegam, a garagem e o destino do sistema continuam
@@ -2927,9 +3491,12 @@ function ptAplicarNoSistema() {
   const emp = PONTOS.find(p => p.tipo === 'empresa');
   if (gar) { EMPRESA_CONFIG.garagem.lat = gar.lat; EMPRESA_CONFIG.garagem.lng = gar.lng;
              if (gar.endereco) EMPRESA_CONFIG.garagem.endereco = gar.endereco; }
+  // e o texto que vai para as telas e o PDF
+  if (gar && gar.endereco) { GARAGEM = gar.endereco; window.GARAGEM = GARAGEM; }
   if (emp) { EMPRESA_CONFIG.destino.lat = emp.lat; EMPRESA_CONFIG.destino.lng = emp.lng;
              if (emp.endereco) EMPRESA_CONFIG.destino.endereco = emp.endereco;
              if (emp.nome) EMPRESA_CONFIG.destino.nome = emp.nome; }
+  if (emp && emp.endereco) { DESTINO = emp.endereco; window.DESTINO = DESTINO; }
   // Mantém em sincronia os campos que salvarEmpresaConfig lê. Assim o cadastro
   // é o único lugar de edição, sem quebrar o caminho de gravação que já existe.
   const gc = document.getElementById('cfgGarCoords');
@@ -4323,15 +4890,21 @@ function planejarRotas(ctx, opts) {
   passo('Veículos atribuídos');
 
   // 5) metricas finais, todas na mesma base
+  // A otimizacao roda no espaco do solver; a ENTREGA e no sentido real. Na
+  // saida a sequencia do solver esta invertida. Faltava isto: as portas
+  // optAvaliar/optResolver existiam e ninguem as chamava.
   const detalhe = rotas.map((seq, i) => {
-    const m = optAvaliarOrdem(seq, ctx);
+    const seqReal = ctx._saida ? seq.slice().reverse() : seq;
+    const m = optAvaliar(seqReal, ctx);
     const at = atribuicao[i];
     return {
-      seq: seq, metrica: m,
+      seq: seqReal, metrica: m,
       veiculoId: at.veic.id, veiculoRotulo: frRotulo(at.veic),
       capacidade: at.cap, ocupacao: planDemanda(seq, ctx.pontos)
     };
-  }).sort((a, b) => a.metrica.saidaGaragem - b.metrica.saidaGaragem);
+  }).sort((a, b) => ctx._saida
+      ? (a.metrica.retornoGaragem - b.metrica.retornoGaragem)
+      : (a.metrica.saidaGaragem - b.metrica.saidaGaragem));
 
   const total = detalhe.reduce((acc, r) => ({
     durSeg: acc.durSeg + r.metrica.durSeg,
@@ -4344,6 +4917,88 @@ function planejarRotas(ctx, opts) {
     ok: true, rotas: detalhe, total: total, reserva: reserva,
     minimoViavel: minimoViavel, diag: diag
   };
+}
+
+// ==================================================================
+// ROTA DE SAÍDA
+// ------------------------------------------------------------------
+// Uma saída é uma entrada de trás para frente. Em vez de escrever um
+// segundo solver — que teria os próprios defeitos e a própria manutenção —
+// convertemos o problema e reaproveitamos o que já está testado.
+// ==================================================================
+
+// Recebe o contexto da saída, no sentido real:
+//   índice 0   = ponto de partida (a empresa, de onde todos saem)
+//   1..K       = pontos de desembarque
+//   K+1        = ponto final (a garagem)
+//   partidaMin = horário de saída da empresa
+// Devolve o contexto invertido, que o solver de entrada entende.
+function optContextoSaida(ctxSaida) {
+  const K = ctxSaida.pontos.length, N = K + 2;
+  const dur = Array.from({ length: N }, () => new Array(N).fill(0));
+  const dist = Array.from({ length: N }, () => new Array(N).fill(0));
+  // Transpor não basta: as PONTAS também trocam de papel. No mundo invertido
+  // o índice 0 é a garagem (fim real) e o K+1 é a empresa (partida real).
+  //    inv[i][j] = real[trocaPonta(j)][trocaPonta(i)]
+  // Sem a troca, o solver pedia "garagem -> ponto" onde só existia medição de
+  // "ponto -> garagem", e os tempos vinham zerados.
+  const p = k => (k === 0 ? N - 1 : (k === N - 1 ? 0 : k));
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      dur[i][j] = ctxSaida.dur[p(j)][p(i)];
+      dist[i][j] = ctxSaida.dist[p(j)][p(i)];
+    }
+  }
+  return {
+    dur: dur, dist: dist,
+    pontos: ctxSaida.pontos,
+    // o solver trabalha com "chegada"; aqui ela é a partida da empresa
+    chegadaMin: ctxSaida.partidaMin,
+    _saida: true, _partidaMin: ctxSaida.partidaMin
+  };
+}
+
+// Traduz de volta o que o solver devolveu, para o mundo real da saída.
+// Os horários vêm espelhados em torno da hora fixa: real = 2T - solver.
+function optMetricaSaida(m, ctxInv) {
+  const T = ctxInv._partidaMin;
+  const espelho = min => 2 * T - min;
+  return Object.assign({}, m, {
+    // a ordem do solver está invertida: a primeira parada real é a última dele
+    ordem: m.ordem.slice().reverse(),
+    rideMin: m.rideMin.slice().reverse(),
+    // "embarque" na saída é o DESEMBARQUE de cada passageiro
+    embarqueMin: m.embarqueMin.slice().reverse().map(espelho),
+    desembarqueMin: m.embarqueMin.slice().reverse().map(espelho),
+    // o solver chama de "saída da garagem" o fim da rota invertida:
+    // no mundo real é a volta à garagem
+    saidaGaragem: T,
+    partidaEmpresa: T,
+    retornoGaragem: espelho(m.saidaGaragem),
+    // vazio da ida na saída é o trecho garagem -> empresa, que o solver
+    // enxerga como a volta
+    vazioIdaSeg: m.voltaSeg, vazioIdaMin: m.voltaMin,
+    voltaSeg: m.vazioIdaSeg, voltaMin: m.vazioIdaMin,
+    sentido: 'saida'
+  });
+}
+
+// Porta única: avalia uma ordem no sentido certo, seja qual for.
+function optAvaliar(ordem, ctx) {
+  if (!ctx._saida) return optAvaliarOrdem(ordem, ctx);
+  // na saída a ordem chega no sentido real; o solver precisa dela invertida
+  const m = optAvaliarOrdem(ordem.slice().reverse(), ctx);
+  return optMetricaSaida(m, ctx);
+}
+
+// Resolve a melhor sequência no sentido certo.
+function optResolver(ctx) {
+  const K = ctx.pontos.length;
+  const ordem = K <= OPT_CFG.exactMaxPoints
+    ? optResolverExato(ctx)
+    : optResolverHeuristico(ctx, ctx.pontos.map((_, i) => i));
+  if (!ordem) return null;
+  return ctx._saida ? ordem.slice().reverse() : ordem;
 }
 
 // ---------- matriz (unico ponto que fala com o Google) ----------
@@ -4402,8 +5057,11 @@ function optPedirMatriz(svc, origens, destinos) {
   });
 }
 
-async function optObterMatriz(pontos, aoProgredir) {
-  const chave = optChaveMatriz(pontos);
+// sentido = 'entrada' (garagem -> pontos -> empresa) ou 'saida'
+// (empresa -> pontos -> garagem). NUNCA transpor a matriz da entrada para
+// obter a da saída: rua de mão única e viaduto fazem t(a,b) != t(b,a).
+async function optObterMatriz(pontos, aoProgredir, sentido) {
+  const chave = (sentido === 'saida' ? 'S|' : 'E|') + optChaveMatriz(pontos);
   if (OPT_MATRIZ_CACHE[chave]) {
     if (aoProgredir) aoProgredir('Tempos entre os pontos (reaproveitados desta sessão)');
     return OPT_MATRIZ_CACHE[chave];
@@ -4412,8 +5070,11 @@ async function optObterMatriz(pontos, aoProgredir) {
   const LL = c => new google.maps.LatLng(c.lat, c.lng);
   // origens: garagem + pontos (a empresa nunca e origem)
   // destinos: pontos + empresa (a garagem nunca e destino)
-  const origens = [LL(GARAGEM_COORDS)].concat(pontos.map(LL));
-  const destinos = pontos.map(LL).concat([LL(EMPRESA_COORDS)]);
+  // na saída o veículo parte da empresa e termina na garagem
+  const PARTIDA = (sentido === 'saida') ? EMPRESA_COORDS : GARAGEM_COORDS;
+  const FIM = (sentido === 'saida') ? GARAGEM_COORDS : EMPRESA_COORDS;
+  const origens = [LL(PARTIDA)].concat(pontos.map(LL));
+  const destinos = pontos.map(LL).concat([LL(FIM)]);
 
   const dur = Array.from({ length: N }, () => new Array(N).fill(0));
   const dist = Array.from({ length: N }, () => new Array(N).fill(0));
@@ -4451,7 +5112,7 @@ async function optObterMatriz(pontos, aoProgredir) {
   // Um elemento a mais: a volta vazia da empresa para a garagem. Sem ele a
   // jornada do veículo fica pela metade.
   try {
-    const rVolta = await optPedirMatriz(svc, [LL(EMPRESA_COORDS)], [LL(GARAGEM_COORDS)]);
+    const rVolta = await optPedirMatriz(svc, [LL(FIM)], [LL(PARTIDA)]);
     const el = rVolta.rows[0].elements[0];
     if (el.status === 'OK') { dur[EMP][0] = el.duration.value; dist[EMP][0] = el.distance.value; }
     elementos++;
@@ -4977,6 +5638,10 @@ async function initFirebase() {
     const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
+    // App Check e sessao, nesta ordem, antes de qualquer acesso ao Firestore.
+    // Sem sessao o Firestore recusa tudo — e no PIN a recusa vira
+    // "voce ja tem um PIN cadastrado", que e mentira.
+    if (window.temviaComum) await window.temviaComum.prepararFirebase(app);
     fbDb = getFirestore(app);
     fbDocRef = doc(fbDb, CLIENTE_ID, 'dados');
     console.log('Firebase conectado');
@@ -4995,6 +5660,10 @@ async function initAuth() {
   const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
   const { getAuth } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
   const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
+  // App Check e sessao, nesta ordem, antes de qualquer acesso ao Firestore.
+  // Sem sessao o Firestore recusa tudo — e no PIN a recusa vira
+  // "voce ja tem um PIN cadastrado", que e mentira.
+  if (window.temviaComum) await window.temviaComum.prepararFirebase(app);
   fbAuth = getAuth(app);
   return fbAuth;
 }
@@ -5050,7 +5719,17 @@ async function esqueciSenha() {
 }
 
 // Portal da transportadora: e para la que mandamos quem chega sem sessao.
-const PORTAL_URL = '/redentor/';
+// Portal da transportadora: e para la que mandamos quem chega sem sessao.
+// Vem da CASCA. Sem portalUrl declarado (ambiente de teste), o app mostra o
+// proprio formulario em vez de redirecionar — senao a casca de teste vira
+// beco sem saida, devolvendo para o portal de producao.
+const PORTAL_URL = (window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.portalUrl) || '';
+function irParaPortal(usarReplace) {
+  if (!PORTAL_URL) return false;              // sem portal: quem chama mostra o form
+  if (usarReplace) window.location.replace(PORTAL_URL);
+  else window.location.href = PORTAL_URL;
+  return true;
+}
 let _bloqueadoComoCliente = false;
 
 // Evita o "pisca": o formulario so aparece quando confirmamos que nao ha sessao aberta.
@@ -5072,7 +5751,7 @@ async function logout() {
     await signOut(fbAuth);
   } catch (e) {}
   // Porta da frente do sistema agora e o portal temvia.
-  window.location.href = PORTAL_URL;
+  if (!irParaPortal(false)) mostrarFormularioGestor();
 }
 
 // Perfis: {CLIENTE_ID}/acessos guarda quem e da EMPRESA CLIENTE.
@@ -5096,6 +5775,11 @@ async function iniciarComAutenticacao() {
   let jaIniciou = false;
   onAuthStateChanged(fbAuth, async (user) => {
     const overlay = document.getElementById('loginOverlay');
+    // Sessao anonima NAO e login. Ela existe so para o Firestore aceitar a
+    // requisicao; o token dela nao passa em nenhuma regra que exija gestor.
+    // Tratar o anonimo como logado abria o sistema inteiro com um token que
+    // nao escreve nada — e sem nada na tela dizendo isso.
+    if (user && user.isAnonymous) user = null;
     if (user) {
       // Conta criada para a empresa cliente NAO abre o painel do gestor.
       if (await ehAcessoDeCliente(user.email)) {
@@ -5112,7 +5796,9 @@ async function iniciarComAutenticacao() {
       if (overlay) overlay.style.display = 'none';
       if (!jaIniciou) {
         jaIniciou = true;
-        MAPS_API_KEY = localStorage.getItem('redentor_maps_key') || '';
+        // getApiKey conhece a ordem: casca -> reserva -> nada. Ler o cache
+        // direto aqui apagava a chave vinda da casca em navegador limpo.
+        getApiKey();
         loadData().then(() => {
           renderSidebar();
           solCarregarFirebase();
@@ -5128,7 +5814,7 @@ async function iniciarComAutenticacao() {
     } else {
       // Sem sessao: a porta de entrada do sistema e o PORTAL, nao o login deste app.
       // replace() em vez de href para o botao "voltar" nao ficar pingando entre os dois.
-      window.location.replace(PORTAL_URL);
+      if (!irParaPortal(true)) mostrarFormularioGestor();
     }
   });
 }
@@ -7395,7 +8081,7 @@ function renderAcessos() {
         '<div style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis">' + u.email + '</div>' +
       '</div>' +
       '<button class="action-btn" onclick="resetarSenhaAcesso(' + i + ')" title="Enviar link de nova senha" style="color:var(--accent2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></button>' +
-      '<button class="action-btn" onclick="alternarAcessoCliente(' + i + ')" title="' + (inativo ? 'Reativar' : 'Desativar') + '" style="color:' + (inativo ? '#10b981' : 'var(--red)') + '">' + (inativo ? '↺' : '⊘') + '</button>' + +
+      '<button class="action-btn" onclick="alternarAcessoCliente(' + i + ')" title="' + (inativo ? 'Reativar' : 'Desativar') + '" style="color:' + (inativo ? '#10b981' : 'var(--red)') + '">' + (inativo ? '↺' : '⊘') + '</button>' +
       '</div>';
   }).join('');
 }
@@ -7420,6 +8106,10 @@ async function criarAcessoCliente() {
       await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
     const nomeTmp = 'cadastro-acesso';
     const appTmp = getApps().find(a => a.name === nomeTmp) || initializeApp(FB_CONFIG, nomeTmp);
+    // App Check e sessao, nesta ordem, antes de qualquer acesso ao Firestore.
+    // Sem sessao o Firestore recusa tudo — e no PIN a recusa vira
+    // "voce ja tem um PIN cadastrado", que e mentira.
+    if (window.temviaComum) await window.temviaComum.prepararFirebase(appTmp);
     const authTmp = getAuth(appTmp);
     await setPersistence(authTmp, inMemoryPersistence);
     let criou = true;
@@ -7474,6 +8164,7 @@ async function resetarSenhaAcesso(i) {
 
 // ---- PIN dos motoristas (colecao {CLIENTE_ID}_pins, ilegivel; aqui so sabemos QUEM tem) ----
 let PINS_ATIVOS = [];
+let PINS_META = {};   // id -> { v, prov, exp }
 function pinIdDoMotorista(m) {
   const tel = (m && m.tel) ? String(m.tel).replace(/\D/g, '') : '';
   if (tel.length >= 8) return tel;
@@ -7482,15 +8173,207 @@ function pinIdDoMotorista(m) {
 }
 function pinAtivo(m) { return PINS_ATIVOS.indexOf(pinIdDoMotorista(m)) > -1; }
 
+function acessoMeta(m) { return (PINS_META || {})[pinIdDoMotorista(m)] || null; }
+
+function acessoExpirado(meta) {
+  if (!meta || !meta.prov || !meta.exp) return false;
+  const t = new Date(meta.exp).getTime();
+  return !isNaN(t) && Date.now() > t;
+}
+
+function temIdentidadeGestor(m) {
+  const tel = (m && m.tel) ? String(m.tel).replace(/\D/g, '') : '';
+  return tel.length >= 8 && !/^(\d)\1+$/.test(tel);
+}
+
+function estadoAcessoTexto(m) {
+  const cinza = s => '<span style="color:var(--muted)">' + s + '</span>';
+  if (!temIdentidadeGestor(m)) return cinza('sem telefone \u2014 n\u00e3o autentica');
+  const meta = acessoMeta(m);
+  if (!meta && !pinAtivo(m)) return cinza('sem acesso');
+  if (meta && meta.prov) {
+    if (acessoExpirado(meta)) return '<span style="color:var(--red)">provis\u00f3rio expirado</span>';
+    const faltam = Math.max(0, Math.round((new Date(meta.exp).getTime() - Date.now()) / 3600000));
+    return '<span style="color:var(--accent)">aguardando 1\u00ba acesso \u00b7 expira em ' + faltam + 'h</span>';
+  }
+  return '<span style="color:#10b981">acesso ativo</span>';
+}
+
+function botoesAcesso(m) {
+  const b = (fn, titulo, cor, svg) =>
+    '<button class="action-btn" onclick="' + fn + '(' + m.id + ')" title="' + titulo +
+    '" style="color:' + cor + '">' + svg + '</button>';
+  const CHAVE = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px">' +
+    '<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>';
+  const BLOQ = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px">' +
+    '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>';
+  if (!temIdentidadeGestor(m)) return '';
+  const meta = acessoMeta(m);
+  const ativo = pinAtivo(m) || !!meta;
+  let html = b('ativarAcessoMotorista', ativo ? 'Gerar novo PIN provis\u00f3rio' : 'Ativar acesso',
+               'var(--accent)', CHAVE);
+  if (ativo) html += b('revogarAcessoMotorista', 'Revogar acesso', 'var(--red)', BLOQ);
+  return html;
+}
+
 async function carregarPinsAtivos() {
   try {
     const { getDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const snap = await getDoc(doc(fbDb, CLIENTE_ID, 'pins_ativos'));
     PINS_ATIVOS = snap.exists() ? (snap.data().lista || []) : [];
+    PINS_META = snap.exists() ? (snap.data().meta || {}) : {};
   } catch (e) { PINS_ATIVOS = []; }
 }
 
 // Zerar = apagar o hash. O motorista cria um novo no proximo acesso.
+const PIN_DIGITOS_GESTOR = 6;
+const PIN_ITERACOES_GESTOR = 200000;
+const PIN_PROVISORIO_EXPIRA_HORAS = 72;
+
+// MESMO hash do app: PBKDF2-SHA256, 200k, sal temvia:CLIENTE_ID:id.
+// Se um dos dois mudar sem o outro, ninguem mais entra.
+async function pinHashGestor(id, pin) {
+  const enc = new TextEncoder();
+  const chave = await crypto.subtle.importKey('raw', enc.encode(String(pin)), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt: enc.encode('temvia:' + CLIENTE_ID + ':' + id),
+      iterations: PIN_ITERACOES_GESTOR, hash: 'SHA-256' }, chave, 256);
+  return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Sorteio criptografico, nao Math.random: um PIN previsivel nao e um segredo.
+function sortearPinProvisorio() {
+  const n = new Uint32Array(PIN_DIGITOS_GESTOR);
+  crypto.getRandomValues(n);
+  return Array.from(n).map(x => x % 10).join('');
+}
+
+// Le e regrava pins_ativos: lista (compatibilidade) + meta por id.
+async function pinsAtivosAtualizar(id, mudanca) {
+  const { doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  const ref = doc(fbDb, CLIENTE_ID, 'pins_ativos');
+  const snap = await getDoc(ref);
+  const d = snap.exists() ? snap.data() : {};
+  const lista = d.lista || [];
+  const meta = d.meta || {};
+  const atual = meta[id] || { v: 0, prov: false, exp: null };
+
+  if (mudanca === null) {
+    delete meta[id];
+    const i = lista.indexOf(id);
+    if (i > -1) lista.splice(i, 1);
+    // A versao some junto, mas fica registrada no evento de auditoria.
+  } else {
+    meta[id] = Object.assign({}, atual, mudanca, { v: (atual.v || 0) + 1 });
+    if (lista.indexOf(id) === -1) lista.push(id);
+  }
+  await setDoc(ref, { lista, meta, updatedAt: new Date().toISOString() });
+  PINS_ATIVOS = lista;
+  PINS_META = meta;
+  return mudanca === null ? (atual.v || 0) + 1 : meta[id].v;
+}
+
+// Trilha. NUNCA recebe o PIN, nem em texto nem em hash.
+async function auditarAcesso(acao, m, extra) {
+  try {
+    const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const id = 'ac_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    await setDoc(doc(fbDb, CLIENTE_ID + '_auditoria', id), Object.assign({
+      acao: acao,
+      alvo: 'motorista:' + pinIdDoMotorista(m),
+      alvoNome: m.nome,
+      quem: (fbAuth && fbAuth.currentUser && fbAuth.currentUser.email) || 'desconhecido',
+      papel: 'gestor',
+      clienteId: CLIENTE_ID,
+      quando: new Date().toISOString(),
+      origem: 'manual'
+    }, extra || {}));
+  } catch (e) { console.warn('[temvia] auditoria nao gravada:', e && e.message); }
+}
+
+// Mostra o codigo UMA vez. Nao ha como recuperar depois: so gerar outro.
+function mostrarPinProvisorio(nome, pin, expiraEm) {
+  const quando = new Date(expiraEm).toLocaleString('pt-BR', {
+    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const box = document.createElement('div');
+  box.style.cssText = 'position:fixed;inset:0;z-index:10000;display:flex;align-items:center;' +
+    'justify-content:center;background:rgba(0,0,0,.75);padding:24px';
+  box.innerHTML =
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;' +
+    'padding:26px;max-width:400px;text-align:center;font-family:Inter,system-ui,sans-serif">' +
+      '<div style="font-size:15px;font-weight:700;color:var(--text)">PIN provis\u00f3rio de ' + esc(nome) + '</div>' +
+      '<div style="font-size:12.5px;color:var(--muted);margin:8px 0 16px">' +
+        'Anote agora. Este c\u00f3digo <b>n\u00e3o ser\u00e1 mostrado de novo</b>.</div>' +
+      '<div style="font-size:34px;font-weight:800;letter-spacing:8px;color:var(--accent);' +
+        'font-variant-numeric:tabular-nums">' + pin + '</div>' +
+      '<div style="font-size:12px;color:var(--muted);margin:14px 0 18px">' +
+        'V\u00e1lido at\u00e9 ' + quando + '. No primeiro acesso, ' + esc(nome) +
+        ' vai definir o PIN dele.</div>' +
+      '<button id="pinProvOk" style="padding:10px 24px;border-radius:8px;border:0;' +
+        'background:var(--accent);color:#000;font-weight:700;cursor:pointer">Anotei</button>' +
+    '</div>';
+  document.body.appendChild(box);
+  box.querySelector('#pinProvOk').onclick = () => box.remove();
+}
+
+async function ativarAcessoMotorista(id) {
+  const m = MOTORISTAS.find(x => x.id === id);
+  if (!m) return;
+  const tel = (m.tel || '').replace(/\D/g, '');
+  if (tel.length < 8 || /^(\d)\1+$/.test(tel)) {
+    alert(m.nome + ' n\u00e3o tem telefone v\u00e1lido no cadastro.\n\n' +
+          'Sem telefone n\u00e3o h\u00e1 identidade, e o app n\u00e3o deixa entrar. ' +
+          'Complete o cadastro antes de ativar o acesso.');
+    return;
+  }
+  const meta = (PINS_META || {})[pinIdDoMotorista(m)];
+  if (meta && !confirm('Gerar um PIN provis\u00f3rio novo para ' + m.nome +
+      '?\n\nO c\u00f3digo anterior deixa de valer imediatamente.')) return;
+
+  try {
+    const pid = pinIdDoMotorista(m);
+    const pin = sortearPinProvisorio();
+    const hash = await pinHashGestor(pid, pin);
+    const expiraEm = new Date(Date.now() + PIN_PROVISORIO_EXPIRA_HORAS * 3600000).toISOString();
+
+    const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await setDoc(doc(fbDb, CLIENTE_ID + '_pins', pid), {
+      hash: hash, nome: m.nome, provisorio: true,
+      criadoEm: new Date().toISOString(), expiraEm: expiraEm,
+      criadoPor: (fbAuth && fbAuth.currentUser && fbAuth.currentUser.email) || '',
+      aparelhos: []
+    });
+    const v = await pinsAtivosAtualizar(pid, { prov: true, exp: expiraEm });
+    await auditarAcesso(meta ? 'pin_provisorio_regenerado' : 'pin_provisorio_criado', m,
+                        { versao: v, expiraEm: expiraEm });
+
+    mostrarPinProvisorio(m.nome, pin, expiraEm);
+    renderMotoristaList();
+  } catch (e) {
+    alert('N\u00e3o foi poss\u00edvel ativar: ' + (e && e.message ? e.message : e));
+  }
+}
+
+async function revogarAcessoMotorista(id) {
+  const m = MOTORISTAS.find(x => x.id === id);
+  if (!m) return;
+  if (!confirm('Revogar o acesso de ' + m.nome + '?\n\n' +
+               'Ele perde a entrada no app at\u00e9 voc\u00ea ativar de novo.')) return;
+  try {
+    const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const pid = pinIdDoMotorista(m);
+    await deleteDoc(doc(fbDb, CLIENTE_ID + '_pins', pid));
+    const v = await pinsAtivosAtualizar(pid, null);
+    await auditarAcesso('acesso_revogado', m, { versao: v });
+    alert('Acesso de ' + m.nome + ' revogado.');
+    renderMotoristaList();
+  } catch (e) {
+    alert('N\u00e3o foi poss\u00edvel revogar: ' + (e && e.message ? e.message : e));
+  }
+}
+
 async function zerarPinMotorista(id) {
   const m = MOTORISTAS.find(x => x.id === id);
   if (!m) return;
@@ -7499,12 +8382,10 @@ async function zerarPinMotorista(id) {
     const { doc, deleteDoc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const pid = pinIdDoMotorista(m);
     await deleteDoc(doc(fbDb, CLIENTE_ID + '_pins', pid));
-    const ref = doc(fbDb, CLIENTE_ID, 'pins_ativos');
-    const snap = await getDoc(ref);
-    const lista = (snap.exists() ? (snap.data().lista || []) : []).filter(x => x !== pid);
-    await setDoc(ref, { lista, updatedAt: new Date().toISOString() });
-    PINS_ATIVOS = lista;
-    alert('PIN de ' + m.nome + ' zerado. Avise para ele criar um novo ao abrir o app.');
+    const v = await pinsAtivosAtualizar(pid, null);
+    await auditarAcesso('pin_zerado', m, { versao: v });
+    alert('PIN de ' + m.nome + ' zerado.\n\nEle perde o acesso at\u00e9 voc\u00ea usar ' +
+          '"Ativar acesso" e passar o PIN provis\u00f3rio novo.');
     renderMotoristaList();
   } catch (e) {
     alert('Nao foi possivel zerar: ' + (e && e.message ? e.message : e));
@@ -7994,7 +8875,6 @@ function seCalcularTotal() {
 }
 
 // Manter compatibilidade com seCalcular chamado em outros lugares
-function seCalcular() { return seCalcularTotal(); }
 
 function seTipoChange() {
   const tipo = document.getElementById('seTipo').value;
@@ -8470,21 +9350,17 @@ let RT_vehSeq = 1;
 let RT_MODO = 'entrada';
 
 function rtSetModo(modo) {
+  // Os botoes de sentido sairam: quem manda agora sao os seletores de
+  // trajeto. Esta funcao continua existindo porque outras telas a chamam,
+  // mas so guarda o estado — e nao pode explodir procurando botao que
+  // nao existe mais.
   RT_MODO = modo;
-  const be = document.getElementById('rtModoEntradaBtn');
-  const bs = document.getElementById('rtModoSaidaBtn');
   const lbl = document.getElementById('rtChegadaLabel');
-  if (modo === 'entrada') {
-    be.style.color = 'var(--accent)'; be.style.borderColor = 'var(--accent)';
-    bs.style.color = ''; bs.style.borderColor = '';
-    if (lbl) lbl.textContent = 'Horário de chegada na empresa';
-  } else {
-    bs.style.color = 'var(--red)'; bs.style.borderColor = 'var(--red)';
-    be.style.color = ''; be.style.borderColor = '';
-    if (lbl) lbl.textContent = 'Horário de saída da empresa';
-  }
+  if (lbl) lbl.textContent = (modo === 'saida')
+    ? 'Horário de saída do ponto inicial' : 'Horário de chegada no ponto final';
   RT_DAY.vehicles.forEach(v => v.calc = null);
-  if (document.getElementById('rtWorkArea').style.display !== 'none') rtRenderDay();
+  const _wa = document.getElementById('rtWorkArea');
+  if (_wa && _wa.style.display !== 'none') rtRenderDay();
 }
 let RT_MAP = null, RT_MARKERS = [], RT_INFO = null;
 const RT_COLORS = ['#10b981','#f59e0b','#3b82f6','#ef4444','#a96cf0','#2bb6c4','#d4805a','#8ac34a','#e056a8','#6c7ae0'];
@@ -8544,6 +9420,7 @@ function rtZerarTudo() {
   const _bb = document.getElementById('rtBtnManual');
   if (_bb) _bb.textContent = 'Montar manualmente \u25be';
   rtSetModo('entrada');
+  rtPopularPontos();
   rtModoEntrada('solicitacao');
   rtPopularSolicitacoes();
   rtPopularLinhas();
@@ -8967,7 +9844,9 @@ function plValidar() {
   if (!todos.length) problemas.push('carregue os passageiros');
   if (!chegada) problemas.push('informe o horário de chegada');
   if (!FROTA.length) problemas.push('cadastre a frota em Configurações');
-  if (RT_MODO === 'saida') problemas.push('nesta versão o planejamento é só para rotas de entrada');
+  const _tr = (typeof rtSentidoDoTrajeto === 'function') ? rtSentidoDoTrajeto() : null;
+  if (_tr && _tr.ini && _tr.fim && _tr.ini.id === _tr.fim.id)
+    problemas.push('escolha um ponto inicial e um ponto final diferentes');
   return { ok: problemas.length === 0, problemas: problemas, total: todos.length };
 }
 
@@ -9015,6 +9894,71 @@ function rtIrEtapa(k) {
 
 // Mantida por compatibilidade: o colapso do passo 1 saiu, porque escondia
 // data, horário de chegada e folga — campos que ainda precisam ser digitados.
+// ---------------- Trajeto: origem e destino ----------------
+// O sentido deixa de ser um botão e passa a ser consequência de onde está a
+// empresa. Menos uma coisa para o gestor lembrar de marcar.
+function rtPopularPontos() {
+  const ini = document.getElementById('rtPontoIni');
+  const fim = document.getElementById('rtPontoFim');
+  if (!ini || !fim) return;
+  try { ptSemear(); } catch (e) {}
+  if (!PONTOS.length) {
+    ini.innerHTML = fim.innerHTML = '<option value="">— cadastre os pontos em Configurações —</option>';
+    return;
+  }
+  const opts = PONTOS.map(p => '<option value="' + p.id + '">' + esc(p.nome) + '</option>').join('');
+  const antesI = ini.value, antesF = fim.value;
+  ini.innerHTML = opts; fim.innerHTML = opts;
+  const gar = PONTOS.find(p => p.tipo === 'garagem');
+  const emp = PONTOS.find(p => p.tipo === 'empresa');
+  ini.value = antesI || (gar ? gar.id : PONTOS[0].id);
+  fim.value = antesF || (emp ? emp.id : PONTOS[PONTOS.length - 1].id);
+  rtPontosSentido();
+}
+
+function rtPontoPorId(id) { return PONTOS.find(p => p.id === id) || null; }
+
+// entrada = a empresa está no FIM ; saida = a empresa está no COMEÇO
+function rtSentidoDoTrajeto() {
+  const ini = rtPontoPorId((document.getElementById('rtPontoIni') || {}).value);
+  const fim = rtPontoPorId((document.getElementById('rtPontoFim') || {}).value);
+  if (!ini || !fim) return { sentido: 'entrada', ini: null, fim: null };
+  if (fim.tipo === 'empresa') return { sentido: 'entrada', ini: ini, fim: fim };
+  if (ini.tipo === 'empresa') return { sentido: 'saida', ini: ini, fim: fim };
+  // nenhum dos dois é a empresa: trata como entrada (chegada no ponto final)
+  return { sentido: 'entrada', ini: ini, fim: fim, semEmpresa: true };
+}
+
+function rtPontosSentido() {
+  const t = rtSentidoDoTrajeto();
+  const aviso = document.getElementById('rtSentidoAviso');
+  const lbl = document.getElementById('rtChegadaLabel');
+  const ini = document.getElementById('rtPontoIni');
+  const fim = document.getElementById('rtPontoFim');
+
+  if (ini && fim && ini.value && ini.value === fim.value) {
+    if (aviso) aviso.innerHTML = '<span class="ruim">O ponto inicial e o final são o mesmo. ' +
+      'Escolha lugares diferentes.</span>';
+    return;
+  }
+  // O rótulo do horário muda junto: na saída não existe "chegada".
+  if (lbl) lbl.textContent = (t.sentido === 'saida')
+    ? 'Horário de saída do ponto inicial' : 'Horário de chegada no ponto final';
+  if (aviso) {
+    aviso.innerHTML = t.semEmpresa
+      ? '<b>Entrada</b> — nenhum dos pontos é a empresa atendida; o horário vale para a chegada ' +
+        'em ' + esc(t.fim.nome) + '.'
+      : (t.sentido === 'saida'
+          ? '<b>Saída</b> — o veículo parte de ' + esc(t.ini.nome) + ' no horário informado. ' +
+            'Quem desembarca por último é quem passa mais tempo na van.'
+          : '<b>Entrada</b> — o veículo precisa chegar a ' + esc(t.fim.nome) + ' no horário informado. ' +
+            'Quem embarca primeiro é quem passa mais tempo na van.');
+  }
+  // mantém o estado antigo em sincronia, que outras telas ainda leem
+  RT_MODO = t.sentido;
+  if (typeof plAtualizarControles === 'function') plAtualizarControles();
+}
+
 function rtToggleEntrada(forcar) {
   const sec = document.getElementById('rtEntradaCorpo');
   if (!sec) { rtAtualizarEtapas(); return; }
@@ -9295,13 +10239,26 @@ async function plGerarPlano(preservarTravas) {
     const juntos = pontos.filter(p => p.passageiros.length > 1).length;
     plPasso(pontos.length + ' pontos de embarque' + (juntos ? ' (' + juntos + ' com mais de um passageiro)' : ''));
 
-    const matriz = await optObterMatriz(pontos, m => plPasso(m));
+    const traj = rtSentidoDoTrajeto();
+    // A matriz é buscada no sentido do trajeto. Nunca transpor a da entrada:
+    // rua de mão única e viaduto fazem t(a,b) diferente de t(b,a).
+    const matriz = await optObterMatriz(pontos, m => plPasso(m), traj.sentido);
     const chegada = document.getElementById('rtChegada').value;
     const [hh, mm] = chegada.split(':').map(Number);
-    const alvo = hh * 60 + mm - OPT_CFG.margemChegadaMin;
-    PL_CTX = { dur: matriz.dur, dist: matriz.dist, pontos: pontos, chegadaMin: alvo };
-    if (OPT_CFG.margemChegadaMin > 0)
-      plPasso('Alvo de chegada ' + otHHMM(alvo) + ' (' + OPT_CFG.margemChegadaMin + ' min de folga)');
+    if (traj.sentido === 'saida') {
+      // na saída o horário é a PARTIDA: a margem adia em vez de adiantar
+      const partida = hh * 60 + mm + OPT_CFG.margemChegadaMin;
+      PL_CTX = optContextoSaida({ dur: matriz.dur, dist: matriz.dist,
+                                  pontos: pontos, partidaMin: partida });
+      plPasso('Saída de ' + traj.ini.nome + ' às ' + otHHMM(partida) +
+              (OPT_CFG.margemChegadaMin ? ' (' + OPT_CFG.margemChegadaMin + ' min de folga)' : ''));
+    } else {
+      const alvo = hh * 60 + mm - OPT_CFG.margemChegadaMin;
+      PL_CTX = { dur: matriz.dur, dist: matriz.dist, pontos: pontos, chegadaMin: alvo };
+    }
+    if (traj.sentido !== 'saida' && OPT_CFG.margemChegadaMin > 0)
+      plPasso('Alvo de chegada ' + otHHMM(PL_CTX.chegadaMin) +
+              ' (' + OPT_CFG.margemChegadaMin + ' min de folga)');
 
     // ---- travas de grupo, em índices de ponto ----
     const idxDe = nome => pontos.findIndex(pt => pt.nomes.indexOf(nome) >= 0);
@@ -9384,7 +10341,8 @@ function plAplicarPlano(plano, rotasTravadas, candidatos) {
         totalMin: r.metrica.durMin,
         totalKm: (Math.round(r.metrica.distKm * 10) / 10).toFixed(1),
         departure: otHHMM(r.metrica.saidaGaragem),
-        modo: 'entrada',
+        modo: PL_CTX._saida ? 'saida' : 'entrada',
+        sentido: PL_CTX._saida ? 'saida' : 'entrada',
         maiorRide: r.metrica.maiorRideMin,
         violacoes: r.metrica.violacoes,
         jornadaMin: r.metrica.jornadaMin, voltaMin: r.metrica.voltaMin,
@@ -9489,18 +10447,21 @@ function plRecalcularRota(vid, reordenar) {
   });
   if (!idx.length) { v.calc = null; v.stale = false; rtRenderDay(); return; }
 
+  // idx esta na ordem REAL. O solver trabalha no espaco dele, que na saida
+  // e o inverso.
+  const viraSolver = a => (PL_CTX._saida ? a.slice().reverse() : a);
   let seq = idx;
   if (reordenar) {
-    const sub = planSubContexto(PL_CTX, idx);
-    const ordem = idx.length <= OPT_CFG.exactMaxPoints
-      ? (optResolverExato(sub) || idx.map((_, k) => k))
-      : optResolverHeuristico(sub, idx.map((_, k) => k));
-    const cand = ordem.map(k => idx[k]);
-    // só troca se for mesmo melhor nesta base — a mesma regra da tela da linha
-    seq = optComparar(optAvaliarOrdem(cand, PL_CTX), optAvaliarOrdem(idx, PL_CTX)) < 0 ? cand : idx;
+    const idxS = viraSolver(idx);
+    const sub = planSubContexto(PL_CTX, idxS);
+    const ordem = idxS.length <= OPT_CFG.exactMaxPoints
+      ? (optResolverExato(sub) || idxS.map((_, k) => k))
+      : optResolverHeuristico(sub, idxS.map((_, k) => k));
+    const cand = viraSolver(ordem.map(k => idxS[k]));
+    seq = optComparar(optAvaliar(cand, PL_CTX), optAvaliar(idx, PL_CTX)) < 0 ? cand : idx;
   }
 
-  const m = optAvaliarOrdem(seq, PL_CTX);
+  const m = optAvaliar(seq, PL_CTX);
   const pax = [];
   seq.forEach((pi, k) => {
     PL_CTX.pontos[pi].nomes.forEach(nome => {
@@ -9514,7 +10475,8 @@ function plRecalcularRota(vid, reordenar) {
   v.pax = pax;
   v.calc = {
     totalMin: m.durMin, totalKm: (Math.round(m.distKm * 10) / 10).toFixed(1),
-    departure: otHHMM(m.saidaGaragem), modo: 'entrada',
+    departure: otHHMM(m.saidaGaragem), modo: PL_CTX._saida ? 'saida' : 'entrada',
+    sentido: PL_CTX._saida ? 'saida' : 'entrada',
     maiorRide: m.maiorRideMin, violacoes: m.violacoes,
     jornadaMin: m.jornadaMin, voltaMin: m.voltaMin,
     vazioIdaMin: m.vazioIdaMin, aBordoMin: m.aBordoMin, otimizada: !!reordenar
@@ -9732,7 +10694,7 @@ function rtRenderDay() {
             ? '<span class="rt-stale-aviso">Métricas desatualizadas</span>' +
               '<button class="tv-btn" onclick="plRecalcularRota(\'' + v.id + '\')" ' +
               'title="Recalcula horários e duração mantendo esta ordem">Recalcular rota</button>'
-            : 'Saída garagem: <b>' + v.calc.departure + '</b> · <b>' + v.calc.totalMin + ' min</b> · <b>' +
+            : (v.calc.sentido === 'saida' ? 'Partida da empresa: <b>' : 'Saída garagem: <b>') + v.calc.departure + '</b> · <b>' + v.calc.totalMin + ' min</b> · <b>' +
               v.calc.totalKm + ' km</b> · ' + v.pax.length + ' paradas' +
               (v.calc.maiorRide !== undefined
                 ? '<br>Maior tempo de passageiro: <b style="color:' +
@@ -9742,7 +10704,7 @@ function rtRenderDay() {
                     '" onclick="plOtimizarRota(\'' + v.id + '\')" ' +
                     'title="Deixa a temvia reordenar esta rota">Otimizar ordem</button>' : '') +
                   (v.calc.jornadaMin ? '<br>Jornada: <b>' + plHoras(v.calc.jornadaMin * 60) +
-                    '</b> <span style="color:var(--muted)">(' + (v.calc.vazioIdaMin || 0) + ' min indo buscar · ' +
+                    '</b> <span style="color:var(--muted)">(' + (v.calc.vazioIdaMin || 0) + (v.calc.sentido === 'saida' ? ' min até a empresa · ' : ' min indo buscar · ') +
                     (v.calc.aBordoMin || 0) + ' min a bordo · ' + v.calc.voltaMin + ' min voltando)</span>' : '')
                 : '')) +
         '</div>' +

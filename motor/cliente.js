@@ -29,7 +29,7 @@ const LOGO_MARCA = "data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1
 
 const CSS_MOTOR = "\n\n  .hidden { display: none !important; }\n\n  @media (max-width: 768px) {\n\n    /* ── HEADER MOBILE ── */\n    header {\n      flex-wrap: wrap;\n      gap: 6px;\n      padding: 8px 12px;\n    }\n    .header-stats { gap: 10px; }\n    .hstat-num { font-size: 18px; }\n    .hstat-label { font-size: 9px; }\n    .header-actions { gap: 6px; flex-wrap: wrap; }\n    .header-actions .btn { padding: 6px 10px; font-size: 11px; }\n\n    /* ── CONTAINER: pilha vertical ── */\n    .container {\n      grid-template-columns: 1fr;\n      grid-template-rows: auto 1fr;\n      height: calc(100vh - 56px);\n      overflow: hidden;\n    }\n\n    /* ── SIDEBAR vira barra horizontal de filtros no topo ── */\n    .sidebar {\n      height: auto;\n      border-right: none;\n      border-bottom: 1px solid var(--border);\n      overflow: hidden;\n      padding: 0;\n      display: flex;\n      flex-direction: column;\n      background: var(--surface);\n    }\n\n    /* Busca compacta */\n    .search-wrap {\n      padding: 8px 12px 6px;\n      border-bottom: none;\n      margin-bottom: 0;\n    }\n    .search-input { font-size: 13px; padding: 7px 10px; }\n\n    /* Filtros de turno em linha com scroll */\n    .turno-filter {\n      padding: 0 12px 6px;\n      gap: 6px;\n      flex-wrap: nowrap;\n      overflow-x: auto;\n      -webkit-overflow-scrolling: touch;\n      scrollbar-width: none;\n    }\n    .turno-filter::-webkit-scrollbar { display: none; }\n    .turno-btn {\n      flex: 0 0 auto;\n      padding: 5px 12px;\n      font-size: 12px;\n      white-space: nowrap;\n    }\n\n    /* Label STATUS some */\n    .sidebar-label { display: none; }\n\n    /* Status filter em linha com scroll */\n    .status-filter {\n      display: flex !important;\n      flex-direction: row !important;\n      flex-wrap: nowrap;\n      overflow-x: auto;\n      -webkit-overflow-scrolling: touch;\n      scrollbar-width: none;\n      gap: 6px;\n      padding: 0 12px 8px;\n    }\n    .status-filter::-webkit-scrollbar { display: none; }\n    .status-filter-btn {\n      flex: 0 0 auto;\n      white-space: nowrap;\n      font-size: 12px;\n      padding: 5px 12px;\n    }\n\n    /* Lista de linhas: row horizontal compacta com scroll */\n    #lineList {\n      display: flex;\n      flex-direction: row;\n      overflow-x: auto;\n      -webkit-overflow-scrolling: touch;\n      scrollbar-width: none;\n      gap: 6px;\n      padding: 0 12px 10px;\n    }\n    #lineList::-webkit-scrollbar { display: none; }\n\n    .line-item {\n      flex: 0 0 auto;\n      flex-direction: column;\n      align-items: center;\n      gap: 4px;\n      padding: 8px 10px;\n      margin: 0;\n      border-radius: 10px;\n      min-width: 72px;\n      text-align: center;\n    }\n    .line-info { display: flex; flex-direction: column; gap: 1px; }\n    .line-name { font-size: 11px; white-space: nowrap; }\n    .line-driver { font-size: 10px; display: none; }\n    .line-count { font-size: 11px; }\n\n    /* ── MAIN: tela toda, scroll livre ── */\n    .main {\n      overflow-y: auto;\n      -webkit-overflow-scrolling: touch;\n      padding: 12px;\n      min-height: 0;\n    }\n\n    /* Tabela de passageiros: mais compacta */\n    .pass-table th, .pass-table td {\n      padding: 8px 8px;\n      font-size: 12px;\n    }\n    /* Esconder coluna telefone em telas muito pequenas */\n    @media (max-width: 400px) {\n      .pass-table th:nth-child(4),\n      .pass-table td:nth-child(4) { display: none; }\n    }\n\n    /* Turno times: coluna */\n    .turno-times { flex-direction: column; }\n  }\n\n  /* WIZARD SOLICITAÇÕES */\n  .cli-tipo-btn {\n    width:100%;text-align:left;padding:14px 16px;border:1px solid var(--border);\n    border-radius:10px;background:var(--surface2);color:var(--text);\n    font-size:14px;cursor:pointer;transition:all 0.15s;\n    font-family:'DM Sans',sans-serif;\n  }\n  .cli-tipo-btn:active { opacity:0.7; }\n  .cli-tipo-btn.selected {\n    background:rgba(245,158,11,0.12);border-color:var(--accent);\n    color:var(--accent);font-weight:600;\n  }\n  .cli-step {\n    width:28px;height:28px;border-radius:50%;border:2px solid var(--border);\n    display:flex;align-items:center;justify-content:center;\n    font-size:12px;font-weight:700;color:var(--muted);background:var(--surface);\n    flex-shrink:0;font-family:'Barlow',sans-serif;transition:all 0.2s;\n  }\n  .cli-step.active { background:var(--accent);border-color:var(--accent);color:#000; }\n  .cli-step.done { background:var(--green);border-color:var(--green);color:#fff; }\n  .cli-step-line {\n    flex:1;height:2px;background:var(--border);transition:background 0.2s;\n  }\n  .cli-step-line.done { background:var(--green); }\n\n\n  .login-overlay {\n    position: fixed; inset: 0; background: var(--bg); z-index: 9999;\n    display: flex; align-items: center; justify-content: center;\n    flex-direction: column; padding: 24px;\n  }\n  .login-box {\n    background: var(--surface); border: 1px solid var(--border);\n    border-radius: 16px; padding: 32px; width: 100%; max-width: 380px;\n  }\n  .login-title { font-family: Barlow,sans-serif; font-weight: 800; font-size: 22px; color: var(--accent); margin-bottom: 4px; }\n  .login-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }\n  .login-input {\n    width: 100%; background: var(--surface2); border: 1px solid var(--border);\n    border-radius: 10px; padding: 13px 16px; color: var(--text);\n    font-family: DM Sans,sans-serif; font-size: 15px; outline: none; margin-bottom: 16px;\n    box-sizing: border-box;\n  }\n  .login-input:focus { border-color: var(--accent); }\n  .login-btn {\n    width: 100%; background: var(--accent); color: #000; border: none;\n    border-radius: 10px; padding: 14px; font-size: 16px; font-weight: 700;\n    cursor: pointer; font-family: Barlow,sans-serif;\n  }\n  .login-error { color: var(--red); font-size: 13px; text-align: center; margin-top: 10px; display: none; }\n  .cliente-badge {\n    background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4);\n    color: var(--accent2); border-radius: 20px; padding: 3px 10px;\n    font-size: 11px; font-weight: 600; letter-spacing: 0.5px;\n  }\n\n\n/* Safe-area: evita que o cabecalho fique atras da barra de status do celular */\n.header { padding-top: calc(16px + env(safe-area-inset-top)) !important; }\n\n/* --- Fase 3: icones em SVG --- */\n.login-marca-ico { display:flex; justify-content:center; color: var(--accent); }\n.login-marca-ico svg { width: 40px; height: 40px; }\n";
 
-const HTML_MOTOR = "\n<!-- LOGIN OVERLAY -->\n<div class=\"login-overlay\" id=\"loginOverlay\">\n  <div style=\"margin-bottom:24px;text-align:center\">\n    <img style=\"height:56px;width:auto\" src=\"LOGO_MARCA\" alt=\"Redentor\">\n    <div style=\"font-family:Barlow,sans-serif;font-weight:800;font-size:24px;color:var(--accent);margin-top:8px\" id=\"brandLogin\"></div>\n    <div style=\"font-size:13px;color:var(--muted)\">Fretamento — Portal do Cliente</div>\n  </div>\n  <div id=\"loginChecando\" style=\"text-align:center;color:#8b949e;font-size:14px;padding:28px\">Verificando acesso...</div>\n  <div class=\"login-box\" id=\"loginBox\" style=\"display:none\">\n    <div class=\"login-title\">Acesso ao Portal</div>\n    <div class=\"login-sub\">Visualização de rotas e passageiros</div>\n    <input class=\"login-input\" type=\"email\" id=\"emailCliente\" autocomplete=\"username\" placeholder=\"Seu e-mail\"\n      onkeydown=\"if(event.key==='Enter') document.getElementById('senhaCliente').focus()\">\n    <div style=\"position:relative\">\n      <input class=\"login-input\" type=\"password\" id=\"senhaCliente\" autocomplete=\"current-password\" placeholder=\"Sua senha\"\n        style=\"padding-right:46px\" onkeydown=\"if(event.key==='Enter') fazerLogin()\">\n      <button type=\"button\" id=\"olhoCliente\" onclick=\"verSenhaCliente()\" title=\"Mostrar senha\" aria-label=\"Mostrar senha\"\n        style=\"position:absolute;right:10px;top:12px;background:none;border:none;cursor:pointer;color:#8b949e;line-height:1;padding:4px\"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' style='width:18px;height:18px;display:block'><path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg></button>\n    </div>\n    <button class=\"login-btn\" id=\"btnEntrarCliente\" onclick=\"fazerLogin()\">Entrar</button>\n    <div style=\"text-align:center;margin-top:12px\">\n      <a href=\"#\" id=\"linkEsqueci\" onclick=\"esqueciSenhaCliente();return false;\" style=\"color:var(--muted);font-size:13px\">Esqueci minha senha</a>\n    </div>\n    <div class=\"login-error\" id=\"loginError\">Senha incorreta. Tente novamente.</div>\n    <div id=\"loginMsg\" style=\"font-size:13px;text-align:center;margin-top:10px\"></div>\n  </div>\n</div>\n\n<!-- INSTALL BANNER -->\n<div id=\"installBanner\" style=\"display:none;background:rgba(245,158,11,0.12);border-bottom:1px solid rgba(245,158,11,0.3);padding:10px 16px;align-items:center;gap:10px;position:sticky;top:0;z-index:20\">\n  <span style=\"font-size:20px\"></span>\n  <div style=\"flex:1;font-size:13px\">\n    <strong style=\"color:var(--accent)\">Instalar app</strong>\n    <div style=\"font-size:11px;color:var(--muted)\" id=\"installInstructions\"></div>\n  </div>\n  <button onclick=\"document.getElementById('installBanner').style.display='none'\" style=\"background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer\">×</button>\n</div>\n\n<header>\n  <div class=\"logo\">\n    <img src=\"LOGO_MARCA\" alt=\"Redentor\" style=\"height:44px;width:auto;object-fit:contain\">\n    <span style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:15px;color:var(--text);letter-spacing:0.5px;line-height:1.2\" id=\"brandHeader\"><br><span style=\"font-size:9px;font-weight:400;color:var(--muted);letter-spacing:2px\">FRETAMENTO</span></span>\n  </div>\n  <div class=\"header-stats\">\n    <div class=\"hstat\"><div class=\"hstat-num\" id=\"stat-func\">200</div><div class=\"hstat-label\">Ativos</div></div>\n    <div class=\"hstat\"><div class=\"hstat-num\" id=\"stat-lines\">7</div><div class=\"hstat-label\">Linhas</div></div>\n    <div class=\"hstat\"><div class=\"hstat-num\" id=\"stat-turnos\">3</div><div class=\"hstat-label\">Turnos</div></div>\n    <div class=\"hstat\"><div class=\"hstat-num\" id=\"stat-rotas\">17</div><div class=\"hstat-label\">Rotas</div></div>\n  </div>\n  <div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap\">\n    <span class=\"cliente-badge\">VISUALIZAÇÃO</span>\n    <button class=\"export-btn\" onclick=\"openMapaGeral()\" style=\"background:rgba(16,185,129,0.12);color:var(--green);border-color:rgba(16,185,129,0.3)\">Mapa Geral</button>\n    <button class=\"export-btn\" onclick=\"openPainel()\" style=\"background:rgba(59,130,246,0.12);color:var(--accent2);border-color:rgba(59,130,246,0.3)\">Painel Geral</button>\n    <button class=\"export-btn\" onclick=\"openSolicitacoes()\" style=\"background:rgba(245,158,11,0.12);color:var(--accent);border-color:rgba(245,158,11,0.3);position:relative\">Solicitar Serviço</button>\n    <button class=\"export-btn\" onclick=\"openCadastro()\" style=\"background:rgba(59,130,246,0.12);color:var(--accent2);border-color:rgba(59,130,246,0.3)\">Cadastro</button>\n    <button class=\"export-btn\" onclick=\"openAvisos()\" style=\"background:rgba(168,85,247,0.12);color:#a855f7;border-color:rgba(168,85,247,0.3)\">Avisos</button>\n    <button class=\"export-btn\" onclick=\"openChats()\" style=\"background:rgba(37,211,102,0.12);color:#25D366;border-color:rgba(37,211,102,0.3)\">Chats</button>\n    <button class=\"export-btn\" onclick=\"openReclamacoes()\" style=\"background:rgba(239,68,68,0.12);color:#ef4444;border-color:rgba(239,68,68,0.3)\">Reclamações</button>\n    <button class=\"export-btn\" onclick=\"openMotoristas()\">Motoristas</button>\n    <button class=\"export-btn\" onclick=\"exportExcel()\">Excel</button>\n    <button class=\"export-btn\" onclick=\"exportPDF()\">PDF Linha</button>\n    <button class=\"export-btn\" onclick=\"logout()\" style=\"color:var(--muted)\">Sair</button>\n  </div>\n</header>\n\n<div class=\"container\">\n  <aside class=\"sidebar\">\n    <div class=\"search-wrap\">\n      <input class=\"search-input\" type=\"text\" placeholder=\"Nome, bairro, cidade ou ponto de embarque...\" id=\"searchInput\" oninput=\"filterSidebar()\">\n    </div>\n    <div class=\"turno-filter\" id=\"turnoFilterBar\">\n      <button class=\"turno-btn active\" onclick=\"setTurnoFilter('todos', this)\">Todos</button>\n    </div>\n    <div class=\"sidebar-label\">STATUS</div>\n    <div class=\"status-filter\" id=\"statusFilter\">\n      <button class=\"status-filter-btn active\" onclick=\"setStatusFilter('todos', this)\">Todos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ativo', this)\">Ativos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ferias', this)\">Férias</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('afastado', this)\">Afastados</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('desligado', this)\">Desligados</button>\n      <button class=\"status-filter-btn sem-rota\" onclick=\"setStatusFilter('sem-rota', this)\">Sem Rota</button>\n    </div>\n    <div class=\"sidebar-label\" style=\"margin-top:8px\">LINHAS E TURNOS</div>\n    <div id=\"lineList\"></div>\n  </aside>\n\n  <main class=\"main\" id=\"mainContent\">\n    <div class=\"welcome\">\n      <div class=\"welcome-icon\"></div>\n      <h3>Selecione uma linha</h3>\n      <p>Escolha uma linha no painel ao lado para visualizar e gerenciar os passageiros e horários.</p>\n    </div>\n  </main>\n</div>\n\n<!-- MODAL ADD/EDIT PASSAGEIRO -->\n<!-- MODAL GERENCIAR MOTORISTAS -->\n<div class=\"modal-overlay\" id=\"modalMotoristasGerenciar\">\n  <div class=\"modal\" style=\"width:520px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Cadastro de Motoristas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Nome</label>\n          <input class=\"form-input\" id=\"fMNome\" type=\"text\" placeholder=\"Nome do motorista\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Telefone</label>\n          <input class=\"form-input\" id=\"fMTel\" type=\"text\" placeholder=\"(15) 99999-9999\">\n        </div>\n      </div>\n      <div id=\"motoristaListBody\"></div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL PAINEL GERAL -->\n<div class=\"modal-overlay\" id=\"modalPainel\">\n  <div class=\"modal\" style=\"width:780px;max-width:97vw\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Painel Geral</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"painelBody\" style=\"padding:16px 20px\"></div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL CONFIGURAÇÕES (API Key) -->\n<div class=\"modal-overlay\" id=\"modalConfig\">\n  <div class=\"modal\" style=\"width:480px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Configurações</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalConfig').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Google Maps API Key</div>\n        <div class=\"config-field\">\n          <label class=\"form-label\">Chave de API</label>\n          <input class=\"form-input config-key-input\" id=\"fApiKey\" type=\"password\"\n            placeholder=\"AIza...\" autocomplete=\"off\">\n          <div style=\"font-size:11px;color:var(--muted);margin-top:6px\">\n            A chave é salva apenas neste navegador (localStorage). Nunca é enviada para nossos servidores.\n          </div>\n        </div>\n        <button class=\"opt-btn\" onclick=\"saveApiKey()\">Salvar chave</button>\n        <div id=\"apiKeyStatus\" class=\"opt-status\"></div>\n      </div>\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Garagem (ponto de início)</div>\n        <div style=\"font-size:13px;color:var(--text);background:var(--surface2);padding:10px 14px;border-radius:8px;border:1px solid var(--border)\">\n          R. Sebastiana Rosa Luposeli, 59 — Júlio de Mesquita Filho, Sorocaba-SP\n        </div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalConfig').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL OTIMIZAÇÃO DE ROTA -->\n<div class=\"modal-overlay\" id=\"modalOtimizar\">\n  <div class=\"modal\" style=\"width:540px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\" id=\"otimizarTitle\">Otimizar Rota</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">ℹ️ Como funciona</div>\n        <div style=\"font-size:12px;color:var(--muted);line-height:1.7\">\n          O sistema usa o Google Maps para calcular a <strong style=\"color:var(--text)\">melhor ordem de paradas</strong>,\n          minimizando o tempo total de rota e garantindo chegada no horário.\n          Parte da <strong style=\"color:var(--green)\">Garagem Redentor</strong> e chega na\n          <strong style=\"color:var(--accent)\">Av. Jerome Case às ${horarioChegada}</strong>.\n          Passageiros com mais de <strong style=\"color:var(--red)\">60 min em rota</strong> serão alertados.\n        </div>\n      </div>\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Ações</div>\n        <button class=\"opt-btn\" id=\"btnOtimizarRota\" onclick=\"otimizarRotaAtual()\">\n          Otimizar ordem e recalcular horários\n        </button>\n        <button class=\"opt-btn opt-btn-secondary\" onclick=\"recalcularApenasHorarios()\">\n          Recalcular horários (manter ordem atual)\n        </button>\n        <div id=\"optStatus\" class=\"opt-status\">Aguardando...</div>\n      </div>\n      <div class=\"opt-section\" id=\"optResultSection\" style=\"display:none\">\n        <div class=\"opt-title\">Resultado</div>\n        <div id=\"optResultBody\"></div>\n      </div>\n    </div>\n      <div class=\"opt-section\" id=\"optMapSection\" style=\"display:none\">\n        <div class=\"opt-title\">Mapa da Rota</div>\n        <div id=\"optMapDiv\" style=\"width:100%;height:320px;border-radius:10px;overflow:hidden;border:1px solid var(--border)\"></div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- MOTORISTA VIEW -->\n<div class=\"moto-overlay\" id=\"motoView\">\n  <div class=\"moto-header\">\n    <div>\n      <div class=\"moto-title\">Visão do Motorista</div>\n      <div class=\"moto-subtitle\">Selecione sua linha para iniciar a rota</div>\n    </div>\n    <button class=\"moto-back\" onclick=\"document.getElementById('motoView').classList.remove('open')\">Fechar</button>\n  </div>\n  <div class=\"moto-body\">\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Motorista</label>\n      <select class=\"moto-select\" id=\"motoSelectMotorista\" onchange=\"motoFilterLinhas()\">\n        <option value=\"\">— Todos os motoristas —</option>\n      </select>\n    </div>\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Linha e Turno</label>\n      <select class=\"moto-select\" id=\"motoSelectLinha\" onchange=\"motoLoadRota()\">\n        <option value=\"\">— Selecione uma linha —</option>\n      </select>\n    </div>\n    <div id=\"motoRotaContent\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL CADASTRO DE PASSAGEIROS -->\n<div class=\"modal-overlay\" id=\"modalCadastro\">\n  <div class=\"modal-box\" style=\"max-width:600px;width:96%;padding:0;overflow:hidden;max-height:92vh;display:flex;flex-direction:column\">\n\n    <!-- HEADER -->\n    <div style=\"background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0\">\n      <div style=\"display:flex;align-items:center;gap:12px\">\n        <button id=\"cadTab1\" onclick=\"cadAba('nova')\" style=\"padding:7px 16px;border-radius:20px;border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;cursor:pointer;background:var(--accent2);color:#fff\">Nova Solicitação</button>\n        <button id=\"cadTab2\" onclick=\"cadAba('historico')\" style=\"padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;cursor:pointer\">Histórico</button>\n      </div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalCadastro').classList.remove('open')\">✕</button>\n    </div>\n\n    <!-- ABA NOVA — WIZARD -->\n    <div id=\"cadAbaNova\" style=\"overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n\n      <!-- Indicador de etapas -->\n      <div style=\"display:flex;align-items:center;padding:16px 20px 0;gap:0\">\n        <div class=\"cli-step active\" id=\"cadStep1Dot\">1</div>\n        <div class=\"cli-step-line\" id=\"cadLine1\"></div>\n        <div class=\"cli-step\" id=\"cadStep2Dot\">2</div>\n        <div class=\"cli-step-line\" id=\"cadLine2\"></div>\n        <div class=\"cli-step\" id=\"cadStep3Dot\">3</div>\n      </div>\n      <div style=\"display:flex;justify-content:space-between;padding:4px 14px 16px;font-size:10px;color:var(--muted)\">\n        <span>Tipo</span><span>Dados</span><span>Confirmar</span>\n      </div>\n\n      <!-- ETAPA 1 — Tipo -->\n      <div id=\"cadEtapa1\" style=\"padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Qual o tipo de solicitação?</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:16px\">Selecione o que deseja solicitar</div>\n        <div style=\"display:flex;flex-direction:column;gap:10px\">\n          <button class=\"cli-tipo-btn\" onclick=\"cadSelecionarTipo('novo','Novo Passageiro',this)\" style=\"text-align:left\">\n            <div style=\"font-weight:700;font-size:15px\">Novo Passageiro</div>\n            <div style=\"font-size:12px;color:var(--muted);margin-top:2px\">Cadastrar um novo colaborador no transporte</div>\n          </button>\n          <button class=\"cli-tipo-btn\" onclick=\"cadSelecionarTipo('turno','Alteração de Turno',this)\" style=\"text-align:left\">\n            <div style=\"font-weight:700;font-size:15px\">Alteração de Turno</div>\n            <div style=\"font-size:12px;color:var(--muted);margin-top:2px\">Mudar o turno de trabalho de um passageiro</div>\n          </button>\n          <button class=\"cli-tipo-btn\" onclick=\"cadSelecionarTipo('endereco','Alteração de Endereço',this)\" style=\"text-align:left\">\n            <div style=\"font-weight:700;font-size:15px\">Alteração de Endereço</div>\n            <div style=\"font-size:12px;color:var(--muted);margin-top:2px\">Atualizar o endereço de embarque</div>\n          </button>\n          <button class=\"cli-tipo-btn\" onclick=\"cadSelecionarTipo('desligamento','Desligamento',this)\" style=\"text-align:left\">\n            <div style=\"font-weight:700;font-size:15px\">Desligamento</div>\n            <div style=\"font-size:12px;color:var(--muted);margin-top:2px\">Retirar um colaborador do transporte</div>\n          </button>\n        </div>\n      </div>\n\n      <!-- ETAPA 2 — Formulário dinâmico -->\n      <div id=\"cadEtapa2\" style=\"display:none;padding:0 20px 20px\">\n        <div id=\"cadTipoTag\" style=\"background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;font-weight:600;color:var(--accent2)\"></div>\n        <div id=\"cadFormulario\"></div>\n        <div style=\"display:flex;gap:10px;margin-top:16px\">\n          <button onclick=\"cadGoEtapa(1)\" class=\"btn-cancel\" style=\"flex:1\">← Voltar</button>\n          <button onclick=\"cadGoEtapa(3)\" class=\"add-btn\" style=\"flex:2;background:var(--accent2)\">Próximo →</button>\n        </div>\n      </div>\n\n      <!-- ETAPA 3 — Confirmar -->\n      <div id=\"cadEtapa3\" style=\"display:none;padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Confirmar</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:16px\">Revise os dados antes de enviar</div>\n        <div id=\"cadResumo\" style=\"background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px;line-height:2\"></div>\n        <label class=\"form-label\">Observação (opcional)</label>\n        <textarea class=\"form-input\" id=\"cadObs\" rows=\"2\" placeholder=\"Informações adicionais...\" style=\"resize:none;margin-bottom:16px;font-size:15px\"></textarea>\n        <button class=\"add-btn\" style=\"width:100%;font-size:15px;padding:14px;background:var(--accent2)\" onclick=\"cadEnviar()\">Enviar Solicitação</button>\n        <button onclick=\"cadGoEtapaVoltar(2)\" class=\"btn-cancel\" style=\"width:100%;margin-top:8px\">← Voltar</button>\n        <div id=\"cadMsg\" style=\"margin-top:10px;font-size:13px;text-align:center\"></div>\n      </div>\n\n    </div><!-- /cadAbaNova -->\n\n    <!-- ABA HISTÓRICO -->\n    <div id=\"cadAbaHistorico\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n      <div style=\"display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap\">\n        <select class=\"form-input\" id=\"cadFiltroStatus\" style=\"flex:1;min-width:120px;font-size:13px\" onchange=\"cadRenderHistorico()\">\n          <option value=\"\">Todos os status</option>\n          <option value=\"pendente\">Pendentes</option>\n          <option value=\"atendida\">Atendidas</option>\n        </select>\n        <input class=\"form-input\" type=\"month\" id=\"cadFiltroMes\" style=\"flex:1;min-width:120px;font-size:13px\" onchange=\"cadRenderHistorico()\">\n      </div>\n      <div id=\"cadListaHistorico\" style=\"max-height:500px;overflow-y:auto\"></div>\n    </div>\n\n  </div>\n</div>\n\n<!-- MODAL SOLICITAÇÕES CLIENTE -->\n<div class=\"modal-overlay\" id=\"modalSolicitacoes\">\n  <div class=\"modal-box\" style=\"max-width:600px;width:96%;padding:0;overflow:hidden;max-height:92vh;display:flex;flex-direction:column\">\n\n    <!-- HEADER -->\n    <div style=\"background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0\">\n      <div style=\"display:flex;align-items:center;gap:12px\">\n        <button id=\"cliTab1\" onclick=\"cliAba('nova')\"\n          style=\"padding:7px 16px;border-radius:20px;border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;cursor:pointer;background:var(--accent);color:#000\">\n          Solicitar\n        </button>\n        <button id=\"cliTab2\" onclick=\"cliAba('acompanhamento')\"\n          style=\"padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;cursor:pointer\">\n          Histórico\n        </button>\n      </div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalSolicitacoes').classList.remove('open')\">✕</button>\n    </div>\n\n    <!-- ABA NOVA — WIZARD -->\n    <div id=\"cliAbaNova\" style=\"overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n\n      <!-- Indicador de etapas -->\n      <div style=\"display:flex;align-items:center;padding:16px 20px 0;gap:0\" id=\"cliStepsBar\">\n        <div class=\"cli-step active\" id=\"cliStep1Dot\">1</div>\n        <div class=\"cli-step-line\" id=\"cliLine1\"></div>\n        <div class=\"cli-step\" id=\"cliStep2Dot\">2</div>\n        <div class=\"cli-step-line\" id=\"cliLine2\"></div>\n        <div class=\"cli-step\" id=\"cliStep3Dot\">3</div>\n        <div class=\"cli-step-line\" id=\"cliLine3\"></div>\n        <div class=\"cli-step\" id=\"cliStep4Dot\">4</div>\n      </div>\n      <div style=\"display:flex;justify-content:space-between;padding:4px 14px 16px;font-size:10px;color:var(--muted)\">\n        <span>Serviço</span><span style=\"margin-left:4px\">Data/Hora</span><span>Funcionários</span><span>Confirmar</span>\n      </div>\n\n      <!-- ETAPA 1 — Tipo de serviço -->\n      <div id=\"cliEtapa1\" style=\"padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Qual o serviço?</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:16px\">Selecione o tipo de atendimento necessário</div>\n        <div style=\"display:flex;flex-direction:column;gap:8px\" id=\"cliTipoLista\"></div>\n      </div>\n\n      <!-- ETAPA 2 — Data e Hora -->\n      <div id=\"cliEtapa2\" style=\"display:none;padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Quando?</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:20px\">Informe a data e o horário de atendimento</div>\n\n        <div id=\"cliTipoSelecionadoTag\" style=\"background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:10px 14px;margin-bottom:20px;font-size:13px;font-weight:600;color:var(--accent)\"></div>\n\n        <label class=\"form-label\">Data do Serviço</label>\n        <input class=\"form-input\" type=\"date\" id=\"cliData\" style=\"margin-bottom:16px;font-size:16px\">\n\n        <label class=\"form-label\">Horário de Atendimento</label>\n        <input class=\"form-input\" type=\"time\" id=\"cliHorario\" style=\"margin-bottom:16px;font-size:16px\">\n\n        <label class=\"form-label\">Roteiro</label>\n        <div style=\"display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px\">\n          <button class=\"cli-tipo-btn\" id=\"rotBtn_entrada\" onclick=\"cliSetRoteiro('Entrada',this)\" style=\"padding:12px 8px;font-size:13px\">Entrada</button>\n          <button class=\"cli-tipo-btn\" id=\"rotBtn_saida\" onclick=\"cliSetRoteiro('Saída',this)\" style=\"padding:12px 8px;font-size:13px\">Saída</button>\n          <button class=\"cli-tipo-btn\" id=\"rotBtn_idavolta\" onclick=\"cliSetRoteiro('Ida e Volta',this)\" style=\"padding:12px 8px;font-size:13px\">Ida/Volta</button>\n        </div>\n\n        <div style=\"display:flex;gap:10px\">\n          <button onclick=\"cliGoEtapa(1)\" class=\"btn-cancel\" style=\"flex:1\">← Voltar</button>\n          <button onclick=\"cliGoEtapa(3)\" class=\"add-btn\" style=\"flex:2\">Próximo →</button>\n        </div>\n      </div>\n\n      <!-- ETAPA 3 — Funcionários -->\n      <div id=\"cliEtapa3\" style=\"display:none;padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Quem vai?</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:16px\">Selecione os funcionários que utilizarão o serviço</div>\n\n        <!-- Toggle passageiro não cadastrado -->\n        <div id=\"cliNaoCadastradoToggle\" onclick=\"cliToggleNaoCadastrado()\"\n          style=\"display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:12px;user-select:none;transition:all 0.15s\">\n          <div id=\"cliNaoCadastradoCheck\"\n            style=\"width:20px;height:20px;border-radius:5px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.15s\"></div>\n          <div>\n            <div style=\"font-size:13px;font-weight:600\">Passageiro não cadastrado</div>\n            <div style=\"font-size:11px;color:var(--muted)\">Ex: diretor, visitante, parceiro — descreva na observação</div>\n          </div>\n        </div>\n\n        <!-- Busca (oculta quando toggle ativo) -->\n        <div id=\"cliBuscaArea\">\n          <input class=\"form-input\" id=\"cliBuscaFunc\" type=\"text\"\n            placeholder=\"Nome, bairro ou cidade...\"\n            oninput=\"cliBuscarFuncionarios()\"\n            style=\"margin-bottom:8px;font-size:16px\">\n          <div id=\"cliResultadoFunc\" style=\"max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;margin-bottom:12px;display:none\"></div>\n          <div style=\"font-size:11px;color:var(--muted);margin-bottom:6px\">Selecionados:</div>\n          <div id=\"cliFuncSelecionados\" style=\"display:flex;flex-wrap:wrap;gap:6px;min-height:32px;margin-bottom:12px\"></div>\n        </div>\n\n        <!-- Aviso quando não cadastrado -->\n        <div id=\"cliNaoCadastradoAviso\" style=\"display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:var(--muted)\">\n          Descreva quem é o passageiro no campo <strong style=\"color:var(--text)\">Observação</strong> da próxima etapa.\n        </div>\n\n        <div style=\"display:flex;gap:10px\">\n          <button onclick=\"cliGoEtapa(2)\" class=\"btn-cancel\" style=\"flex:1\">← Voltar</button>\n          <button onclick=\"cliGoEtapa(4)\" class=\"add-btn\" style=\"flex:2\">Próximo →</button>\n        </div>\n      </div>\n\n      <!-- ETAPA 4 — Confirmar -->\n      <div id=\"cliEtapa4\" style=\"display:none;padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Confirmar</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:16px\">Revise os dados antes de enviar</div>\n\n        <div id=\"cliResumo\" style=\"background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px;line-height:2\"></div>\n\n        <label class=\"form-label\">Observação (opcional)</label>\n        <textarea class=\"form-input\" id=\"cliObs\" rows=\"3\"\n          placeholder=\"Informe detalhes adicionais se necessário...\"\n          style=\"resize:none;margin-bottom:20px;font-size:15px\"></textarea>\n\n        <button class=\"add-btn\" style=\"width:100%;font-size:15px;padding:14px\" onclick=\"cliEnviarSolicitacao()\">\n          Enviar Solicitação\n        </button>\n        <button onclick=\"cliGoEtapaVoltar(3)\" class=\"btn-cancel\" style=\"width:100%;margin-top:8px\">← Voltar</button>\n        <div id=\"cliMsg\" style=\"margin-top:10px;font-size:13px;text-align:center\"></div>\n      </div>\n\n    </div><!-- /cliAbaNova -->\n\n    <!-- ABA ACOMPANHAMENTO -->\n    <div id=\"cliAbaAcompanhamento\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n      <div style=\"display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap\">\n        <select class=\"form-input\" id=\"cliFiltroStatus\" style=\"flex:1;min-width:120px;font-size:13px\" onchange=\"cliRenderAcompanhamento()\">\n          <option value=\"\">Todos os status</option>\n          <option value=\"pendente\">Pendentes</option>\n          <option value=\"confirmada\">Confirmadas</option>\n          <option value=\"atendida\">Atendidas</option>\n          <option value=\"cancelada\">Canceladas</option>\n        </select>\n        <input class=\"form-input\" type=\"month\" id=\"cliFiltroMes\" style=\"flex:1;min-width:120px;font-size:13px\" onchange=\"cliRenderAcompanhamento()\">\n      </div>\n      <div id=\"cliListaSolicitacoes\" style=\"max-height:500px;overflow-y:auto\"></div>\n    </div>\n\n  </div>\n</div>\n\n<!-- MODAL MAPA GERAL -->\n<div class=\"modal-overlay\" id=\"modalMapaGeral\">\n  <div class=\"modal\" style=\"max-width:1100px;width:97%;height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\" style=\"flex-shrink:0\">\n      <div class=\"modal-title\">Mapa Geral de Rotas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMapaGeral').classList.remove('open')\">×</button>\n    </div>\n    <div style=\"flex-shrink:0;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center\">\n      <!-- Turno filter -->\n      <div style=\"display:flex;gap:6px;align-items:center\" id=\"mgTurnoBar\">\n        <span style=\"font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px\">Turno:</span>\n      </div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Line checkboxes -->\n      <div style=\"display:flex;gap:6px;align-items:center;flex-wrap:wrap\" id=\"mgLinhasCheck\"></div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Select all / none -->\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectAll()\">Todas</button>\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectNone()\">Nenhuma</button>\n      <!-- Route toggle -->\n      <div style=\"margin-left:auto;display:flex;gap:8px;align-items:center\">\n        <label style=\"font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px\">\n          <input type=\"checkbox\" id=\"mgShowRoutes\" checked onchange=\"renderMapaGeral()\" style=\"cursor:pointer\">\n          Mostrar rotas traçadas\n        </label>\n      </div>\n    </div>\n    <div id=\"mapaGeralDiv\" style=\"flex:1;width:100%;min-height:0\"></div>\n    <div id=\"mgLegend\" style=\"flex-shrink:0;padding:10px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;font-size:12px\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL ROTAS EXTRAS -->\n<div class=\"modal-overlay\" id=\"modalRotasExtras\">\n  <div class=\"modal\" style=\"max-width:800px;width:95%\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Rotas Extras</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalRotasExtras').classList.remove('open')\">×</button>\n    </div>\n    <div class=\"modal-body\">\n      <!-- Lista de rotas extras existentes -->\n      <div id=\"rotasExtrasList\" style=\"margin-bottom:16px\"></div>\n      <!-- Criar nova rota extra -->\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px\">\n        <div style=\"font-weight:700;font-size:14px;margin-bottom:14px;color:var(--accent)\">Nova Rota Extra</div>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px\">\n          <div>\n            <label class=\"form-label\">Nome da Rota</label>\n            <input class=\"form-input\" id=\"reNome\" placeholder=\"Ex: Extra Sexta 02/05\">\n          </div>\n          <div>\n            <label class=\"form-label\">Data</label>\n            <input class=\"form-input\" type=\"date\" id=\"reData\">\n          </div>\n          <div>\n            <label class=\"form-label\">Motorista</label>\n            <select class=\"form-input\" id=\"reMotorista\">\n              <option value=\"\">— Selecione —</option>\n            </select>\n          </div>\n          <div>\n            <label class=\"form-label\">Horário de Saída</label>\n            <input class=\"form-input\" type=\"time\" id=\"reHorario\" placeholder=\"Ex: 22:00\">\n          </div>\n        </div>\n        <label class=\"form-label\">Buscar e selecionar passageiros</label>\n        <input class=\"form-input\" id=\"reBusca\" placeholder=\"Digite nome, bairro ou cidade...\" oninput=\"filtrarPassRotaExtra()\" style=\"margin-bottom:10px\">\n        <div id=\"reResultados\" style=\"max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px\"></div>\n        <div style=\"margin-bottom:12px\">\n          <div style=\"font-size:12px;color:var(--muted);margin-bottom:6px\">Selecionados:</div>\n          <div id=\"reSelecionados\" style=\"display:flex;flex-wrap:wrap;gap:6px;min-height:32px\"></div>\n        </div>\n        <button class=\"add-btn\" onclick=\"criarRotaExtra()\" style=\"width:100%\">Criar Rota Extra</button>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL SEM ROTA -->\n<div class=\"modal-overlay\" id=\"modalSemRota\">\n  <div class=\"modal\" style=\"max-width:700px;width:95%\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Passageiros Sem Rota</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalSemRota').classList.remove('open')\">×</button>\n    </div>\n    <div class=\"modal-body\">\n      <div style=\"font-size:13px;color:var(--muted);margin-bottom:12px\">\n        Clique nos passageiros para selecioná-los, depois crie uma rota extra ou aloque em uma linha existente.\n      </div>\n      <div id=\"semRotaActionsBar\" style=\"display:none;gap:8px;margin-bottom:12px;flex-wrap:wrap\">\n        <button onclick=\"criarRotaExtraDeSemRota()\" class=\"add-btn\" style=\"background:rgba(236,72,153,0.8)\">Criar Rota Extra com Selecionados</button>\n        <button onclick=\"alocarTodosParaRota()\" class=\"export-btn\" style=\"color:var(--accent);border-color:var(--accent)\">Alocar Selecionados em Linha</button>\n        <button onclick=\"semRotaSelecionados&&semRotaSelecionados.clear();renderSemRotaList()\" class=\"export-btn\" style=\"color:var(--muted)\">Limpar seleção</button>\n      </div>\n      <div id=\"semRotaList\"></div>\n      <!-- Alocação -->\n      <div id=\"semRotaAlocarBox\" style=\"display:none;background:var(--surface2);border:1px solid var(--accent);border-radius:12px;padding:14px;margin-top:14px\">\n        <div style=\"font-weight:600;font-size:13px;margin-bottom:10px\">Alocar <span id=\"semRotaAlocarNome\" style=\"color:var(--accent)\"></span> para:</div>\n        <div style=\"display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end\">\n          <div>\n            <label class=\"form-label\">Linha e Turno</label>\n            <select class=\"form-input\" id=\"semRotaLinhaSelect\"></select>\n          </div>\n          <button class=\"add-btn\" onclick=\"confirmarAlocacao()\">Confirmar</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL RELATÓRIO -->\n<div class=\"modal-overlay\" id=\"modalReport\">\n  <div class=\"modal report-modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Relatório de Alterações</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"reportBody\">\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL AVISOS (Gestor DSV) -->\n<div class=\"modal-overlay\" id=\"modalAvisos\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Avisos aos Passageiros</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalAvisos').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px\">\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px\">\n        <div style=\"font-family:Barlow;font-weight:700;margin-bottom:12px\">Novo aviso</div>\n        <label class=\"form-label\">Destinatário</label>\n        <select class=\"form-input\" id=\"avDestino\"><option value=\"\">Todas as linhas (aviso geral)</option></select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Tipo</label>\n        <select class=\"form-input\" id=\"avTipo\"><option value=\"aviso\">Aviso de texto</option><option value=\"pdf\">Link/PDF</option></select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Mensagem</label>\n        <textarea class=\"form-input\" id=\"avTexto\" rows=\"3\" placeholder=\"Digite o aviso...\" style=\"resize:vertical\"></textarea>\n        <label class=\"form-label\" style=\"margin-top:10px\">Link (opcional — PDF, formulário, etc.)</label>\n        <input class=\"form-input\" id=\"avLink\" placeholder=\"https://...\">\n        <div style=\"font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5\">Para anexar um PDF: suba o arquivo no Google Drive (ou outro), copie o link de compartilhamento e cole aqui.</div>\n        <button class=\"add-btn\" style=\"margin-top:14px;width:100%\" onclick=\"avPublicar()\">Publicar aviso</button>\n      </div>\n      <div style=\"font-family:Barlow;font-weight:700;margin-bottom:10px\">Avisos publicados</div>\n      <div id=\"avLista\"><div style=\"text-align:center;color:var(--muted);padding:20px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL CHATS DAS LINHAS (Gestor DSV) -->\n<div class=\"modal-overlay\" id=\"modalChats\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Chats das Linhas</div>\n      <button class=\"modal-close\" onclick=\"chatsFechar()\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;display:flex;flex-direction:column;flex:1;overflow:hidden\">\n      <div id=\"chatsSeletor\">\n        <label class=\"form-label\">Selecione a linha/turno</label>\n        <select class=\"form-input\" id=\"chatSelLinha\" onchange=\"chatAbrirLinha()\"><option value=\"\">— Selecione —</option></select>\n        <div style=\"font-size:12px;color:var(--muted);margin-top:10px\">Escolha uma linha para ver e participar do chat dos passageiros.</div>\n      </div>\n      <div id=\"chatsConversa\" style=\"display:none;flex-direction:column;flex:1;overflow:hidden\">\n        <div style=\"display:flex;align-items:center;gap:8px;margin-bottom:10px\">\n          <button class=\"export-btn\" style=\"font-size:12px;padding:5px 10px\" onclick=\"chatVoltarSeletor()\">← Linhas</button>\n          <strong id=\"chatTituloLinha\" style=\"font-size:14px\"></strong>\n        </div>\n        <div id=\"chatGestorMsgs\" style=\"flex:1;overflow-y:auto;background:var(--surface2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:300px;max-height:50vh\"></div>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <input id=\"chatGestorInput\" placeholder=\"Mensagem como gestor...\" style=\"flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:11px 16px;color:var(--text);font-size:14px;font-family:inherit\" onkeypress=\"if(event.key==='Enter')chatGestorEnviar()\">\n          <button onclick=\"chatGestorEnviar()\" style=\"background:var(--accent);border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer\">➤</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL RECLAMAÇÕES (Gestor DSV) -->\n<div class=\"modal-overlay\" id=\"modalReclamacoes\">\n  <div class=\"modal\" style=\"max-width:880px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Reclamações / Ocorrências</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReclamacoes').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;overflow-y:auto\">\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px\">\n        <div style=\"font-family:Barlow;font-weight:700;margin-bottom:12px;font-size:16px\">Registrar nova ocorrência</div>\n        <div style=\"display:flex;gap:10px;flex-wrap:wrap\">\n          <div style=\"flex:1;min-width:130px\"><label class=\"form-label\">Data da ocorrência</label><input class=\"form-input\" type=\"date\" id=\"rcData\"></div>\n          <div style=\"flex:1;min-width:130px\"><label class=\"form-label\">Linha (opcional)</label><select class=\"form-input\" id=\"rcLinha\"><option value=\"\">—</option></select></div>\n          <div style=\"flex:1;min-width:100px\"><label class=\"form-label\">Turno</label><select class=\"form-input\" id=\"rcTurno\"><option value=\"\">—</option><option>1°</option><option>2°</option><option>3°</option><option>ADM</option></select></div>\n        </div>\n        <label class=\"form-label\" style=\"margin-top:10px\">Passageiro envolvido (opcional)</label>\n        <input class=\"form-input\" id=\"rcPassageiro\" placeholder=\"Nome do passageiro, se aplicável\">\n        <label class=\"form-label\" style=\"margin-top:10px\">Descrição da ocorrência</label>\n        <textarea class=\"form-input\" id=\"rcDescricao\" rows=\"3\" placeholder=\"Descreva o que aconteceu...\" style=\"resize:vertical\"></textarea>\n        <label class=\"form-label\" style=\"margin-top:10px\">Provas (link — foto/vídeo no Drive, print, etc.)</label>\n        <input class=\"form-input\" id=\"rcProvas\" placeholder=\"https://... (opcional)\">\n        <div style=\"font-size:11px;color:var(--muted);margin-top:6px\">Suba a foto/vídeo no Google Drive e cole o link aqui.</div>\n        <button class=\"add-btn\" style=\"margin-top:14px;width:100%\" onclick=\"rcRegistrar()\">Registrar ocorrência</button>\n      </div>\n      <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:10px\">\n        <div style=\"font-family:Barlow;font-weight:700\">Ocorrências registradas</div>\n        <select class=\"form-input\" id=\"rcFiltroStatus\" onchange=\"rcRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os status</option><option value=\"aberta\">Aberta</option><option value=\"respondida\">Respondida</option><option value=\"resolvida\">Resolvida</option><option value=\"nao_resolvida\">Não resolvida</option><option value=\"improcedente\">Improcedente</option></select>\n      </div>\n      <div id=\"rcLista\"><div style=\"text-align:center;color:var(--muted);padding:20px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n";
+const HTML_MOTOR = "\n<!-- LOGIN OVERLAY -->\n<div class=\"login-overlay\" id=\"loginOverlay\">\n  <div style=\"margin-bottom:24px;text-align:center\">\n    <img style=\"height:56px;width:auto\" src=\"LOGO_MARCA\" alt=\"Redentor\">\n    <div style=\"font-family:Barlow,sans-serif;font-weight:800;font-size:24px;color:var(--accent);margin-top:8px\" id=\"brandLogin\"></div>\n    <div style=\"font-size:13px;color:var(--muted)\">Fretamento — Portal do Cliente</div>\n  </div>\n  <div id=\"loginChecando\" style=\"text-align:center;color:#8b949e;font-size:14px;padding:28px\">Verificando acesso...</div>\n  <div class=\"login-box\" id=\"loginBox\" style=\"display:none\">\n    <div class=\"login-title\">Acesso ao Portal</div>\n    <div class=\"login-sub\">Visualização de rotas e passageiros</div>\n    <input class=\"login-input\" type=\"email\" id=\"emailCliente\" autocomplete=\"username\" placeholder=\"Seu e-mail\"\n      onkeydown=\"if(event.key==='Enter') document.getElementById('senhaCliente').focus()\">\n    <div style=\"position:relative\">\n      <input class=\"login-input\" type=\"password\" id=\"senhaCliente\" autocomplete=\"current-password\" placeholder=\"Sua senha\"\n        style=\"padding-right:46px\" onkeydown=\"if(event.key==='Enter') fazerLogin()\">\n      <button type=\"button\" id=\"olhoCliente\" onclick=\"verSenhaCliente()\" title=\"Mostrar senha\" aria-label=\"Mostrar senha\"\n        style=\"position:absolute;right:10px;top:12px;background:none;border:none;cursor:pointer;color:#8b949e;line-height:1;padding:4px\"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' style='width:18px;height:18px;display:block'><path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg></button>\n    </div>\n    <button class=\"login-btn\" id=\"btnEntrarCliente\" onclick=\"fazerLogin()\">Entrar</button>\n    <div style=\"text-align:center;margin-top:12px\">\n      <a href=\"#\" id=\"linkEsqueci\" onclick=\"esqueciSenhaCliente();return false;\" style=\"color:var(--muted);font-size:13px\">Esqueci minha senha</a>\n    </div>\n    <div class=\"login-error\" id=\"loginError\">Senha incorreta. Tente novamente.</div>\n    <div id=\"loginMsg\" style=\"font-size:13px;text-align:center;margin-top:10px\"></div>\n  </div>\n</div>\n\n<!-- INSTALL BANNER -->\n<div id=\"installBanner\" style=\"display:none;background:rgba(245,158,11,0.12);border-bottom:1px solid rgba(245,158,11,0.3);padding:10px 16px;align-items:center;gap:10px;position:sticky;top:0;z-index:20\">\n  <span style=\"font-size:20px\"></span>\n  <div style=\"flex:1;font-size:13px\">\n    <strong style=\"color:var(--accent)\">Instalar app</strong>\n    <div style=\"font-size:11px;color:var(--muted)\" id=\"installInstructions\"></div>\n  </div>\n  <button onclick=\"document.getElementById('installBanner').style.display='none'\" style=\"background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer\">×</button>\n</div>\n\n<header>\n  <div class=\"logo\">\n    <img src=\"LOGO_MARCA\" alt=\"Redentor\" style=\"height:44px;width:auto;object-fit:contain\">\n    <span style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:15px;color:var(--text);letter-spacing:0.5px;line-height:1.2\" id=\"brandHeader\"><br><span style=\"font-size:9px;font-weight:400;color:var(--muted);letter-spacing:2px\">FRETAMENTO</span></span>\n  </div>\n  <div class=\"header-stats\">\n    <div class=\"hstat\"><div class=\"hstat-num\" id=\"stat-func\">200</div><div class=\"hstat-label\">Ativos</div></div>\n    <div class=\"hstat\"><div class=\"hstat-num\" id=\"stat-lines\">7</div><div class=\"hstat-label\">Linhas</div></div>\n    <div class=\"hstat\"><div class=\"hstat-num\" id=\"stat-turnos\">3</div><div class=\"hstat-label\">Turnos</div></div>\n    <div class=\"hstat\"><div class=\"hstat-num\" id=\"stat-rotas\">17</div><div class=\"hstat-label\">Rotas</div></div>\n  </div>\n  <div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap\">\n    <span class=\"cliente-badge\">VISUALIZAÇÃO</span>\n    <button class=\"export-btn\" onclick=\"openMapaGeral()\" style=\"background:rgba(16,185,129,0.12);color:var(--green);border-color:rgba(16,185,129,0.3)\">Mapa Geral</button>\n    <button class=\"export-btn\" onclick=\"openPainel()\" style=\"background:rgba(59,130,246,0.12);color:var(--accent2);border-color:rgba(59,130,246,0.3)\">Painel Geral</button>\n    <button class=\"export-btn\" onclick=\"openSolicitacoes()\" style=\"background:rgba(245,158,11,0.12);color:var(--accent);border-color:rgba(245,158,11,0.3);position:relative\">Solicitar Serviço</button>\n    <button class=\"export-btn\" onclick=\"openCadastro()\" style=\"background:rgba(59,130,246,0.12);color:var(--accent2);border-color:rgba(59,130,246,0.3)\">Cadastro</button>\n    <button class=\"export-btn\" onclick=\"openAvisos()\" style=\"background:rgba(168,85,247,0.12);color:#a855f7;border-color:rgba(168,85,247,0.3)\">Avisos</button>\n    <button class=\"export-btn\" onclick=\"openChats()\" style=\"background:rgba(37,211,102,0.12);color:#25D366;border-color:rgba(37,211,102,0.3)\">Chats</button>\n    <button class=\"export-btn\" onclick=\"openReclamacoes()\" style=\"background:rgba(239,68,68,0.12);color:#ef4444;border-color:rgba(239,68,68,0.3)\">Reclamações</button>\n    <button class=\"export-btn\" onclick=\"openMotoristas()\">Motoristas</button>\n    <button class=\"export-btn\" onclick=\"exportExcel()\">Excel</button>\n    <button class=\"export-btn\" onclick=\"exportPDF()\">PDF Linha</button>\n    <button class=\"export-btn\" onclick=\"logout()\" style=\"color:var(--muted)\">Sair</button>\n  </div>\n</header>\n\n<div class=\"container\">\n  <aside class=\"sidebar\">\n    <div class=\"search-wrap\">\n      <input class=\"search-input\" type=\"text\" placeholder=\"Nome, bairro, cidade ou ponto de embarque...\" id=\"searchInput\" oninput=\"filterSidebar()\">\n    </div>\n    <div class=\"turno-filter\" id=\"turnoFilterBar\">\n      <button class=\"turno-btn active\" onclick=\"setTurnoFilter('todos', this)\">Todos</button>\n    </div>\n    <div class=\"sidebar-label\">STATUS</div>\n    <div class=\"status-filter\" id=\"statusFilter\">\n      <button class=\"status-filter-btn active\" onclick=\"setStatusFilter('todos', this)\">Todos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ativo', this)\">Ativos</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('ferias', this)\">Férias</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('afastado', this)\">Afastados</button>\n      <button class=\"status-filter-btn\" onclick=\"setStatusFilter('desligado', this)\">Desligados</button>\n      <button class=\"status-filter-btn sem-rota\" onclick=\"setStatusFilter('sem-rota', this)\">Sem Rota</button>\n    </div>\n    <div class=\"sidebar-label\" style=\"margin-top:8px\">LINHAS E TURNOS</div>\n    <div id=\"lineList\"></div>\n  </aside>\n\n  <main class=\"main\" id=\"mainContent\">\n    <div class=\"welcome\">\n      <div class=\"welcome-icon\"></div>\n      <h3>Selecione uma linha</h3>\n      <p>Escolha uma linha no painel ao lado para visualizar e gerenciar os passageiros e horários.</p>\n    </div>\n  </main>\n</div>\n\n<!-- MODAL ADD/EDIT PASSAGEIRO -->\n<!-- MODAL GERENCIAR MOTORISTAS -->\n<div class=\"modal-overlay\" id=\"modalMotoristasGerenciar\">\n  <div class=\"modal\" style=\"width:520px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Cadastro de Motoristas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-row\">\n        <div class=\"form-group\">\n          <label class=\"form-label\">Nome</label>\n          <input class=\"form-input\" id=\"fMNome\" type=\"text\" placeholder=\"Nome do motorista\">\n        </div>\n        <div class=\"form-group\">\n          <label class=\"form-label\">Telefone</label>\n          <input class=\"form-input\" id=\"fMTel\" type=\"text\" placeholder=\"(15) 99999-9999\">\n        </div>\n      </div>\n      <div id=\"motoristaListBody\"></div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalMotoristasGerenciar').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL PAINEL GERAL -->\n<div class=\"modal-overlay\" id=\"modalPainel\">\n  <div class=\"modal\" style=\"width:780px;max-width:97vw\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Painel Geral</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"painelBody\" style=\"padding:16px 20px\"></div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalPainel').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- MODAL OTIMIZAÇÃO DE ROTA -->\n<div class=\"modal-overlay\" id=\"modalOtimizar\">\n  <div class=\"modal\" style=\"width:540px\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\" id=\"otimizarTitle\">Otimizar Rota</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">ℹ️ Como funciona</div>\n        <div style=\"font-size:12px;color:var(--muted);line-height:1.7\">\n          O sistema usa o Google Maps para calcular a <strong style=\"color:var(--text)\">melhor ordem de paradas</strong>,\n          minimizando o tempo total de rota e garantindo chegada no horário.\n          Parte da <strong style=\"color:var(--green)\">Garagem Redentor</strong> e chega na\n          <strong style=\"color:var(--accent)\">Av. Jerome Case às ${horarioChegada}</strong>.\n          Passageiros com mais de <strong style=\"color:var(--red)\">60 min em rota</strong> serão alertados.\n        </div>\n      </div>\n      <div class=\"opt-section\">\n        <div class=\"opt-title\">Ações</div>\n        <button class=\"opt-btn\" id=\"btnOtimizarRota\" onclick=\"otimizarRotaAtual()\">\n          Otimizar ordem e recalcular horários\n        </button>\n        <button class=\"opt-btn opt-btn-secondary\" onclick=\"recalcularApenasHorarios()\">\n          Recalcular horários (manter ordem atual)\n        </button>\n        <div id=\"optStatus\" class=\"opt-status\">Aguardando...</div>\n      </div>\n      <div class=\"opt-section\" id=\"optResultSection\" style=\"display:none\">\n        <div class=\"opt-title\">Resultado</div>\n        <div id=\"optResultBody\"></div>\n      </div>\n    </div>\n      <div class=\"opt-section\" id=\"optMapSection\" style=\"display:none\">\n        <div class=\"opt-title\">Mapa da Rota</div>\n        <div id=\"optMapDiv\" style=\"width:100%;height:320px;border-radius:10px;overflow:hidden;border:1px solid var(--border)\"></div>\n      </div>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalOtimizar').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n\n<!-- MOTORISTA VIEW -->\n<div class=\"moto-overlay\" id=\"motoView\">\n  <div class=\"moto-header\">\n    <div>\n      <div class=\"moto-title\">Visão do Motorista</div>\n      <div class=\"moto-subtitle\">Selecione sua linha para iniciar a rota</div>\n    </div>\n    <button class=\"moto-back\" onclick=\"document.getElementById('motoView').classList.remove('open')\">Fechar</button>\n  </div>\n  <div class=\"moto-body\">\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Motorista</label>\n      <select class=\"moto-select\" id=\"motoSelectMotorista\" onchange=\"motoFilterLinhas()\">\n        <option value=\"\">— Todos os motoristas —</option>\n      </select>\n    </div>\n    <div class=\"moto-select-section\">\n      <label class=\"moto-label\">Selecionar Linha e Turno</label>\n      <select class=\"moto-select\" id=\"motoSelectLinha\" onchange=\"motoLoadRota()\">\n        <option value=\"\">— Selecione uma linha —</option>\n      </select>\n    </div>\n    <div id=\"motoRotaContent\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL CADASTRO DE PASSAGEIROS -->\n<div class=\"modal-overlay\" id=\"modalCadastro\">\n  <div class=\"modal-box\" style=\"max-width:600px;width:96%;padding:0;overflow:hidden;max-height:92vh;display:flex;flex-direction:column\">\n\n    <!-- HEADER -->\n    <div style=\"background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0\">\n      <div style=\"display:flex;align-items:center;gap:12px\">\n        <button id=\"cadTab1\" onclick=\"cadAba('nova')\" style=\"padding:7px 16px;border-radius:20px;border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;cursor:pointer;background:var(--accent2);color:#fff\">Nova Solicitação</button>\n        <button id=\"cadTab2\" onclick=\"cadAba('historico')\" style=\"padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;cursor:pointer\">Histórico</button>\n      </div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalCadastro').classList.remove('open')\">✕</button>\n    </div>\n\n    <!-- ABA NOVA — WIZARD -->\n    <div id=\"cadAbaNova\" style=\"overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n\n      <!-- Indicador de etapas -->\n      <div style=\"display:flex;align-items:center;padding:16px 20px 0;gap:0\">\n        <div class=\"cli-step active\" id=\"cadStep1Dot\">1</div>\n        <div class=\"cli-step-line\" id=\"cadLine1\"></div>\n        <div class=\"cli-step\" id=\"cadStep2Dot\">2</div>\n        <div class=\"cli-step-line\" id=\"cadLine2\"></div>\n        <div class=\"cli-step\" id=\"cadStep3Dot\">3</div>\n      </div>\n      <div style=\"display:flex;justify-content:space-between;padding:4px 14px 16px;font-size:10px;color:var(--muted)\">\n        <span>Tipo</span><span>Dados</span><span>Confirmar</span>\n      </div>\n\n      <!-- ETAPA 1 — Tipo -->\n      <div id=\"cadEtapa1\" style=\"padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Qual o tipo de solicitação?</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:16px\">Selecione o que deseja solicitar</div>\n        <div style=\"display:flex;flex-direction:column;gap:10px\">\n          <button class=\"cli-tipo-btn\" onclick=\"cadSelecionarTipo('novo','Novo Passageiro',this)\" style=\"text-align:left\">\n            <div style=\"font-weight:700;font-size:15px\">Novo Passageiro</div>\n            <div style=\"font-size:12px;color:var(--muted);margin-top:2px\">Cadastrar um novo colaborador no transporte</div>\n          </button>\n          <button class=\"cli-tipo-btn\" onclick=\"cadSelecionarTipo('turno','Alteração de Turno',this)\" style=\"text-align:left\">\n            <div style=\"font-weight:700;font-size:15px\">Alteração de Turno</div>\n            <div style=\"font-size:12px;color:var(--muted);margin-top:2px\">Mudar o turno de trabalho de um passageiro</div>\n          </button>\n          <button class=\"cli-tipo-btn\" onclick=\"cadSelecionarTipo('endereco','Alteração de Endereço',this)\" style=\"text-align:left\">\n            <div style=\"font-weight:700;font-size:15px\">Alteração de Endereço</div>\n            <div style=\"font-size:12px;color:var(--muted);margin-top:2px\">Atualizar o endereço de embarque</div>\n          </button>\n          <button class=\"cli-tipo-btn\" onclick=\"cadSelecionarTipo('desligamento','Desligamento',this)\" style=\"text-align:left\">\n            <div style=\"font-weight:700;font-size:15px\">Desligamento</div>\n            <div style=\"font-size:12px;color:var(--muted);margin-top:2px\">Retirar um colaborador do transporte</div>\n          </button>\n        </div>\n      </div>\n\n      <!-- ETAPA 2 — Formulário dinâmico -->\n      <div id=\"cadEtapa2\" style=\"display:none;padding:0 20px 20px\">\n        <div id=\"cadTipoTag\" style=\"background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;font-weight:600;color:var(--accent2)\"></div>\n        <div id=\"cadFormulario\"></div>\n        <div style=\"display:flex;gap:10px;margin-top:16px\">\n          <button onclick=\"cadGoEtapa(1)\" class=\"btn-cancel\" style=\"flex:1\">← Voltar</button>\n          <button onclick=\"cadGoEtapa(3)\" class=\"add-btn\" style=\"flex:2;background:var(--accent2)\">Próximo →</button>\n        </div>\n      </div>\n\n      <!-- ETAPA 3 — Confirmar -->\n      <div id=\"cadEtapa3\" style=\"display:none;padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Confirmar</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:16px\">Revise os dados antes de enviar</div>\n        <div id=\"cadResumo\" style=\"background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px;line-height:2\"></div>\n        <label class=\"form-label\">Observação (opcional)</label>\n        <textarea class=\"form-input\" id=\"cadObs\" rows=\"2\" placeholder=\"Informações adicionais...\" style=\"resize:none;margin-bottom:16px;font-size:15px\"></textarea>\n        <button class=\"add-btn\" style=\"width:100%;font-size:15px;padding:14px;background:var(--accent2)\" onclick=\"cadEnviar()\">Enviar Solicitação</button>\n        <button onclick=\"cadGoEtapaVoltar(2)\" class=\"btn-cancel\" style=\"width:100%;margin-top:8px\">← Voltar</button>\n        <div id=\"cadMsg\" style=\"margin-top:10px;font-size:13px;text-align:center\"></div>\n      </div>\n\n    </div><!-- /cadAbaNova -->\n\n    <!-- ABA HISTÓRICO -->\n    <div id=\"cadAbaHistorico\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n      <div style=\"display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap\">\n        <select class=\"form-input\" id=\"cadFiltroStatus\" style=\"flex:1;min-width:120px;font-size:13px\" onchange=\"cadRenderHistorico()\">\n          <option value=\"\">Todos os status</option>\n          <option value=\"pendente\">Pendentes</option>\n          <option value=\"atendida\">Atendidas</option>\n        </select>\n        <input class=\"form-input\" type=\"month\" id=\"cadFiltroMes\" style=\"flex:1;min-width:120px;font-size:13px\" onchange=\"cadRenderHistorico()\">\n      </div>\n      <div id=\"cadListaHistorico\" style=\"max-height:500px;overflow-y:auto\"></div>\n    </div>\n\n  </div>\n</div>\n\n<!-- MODAL SOLICITAÇÕES CLIENTE -->\n<div class=\"modal-overlay\" id=\"modalSolicitacoes\">\n  <div class=\"modal-box\" style=\"max-width:600px;width:96%;padding:0;overflow:hidden;max-height:92vh;display:flex;flex-direction:column\">\n\n    <!-- HEADER -->\n    <div style=\"background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0\">\n      <div style=\"display:flex;align-items:center;gap:12px\">\n        <button id=\"cliTab1\" onclick=\"cliAba('nova')\"\n          style=\"padding:7px 16px;border-radius:20px;border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;cursor:pointer;background:var(--accent);color:#000\">\n          Solicitar\n        </button>\n        <button id=\"cliTab2\" onclick=\"cliAba('acompanhamento')\"\n          style=\"padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;cursor:pointer\">\n          Histórico\n        </button>\n      </div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalSolicitacoes').classList.remove('open')\">✕</button>\n    </div>\n\n    <!-- ABA NOVA — WIZARD -->\n    <div id=\"cliAbaNova\" style=\"overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n\n      <!-- Indicador de etapas -->\n      <div style=\"display:flex;align-items:center;padding:16px 20px 0;gap:0\" id=\"cliStepsBar\">\n        <div class=\"cli-step active\" id=\"cliStep1Dot\">1</div>\n        <div class=\"cli-step-line\" id=\"cliLine1\"></div>\n        <div class=\"cli-step\" id=\"cliStep2Dot\">2</div>\n        <div class=\"cli-step-line\" id=\"cliLine2\"></div>\n        <div class=\"cli-step\" id=\"cliStep3Dot\">3</div>\n        <div class=\"cli-step-line\" id=\"cliLine3\"></div>\n        <div class=\"cli-step\" id=\"cliStep4Dot\">4</div>\n      </div>\n      <div style=\"display:flex;justify-content:space-between;padding:4px 14px 16px;font-size:10px;color:var(--muted)\">\n        <span>Serviço</span><span style=\"margin-left:4px\">Data/Hora</span><span>Funcionários</span><span>Confirmar</span>\n      </div>\n\n      <!-- ETAPA 1 — Tipo de serviço -->\n      <div id=\"cliEtapa1\" style=\"padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Qual o serviço?</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:16px\">Selecione o tipo de atendimento necessário</div>\n        <div style=\"display:flex;flex-direction:column;gap:8px\" id=\"cliTipoLista\"></div>\n      </div>\n\n      <!-- ETAPA 2 — Data e Hora -->\n      <div id=\"cliEtapa2\" style=\"display:none;padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Quando?</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:20px\">Informe a data e o horário de atendimento</div>\n\n        <div id=\"cliTipoSelecionadoTag\" style=\"background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:10px 14px;margin-bottom:20px;font-size:13px;font-weight:600;color:var(--accent)\"></div>\n\n        <label class=\"form-label\">Data do Serviço</label>\n        <input class=\"form-input\" type=\"date\" id=\"cliData\" style=\"margin-bottom:16px;font-size:16px\">\n\n        <label class=\"form-label\">Horário de Atendimento</label>\n        <input class=\"form-input\" type=\"time\" id=\"cliHorario\" style=\"margin-bottom:16px;font-size:16px\">\n\n        <label class=\"form-label\">Roteiro</label>\n        <div style=\"display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px\">\n          <button class=\"cli-tipo-btn\" id=\"rotBtn_entrada\" onclick=\"cliSetRoteiro('Entrada',this)\" style=\"padding:12px 8px;font-size:13px\">Entrada</button>\n          <button class=\"cli-tipo-btn\" id=\"rotBtn_saida\" onclick=\"cliSetRoteiro('Saída',this)\" style=\"padding:12px 8px;font-size:13px\">Saída</button>\n          <button class=\"cli-tipo-btn\" id=\"rotBtn_idavolta\" onclick=\"cliSetRoteiro('Ida e Volta',this)\" style=\"padding:12px 8px;font-size:13px\">Ida/Volta</button>\n        </div>\n\n        <div style=\"display:flex;gap:10px\">\n          <button onclick=\"cliGoEtapa(1)\" class=\"btn-cancel\" style=\"flex:1\">← Voltar</button>\n          <button onclick=\"cliGoEtapa(3)\" class=\"add-btn\" style=\"flex:2\">Próximo →</button>\n        </div>\n      </div>\n\n      <!-- ETAPA 3 — Funcionários -->\n      <div id=\"cliEtapa3\" style=\"display:none;padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Quem vai?</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:16px\">Selecione os funcionários que utilizarão o serviço</div>\n\n        <!-- Toggle passageiro não cadastrado -->\n        <div id=\"cliNaoCadastradoToggle\" onclick=\"cliToggleNaoCadastrado()\"\n          style=\"display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:12px;user-select:none;transition:all 0.15s\">\n          <div id=\"cliNaoCadastradoCheck\"\n            style=\"width:20px;height:20px;border-radius:5px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.15s\"></div>\n          <div>\n            <div style=\"font-size:13px;font-weight:600\">Passageiro não cadastrado</div>\n            <div style=\"font-size:11px;color:var(--muted)\">Ex: diretor, visitante, parceiro — descreva na observação</div>\n          </div>\n        </div>\n\n        <!-- Busca (oculta quando toggle ativo) -->\n        <div id=\"cliBuscaArea\">\n          <input class=\"form-input\" id=\"cliBuscaFunc\" type=\"text\"\n            placeholder=\"Nome, bairro ou cidade...\"\n            oninput=\"cliBuscarFuncionarios()\"\n            style=\"margin-bottom:8px;font-size:16px\">\n          <div id=\"cliResultadoFunc\" style=\"max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;margin-bottom:12px;display:none\"></div>\n          <div style=\"font-size:11px;color:var(--muted);margin-bottom:6px\">Selecionados:</div>\n          <div id=\"cliFuncSelecionados\" style=\"display:flex;flex-wrap:wrap;gap:6px;min-height:32px;margin-bottom:12px\"></div>\n        </div>\n\n        <!-- Aviso quando não cadastrado -->\n        <div id=\"cliNaoCadastradoAviso\" style=\"display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:var(--muted)\">\n          Descreva quem é o passageiro no campo <strong style=\"color:var(--text)\">Observação</strong> da próxima etapa.\n        </div>\n\n        <div style=\"display:flex;gap:10px\">\n          <button onclick=\"cliGoEtapa(2)\" class=\"btn-cancel\" style=\"flex:1\">← Voltar</button>\n          <button onclick=\"cliGoEtapa(4)\" class=\"add-btn\" style=\"flex:2\">Próximo →</button>\n        </div>\n      </div>\n\n      <!-- ETAPA 4 — Confirmar -->\n      <div id=\"cliEtapa4\" style=\"display:none;padding:0 20px 20px\">\n        <div style=\"font-family:'Barlow',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px\">Confirmar</div>\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:16px\">Revise os dados antes de enviar</div>\n\n        <div id=\"cliResumo\" style=\"background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px;line-height:2\"></div>\n\n        <label class=\"form-label\">Observação (opcional)</label>\n        <textarea class=\"form-input\" id=\"cliObs\" rows=\"3\"\n          placeholder=\"Informe detalhes adicionais se necessário...\"\n          style=\"resize:none;margin-bottom:20px;font-size:15px\"></textarea>\n\n        <button class=\"add-btn\" style=\"width:100%;font-size:15px;padding:14px\" onclick=\"cliEnviarSolicitacao()\">\n          Enviar Solicitação\n        </button>\n        <button onclick=\"cliGoEtapaVoltar(3)\" class=\"btn-cancel\" style=\"width:100%;margin-top:8px\">← Voltar</button>\n        <div id=\"cliMsg\" style=\"margin-top:10px;font-size:13px;text-align:center\"></div>\n      </div>\n\n    </div><!-- /cliAbaNova -->\n\n    <!-- ABA ACOMPANHAMENTO -->\n    <div id=\"cliAbaAcompanhamento\" style=\"display:none;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1\">\n      <div style=\"display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap\">\n        <select class=\"form-input\" id=\"cliFiltroStatus\" style=\"flex:1;min-width:120px;font-size:13px\" onchange=\"cliRenderAcompanhamento()\">\n          <option value=\"\">Todos os status</option>\n          <option value=\"pendente\">Pendentes</option>\n          <option value=\"confirmada\">Confirmadas</option>\n          <option value=\"atendida\">Atendidas</option>\n          <option value=\"cancelada\">Canceladas</option>\n        </select>\n        <input class=\"form-input\" type=\"month\" id=\"cliFiltroMes\" style=\"flex:1;min-width:120px;font-size:13px\" onchange=\"cliRenderAcompanhamento()\">\n      </div>\n      <div id=\"cliListaSolicitacoes\" style=\"max-height:500px;overflow-y:auto\"></div>\n    </div>\n\n  </div>\n</div>\n\n<!-- MODAL MAPA GERAL -->\n<div class=\"modal-overlay\" id=\"modalMapaGeral\">\n  <div class=\"modal\" style=\"max-width:1100px;width:97%;height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\" style=\"flex-shrink:0\">\n      <div class=\"modal-title\">Mapa Geral de Rotas</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalMapaGeral').classList.remove('open')\">×</button>\n    </div>\n    <div style=\"flex-shrink:0;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center\">\n      <!-- Turno filter -->\n      <div style=\"display:flex;gap:6px;align-items:center\" id=\"mgTurnoBar\">\n        <span style=\"font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px\">Turno:</span>\n      </div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Line checkboxes -->\n      <div style=\"display:flex;gap:6px;align-items:center;flex-wrap:wrap\" id=\"mgLinhasCheck\"></div>\n      <div style=\"width:1px;height:24px;background:var(--border)\"></div>\n      <!-- Select all / none -->\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectAll()\">Todas</button>\n      <button class=\"export-btn\" style=\"padding:4px 10px;font-size:11px\" onclick=\"mgSelectNone()\">Nenhuma</button>\n      <!-- Route toggle -->\n      <div style=\"margin-left:auto;display:flex;gap:8px;align-items:center\">\n        <label style=\"font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px\">\n          <input type=\"checkbox\" id=\"mgShowRoutes\" checked onchange=\"renderMapaGeral()\" style=\"cursor:pointer\">\n          Mostrar rotas traçadas\n        </label>\n      </div>\n    </div>\n    <div id=\"mapaGeralDiv\" style=\"flex:1;width:100%;min-height:0\"></div>\n    <div id=\"mgLegend\" style=\"flex-shrink:0;padding:10px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;font-size:12px\"></div>\n  </div>\n</div>\n\n\n<!-- MODAL RELATÓRIO -->\n<div class=\"modal-overlay\" id=\"modalReport\">\n  <div class=\"modal report-modal\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Relatório de Alterações</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" id=\"reportBody\">\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn-cancel\" onclick=\"document.getElementById('modalReport').classList.remove('open')\">Fechar</button>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL AVISOS (Gestor DSV) -->\n<div class=\"modal-overlay\" id=\"modalAvisos\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Avisos aos Passageiros</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalAvisos').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px\">\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px\">\n        <div style=\"font-family:Barlow;font-weight:700;margin-bottom:12px\">Novo aviso</div>\n        <label class=\"form-label\">Destinatário</label>\n        <select class=\"form-input\" id=\"avDestino\"><option value=\"\">Todas as linhas (aviso geral)</option></select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Tipo</label>\n        <select class=\"form-input\" id=\"avTipo\"><option value=\"aviso\">Aviso de texto</option><option value=\"pdf\">Link/PDF</option></select>\n        <label class=\"form-label\" style=\"margin-top:10px\">Mensagem</label>\n        <textarea class=\"form-input\" id=\"avTexto\" rows=\"3\" placeholder=\"Digite o aviso...\" style=\"resize:vertical\"></textarea>\n        <label class=\"form-label\" style=\"margin-top:10px\">Link (opcional — PDF, formulário, etc.)</label>\n        <input class=\"form-input\" id=\"avLink\" placeholder=\"https://...\">\n        <div style=\"font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5\">Para anexar um PDF: suba o arquivo no Google Drive (ou outro), copie o link de compartilhamento e cole aqui.</div>\n        <button class=\"add-btn\" style=\"margin-top:14px;width:100%\" onclick=\"avPublicar()\">Publicar aviso</button>\n      </div>\n      <div style=\"font-family:Barlow;font-weight:700;margin-bottom:10px\">Avisos publicados</div>\n      <div id=\"avLista\"><div style=\"text-align:center;color:var(--muted);padding:20px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL CHATS DAS LINHAS (Gestor DSV) -->\n<div class=\"modal-overlay\" id=\"modalChats\">\n  <div class=\"modal\" style=\"max-width:680px;width:95%;max-height:90vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Chats das Linhas</div>\n      <button class=\"modal-close\" onclick=\"chatsFechar()\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;display:flex;flex-direction:column;flex:1;overflow:hidden\">\n      <div id=\"chatsSeletor\">\n        <label class=\"form-label\">Selecione a linha/turno</label>\n        <select class=\"form-input\" id=\"chatSelLinha\" onchange=\"chatAbrirLinha()\"><option value=\"\">— Selecione —</option></select>\n        <div style=\"font-size:12px;color:var(--muted);margin-top:10px\">Escolha uma linha para ver e participar do chat dos passageiros.</div>\n      </div>\n      <div id=\"chatsConversa\" style=\"display:none;flex-direction:column;flex:1;overflow:hidden\">\n        <div style=\"display:flex;align-items:center;gap:8px;margin-bottom:10px\">\n          <button class=\"export-btn\" style=\"font-size:12px;padding:5px 10px\" onclick=\"chatVoltarSeletor()\">← Linhas</button>\n          <strong id=\"chatTituloLinha\" style=\"font-size:14px\"></strong>\n        </div>\n        <div id=\"chatGestorMsgs\" style=\"flex:1;overflow-y:auto;background:var(--surface2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:300px;max-height:50vh\"></div>\n        <div style=\"display:flex;gap:8px;margin-top:10px\">\n          <input id=\"chatGestorInput\" placeholder=\"Mensagem como gestor...\" style=\"flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:11px 16px;color:var(--text);font-size:14px;font-family:inherit\" onkeypress=\"if(event.key==='Enter')chatGestorEnviar()\">\n          <button onclick=\"chatGestorEnviar()\" style=\"background:var(--accent);border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer\">➤</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- MODAL RECLAMAÇÕES (Gestor DSV) -->\n<div class=\"modal-overlay\" id=\"modalReclamacoes\">\n  <div class=\"modal\" style=\"max-width:880px;width:96%;max-height:92vh;display:flex;flex-direction:column\">\n    <div class=\"modal-header\">\n      <div class=\"modal-title\">Reclamações / Ocorrências</div>\n      <button class=\"modal-close\" onclick=\"document.getElementById('modalReclamacoes').classList.remove('open')\">✕</button>\n    </div>\n    <div class=\"modal-body\" style=\"padding:16px 20px;overflow-y:auto\">\n      <div style=\"background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px\">\n        <div style=\"font-family:Barlow;font-weight:700;margin-bottom:12px;font-size:16px\">Registrar nova ocorrência</div>\n        <div style=\"display:flex;gap:10px;flex-wrap:wrap\">\n          <div style=\"flex:1;min-width:130px\"><label class=\"form-label\">Data da ocorrência</label><input class=\"form-input\" type=\"date\" id=\"rcData\"></div>\n          <div style=\"flex:1;min-width:130px\"><label class=\"form-label\">Linha (opcional)</label><select class=\"form-input\" id=\"rcLinha\"><option value=\"\">—</option></select></div>\n          <div style=\"flex:1;min-width:100px\"><label class=\"form-label\">Turno</label><select class=\"form-input\" id=\"rcTurno\"><option value=\"\">—</option><option>1°</option><option>2°</option><option>3°</option><option>ADM</option></select></div>\n        </div>\n        <label class=\"form-label\" style=\"margin-top:10px\">Passageiro envolvido (opcional)</label>\n        <input class=\"form-input\" id=\"rcPassageiro\" placeholder=\"Nome do passageiro, se aplicável\">\n        <label class=\"form-label\" style=\"margin-top:10px\">Descrição da ocorrência</label>\n        <textarea class=\"form-input\" id=\"rcDescricao\" rows=\"3\" placeholder=\"Descreva o que aconteceu...\" style=\"resize:vertical\"></textarea>\n        <label class=\"form-label\" style=\"margin-top:10px\">Provas (link — foto/vídeo no Drive, print, etc.)</label>\n        <input class=\"form-input\" id=\"rcProvas\" placeholder=\"https://... (opcional)\">\n        <div style=\"font-size:11px;color:var(--muted);margin-top:6px\">Suba a foto/vídeo no Google Drive e cole o link aqui.</div>\n        <button class=\"add-btn\" style=\"margin-top:14px;width:100%\" onclick=\"rcRegistrar()\">Registrar ocorrência</button>\n      </div>\n      <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:10px\">\n        <div style=\"font-family:Barlow;font-weight:700\">Ocorrências registradas</div>\n        <select class=\"form-input\" id=\"rcFiltroStatus\" onchange=\"rcRender()\" style=\"width:auto;font-size:12px;padding:6px 10px\"><option value=\"\">Todos os status</option><option value=\"aberta\">Aberta</option><option value=\"respondida\">Respondida</option><option value=\"resolvida\">Resolvida</option><option value=\"nao_resolvida\">Não resolvida</option><option value=\"improcedente\">Improcedente</option></select>\n      </div>\n      <div id=\"rcLista\"><div style=\"text-align:center;color:var(--muted);padding:20px\">Carregando...</div></div>\n    </div>\n  </div>\n</div>\n";
 
 // De onde este engine foi carregado. Sem isto, o engine de /motor/beta/
 // puxaria o CSS de producao e o ambiente de teste nao seria isolado.
@@ -260,15 +260,6 @@ function renderSearchResults(q) {
   });
 }
 
-function editFromSearch(rotaId, idx) {
-  document.getElementById('searchInput').value = '';
-  activeId = rotaId;
-  renderSidebar();
-  selectLine(rotaId);
-  // Small delay to let the line render then open modal
-  setTimeout(() => openEditModal(rotaId, idx), 200);
-}
-
 function renderStatusList(q) {
   const list = document.getElementById('lineList');
   const statusLabel = { ferias: 'Férias', afastado: 'Afastado', desligado: 'Desligado', ativo: 'Ativo' };
@@ -463,225 +454,7 @@ function renderTable(rota) {
 // ---- CAPACIDADES ----
 const CAP = { 'Van': 15, 'Carro': 4 };
 
-function getCapacidade(rota) { return CAP[rota.veiculo] || 15; }
-
-function isLotada(rota, excluindoIdx = null) {
-  let count = rota.passageiros.length;
-  if (excluindoIdx !== null) count--; // ao editar, não conta o próprio passageiro
-  return count >= getCapacidade(rota);
-}
-
-function updateLinhaOptions(preferRotaId) {
-  const turno = document.getElementById('fTurno').value;
-  const sel = document.getElementById('fLinha');
-  sel.innerHTML = '';
-
-  const rotaOriginalId = editingPassIdx !== null ? activeId : null;
-
-  DATA.forEach(rota => {
-    if (rota.turno !== turno) return;
-    const isOrigem = rota.id === rotaOriginalId;
-    const ocupacao = isOrigem ? rota.passageiros.length - 1 : rota.passageiros.length;
-    const cap = getCapacidade(rota);
-    const lotada = ocupacao >= cap;
-    if (lotada && !isOrigem) return;
-
-    const opt = document.createElement('option');
-    opt.value = rota.id;
-    opt.textContent = 'Linha ' + rota.linha + ' — ' + rota.passageiros.length + '/' + cap + ' pass.' + (isOrigem ? ' (linha atual)' : '');
-    sel.appendChild(opt);
-  });
-
-  const target = preferRotaId || activeId;
-  if (target) {
-    const exists = Array.from(sel.options).some(o => o.value === target);
-    if (exists) sel.value = target;
-  }
-
-  if (sel.options.length === 0) {
-    const opt = document.createElement('option');
-    opt.value = '';
-    opt.textContent = 'Nenhuma linha disponível neste turno';
-    sel.appendChild(opt);
-  }
-}
-
 // ---- MODALS ----
-function openAddModal(rotaId) {
-  activeId = rotaId;
-  editingPassIdx = null;
-  const rota = DATA.find(r => r.id === rotaId);
-  document.getElementById('modalTitle').textContent = 'Novo Passageiro';
-  document.getElementById('fNome').value = '';
-  document.getElementById('fTel').value = '';
-  document.getElementById('fEndereco').value = '';
-  document.getElementById('fEmbarque').value = '';
-  document.getElementById('fBairro').value = '';
-  document.getElementById('fCidade').value = 'Sorocaba';
-  document.getElementById('fStatus').value = 'ativo';
-  document.getElementById('fHorario').value = '';
-  document.getElementById('fTurno').value = rota.turno;
-  document.getElementById('fRetorno').value = '';
-  document.getElementById('retornoGroup').style.display = 'none';
-  document.getElementById('fCoords').value = '';
-  document.getElementById('fCoordsStatus').style.display = 'none';
-  updateLinhaOptions(rotaId);
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function openEditModal(rotaId, idx) {
-  activeId = rotaId;
-  editingPassIdx = idx;
-  const rota = DATA.find(r => r.id === rotaId);
-  const p = rota.passageiros[idx];
-  document.getElementById('modalTitle').textContent = 'Editar Passageiro';
-  document.getElementById('fNome').value = p.nome;
-  document.getElementById('fTel').value = p.telefone;
-  document.getElementById('fEndereco').value = p.endereco;
-  document.getElementById('fEmbarque').value = p.embarque;
-  document.getElementById('fBairro').value = p.bairro;
-  document.getElementById('fCidade').value = p.cidade;
-  document.getElementById('fStatus').value = p.status;
-  document.getElementById('fHorario').value = p.horario && p.horario !== '--:--' ? p.horario : '';
-  document.getElementById('fTurno').value = rota.turno;
-  document.getElementById('fRetorno').value = p.retorno || '';
-  // Populate coordinates field
-  const coordsEl = document.getElementById('fCoords');
-  const coordsStatus = document.getElementById('fCoordsStatus');
-  if (p.lat && p.lng) {
-    coordsEl.value = p.lat + ', ' + p.lng;
-    coordsStatus.style.display = 'block';
-    coordsStatus.style.color = 'var(--green)';
-    coordsStatus.textContent = 'Coordenadas cadastradas — navegação precisa ativa';
-  } else {
-    coordsEl.value = '';
-    coordsStatus.style.display = 'block';
-    coordsStatus.style.color = 'var(--muted)';
-    coordsStatus.textContent = 'Sem coordenadas — sistema usará geocodificação pelo endereço';
-  }
-  toggleRetorno();
-  updateLinhaOptions(rotaId);
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-}
-
-function savePassageiro() {
-  const newStatusCheck = document.getElementById('fStatus').value;
-  const novaRotaId = newStatusCheck === 'sem-rota' ? '__semrota__' : document.getElementById('fLinha').value;
-  if (!novaRotaId && newStatusCheck !== 'sem-rota') { alert('Selecione uma linha disponível.'); return; }
-
-  const newStatus = document.getElementById('fStatus').value;
-
-  // Parse coordinates from field
-  let newLat = null, newLng = null;
-  const coordsRaw = document.getElementById('fCoords').value.trim();
-  if (coordsRaw) {
-    const parts = coordsRaw.split(',').map(s => parseFloat(s.trim()));
-    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-      newLat = parts[0];
-      newLng = parts[1];
-    } else {
-      alert('Formato de coordenadas inválido.\nUse: -23.514606, -47.516711');
-      return;
-    }
-  }
-
-  const p = {
-    nome: document.getElementById('fNome').value.trim(),
-    telefone: document.getElementById('fTel').value.trim(),
-    endereco: document.getElementById('fEndereco').value.trim(),
-    embarque: document.getElementById('fEmbarque').value.trim(),
-    bairro: document.getElementById('fBairro').value.trim(),
-    cidade: document.getElementById('fCidade').value.trim(),
-    status: newStatus,
-    retorno: (newStatus === 'ferias' || newStatus === 'afastado') ? document.getElementById('fRetorno').value : '',
-    horario: document.getElementById('fHorario').value || '--:--',
-    lat: newLat,
-    lng: newLng,
-    km: 0
-  };
-  if (!p.nome) { alert('Informe o nome do passageiro.'); return; }
-
-  const rotaOrigem = DATA.find(r => r.id === activeId);
-  const rotaDestino = DATA.find(r => r.id === novaRotaId);
-  const statusLabels = { ativo: 'Ativo', ferias: 'Férias', afastado: 'Afastado', desligado: 'Desligado' };
-
-  if (editingPassIdx !== null) {
-    const [passRemovido] = rotaOrigem.passageiros.splice(editingPassIdx, 1);
-    p.ordem = passRemovido.ordem;
-
-    // LOG: mudança de status
-    if (passRemovido.status !== p.status) {
-      if (p.status === 'desligado') {
-        logChange('desligamento', p.nome, statusLabels[passRemovido.status], 'Desligado',
-          'Era Linha ' + rotaOrigem.linha + ' ' + rotaOrigem.turno + ' Turno');
-      } else {
-        logChange('status', p.nome, statusLabels[passRemovido.status], statusLabels[p.status],
-          p.retorno ? 'Retorno previsto: ' + p.retorno : '');
-      }
-    }
-    // LOG: transferência de linha
-    if (novaRotaId !== activeId && p.status !== 'desligado') {
-      logChange('transferencia', p.nome,
-        'Linha ' + rotaOrigem.linha + ' ' + rotaOrigem.turno + ' Turno',
-        'Linha ' + rotaDestino.linha + ' ' + rotaDestino.turno + ' Turno', '');
-    }
-    // LOG: alterações de dados
-    const campos = [['Nome','nome'],['Endereço','endereco'],['Embarque','embarque'],['Horário','horario']];
-    campos.forEach(([label, key]) => {
-      if (passRemovido[key] !== p[key]) {
-        logChange('alteracao', p.nome, label + ': ' + (passRemovido[key]||'—'), label + ': ' + (p[key]||'—'), '');
-      }
-    });
-
-    if (p.status === 'desligado') {
-      // NÃO reinsere na linha - arquiva em DESLIGADOS
-      DESLIGADOS = DESLIGADOS.filter(x => x.nome !== p.nome);
-      DESLIGADOS.push({ ...passRemovido, ...p, linhaOrigem: rotaOrigem.linha, turnoOrigem: rotaOrigem.turno });
-    } else {
-      // Insere na linha destino (pode ser a mesma ou outra)
-      if (novaRotaId !== activeId) {
-        const maxOrdem = Math.max(...rotaDestino.passageiros.map(x => x.ordem), 0);
-        p.ordem = maxOrdem + 1;
-      }
-      rotaDestino.passageiros.push({ ...passRemovido, ...p });
-    }
-  } else {
-    // Novo passageiro
-    if (p.status === 'sem-rota') {
-      // Save to SEM_ROTA pool - not to any route
-      p.ordem = Date.now();
-      SEM_ROTA.push(p);
-      logChange('inclusao', p.nome, '', 'Sem Rota (aguardando alocação)', '');
-    } else {
-      const maxOrdem = Math.max(...rotaDestino.passageiros.map(x => x.ordem), 0);
-      p.ordem = maxOrdem + 1;
-      if (p.status === 'desligado') {
-        DESLIGADOS = DESLIGADOS.filter(x => x.nome !== p.nome);
-        DESLIGADOS.push({ ...p, linhaOrigem: rotaDestino.linha, turnoOrigem: rotaDestino.turno });
-      } else {
-        rotaDestino.passageiros.push(p);
-        logChange('inclusao', p.nome, '', 'Linha ' + rotaDestino.linha + ' ' + rotaDestino.turno + ' Turno', '');
-      }
-    }
-  }
-
-  saveAfterChange(); // Save to localStorage + Firebase
-  closeModal();
-  if (p.status === 'desligado') {
-    activeId = activeId;
-    renderSidebar();
-    selectLine(rotaOrigem ? rotaOrigem.id : novaRotaId);
-  } else {
-    activeId = novaRotaId;
-    renderSidebar();
-    selectLine(novaRotaId);
-  }
-}
-
 
 // ---- MOTORISTAS ----
 let MOTORISTAS = [
@@ -740,101 +513,6 @@ function renderMotoristaList() {
 
     body.appendChild(card);
   });
-}
-
-function startMotoEdit(id) {
-  const m = MOTORISTAS.find(x => x.id === id);
-  if (m) { m._editing = true; renderMotoristaList(); }
-}
-
-function cancelMotoEdit(id) {
-  const m = MOTORISTAS.find(x => x.id === id);
-  if (m) { m._editing = false; renderMotoristaList(); }
-}
-
-function saveMotoEdit(id) {
-  const m = MOTORISTAS.find(x => x.id === id);
-  if (!m) return;
-  const novoNome = document.getElementById('editMNome_' + id).value.trim();
-  const novoTel  = document.getElementById('editMTel_' + id).value.trim();
-  if (!novoNome) { alert('O nome não pode ficar vazio.'); return; }
-  // Update references in DATA
-  DATA.forEach(r => {
-    if (r.motorista === m.nome) r.motorista = novoNome;
-    if (r.motoristaSaida === m.nome) r.motoristaSaida = novoNome;
-  });
-  m.nome = novoNome;
-  m.tel  = novoTel;
-  m._editing = false;
-  renderMotoristaList();
-  // Refresh sidebar/line if active
-  renderSidebar();
-  if (activeId) selectLine(activeId);
-  saveAfterChange();
-}
-
-function addMotorista() {
-  const nome = document.getElementById('fMNome').value.trim();
-  const tel = document.getElementById('fMTel').value.trim();
-  if (!nome) { alert('Informe o nome do motorista.'); return; }
-  if (MOTORISTAS.find(m => m.nome.toLowerCase() === nome.toLowerCase())) {
-    alert('Já existe um motorista com este nome.'); return;
-  }
-  MOTORISTAS.push({ id: nextMotoId++, nome, tel });
-  document.getElementById('fMNome').value = '';
-  document.getElementById('fMTel').value = '';
-  renderMotoristaList();
-  saveAfterChange();
-}
-
-function removeMotorista(id) {
-  const m = MOTORISTAS.find(x => x.id === id);
-  if (!m) return;
-  const emUso = DATA.some(r => r.motorista === m.nome);
-  if (emUso && !confirm(m.nome + ' está atribuído a uma ou mais linhas. Deseja remover mesmo assim?')) return;
-  MOTORISTAS = MOTORISTAS.filter(x => x.id !== id);
-  renderMotoristaList();
-  saveAfterChange();
-}
-
-function editMotorista(rotaId) {
-  activeId = rotaId;
-  const rota = DATA.find(r => r.id === rotaId);
-
-  function fillSelect(selId, selectedVal) {
-    const sel = document.getElementById(selId);
-    sel.innerHTML = selId === 'fMotoristaEntrada'
-      ? '<option value="">— A definir —</option>'
-      : '<option value="">— Mesmo da entrada —</option>';
-    MOTORISTAS.forEach(m => {
-      const opt = document.createElement('option');
-      opt.value = m.nome;
-      opt.textContent = m.nome + (m.tel ? ' · ' + m.tel : '');
-      if (selectedVal === m.nome) opt.selected = true;
-      sel.appendChild(opt);
-    });
-  }
-
-  fillSelect('fMotoristaEntrada', rota.motorista || '');
-  fillSelect('fMotoristaSaida', rota.motoristaSaida || '');
-  document.getElementById('modalMotorista').classList.add('open');
-}
-
-function saveMotorista() {
-  const rota = DATA.find(r => r.id === activeId);
-  const oldEntrada = rota.motorista;
-  const oldSaida = rota.motoristaSaida || '';
-  rota.motorista = document.getElementById('fMotoristaEntrada').value;
-  rota.motoristaSaida = document.getElementById('fMotoristaSaida').value;
-  if (oldEntrada !== rota.motorista || oldSaida !== rota.motoristaSaida) {
-    logChange('alteracao', 'Linha ' + rota.linha + ' ' + rota.turno,
-      'Entrada: ' + (oldEntrada || 'A definir') + ' / Saída: ' + (oldSaida || 'Mesmo'),
-      'Entrada: ' + (rota.motorista || 'A definir') + ' / Saída: ' + (rota.motoristaSaida || 'Mesmo'), '');
-  }
-  document.getElementById('modalMotorista').classList.remove('open');
-  renderSidebar();
-  selectLine(activeId);
-  saveAfterChange();
 }
 
 function getMotoristaSummaryHTML(rota) {
@@ -943,83 +621,6 @@ function exportExcel() {
 // ---- LOG DE ALTERAÇÕES ----
 let changeLog = [];
 let statusFilter2 = 'todos';
-
-function logChange(tipo, nome, de, para, extra) {
-  const now = new Date();
-  const hora = now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-  const dia = now.toLocaleDateString('pt-BR');
-  changeLog.unshift({ tipo, nome, de, para, extra, hora, dia });
-}
-
-function openReport() {
-  const body = document.getElementById('reportBody');
-  const inclusoes = changeLog.filter(l => l.tipo === 'inclusao').length;
-  const desligamentos = changeLog.filter(l => l.tipo === 'desligamento').length;
-  const alteracoes = changeLog.filter(l => l.tipo === 'alteracao').length;
-  const transferencias = changeLog.filter(l => l.tipo === 'transferencia').length;
-
-  let html = `
-    <div class="report-summary">
-      <div class="report-stat">
-        <div class="report-stat-num" style="color:var(--green)">${inclusoes}</div>
-        <div class="report-stat-label">Inclusões</div>
-      </div>
-      <div class="report-stat">
-        <div class="report-stat-num" style="color:var(--red)">${desligamentos}</div>
-        <div class="report-stat-label">Desligamentos</div>
-      </div>
-      <div class="report-stat">
-        <div class="report-stat-num" style="color:var(--accent2)">${transferencias}</div>
-        <div class="report-stat-label">Transferências</div>
-      </div>
-      <div class="report-stat">
-        <div class="report-stat-num" style="color:var(--accent)">${alteracoes}</div>
-        <div class="report-stat-label">Alterações</div>
-      </div>
-    </div>`;
-
-  if (changeLog.length === 0) {
-    html += '<div style="text-align:center;color:var(--muted);padding:24px">Nenhuma alteração registrada nesta sessão.</div>';
-  } else {
-    html += '<div class="report-section"><div class="report-section-title">Histórico detalhado</div>';
-    changeLog.forEach(l => {
-      const icon = {inclusao:'●', desligamento:'●', alteracao:'●', transferencia:'●', status:'●'}[l.tipo] || '●';
-      html += `
-        <div class="report-row">
-          <div class="report-time">${l.dia}<br>${l.hora}</div>
-          <div class="report-name">${icon} ${l.nome}</div>
-          <div class="report-change">
-            ${l.de ? '<span class="report-from">De: ' + l.de + '</span><br>' : ''}
-            ${l.para ? '<span class="report-to">Para: ' + l.para + '</span>' : ''}
-            ${l.extra ? '<br><span style="color:var(--muted)">' + l.extra + '</span>' : ''}
-          </div>
-        </div>`;
-    });
-    html += '</div>';
-  }
-
-  body.innerHTML = html;
-  document.getElementById('modalReport').classList.add('open');
-}
-
-function clearLog() {
-  changeLog = [];
-  openReport();
-}
-
-function toggleSemRota() {
-  const isSemRota = document.getElementById('fStatus').value === 'sem-rota';
-  const linhaGroup = document.getElementById('linhaGroup');
-  const turnoGroup = document.getElementById('turnoGroup');
-  if (linhaGroup) linhaGroup.style.display = isSemRota ? 'none' : '';
-  if (turnoGroup) turnoGroup.style.display = isSemRota ? 'none' : '';
-}
-
-function toggleRetorno() {
-  const st = document.getElementById('fStatus').value;
-  const g = document.getElementById('retornoGroup');
-  g.style.display = (st === 'ferias' || st === 'afastado') ? 'block' : 'none';
-}
 
 function setStatusFilter(s, btn) {
   statusFilter2 = s;
@@ -1153,103 +754,6 @@ async function exportPDF(rotaId) {
   }
 }
 
-
-function exportAllPDF() {
-  DATA.forEach(rota => exportPDF(rota.id));
-}
-
-
-async function recalcularApenasHorarios() {
-  const rota = DATA.find(r => r.id === otimizarRotaId);
-  const btn = document.querySelector('#modalOtimizar .opt-btn-secondary');
-  if (btn) btn.disabled = true;
-  setOptStatus('Carregando Google Maps...', 'running');
-
-  try {
-    await ensureMapsLoaded();
-    const passAtivos = rota.passageiros.filter(p => p.status === 'ativo' && (p.endereco || p.embarque));
-    const sorted = [...passAtivos].sort((a,b) => (a.horario||'99:99').localeCompare(b.horario||'99:99'));
-
-    const geocoder = new google.maps.Geocoder();
-    const coordsMap = {};
-    for (let i = 0; i < sorted.length; i++) {
-      const p = sorted[i];
-      setOptStatus('' + (i+1) + '/' + sorted.length + ' ' + p.nome.split(' ')[0] + '...', 'running');
-      coordsMap[p.nome] = await getCoords(geocoder, p);
-      await new Promise(r => setTimeout(r, 150));
-    }
-
-    const passComCoords = sorted.filter(p => coordsMap[p.nome]);
-    const passSemCoords = sorted.filter(p => !coordsMap[p.nome]);
-
-    setOptStatus('Recalculando horários na ordem atual...', 'running');
-
-    const directionsService = new google.maps.DirectionsService();
-    const chegadaHora = { '1°': '05:45', '2°': '14:45', '3°': '20:55' }[rota.turno] || '05:45';
-    const [hh, mm] = chegadaHora.split(':').map(Number);
-    const chegadaMinutes = hh * 60 + mm;
-
-    const waypoints = passComCoords.map(p => ({
-      location: new google.maps.LatLng(coordsMap[p.nome].lat, coordsMap[p.nome].lng),
-      stopover: true
-    }));
-
-    const result = await new Promise((resolve, reject) => {
-      directionsService.route({
-        origin: new google.maps.LatLng(GARAGEM_COORDS.lat, GARAGEM_COORDS.lng),
-        destination: new google.maps.LatLng(EMPRESA_COORDS.lat, EMPRESA_COORDS.lng),
-        waypoints,
-        optimizeWaypoints: false,
-        travelMode: google.maps.TravelMode.DRIVING,
-      }, (res, status) => {
-        if (status === 'OK') resolve(res);
-        else reject(new Error('Directions API: ' + status));
-      });
-    });
-
-    const legs = result.routes[0].legs;
-    const n = passComCoords.length;
-    let totalSeconds = 0;
-    legs.forEach(leg => { totalSeconds += leg.duration.value; });
-
-    // Backwards from chegada
-    const boardingMinutes = new Array(n);
-    let timeBack = chegadaMinutes;
-    for (let i = n - 1; i >= 0; i--) {
-      timeBack -= Math.round(legs[i + 1].duration.value / 60);
-      boardingMinutes[i] = timeBack;
-    }
-    const saidaGaragem = boardingMinutes[0] - Math.round(legs[0].duration.value / 60);
-
-    const novasParadas = [];
-    for (let i = 0; i < n; i++) {
-      const p = passComCoords[i];
-      const absMin = ((boardingMinutes[i] % 1440) + 1440) % 1440;
-      const h = Math.floor(absMin / 60);
-      const m = absMin % 60;
-      const horario = h.toString().padStart(2,'0') + ':' + m.toString().padStart(2,'0');
-      const minutosEmRota = chegadaMinutes - boardingMinutes[i];
-      novasParadas.push({ passageiro: p, horario, minutosEmRota, alerta: minutosEmRota > MAX_ROTA_MINUTOS });
-    }
-
-    pendingOptimization = { rotaId: otimizarRotaId, novasParadas, passSemCoords, totalDuration: Math.round(totalSeconds/60), saidaGaragem, keepOrder: true };
-    lastDirectionsResult = result;
-    optMap = null;
-    optDirectionsRenderer = null;
-    renderOptResult(pendingOptimization, chegadaHora);
-    setOptStatus('Horários recalculados! Revise e aplique.', 'success');
-    // btnAplicar removido (cliente somente leitura)
-    document.getElementById('btnVerMapa').style.display = 'inline-block';
-    document.getElementById('optMapSection').style.display = 'none';
-    document.getElementById('btnVerMapa').textContent = 'Ver Mapa';
-    document.getElementById('optResultSection').style.display = 'block';
-
-  } catch(e) {
-    setOptStatus('Erro: ' + e.message, 'error');
-  }
-  if (btn) btn.disabled = false;
-}
-
 function renderOptResult(opt, chegadaHora) {
   const body = document.getElementById('optResultBody');
   const alertas = opt.novasParadas.filter(p => p.alerta);
@@ -1284,23 +788,6 @@ function renderOptResult(opt, chegadaHora) {
   body.innerHTML = html;
 }
 
-function aplicarOtimizacao() {
-  if (!pendingOptimization) return;
-  const rota = DATA.find(r => r.id === pendingOptimization.rotaId);
-  pendingOptimization.novasParadas.forEach((item, i) => {
-    const p = rota.passageiros.find(x => x.nome === item.passageiro.nome);
-    if (p) { p.horario = item.horario; p.ordem = i + 1; }
-  });
-  logChange('alteracao', 'Linha ' + rota.linha + ' ' + rota.turno,
-    'Horários anteriores', 'Horários otimizados via Google Maps',
-    pendingOptimization.novasParadas.length + ' paradas recalculadas');
-  saveAfterChange();
-  document.getElementById('modalOtimizar').classList.remove('open');
-  selectLine(pendingOptimization.rotaId);
-  pendingOptimization = null;
-}
-
-
 // ---- API KEY CONFIG ----
 // Chave Firebase (NÃO é Maps Key) — usada para detectar cache corrompido
 const FB_API_KEY = C.fb.apiKey;
@@ -1331,16 +818,38 @@ function _fmtDiaChat(m){ try{ var d = new Date(m.em); var hoje=new Date(); var y
 function _sepDataChat(m, anterior){ var dAtual=_diaChat(m); if(!dAtual) return ''; var dAnt = anterior ? _diaChat(anterior) : ''; if(dAtual===dAnt) return ''; var lbl=_fmtDiaChat(m); if(!lbl) return ''; return '<div style="align-self:center;margin:8px auto;padding:3px 12px;background:rgba(128,128,128,0.18);border-radius:12px;font-size:11px;font-weight:600;color:var(--muted);text-align:center">'+lbl+'</div>'; }
 
 function waLink(tel) { if (!tel) return ''; var n = tel.replace(/\D/g,''); return '<a href="https://wa.me/55' + n + '" target="_blank" style="color:#25D366;text-decoration:none;font-weight:600">' + tel + '</a>'; }
+// ---------------------------------------------------------------------------
+// CHAVE DO GOOGLE MAPS
+// Infraestrutura da temvia, nao configuracao da operacao. A fonte e a casca
+// (arquivo do repositorio, so a temvia edita). Nao ha editor em tela nenhuma.
+//
+// TRANSICAO: enquanto houver casca sem `mapsKey`, o Firestore e o localStorage
+// continuam valendo como reserva de LEITURA, com aviso no console. Remover as
+// duas reservas assim que todas as operacoes estiverem publicadas.
+// ---------------------------------------------------------------------------
+function chaveDaCasca() {
+  try {
+    var k = window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.mapsKey;
+    return (typeof k === 'string' && k.indexOf('AIza') === 0) ? k : '';
+  } catch (e) { return ''; }
+}
+
 function getApiKey() {
-  if (!MAPS_API_KEY) {
-    const cached = localStorage.getItem('redentor_maps_key') || '';
-    // Rejeitar se for a chave Firebase (cache corrompido de versões anteriores)
-    if (cached && cached !== FB_API_KEY) {
-      MAPS_API_KEY = cached;
-    } else if (cached === FB_API_KEY) {
-      // Limpar cache corrompido
-      localStorage.removeItem('redentor_maps_key');
-    }
+  if (MAPS_API_KEY) return MAPS_API_KEY;
+
+  var daCasca = chaveDaCasca();
+  if (daCasca) { MAPS_API_KEY = daCasca; return MAPS_API_KEY; }
+
+  // --- reserva temporaria ---
+  var cache = '';
+  try { cache = localStorage.getItem('redentor_maps_key') || ''; } catch (e) {}
+  if (cache && cache !== FB_API_KEY) {
+    console.warn('[temvia] Chave do Maps veio do cache local. ' +
+                 'Publique mapsKey na casca desta operacao.');
+    MAPS_API_KEY = cache;
+  } else if (cache === FB_API_KEY) {
+    // Cache corrompido de versoes antigas guardava a chave do Firebase aqui.
+    try { localStorage.removeItem('redentor_maps_key'); } catch (e) {}
   }
   return MAPS_API_KEY;
 }
@@ -1365,66 +874,7 @@ async function fetchMapsKeyFromFirebase() {
   return '';
 }
 
-function openConfig() {
-  const cached = localStorage.getItem('redentor_maps_key') || '';
-  const saved = (cached && cached !== FB_API_KEY) ? cached : '';
-  if (!saved && cached === FB_API_KEY) localStorage.removeItem('redentor_maps_key');
-  const inp = document.getElementById('fApiKey');
-  if (inp) inp.value = saved ? '••••••••••••••••' : '';
-  const status = document.getElementById('apiKeyStatus');
-  if (status) {
-    status.textContent = saved ? 'Chave salva. Google Maps pronto para uso.' : 'Nenhuma chave configurada.';
-    status.className = 'opt-status ' + (saved ? 'success' : '');
-  }
-  MAPS_API_KEY = saved;
-  document.getElementById('modalConfig').classList.add('open');
-}
-
-async function saveApiKey() {
-  const val = document.getElementById('fApiKey').value.trim();
-  if (!val || val.startsWith('•')) {
-    document.getElementById('apiKeyStatus').textContent = 'Digite a chave para salvar.';
-    document.getElementById('apiKeyStatus').className = 'opt-status error';
-    return;
-  }
-  if (!val.startsWith('AIza') || val === FB_API_KEY) {
-    document.getElementById('apiKeyStatus').textContent = 'Chave inválida. Use a Google Maps API Key.';
-    document.getElementById('apiKeyStatus').className = 'opt-status error';
-    return;
-  }
-  localStorage.setItem('redentor_maps_key', val);
-  MAPS_API_KEY = val;
-  document.getElementById('apiKeyStatus').textContent = 'Salvando no servidor...';
-  try {
-    if (!fbDb) await initFirebase();
-    if (fbDb) {
-      const { setDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      const configRef = doc(fbDb, CLIENTE_ID, 'config');
-      await setDoc(configRef, { mapsApiKey: val, updatedAt: new Date().toISOString() }, { merge: true });
-      document.getElementById('apiKeyStatus').textContent = 'Chave salva localmente e no servidor!';
-    } else {
-      document.getElementById('apiKeyStatus').textContent = 'Chave salva localmente.';
-    }
-  } catch(e) {
-    document.getElementById('apiKeyStatus').textContent = 'Salva localmente (Firebase: ' + e.message + ')';
-  }
-  document.getElementById('apiKeyStatus').className = 'opt-status success';
-}
-
 // ---- MOTORISTA VIEW (from main system) ----
-function openMotoristView() {
-  const selMoto = document.getElementById('motoSelectMotorista');
-  selMoto.innerHTML = '<option value="">— Todos os motoristas —</option>';
-  MOTORISTAS.forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m.nome;
-    opt.textContent = m.nome;
-    selMoto.appendChild(opt);
-  });
-  motoFilterLinhas();
-  document.getElementById('motoRotaContent').innerHTML = '';
-  document.getElementById('motoView').classList.add('open');
-}
 
 function motoFilterLinhas() {
   const motoNome = document.getElementById('motoSelectMotorista').value;
@@ -1755,77 +1205,6 @@ async function recalcularApenasHorarios() {
   if (btn) btn.disabled = false;
 }
 
-
-
-function toggleOptMap() {
-  const section = document.getElementById('optMapSection');
-  const btn = document.getElementById('btnVerMapa');
-  if (section.style.display === 'none') {
-    section.style.display = 'block';
-    btn.textContent = 'Ocultar Mapa';
-    renderOptMap();
-  } else {
-    section.style.display = 'none';
-    btn.textContent = 'Ver Mapa';
-  }
-}
-
-function renderOptMap() {
-  if (!lastDirectionsResult) return;
-  const mapDiv = document.getElementById('optMapDiv');
-  if (!mapDiv) return;
-  if (!optMap) {
-    optMap = new google.maps.Map(mapDiv, {
-      zoom: 11,
-      center: new google.maps.LatLng(GARAGEM_COORDS.lat, GARAGEM_COORDS.lng),
-      mapTypeId: 'roadmap',
-      styles: [
-        { elementType: 'geometry', stylers: [{ color: '#1c2330' }] },
-        { elementType: 'labels.text.fill', stylers: [{ color: '#8b949e' }] },
-        { elementType: 'labels.text.stroke', stylers: [{ color: '#0d1117' }] },
-        { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2d3748' }] },
-        { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#3b4a6b' }] },
-        { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0d1117' }] },
-      ]
-    });
-    optDirectionsRenderer = new google.maps.DirectionsRenderer({
-      map: optMap,
-      polylineOptions: { strokeColor: '#f59e0b', strokeWeight: 4 },
-      suppressMarkers: true
-    });
-  }
-  optDirectionsRenderer.setDirections(lastDirectionsResult);
-  const route = lastDirectionsResult.routes[0];
-  const legs = route.legs;
-  new google.maps.Marker({
-    position: new google.maps.LatLng(GARAGEM_COORDS.lat, GARAGEM_COORDS.lng),
-    map: optMap, title: 'Garagem Redentor',
-    icon: { path: google.maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#10b981', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2 }
-  });
-  if (pendingOptimization && pendingOptimization.novasParadas) {
-    pendingOptimization.novasParadas.forEach((item, i) => {
-      const coords = pendingOptimization.coordsMap && pendingOptimization.coordsMap[item.passageiro.nome];
-      const pos = coords ? new google.maps.LatLng(coords.lat, coords.lng) : (legs[i] ? legs[i].end_location : null);
-      if (!pos) return;
-      const marker = new google.maps.Marker({
-        position: pos, map: optMap,
-        title: item.horario + ' — ' + item.passageiro.nome,
-        label: { text: String(i+1), color: '#000', fontWeight: 'bold', fontSize: '12px' },
-        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 14, fillColor: item.alerta ? '#ef4444' : '#f59e0b', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2 }
-      });
-      const iw = new google.maps.InfoWindow({
-        content: '<div style="color:#000;font-size:12px;min-width:160px"><strong>' + item.passageiro.nome.split(' ')[0] + '</strong><br>' + item.horario + '<br>' + item.minutosEmRota + 'min em rota' + (item.alerta ? '<br><span style="color:red">+60min</span>' : '') + '</div>'
-      });
-      marker.addListener('click', () => iw.open(optMap, marker));
-    });
-  }
-  const lastLeg = legs[legs.length-1];
-  new google.maps.Marker({
-    position: lastLeg.end_location, map: optMap,
-    icon: { path: google.maps.SymbolPath.CIRCLE, scale: 12, fillColor: '#3b82f6', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2 }
-  });
-}
-
 // ---- PAINEL GERAL ----
 function openPainel() {
   const body = document.getElementById('painelBody');
@@ -1924,6 +1303,10 @@ async function initFirebase() {
     const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
+    // App Check e sessao, nesta ordem, antes de qualquer acesso ao Firestore.
+    // Sem sessao o Firestore recusa tudo — e no PIN a recusa vira
+    // "voce ja tem um PIN cadastrado", que e mentira.
+    if (window.temviaComum) await window.temviaComum.prepararFirebase(app);
     fbDb = getFirestore(app);
     fbDocRef = doc(fbDb, CLIENTE_ID, 'dados');
     console.log('Firebase conectado');
@@ -1932,15 +1315,6 @@ async function initFirebase() {
     console.warn('Firebase não disponível:', e.message);
     return false;
   }
-}
-
-function getSnapshot() {
-  return {
-    DATA, DESLIGADOS, MOTORISTAS, nextMotoId, pdfRevision,
-    changeLog, ROTAS_EXTRAS, SEM_ROTA,
-    dataVersion: DATA_VERSION,
-    savedAt: new Date().toISOString()
-  };
 }
 
 function applySnapshot(snap) {
@@ -1960,113 +1334,7 @@ function saveToLocal(snap) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(snap)); } catch(e) {}
 }
 
-async function saveToFirebase(snap) {
-  try {
-    if (!fbDb) await initFirebase();
-    if (!fbDb || !fbDocRef) { console.error('Firebase não disponível'); return; }
-    const { setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    await setDoc(fbDocRef, snap);
-    console.log('Salvo no Firebase:', snap.savedAt);
-    // Visual feedback
-    let toast = document.getElementById('fbToast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'fbToast';
-      toast.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;z-index:9999;transition:opacity 0.5s;pointer-events:none';
-      document.body.appendChild(toast);
-    }
-    toast.style.opacity = '1';
-    toast.style.background = '#10b981';
-    toast.style.color = '#000';
-    toast.textContent = 'Sincronizado';
-    clearTimeout(toast._t);
-    toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 2000);
-  } catch(e) {
-    console.error('Erro Firebase:', e.message, e.code);
-    let toast = document.getElementById('fbToast');
-    if (!toast) { toast = document.createElement('div'); toast.id = 'fbToast'; toast.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;z-index:9999;pointer-events:none'; document.body.appendChild(toast); }
-    toast.style.opacity = '1'; toast.style.background = '#ef4444'; toast.style.color = '#fff';
-    toast.textContent = 'Erro: ' + e.message;
-    clearTimeout(toast._t);
-    toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 5000);
-  }
-}
-
-function saveData() {
-  const snap = getSnapshot();
-  saveToLocal(snap); // immediate
-  if (fbSaveTimeout) clearTimeout(fbSaveTimeout);
-  fbSaveTimeout = setTimeout(() => saveToFirebase(snap), 500);
-}
-
-function saveAfterChange() {
-  saveData();
-  updateStats();
-}
-
-async function loadData() {
-  const BASE_VERSION = DATA_VERSION;
-
-  // Read localStorage cache
-  let localSnap = null;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) localSnap = JSON.parse(raw);
-  } catch(e) {}
-
-  // Initialize Firebase
-  const fbOk = await initFirebase();
-
-  if (fbOk && fbDocRef) {
-    try {
-      const { getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      const snap = await getDoc(fbDocRef);
-
-      if (snap.exists()) {
-        const saved = snap.data();
-        // O cliente NUNCA sobrescreve o cadastro mestre. Apenas LÊ o Firebase.
-        // (Regras de segurança também bloqueiam escrita do cliente em 'dados'.)
-        if (saved.DATA && saved.DATA.length > 0) {
-          applySnapshot(saved);
-          saveToLocal(saved);
-          console.log('Firebase aplicado (somente leitura):', saved.savedAt);
-        } else {
-          console.log('ℹ️ Firebase sem dados ainda — nada a exibir.');
-        }
-      } else {
-        console.log('ℹ️ Sem dados no Firebase ainda.');
-      }
-      return DATA.length > 0;
-    } catch(e) {
-      console.warn('Firebase load error:', e.message);
-    }
-  }
-
-  // Fallback to localStorage
-  if (localSnap?.DATA?.length > 0) {
-    applySnapshot(localSnap);
-    console.log('Fallback localStorage:', localSnap.savedAt);
-    return true;
-  }
-  return false;
-}
-
-
-
-
-
 // ---- EXCLUIR PASSAGEIRO ----
-function excluirPassageiro(rotaId, idx) {
-  const rota = DATA.find(r => r.id === rotaId);
-  if (!rota) return;
-  const p = rota.passageiros[idx];
-  if (!confirm(`Excluir permanentemente "${p.nome}"?\n\nEsta ação não pode ser desfeita.`)) return;
-  logChange('exclusao', p.nome, 'Linha ' + rota.linha + ' ' + rota.turno, 'Excluído', '');
-  rota.passageiros.splice(idx, 1);
-  saveAfterChange();
-  renderSidebar();
-  selectLine(rotaId);
-}
 
 // ---- MAPA GERAL ----
 const MG_COLORS = {
@@ -2094,59 +1362,21 @@ async function openMapaGeral(rotaExtraIdx) {
   // 2. Tentar Firebase
   if (!key) key = await fetchMapsKeyFromFirebase();
 
-  // 3. Se ainda não tem, mostrar input inline no próprio modal
+  // 3. Sem chave configurada: a chave do Maps e infraestrutura da temvia,
+  //    nao configuracao da operacao. A tela explica em vez de pedir.
   if (!key) {
     document.getElementById('modalMapaGeral').classList.add('open');
-  renderMapaTurnoBar();
-    document.getElementById('mapaGeralDiv').innerHTML = `
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;padding:24px">
-        <div style="font-size:28px"></div>
-        <div style="font-family:Barlow,sans-serif;font-weight:700;font-size:16px;color:var(--text)">Configuração inicial do Mapa</div>
-        <div style="font-size:12px;color:var(--muted);text-align:center;max-width:320px">
-          Cole a Google Maps API Key abaixo. Ela será salva de forma segura e o mapa funcionará automaticamente para todos.
-        </div>
-        <input id="inlineApiKeyInput" type="password" placeholder="AIza..." autocomplete="off"
-          style="width:100%;max-width:340px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:13px;outline:none">
-        <button onclick="saveInlineApiKey(${rotaExtraIdx ?? 'undefined'})"
-          style="padding:10px 28px;border-radius:8px;background:var(--accent);color:#000;font-weight:700;font-size:13px;border:none;cursor:pointer;font-family:Barlow,sans-serif">
-          Salvar e abrir mapa
-        </button>
-        <div id="inlineApiKeyStatus" style="font-size:11px;color:var(--muted)"></div>
-      </div>`;
-    setTimeout(() => document.getElementById('inlineApiKeyInput')?.focus(), 200);
+    renderMapaTurnoBar();
+    document.getElementById('mapaGeralDiv').innerHTML =
+      '<div style="display:flex;flex-direction:column;align-items:center;' +
+      'justify-content:center;height:100%;gap:12px;padding:28px;text-align:center">' +
+      '<div style="font-weight:700;font-size:15px;color:var(--text)">Mapa indispon\u00edvel</div>' +
+      '<div style="font-size:12.5px;color:var(--muted);max-width:340px;line-height:1.5">' +
+      'A chave do Google Maps desta opera\u00e7\u00e3o n\u00e3o est\u00e1 configurada. ' +
+      'Ela faz parte da infraestrutura da plataforma \u2014 fale com a temvia.</div></div>';
     return;
   }
 
-  _iniciarMapa(rotaExtraIdx);
-}
-
-async function saveInlineApiKey(rotaExtraIdx) {
-  const input = document.getElementById('inlineApiKeyInput');
-  const status = document.getElementById('inlineApiKeyStatus');
-  const val = input?.value?.trim();
-  if (!val || !val.startsWith('AIza') || val === FB_API_KEY) {
-    if (status) status.textContent = 'Chave inválida. Use a Google Maps API Key (não a chave Firebase).';
-    return;
-  }
-  if (status) status.textContent = 'Salvando...';
-  // Salvar local
-  localStorage.setItem('redentor_maps_key', val);
-  MAPS_API_KEY = val;
-  // Salvar no Firebase
-  try {
-    if (!fbDb) await initFirebase();
-    if (fbDb) {
-      const { setDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      const configRef = doc(fbDb, CLIENTE_ID, 'config');
-      await setDoc(configRef, { mapsApiKey: val, updatedAt: new Date().toISOString() }, { merge: true });
-      if (status) status.textContent = 'Salvo! Carregando mapa...';
-    } else {
-      if (status) status.textContent = 'Salvo localmente. Carregando mapa...';
-    }
-  } catch(e) {
-    if (status) status.textContent = 'Salvo localmente (' + e.message + '). Carregando...';
-  }
-  await new Promise(r => setTimeout(r, 600));
   _iniciarMapa(rotaExtraIdx);
 }
 
@@ -2495,309 +1725,10 @@ async function renderMapaGeral(rotaExtraIdx) {
 // ---- ROTAS EXTRAS ----
 let rePassSelecionados = []; // {nome, lat, lng, horario, telefone, bairro, cidade, embarque}
 
-function openRotasExtras() {
-  // Fill motoristas
-  const sel = document.getElementById('reMotorista');
-  sel.innerHTML = '<option value="">— Selecione —</option>';
-  MOTORISTAS.forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m.nome; opt.textContent = m.nome + (m.tel ? ' · ' + m.tel : '');
-    sel.appendChild(opt);
-  });
-  // Set default date to today
-  document.getElementById('reData').value = hojeLocal();
-  rePassSelecionados = [];
-  document.getElementById('reBusca').value = '';
-  document.getElementById('reResultados').innerHTML = '';
-  renderReSelecionados();
-  renderRotasExtrasList();
-  document.getElementById('modalRotasExtras').classList.add('open');
-}
-
-function filtrarPassRotaExtra() {
-  const q = document.getElementById('reBusca').value.toLowerCase().trim();
-  const div = document.getElementById('reResultados');
-  if (!q) { div.innerHTML = ''; return; }
-  // Search all active passengers across all routes
-  const results = [];
-  DATA.forEach(rota => {
-    rota.passageiros.filter(p => p.status === 'ativo').forEach(p => {
-      const match = p.nome.toLowerCase().includes(q) ||
-        (p.bairro||'').toLowerCase().includes(q) ||
-        (p.cidade||'').toLowerCase().includes(q) ||
-        (p.embarque||'').toLowerCase().includes(q);
-      if (match) results.push({...p, _rota: `L${rota.linha} ${rota.turno}`});
-    });
-  });
-  if (results.length === 0) {
-    div.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:13px">Nenhum resultado</div>';
-    return;
-  }
-  div.innerHTML = results.slice(0,20).map(p => {
-    const already = rePassSelecionados.some(s => s.nome === p.nome);
-    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;${already?'opacity:0.4;pointer-events:none':''}" onclick="toggleRePass(${JSON.stringify(p).replace(/"/g,'&quot;')})">
-      <div style="flex:1">
-        <div style="font-weight:600;font-size:13px">${p.nome}</div>
-        <div style="font-size:11px;color:var(--muted)">${p._rota} · ${p.bairro||''} · ${p.cidade||''}</div>
-      </div>
-      <div style="font-size:18px">${already ? '' : ''}</div>
-    </div>`;
-  }).join('');
-}
-
-function toggleRePass(p) {
-  const idx = rePassSelecionados.findIndex(s => s.nome === p.nome);
-  if (idx === -1) rePassSelecionados.push(p);
-  else rePassSelecionados.splice(idx, 1);
-  renderReSelecionados();
-  filtrarPassRotaExtra(); // refresh list
-}
-
-function renderReSelecionados() {
-  const div = document.getElementById('reSelecionados');
-  if (rePassSelecionados.length === 0) {
-    div.innerHTML = '<span style="font-size:12px;color:var(--muted)">Nenhum selecionado ainda</span>';
-    return;
-  }
-  div.innerHTML = rePassSelecionados.map(p =>
-    `<span style="background:rgba(236,72,153,0.15);border:1px solid rgba(236,72,153,0.3);color:#ec4899;border-radius:20px;padding:3px 10px;font-size:12px;cursor:pointer" onclick="toggleRePass(${JSON.stringify(p).replace(/"/g,'&quot;')})">
-      ${p.nome.split(' ')[0]} ×
-    </span>`
-  ).join('');
-}
-
-function criarRotaExtra() {
-  const nome = document.getElementById('reNome').value.trim();
-  const data = document.getElementById('reData').value;
-  const motorista = document.getElementById('reMotorista').value;
-  const horario = document.getElementById('reHorario').value;
-  if (!nome) { alert('Digite o nome da rota.'); return; }
-  if (!motorista) { alert('Selecione um motorista.'); return; }
-  if (rePassSelecionados.length === 0) { alert('Selecione ao menos um passageiro.'); return; }
-  const novaRota = {
-    id: 'extra-' + Date.now(),
-    nome, data, motorista, horario,
-    passageiros: rePassSelecionados.map(p => ({...p})),
-    criadoEm: new Date().toISOString()
-  };
-  ROTAS_EXTRAS.push(novaRota);
-  saveAfterChange();
-  // Reset form
-  document.getElementById('reNome').value = '';
-  document.getElementById('reHorario').value = '';
-  rePassSelecionados = [];
-  document.getElementById('reBusca').value = '';
-  document.getElementById('reResultados').innerHTML = '';
-  renderReSelecionados();
-  renderRotasExtrasList();
-  alert(`Rota Extra "${nome}" criada com ${novaRota.passageiros.length} passageiro(s)!\nO motorista ${motorista} já pode ver no app.`);
-}
-
-function renderRotasExtrasList() {
-  const div = document.getElementById('rotasExtrasList');
-  if (ROTAS_EXTRAS.length === 0) {
-    div.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Nenhuma rota extra ativa</div>';
-    return;
-  }
-  div.innerHTML = ROTAS_EXTRAS.map((r, i) => `
-    <div style="background:var(--surface);border:1px solid rgba(236,72,153,0.3);border-radius:12px;padding:14px;margin-bottom:10px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div>
-          <span style="font-weight:700;color:#ec4899">${r.nome}</span>
-          <span style="font-size:12px;color:var(--muted);margin-left:8px">${r.data} · ${r.horario||'--:--'}</span>
-        </div>
-        <div style="display:flex;gap:6px">
-          <button onclick="verRotaExtraNoMapa(${i})" class="export-btn" style="padding:4px 10px;font-size:11px">Ver no Mapa</button>
-
-        </div>
-      </div>
-      <div style="font-size:12px;color:var(--muted)">${r.motorista} · ${r.passageiros.length} passageiro(s)</div>
-      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">
-        ${r.passageiros.map(p => `<span style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px">${p.nome.split(' ').slice(0,2).join(' ')}</span>`).join('')}
-      </div>
-    </div>
-  `).join('');
-}
-
-function excluirRotaExtra(idx) {
-  const r = ROTAS_EXTRAS[idx];
-  if (!confirm(`Excluir a rota extra "${r.nome}"?\nEsta ação não pode ser desfeita.`)) return;
-  ROTAS_EXTRAS.splice(idx, 1);
-  saveAfterChange();
-  renderRotasExtrasList();
-}
-
-function verRotaExtraNoMapa(idx) {
-  document.getElementById('modalRotasExtras').classList.remove('open');
-  // Open mapa geral showing this extra route
-  openMapaGeral(idx);
-}
-
 // ---- SEM ROTA ----
 let semRotaPassIdx = null; // {rotaId, passIdx}
 
-function openSemRota() {
-  window.semRotaSelecionados = new Set();
-  renderSemRotaList();
-  document.getElementById('semRotaAlocarBox').style.display = 'none';
-  document.getElementById('modalSemRota').classList.add('open');
-}
-
-function renderSemRotaList() {
-  const div = document.getElementById('semRotaList');
-  // Combine SEM_ROTA pool + passengers with sem-rota status in routes
-  const semRota = [...SEM_ROTA.map((p, i) => ({p, source:'pool', idx:i}))];
-  DATA.forEach(rota => {
-    rota.passageiros.forEach((p, pi) => {
-      if (p.status === 'sem-rota') semRota.push({p, source:'rota', rotaId:rota.id, idx:pi});
-    });
-  });
-
-  if (semRota.length === 0) {
-    div.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted)">Nenhum passageiro aguardando alocação</div>';
-    const bar = document.getElementById('semRotaActionsBar');
-    if (bar) bar.style.display = 'none';
-    return;
-  }
-
-  const bar = document.getElementById('semRotaActionsBar');
-  if (bar) bar.style.display = 'flex';
-
-  if (!window.semRotaSelecionados) window.semRotaSelecionados = new Set();
-
-  div.innerHTML = semRota.map(({p, source, rotaId, idx}) => {
-    const key = source + '-' + idx;
-    const sel = semRotaSelecionados.has(key);
-    return `<div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid ${sel?'var(--accent)':'var(--border)'};border-radius:10px;margin-bottom:8px;background:${sel?'rgba(245,158,11,0.06)':'var(--surface)'};cursor:pointer" onclick="toggleSemRotaSel('${key}')">
-      <div style="width:28px;height:28px;border-radius:50%;background:${sel?'var(--accent)':'rgba(156,163,175,0.2)'};border:2px solid ${sel?'var(--accent)':'#9ca3af'};display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;color:${sel?'#000':'#9ca3af'};font-weight:700">${sel?'✓':''}</div>
-      <div style="flex:1">
-        <div style="font-weight:600;font-size:14px">${p.nome}</div>
-        <div style="font-size:12px;color:var(--muted)">${p.bairro||''} · ${p.cidade||''}</div>
-        <div style="font-size:11px;color:var(--muted)">${p.embarque||p.endereco||'—'} ${p.lat&&p.lng?'· coords':'· sem coords'}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px">
-        <button onclick="event.stopPropagation();iniciarAlocacaoPool('${source}','${rotaId||''}',${idx},'${p.nome.replace(/'/g,"\'")}')" class="export-btn" style="padding:4px 10px;font-size:11px;color:var(--accent);border-color:var(--accent)">Alocar</button>
-
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function toggleSemRotaSel(key) {
-  if (!window.semRotaSelecionados) window.semRotaSelecionados = new Set();
-  if (semRotaSelecionados.has(key)) semRotaSelecionados.delete(key);
-  else semRotaSelecionados.add(key);
-  renderSemRotaList();
-}
-
-function excluirSemRotaItem(source, rotaId, idx) {
-  if (!confirm('Excluir este passageiro da lista de aguardando?')) return;
-  if (source === 'pool') { SEM_ROTA.splice(idx, 1); }
-  else { const rota = DATA.find(r => r.id === rotaId); if (rota) rota.passageiros.splice(idx, 1); }
-  saveAfterChange(); renderSemRotaList();
-}
-
-function criarRotaExtraDeSemRota() {
-  if (!semRotaSelecionados || semRotaSelecionados.size === 0) { alert('Selecione ao menos um passageiro clicando nele.'); return; }
-  const semRota = [...SEM_ROTA.map((p,i) => ({p,source:'pool',idx:i})),
-    ...DATA.flatMap(rota => rota.passageiros.filter(p=>p.status==='sem-rota').map((p,pi) => ({p,source:'rota',rotaId:rota.id,idx:pi})))];
-  const selecionados = semRota.filter(({source,idx}) => semRotaSelecionados.has(source+'-'+idx));
-  document.getElementById('modalSemRota').classList.remove('open');
-  setTimeout(() => {
-    openRotasExtras();
-    rePassSelecionados = selecionados.map(s => ({...s.p}));
-    renderReSelecionados();
-  }, 300);
-}
-
-function alocarTodosParaRota() {
-  if (!semRotaSelecionados || semRotaSelecionados.size === 0) { alert('Selecione ao menos um passageiro clicando nele.'); return; }
-  document.getElementById('semRotaAlocarNome').textContent = semRotaSelecionados.size + ' passageiro(s) selecionado(s)';
-  document.getElementById('semRotaAlocarBox').style.display = 'block';
-  document.getElementById('semRotaAlocarBox').scrollIntoView({behavior:'smooth'});
-}
-
-
-function iniciarAlocacaoPool(source, rotaId, idx, nome) {
-  semRotaPassIdx = {source, rotaId, idx};
-  document.getElementById('semRotaAlocarNome').textContent = nome;
-  const sel = document.getElementById('semRotaLinhaSelect');
-  const to = {'1°':1,'2°':2,'3°':3};
-  const sorted = [...DATA].sort((a,b) => a.linha-b.linha||(to[a.turno]||9)-(to[b.turno]||9));
-  sel.innerHTML = sorted.map(r => {
-    const ativos = r.passageiros.filter(p => p.status==='ativo').length;
-    const cap = r.veiculo === 'Van' ? 15 : 6;
-    return `<option value="${r.id}">Linha ${r.linha} · ${r.turno} Turno · ${ativos}/${cap} · ${r.motorista||'—'}</option>`;
-  }).join('');
-  document.getElementById('semRotaAlocarBox').style.display = 'block';
-  document.getElementById('semRotaAlocarBox').scrollIntoView({behavior:'smooth'});
-}
-
-function confirmarAlocacao() {
-  if (!semRotaPassIdx) return;
-  const novaRotaId = document.getElementById('semRotaLinhaSelect').value;
-  if (!novaRotaId) { alert('Selecione uma linha.'); return; }
-  const novaRota = DATA.find(r => r.id === novaRotaId);
-  if (!novaRota) return;
-
-  // Handle batch selection
-  if (semRotaSelecionados && semRotaSelecionados.size > 0) {
-    const semRota = [...SEM_ROTA.map((p,i) => ({p,source:'pool',idx:i})),
-      ...DATA.flatMap(rota => rota.passageiros.filter(p=>p.status==='sem-rota').map((p,pi) => ({p,source:'rota',rotaId:rota.id,idx:pi})))];
-    // Process in reverse to maintain indices
-    const toProcess = semRota.filter(({source,idx}) => semRotaSelecionados.has(source+'-'+idx)).reverse();
-    toProcess.forEach(({p, source, rotaId, idx}) => {
-      p.status = 'ativo';
-      novaRota.passageiros.push({...p});
-      if (source === 'pool') SEM_ROTA.splice(idx, 1);
-      else { const ro = DATA.find(r => r.id === rotaId); if (ro) ro.passageiros.splice(idx, 1); }
-    });
-    semRotaSelecionados.clear();
-    const count = toProcess.length;
-    saveAfterChange(); renderSemRotaList(); renderSidebar();
-    alert(`${count} passageiro(s) alocados para Linha ${novaRota.linha} · ${novaRota.turno} Turno!`);
-  } else {
-    // Single passenger
-    let pass;
-    if (semRotaPassIdx.source === 'pool') {
-      pass = SEM_ROTA.splice(semRotaPassIdx.idx, 1)[0];
-    } else {
-      const rotaOrigem = DATA.find(r => r.id === semRotaPassIdx.rotaId);
-      pass = rotaOrigem.passageiros.splice(semRotaPassIdx.idx, 1)[0];
-    }
-    pass.status = 'ativo';
-    novaRota.passageiros.push(pass);
-    saveAfterChange(); renderSemRotaList(); renderSidebar();
-    alert(`${pass.nome} alocado para Linha ${novaRota.linha} · ${novaRota.turno} Turno!`);
-  }
-
-  semRotaPassIdx = null;
-  document.getElementById('semRotaAlocarBox').style.display = 'none';
-}
-
-
 // ---- BACKUP ----
-function exportBackup() {
-  const snap = getSnapshot();
-  const json = JSON.stringify(snap, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const now = new Date();
-  const date = hojeLocal(now);
-  const time = now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}).replace(':','h');
-  a.href = url;
-  a.download = 'redentor-backup-' + date + '-' + time + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  // Show toast
-  let toast = document.getElementById('fbToast');
-  if (!toast) { toast = document.createElement('div'); toast.id = 'fbToast'; toast.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;z-index:9999;transition:opacity 0.5s;pointer-events:none'; document.body.appendChild(toast); }
-  toast.style.opacity = '1'; toast.style.background = '#8b5cf6'; toast.style.color = '#fff';
-  toast.textContent = 'Backup salvo!';
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
-}
 
 // ---- CLIENTE AUTH ----
 const SENHA_CLIENTE = C.senhaFallback; // fallback se o config nao tiver senha definida
@@ -2815,6 +1746,10 @@ const autoEntradaDecidida = new Promise(r => { _resolverAuto = r; });
     const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
+    // App Check e sessao, nesta ordem, antes de qualquer acesso ao Firestore.
+    // Sem sessao o Firestore recusa tudo — e no PIN a recusa vira
+    // "voce ja tem um PIN cadastrado", que e mentira.
+    if (window.temviaComum) await window.temviaComum.prepararFirebase(app);
     const db = getFirestore(app);
     const snap = await getDoc(doc(db, CLIENTE_ID, 'config'));
     const sc = snap.exists() ? (snap.data().senhaCliente || '') : '';
@@ -2850,12 +1785,19 @@ async function initAuthCli() {
   const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
   const { getAuth } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
   const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
+  // App Check e sessao, nesta ordem, antes de qualquer acesso ao Firestore.
+  // Sem sessao o Firestore recusa tudo — e no PIN a recusa vira
+  // "voce ja tem um PIN cadastrado", que e mentira.
+  if (window.temviaComum) await window.temviaComum.prepararFirebase(app);
   fbAuthCli = getAuth(app);
   return fbAuthCli;
 }
 
 // Quem pode entrar: lista mantida pelo gestor em {CLIENTE_ID}/acessos
 // -> { lista: [ { email, nome, papel: 'cliente', ativo: true } ] }
+// Tres estados, nunca dois. Ver o cabecalho do patch.
+const ACESSO = { AUTORIZADO: 'AUTHORIZED', NEGADO: 'DENIED', INDISPONIVEL: 'UNAVAILABLE' };
+
 async function acessoDoEmail(email) {
   try {
     const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -2863,12 +1805,34 @@ async function acessoDoEmail(email) {
     const snap = await getDoc(doc(getFirestore(auth.app), CLIENTE_ID, 'acessos'));
     const lista = snap.exists() ? (snap.data().lista || []) : [];
     const alvo = (email || '').trim().toLowerCase();
-    return lista.find(u => (u.email || '').trim().toLowerCase() === alvo) || null;
-  } catch (e) { return null; }
+    const achado = lista.find(u => (u.email || '').trim().toLowerCase() === alvo) || null;
+    const ok = !!(achado && achado.papel === 'cliente' && achado.ativo !== false);
+    return { estado: ok ? ACESSO.AUTORIZADO : ACESSO.NEGADO, acesso: achado };
+  } catch (e) {
+    // NAO deu para perguntar. Isso nao e uma negativa.
+    console.warn('[temvia] Nao foi possivel verificar o acesso:', e && e.message);
+    return { estado: ACESSO.INDISPONIVEL, acesso: null };
+  }
 }
 
-function clientePodeEntrar(acesso) {
-  return !!(acesso && acesso.papel === 'cliente' && acesso.ativo !== false);
+function clientePodeEntrar(r) {
+  return !!(r && r.estado === ACESSO.AUTORIZADO);
+}
+
+// Servidor fora do ar na hora de conferir o acesso. Nao acusa ninguem: diz o
+// que aconteceu e oferece tentar de novo.
+function cliAvisoIndisponivel() {
+  mostrarFormularioCliente();
+  const err = document.getElementById('loginError');
+  if (err) {
+    err.innerHTML =
+      'N\u00e3o foi poss\u00edvel verificar seu acesso agora. ' +
+      'Verifique sua conex\u00e3o e tente novamente.' +
+      '<div style="margin-top:10px"><button onclick="location.reload()" ' +
+      'style="padding:8px 18px;border-radius:8px;border:0;background:var(--accent);' +
+      'color:#000;font-weight:700;cursor:pointer">Tentar novamente</button></div>';
+    err.style.display = 'block';
+  }
 }
 
 function liberarPortalCliente() {
@@ -2895,7 +1859,17 @@ function verSenhaCliente() {
 
 
 // Portal da transportadora: e para la que mandamos quem chega sem sessao.
-const PORTAL_URL = '/redentor/';
+// Portal da transportadora: e para la que mandamos quem chega sem sessao.
+// Vem da CASCA. Sem portalUrl declarado (ambiente de teste), o app mostra o
+// proprio formulario em vez de redirecionar — senao a casca de teste vira
+// beco sem saida, devolvendo para o portal de producao.
+const PORTAL_URL = (window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.portalUrl) || '';
+function irParaPortal(usarReplace) {
+  if (!PORTAL_URL) return false;              // sem portal: quem chama mostra o form
+  if (usarReplace) window.location.replace(PORTAL_URL);
+  else window.location.href = PORTAL_URL;
+  return true;
+}
 let _semAcessoNestaEmpresa = false;
 
 // Evita o "pisca": o formulario so aparece quando confirmamos que nao ha sessao aberta.
@@ -2997,18 +1971,26 @@ async function esqueciSenhaCliente() {
       const overlay = document.getElementById('loginOverlay');
       // Ja entrou (sessao anterior ou senha unica lembrada): nao mexe.
       if (!overlay || overlay.style.display === 'none') return;
+      // Sessao anonima NAO e login. Ver o cabecalho do patch.
+      if (user && user.isAnonymous) user = null;
       if (!user) {
         // Sem sessao: a porta de entrada e o PORTAL, nao o login deste app.
         // replace() para o botao "voltar" nao ficar pingando entre os dois.
-        if (!_semAcessoNestaEmpresa) window.location.replace(PORTAL_URL);
+        if (_semAcessoNestaEmpresa || !irParaPortal(true)) mostrarFormularioCliente();
         else mostrarFormularioCliente();
         return;
       }
-      if (clientePodeEntrar(await acessoDoEmail(user.email))) liberarPortalCliente();
+      const r = await acessoDoEmail(user.email);
+      if (r.estado === ACESSO.AUTORIZADO) { liberarPortalCliente(); return; }
+
+      _semAcessoNestaEmpresa = true;   // precisa LER o motivo: nao redireciona
+      if (r.estado === ACESSO.INDISPONIVEL) cliAvisoIndisponivel();
       else {
-        _semAcessoNestaEmpresa = true;   // precisa LER o motivo: nao redireciona
         const err = document.getElementById('loginError');
-        if (err) { err.textContent = 'Este login nao tem acesso ao portal desta empresa. Fale com o gestor.'; err.style.display = 'block'; }
+        if (err) {
+          err.textContent = 'Este login nao tem acesso ao portal desta empresa. Fale com o gestor.';
+          err.style.display = 'block';
+        }
         mostrarFormularioCliente();
       }
     });
@@ -3024,18 +2006,142 @@ async function logout() {
     await signOut(auth);
   } catch (e) {}
   // Porta da frente do sistema agora e o portal temvia, nao a tela de login do app.
-  window.location.href = PORTAL_URL;
+  if (!irParaPortal(false)) mostrarFormularioCliente();
 }
 
 let fbUnsub = null;
 
-async function loadDataRealtime() {
-  // Show data immediately from HTML (already loaded in DATA variable)
+// ===========================================================================
+// ESTADO DE CARREGAMENTO DO CADASTRO
+// Regra: a tela nunca mostra dado sem dizer de onde ele veio.
+// ===========================================================================
+
+// Quanto tempo esperar o servidor antes de recorrer ao cache.
+const CLI_ESPERA_MS = 8000;
+
+// Ate quando um cache ainda serve. 24 horas: fretamento muda todo dia, e um
+// retrato de anteontem apresentado como operacional engana mais do que ajuda.
+const CACHE_CLIENTE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
+// Fuso da OPERACAO, nao do aparelho. Vem da casca para nao virar premissa
+// eterna do produto: outra transportadora, outro fuso.
+const OPERATION_TIMEZONE =
+  (window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.timezone) || 'America/Sao_Paulo';
+
+// null enquanto nada foi renderizado; depois 'servidor' ou 'cache'.
+let CLI_ORIGEM = null;
+
+function cliPainel() {
+  let el = document.getElementById('cliEstado');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'cliEstado';
+    el.style.cssText = 'position:fixed;inset:0;z-index:9998;display:flex;' +
+      'align-items:center;justify-content:center;flex-direction:column;gap:14px;' +
+      'background:var(--bg,#0d1117);color:var(--text,#e6edf3);' +
+      'font-family:Inter,system-ui,sans-serif;text-align:center;padding:32px';
+    document.body.appendChild(el);
+  }
+  return el;
+}
+
+function cliEstadoCarregando() {
+  const el = cliPainel();
+  el.style.display = 'flex';
+  el.innerHTML = '<div style="font-size:15px;font-weight:600">Carregando os dados da opera\u00e7\u00e3o\u2026</div>' +
+    '<div style="font-size:13px;opacity:.7">Buscando no servidor.</div>';
+}
+
+function cliEstadoPronto() {
+  const el = document.getElementById('cliEstado');
+  if (el) el.style.display = 'none';
+  cliTarjaCache(null);
+}
+
+function cliEstadoErro(motivo) {
+  const el = cliPainel();
+  el.style.display = 'flex';
+  el.innerHTML =
+    '<div style="font-size:15px;font-weight:600">N\u00e3o foi poss\u00edvel carregar os dados</div>' +
+    '<div style="font-size:13px;opacity:.75;max-width:380px">' + (motivo || '') +
+    ' N\u00e3o h\u00e1 c\u00f3pia local recente para mostrar.</div>' +
+    '<button onclick="location.reload()" style="margin-top:6px;padding:9px 18px;' +
+    'border-radius:8px;border:0;background:var(--brand,#FFB000);color:#000;' +
+    'font-weight:700;cursor:pointer">Tentar de novo</button>';
+}
+
+// Tarja permanente enquanto a tela estiver mostrando cache. Passar null remove.
+function cliTarjaCache(quando) {
+  let t = document.getElementById('cliTarjaCache');
+  if (!quando) { if (t) t.remove(); return; }
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'cliTarjaCache';
+    t.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9997;' +
+      'padding:9px 14px;background:#b45309;color:#fff;font-size:12.5px;' +
+      'font-family:Inter,system-ui,sans-serif;text-align:center;line-height:1.4';
+    document.body.appendChild(t);
+  }
+  t.textContent = 'Exibindo dados salvos em ' + quando +
+    '. N\u00e3o foi poss\u00edvel atualizar as informa\u00e7\u00f5es agora.';
+}
+
+// Sempre no fuso da opera\u00e7\u00e3o, nunca no do aparelho. Celular com fuso errado
+// (ou gestor viajando) mostraria uma hora que n\u00e3o corresponde a nada.
+function cliFormataQuando(iso) {
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return null;
+    return d.toLocaleString('pt-BR', {
+      timeZone: OPERATION_TIMEZONE,
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    }).replace(', ', ' \u00e0s ');
+  } catch (e) { return null; }
+}
+
+// Servidor fora do ar ou lento: usa o cache, se houver e se ainda valer.
+function cliCairParaCache(motivo) {
+  if (CLI_ORIGEM) return;              // ja tem dado do servidor na tela
+  let snap = null;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) snap = JSON.parse(raw);
+  } catch (e) {}
+
+  if (!snap || !snap.DATA || !snap.DATA.length) { cliEstadoErro(motivo); return; }
+
+  const quando = cliFormataQuando(snap.savedAt);
+  if (!quando) { cliEstadoErro(motivo); return; }
+
+  const idade = Date.now() - new Date(snap.savedAt).getTime();
+  if (idade > CACHE_CLIENTE_MAX_AGE_MS) {
+    cliEstadoErro(motivo + ' A c\u00f3pia local \u00e9 de ' + quando +
+      ' e j\u00e1 passou de 24 horas \u2014 n\u00e3o serve como informa\u00e7\u00e3o atual.');
+    return;
+  }
+
+  applySnapshot(snap);
+  CLI_ORIGEM = 'cache';
+  const el = document.getElementById('cliEstado');
+  if (el) el.style.display = 'none';
   renderSidebar();
   updateStats();
-  console.log('Dados iniciais carregados:', DATA.length, 'rotas');
+  cliTarjaCache(quando);
+  console.warn('Renderizado a partir do cache de', quando, '\u2014', motivo);
+}
 
-  // Then connect Firebase for real-time updates
+async function loadDataRealtime() {
+  // Nada de desenhar antes de ter dado de verdade. A ordem e:
+  // carregando -> servidor -> (se falhar) cache identificado -> (se nao houver) erro.
+  cliEstadoCarregando();
+
+  // Se o servidor nao responder em CLI_ESPERA_MS, cai para o cache. Sem isto,
+  // o onSnapshot pendurado deixa a tela em "Carregando" para sempre.
+  const relogio = setTimeout(function () {
+    if (!CLI_ORIGEM) cliCairParaCache('O servidor demorou a responder.');
+  }, CLI_ESPERA_MS);
+
   try {
     const ok = await initFirebase();
     if (ok && fbDb && fbDocRef) {
@@ -3046,6 +2152,10 @@ async function loadDataRealtime() {
           if (saved.DATA && saved.DATA.length > 0) {
             DATA.length = 0; saved.DATA.forEach(r => DATA.push(r));
             if (saved.MOTORISTAS) { MOTORISTAS.length = 0; saved.MOTORISTAS.forEach(m => MOTORISTAS.push(m)); }
+            clearTimeout(relogio);
+            saveToLocal(saved);              // o cache passa a ser alimentado aqui
+            CLI_ORIGEM = 'servidor';
+            cliEstadoPronto();
             renderSidebar();
             updateStats();
             if (activeId) selectLine(activeId);
@@ -3054,11 +2164,18 @@ async function loadDataRealtime() {
         }
       }, (err) => {
         console.warn('Firebase realtime error:', err.message);
+        clearTimeout(relogio);
+        cliCairParaCache('Nao foi possivel falar com o servidor.');
       });
       console.log('Firebase conectado — atualizações em tempo real ativas');
+    } else {
+      clearTimeout(relogio);
+      cliCairParaCache('Sem conexão com o servidor.');
     }
   } catch(e) {
-    console.warn('Firebase não disponível, usando dados locais:', e.message);
+    console.warn('Firebase não disponível:', e.message);
+    clearTimeout(relogio);
+    cliCairParaCache('Sem conexão com o servidor.');
   }
 }
 
@@ -3282,18 +2399,6 @@ function cliMontarResumo() {
     '</div>';
 }
 
-async function cliCarregarSolicitacoes() {
-  try {
-    if (!fbDb) await initFirebase();
-    if (!fbDb) return;
-    const { onSnapshot, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    onSnapshot(doc(fbDb, CLIENTE_ID, 'solicitacoes_extras'), snap => {
-      CLI_SOL_DADOS = (snap.exists() && snap.data().lista) ? snap.data().lista : [];
-      if (document.getElementById('cliAbaAcompanhamento').style.display !== 'none') cliRenderAcompanhamento();
-    });
-  } catch(e) { console.warn('CLI SOL:', e.message); }
-}
-
 function cliBuscarFuncionarios() {
   const q = document.getElementById('cliBuscaFunc').value.toLowerCase().trim();
   const div = document.getElementById('cliResultadoFunc');
@@ -3373,52 +2478,6 @@ function cliRemoverFunc(idx) {
   cliBuscarFuncionarios();
 }
 
-function cliRenderAcompanhamento() {
-  const filtroStatus = document.getElementById('cliFiltroStatus').value;
-  const filtroMes = document.getElementById('cliFiltroMes').value;
-  let lista = (CLI_SOL_DADOS||[]).filter(s =>
-    (!filtroStatus || s.status === filtroStatus) &&
-    (!filtroMes || s.mesRef === filtroMes)
-  ).sort((a,b) => (b.criadoEm||'').localeCompare(a.criadoEm||''));
-
-  const div = document.getElementById('cliListaSolicitacoes');
-  if (!lista.length) { div.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)">Nenhuma solicitação encontrada.</div>'; return; }
-
-  div.innerHTML = lista.map(s => {
-    const st = CLI_SOL_STATUS[s.status] || CLI_SOL_STATUS.pendente;
-    const dataFmt = s.data ? new Date(s.data+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'}) : '—';
-    const podeCancelar = s.status === 'pendente';
-    return `<div style="border:1px solid var(--border);border-left:4px solid ${st.cor};border-radius:12px;padding:14px;margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;flex-wrap:wrap">
-        <div>
-          <span style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);font-weight:700">${s.id}</span>
-          <span style="background:${st.cor}22;color:${st.cor};border:1px solid ${st.cor}55;border-radius:6px;padding:1px 8px;font-size:11px;font-weight:700;margin-left:8px">${st.emoji} ${st.texto}</span>
-        </div>
-        <div style="font-size:10px;color:var(--muted)">${new Date(s.criadoEm||Date.now()).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
-      </div>
-      <div style="font-weight:700;font-size:15px;margin-bottom:2px">${s.tipoLabel||s.tipo||'—'}</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:6px">${dataFmt}${s.horario?' · '+s.horario:''}${s.roteiro?' · '+s.roteiro:''}</div>
-      ${s.funcionarios&&s.funcionarios.length?`<div style="font-size:12px;color:var(--muted);margin-bottom:4px">${s.funcionarios.join(', ')}</div>`:''}
-      ${s.motorista?`<div style="font-size:12px;color:var(--green);margin-top:4px">Motorista: <strong>${s.motorista}</strong></div>`:''}
-      ${s.obs?`<div style="font-size:12px;color:var(--muted);margin-top:4px">${s.obs}</div>`:''}
-      ${podeCancelar?`<button onclick="cliCancelarSolicitacao('${s.id}')" style="margin-top:10px;padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer">Cancelar</button>`:''}
-    </div>`;
-  }).join('');
-}
-
-async function cliCancelarSolicitacao(id) {
-  if (!confirm('Cancelar esta solicitação?')) return;
-  try {
-    if (!fbDb) await initFirebase();
-    const { getDoc, setDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    const ref = doc(fbDb, CLIENTE_ID, 'solicitacoes_extras');
-    const snap = await getDoc(ref);
-    const lista = (snap.exists() && snap.data().lista) ? snap.data().lista : [];
-    const sol = lista.find(s => s.id === id);
-    if (sol) { sol.status = 'cancelada'; sol.canceledAt = new Date().toISOString(); }
-    await setDoc(ref, { lista, updatedAt: new Date().toISOString() });
-  } catch(e) { alert('Erro: ' + e.message); }
-}
 // ============================================================
 
 // ---- INIT ----
