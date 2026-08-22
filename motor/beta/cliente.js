@@ -1971,6 +1971,8 @@ async function esqueciSenhaCliente() {
       const overlay = document.getElementById('loginOverlay');
       // Ja entrou (sessao anterior ou senha unica lembrada): nao mexe.
       if (!overlay || overlay.style.display === 'none') return;
+      // Sessao anonima NAO e login. Ver o cabecalho do patch.
+      if (user && user.isAnonymous) user = null;
       if (!user) {
         // Sem sessao: a porta de entrada e o PORTAL, nao o login deste app.
         // replace() para o botao "voltar" nao ficar pingando entre os dois.

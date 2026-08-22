@@ -5775,6 +5775,11 @@ async function iniciarComAutenticacao() {
   let jaIniciou = false;
   onAuthStateChanged(fbAuth, async (user) => {
     const overlay = document.getElementById('loginOverlay');
+    // Sessao anonima NAO e login. Ela existe so para o Firestore aceitar a
+    // requisicao; o token dela nao passa em nenhuma regra que exija gestor.
+    // Tratar o anonimo como logado abria o sistema inteiro com um token que
+    // nao escreve nada — e sem nada na tela dizendo isso.
+    if (user && user.isAnonymous) user = null;
     if (user) {
       // Conta criada para a empresa cliente NAO abre o painel do gestor.
       if (await ehAcessoDeCliente(user.email)) {
