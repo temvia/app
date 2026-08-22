@@ -1985,9 +1985,10 @@ async function fbAppMotorista() {
     'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
   _fbAppMot = getApps().find(a => a.name === FB_APP_NOME_MOT)
            || initializeApp(FB_CONFIG, FB_APP_NOME_MOT);
-  // App Check antes de qualquer acesso ao Firestore.
-  if (window.temviaComum) await window.temviaComum.ativarAppCheck(
-    _fbAppMot, window.temviaComum.chaveAppCheck());
+  // App Check e sessao, nesta ordem, antes de qualquer acesso ao Firestore.
+  // Sem sessao o Firestore recusa tudo — e no PIN a recusa vira
+  // "voce ja tem um PIN cadastrado", que e mentira.
+  if (window.temviaComum) await window.temviaComum.prepararFirebase(_fbAppMot);
   return _fbAppMot;
 }
 

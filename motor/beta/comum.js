@@ -198,6 +198,64 @@
     }
   }
 
+  // ==========================================================================
+  // SESSAO ANONIMA
+  //
+  // Por que existe: as regras do Firestore passaram a exigir request.auth !=
+  // null. A sessao anonima e o que satisfaz isso nos apps que nao tem login
+  // proprio (motorista e passageiro). Sem ela, o Firestore recusa tudo — e no
+  // caso do PIN o app interpreta a recusa como "ja existe um PIN cadastrado",
+  // que e uma mentira dificil de diagnosticar.
+  //
+  // O QUE ELA NAO E: nao e autorizacao. Qualquer pessoa da internet obtem uma
+  // em dois segundos. Quem barra o acesso indevido nesta fase e o App Check,
+  // que exige que a requisicao venha de um dominio registrado. Autorizacao por
+  // usuario e a Fase 2.
+  //
+  // CUIDADO QUE NAO PODE SE PERDER: no gestor e no cliente ja existe sessao de
+  // verdade. Entrar como anonimo por cima DERRUBA o login. Por isso so
+  // acontece quando nao ha usuario nenhum.
+  // ==========================================================================
+
+  var _anonFeito = {};
+
+  async function garantirSessao(app) {
+    if (!app) return false;
+    var nome = app.name || '[DEFAULT]';
+    if (_anonFeito[nome]) return true;
+
+    try {
+      var authLib = await import(
+        'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+      var auth = authLib.getAuth(app);
+
+      // Espera o Firebase decidir se ja ha sessao guardada. Sem isso, um gestor
+      // com login valido poderia levar um signInAnonymously por cima.
+      await new Promise(function (resolve) {
+        var pronto = authLib.onAuthStateChanged(auth, function () {
+          pronto();
+          resolve();
+        });
+      });
+
+      if (!auth.currentUser) await authLib.signInAnonymously(auth);
+      _anonFeito[nome] = true;
+      return true;
+    } catch (e) {
+      _anonFeito[nome] = true;
+      console.warn('[temvia] Sessao anonima nao obtida em "' + nome + '": ' + e.message +
+                   ' — o Firestore vai recusar leitura e escrita.');
+      return false;
+    }
+  }
+
+  /** Ativa o App Check e garante sessao, na ordem certa, de uma vez. */
+  async function prepararFirebase(app) {
+    var ok = await ativarAppCheck(app, chaveAppCheck());
+    await garantirSessao(app);
+    return ok;
+  }
+
   /** A chave vem da casca, como toda infraestrutura da plataforma. */
   function chaveAppCheck() {
     try {
@@ -208,6 +266,8 @@
 
   raiz.temviaComum = {
     ativarAppCheck: ativarAppCheck,
+    garantirSessao: garantirSessao,
+    prepararFirebase: prepararFirebase,
     chaveAppCheck: chaveAppCheck,
     normalizarTelefone: normalizarTelefone,
     formatarTelefone: formatarTelefone,

@@ -1303,9 +1303,10 @@ async function initFirebase() {
     const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
-    // App Check antes de qualquer acesso ao Firestore.
-    if (window.temviaComum) await window.temviaComum.ativarAppCheck(
-      app, window.temviaComum.chaveAppCheck());
+    // App Check e sessao, nesta ordem, antes de qualquer acesso ao Firestore.
+    // Sem sessao o Firestore recusa tudo — e no PIN a recusa vira
+    // "voce ja tem um PIN cadastrado", que e mentira.
+    if (window.temviaComum) await window.temviaComum.prepararFirebase(app);
     fbDb = getFirestore(app);
     fbDocRef = doc(fbDb, CLIENTE_ID, 'dados');
     console.log('Firebase conectado');
@@ -1745,9 +1746,10 @@ const autoEntradaDecidida = new Promise(r => { _resolverAuto = r; });
     const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
-    // App Check antes de qualquer acesso ao Firestore.
-    if (window.temviaComum) await window.temviaComum.ativarAppCheck(
-      app, window.temviaComum.chaveAppCheck());
+    // App Check e sessao, nesta ordem, antes de qualquer acesso ao Firestore.
+    // Sem sessao o Firestore recusa tudo — e no PIN a recusa vira
+    // "voce ja tem um PIN cadastrado", que e mentira.
+    if (window.temviaComum) await window.temviaComum.prepararFirebase(app);
     const db = getFirestore(app);
     const snap = await getDoc(doc(db, CLIENTE_ID, 'config'));
     const sc = snap.exists() ? (snap.data().senhaCliente || '') : '';
@@ -1783,9 +1785,10 @@ async function initAuthCli() {
   const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
   const { getAuth } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
   const app = getApps().find(a => a.name === FB_APP_NOME) || initializeApp(FB_CONFIG, FB_APP_NOME);
-  // App Check antes de qualquer acesso ao Firestore.
-  if (window.temviaComum) await window.temviaComum.ativarAppCheck(
-    app, window.temviaComum.chaveAppCheck());
+  // App Check e sessao, nesta ordem, antes de qualquer acesso ao Firestore.
+  // Sem sessao o Firestore recusa tudo — e no PIN a recusa vira
+  // "voce ja tem um PIN cadastrado", que e mentira.
+  if (window.temviaComum) await window.temviaComum.prepararFirebase(app);
   fbAuthCli = getAuth(app);
   return fbAuthCli;
 }
