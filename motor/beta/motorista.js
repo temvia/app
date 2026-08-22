@@ -1616,6 +1616,24 @@ async function commPinConferir(id, hash) {
 // Troca do provisorio pelo definitivo. So o dono consegue, porque precisa
 // PROVAR que conhece o hash atual: a regra confere `provaAnterior` contra o
 // hash gravado antes de aceitar o novo.
+// Tira o `prov` do pins_ativos. Sem isto o app continua achando que o acesso
+// e provisorio e pede o codigo do gestor para sempre.
+async function commMarcarDefinitivo(id) {
+  const db = await commGetDb();
+  const { doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  const ref = doc(db, CLIENTE_ID, 'pins_ativos');
+  const snap = await getDoc(ref);
+  const d = snap.exists() ? snap.data() : {};
+  const lista = d.lista || [];
+  const meta = d.meta || {};
+  const atual = meta[id] || { v: 1 };
+  // A versao NAO sobe: subir aqui invalidaria a marca de aparelho que este
+  // mesmo acesso acabou de conquistar.
+  meta[id] = { v: atual.v || 1, prov: false, exp: null };
+  if (lista.indexOf(id) === -1) lista.push(id);
+  await setDoc(ref, { lista, meta, updatedAt: new Date().toISOString() });
+}
+
 async function commPinTrocar(id, hashAtual, hashNovo) {
   const db = await commGetDb();
   const { doc, updateDoc, arrayUnion } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -1628,7 +1646,10 @@ async function commPinTrocar(id, hashAtual, hashNovo) {
     ultimoAcesso: new Date().toISOString(),
     aparelhos: arrayUnion(commAparelhoId())
   });
-  // Segunda escrita, sem mexer no hash: apaga a prova. Se falhar, o que fica
+  // As duas pontas precisam concordar, senao o app pede o provisorio de novo.
+  await commMarcarDefinitivo(id);
+
+  // Terceira escrita, sem mexer no hash: apaga a prova. Se falhar, o que fica
   // guardado e o hash de um PIN provisorio ja morto.
   try {
     const { deleteField } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -1764,7 +1785,12 @@ async function commVerificarPin(nome) {
     catch (e) { alert('Nao foi possivel gravar o PIN neste navegador.'); return false; }
     try { await commPinTrocar(id, hash, hashNovo); }
     catch (e) {
-      await commPinAviso('Nao foi possivel gravar seu PIN. Tente de novo com conexao.');
+      // Permissao e conexao sao coisas diferentes. Dizer "tente com conexao"
+      // quando a regra recusou manda o motorista procurar sinal na rua.
+      const msg = String((e && (e.code || e.message)) || '');
+      await commPinAviso(/permission|insufficient/i.test(msg)
+        ? 'Seu acesso ainda nao esta liberado para trocar o PIN. Fale com o gestor da transportadora.'
+        : 'Nao foi possivel gravar seu PIN agora. Verifique sua conexao e tente de novo.');
       return false;
     }
   }
