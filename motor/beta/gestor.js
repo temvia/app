@@ -1890,11 +1890,11 @@ function renderMotoristaList() {
         '<div class="motorista-avatar"></div>' +
         '<div style="flex:1">' +
           '<div class="motorista-nome">' + m.nome + '</div>' +
-          '<div class="motorista-tel">' + (m.tel || '—') + (pinAtivo(m) ? ' · PIN definido' : ' · <span style=\"color:var(--muted)\">sem PIN</span>') + '</div>' +
+          '<div class="motorista-tel">' + (m.tel || '\u2014') + ' \u00b7 ' + estadoAcessoTexto(m) + '</div>' +
           (todasLinhas ? '<div class="motorista-linhas">' + todasLinhas + '</div>' : '') +
         '</div>' +
         '<div style="display:flex;gap:4px">' +
-          (pinAtivo(m) ? '<button class="action-btn" onclick="zerarPinMotorista(' + m.id + ')" title="Zerar PIN" style="color:var(--accent)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/><path d="m15.5 7.5 3 3"/></svg></button>' : '') +
+          botoesAcesso(m) +
           '<button class="action-btn" onclick="startMotoEdit(' + m.id + ')" title="Editar" style="color:var(--accent2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>' +
           '<button class="action-btn" onclick="removeMotorista(' + m.id + ')" title="Remover" style="color:var(--red)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
         '</div>';
@@ -8159,6 +8159,7 @@ async function resetarSenhaAcesso(i) {
 
 // ---- PIN dos motoristas (colecao {CLIENTE_ID}_pins, ilegivel; aqui so sabemos QUEM tem) ----
 let PINS_ATIVOS = [];
+let PINS_META = {};   // id -> { v, prov, exp }
 function pinIdDoMotorista(m) {
   const tel = (m && m.tel) ? String(m.tel).replace(/\D/g, '') : '';
   if (tel.length >= 8) return tel;
@@ -8167,15 +8168,207 @@ function pinIdDoMotorista(m) {
 }
 function pinAtivo(m) { return PINS_ATIVOS.indexOf(pinIdDoMotorista(m)) > -1; }
 
+function acessoMeta(m) { return (PINS_META || {})[pinIdDoMotorista(m)] || null; }
+
+function acessoExpirado(meta) {
+  if (!meta || !meta.prov || !meta.exp) return false;
+  const t = new Date(meta.exp).getTime();
+  return !isNaN(t) && Date.now() > t;
+}
+
+function temIdentidadeGestor(m) {
+  const tel = (m && m.tel) ? String(m.tel).replace(/\D/g, '') : '';
+  return tel.length >= 8 && !/^(\d)\1+$/.test(tel);
+}
+
+function estadoAcessoTexto(m) {
+  const cinza = s => '<span style="color:var(--muted)">' + s + '</span>';
+  if (!temIdentidadeGestor(m)) return cinza('sem telefone \u2014 n\u00e3o autentica');
+  const meta = acessoMeta(m);
+  if (!meta && !pinAtivo(m)) return cinza('sem acesso');
+  if (meta && meta.prov) {
+    if (acessoExpirado(meta)) return '<span style="color:var(--red)">provis\u00f3rio expirado</span>';
+    const faltam = Math.max(0, Math.round((new Date(meta.exp).getTime() - Date.now()) / 3600000));
+    return '<span style="color:var(--accent)">aguardando 1\u00ba acesso \u00b7 expira em ' + faltam + 'h</span>';
+  }
+  return '<span style="color:#10b981">acesso ativo</span>';
+}
+
+function botoesAcesso(m) {
+  const b = (fn, titulo, cor, svg) =>
+    '<button class="action-btn" onclick="' + fn + '(' + m.id + ')" title="' + titulo +
+    '" style="color:' + cor + '">' + svg + '</button>';
+  const CHAVE = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px">' +
+    '<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>';
+  const BLOQ = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px">' +
+    '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>';
+  if (!temIdentidadeGestor(m)) return '';
+  const meta = acessoMeta(m);
+  const ativo = pinAtivo(m) || !!meta;
+  let html = b('ativarAcessoMotorista', ativo ? 'Gerar novo PIN provis\u00f3rio' : 'Ativar acesso',
+               'var(--accent)', CHAVE);
+  if (ativo) html += b('revogarAcessoMotorista', 'Revogar acesso', 'var(--red)', BLOQ);
+  return html;
+}
+
 async function carregarPinsAtivos() {
   try {
     const { getDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const snap = await getDoc(doc(fbDb, CLIENTE_ID, 'pins_ativos'));
     PINS_ATIVOS = snap.exists() ? (snap.data().lista || []) : [];
+    PINS_META = snap.exists() ? (snap.data().meta || {}) : {};
   } catch (e) { PINS_ATIVOS = []; }
 }
 
 // Zerar = apagar o hash. O motorista cria um novo no proximo acesso.
+const PIN_DIGITOS_GESTOR = 6;
+const PIN_ITERACOES_GESTOR = 200000;
+const PIN_PROVISORIO_EXPIRA_HORAS = 72;
+
+// MESMO hash do app: PBKDF2-SHA256, 200k, sal temvia:CLIENTE_ID:id.
+// Se um dos dois mudar sem o outro, ninguem mais entra.
+async function pinHashGestor(id, pin) {
+  const enc = new TextEncoder();
+  const chave = await crypto.subtle.importKey('raw', enc.encode(String(pin)), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt: enc.encode('temvia:' + CLIENTE_ID + ':' + id),
+      iterations: PIN_ITERACOES_GESTOR, hash: 'SHA-256' }, chave, 256);
+  return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Sorteio criptografico, nao Math.random: um PIN previsivel nao e um segredo.
+function sortearPinProvisorio() {
+  const n = new Uint32Array(PIN_DIGITOS_GESTOR);
+  crypto.getRandomValues(n);
+  return Array.from(n).map(x => x % 10).join('');
+}
+
+// Le e regrava pins_ativos: lista (compatibilidade) + meta por id.
+async function pinsAtivosAtualizar(id, mudanca) {
+  const { doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  const ref = doc(fbDb, CLIENTE_ID, 'pins_ativos');
+  const snap = await getDoc(ref);
+  const d = snap.exists() ? snap.data() : {};
+  const lista = d.lista || [];
+  const meta = d.meta || {};
+  const atual = meta[id] || { v: 0, prov: false, exp: null };
+
+  if (mudanca === null) {
+    delete meta[id];
+    const i = lista.indexOf(id);
+    if (i > -1) lista.splice(i, 1);
+    // A versao some junto, mas fica registrada no evento de auditoria.
+  } else {
+    meta[id] = Object.assign({}, atual, mudanca, { v: (atual.v || 0) + 1 });
+    if (lista.indexOf(id) === -1) lista.push(id);
+  }
+  await setDoc(ref, { lista, meta, updatedAt: new Date().toISOString() });
+  PINS_ATIVOS = lista;
+  PINS_META = meta;
+  return mudanca === null ? (atual.v || 0) + 1 : meta[id].v;
+}
+
+// Trilha. NUNCA recebe o PIN, nem em texto nem em hash.
+async function auditarAcesso(acao, m, extra) {
+  try {
+    const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const id = 'ac_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    await setDoc(doc(fbDb, CLIENTE_ID + '_auditoria', id), Object.assign({
+      acao: acao,
+      alvo: 'motorista:' + pinIdDoMotorista(m),
+      alvoNome: m.nome,
+      quem: (fbAuth && fbAuth.currentUser && fbAuth.currentUser.email) || 'desconhecido',
+      papel: 'gestor',
+      clienteId: CLIENTE_ID,
+      quando: new Date().toISOString(),
+      origem: 'manual'
+    }, extra || {}));
+  } catch (e) { console.warn('[temvia] auditoria nao gravada:', e && e.message); }
+}
+
+// Mostra o codigo UMA vez. Nao ha como recuperar depois: so gerar outro.
+function mostrarPinProvisorio(nome, pin, expiraEm) {
+  const quando = new Date(expiraEm).toLocaleString('pt-BR', {
+    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const box = document.createElement('div');
+  box.style.cssText = 'position:fixed;inset:0;z-index:10000;display:flex;align-items:center;' +
+    'justify-content:center;background:rgba(0,0,0,.75);padding:24px';
+  box.innerHTML =
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;' +
+    'padding:26px;max-width:400px;text-align:center;font-family:Inter,system-ui,sans-serif">' +
+      '<div style="font-size:15px;font-weight:700;color:var(--text)">PIN provis\u00f3rio de ' + esc(nome) + '</div>' +
+      '<div style="font-size:12.5px;color:var(--muted);margin:8px 0 16px">' +
+        'Anote agora. Este c\u00f3digo <b>n\u00e3o ser\u00e1 mostrado de novo</b>.</div>' +
+      '<div style="font-size:34px;font-weight:800;letter-spacing:8px;color:var(--accent);' +
+        'font-variant-numeric:tabular-nums">' + pin + '</div>' +
+      '<div style="font-size:12px;color:var(--muted);margin:14px 0 18px">' +
+        'V\u00e1lido at\u00e9 ' + quando + '. No primeiro acesso, ' + esc(nome) +
+        ' vai definir o PIN dele.</div>' +
+      '<button id="pinProvOk" style="padding:10px 24px;border-radius:8px;border:0;' +
+        'background:var(--accent);color:#000;font-weight:700;cursor:pointer">Anotei</button>' +
+    '</div>';
+  document.body.appendChild(box);
+  box.querySelector('#pinProvOk').onclick = () => box.remove();
+}
+
+async function ativarAcessoMotorista(id) {
+  const m = MOTORISTAS.find(x => x.id === id);
+  if (!m) return;
+  const tel = (m.tel || '').replace(/\D/g, '');
+  if (tel.length < 8 || /^(\d)\1+$/.test(tel)) {
+    alert(m.nome + ' n\u00e3o tem telefone v\u00e1lido no cadastro.\n\n' +
+          'Sem telefone n\u00e3o h\u00e1 identidade, e o app n\u00e3o deixa entrar. ' +
+          'Complete o cadastro antes de ativar o acesso.');
+    return;
+  }
+  const meta = (PINS_META || {})[pinIdDoMotorista(m)];
+  if (meta && !confirm('Gerar um PIN provis\u00f3rio novo para ' + m.nome +
+      '?\n\nO c\u00f3digo anterior deixa de valer imediatamente.')) return;
+
+  try {
+    const pid = pinIdDoMotorista(m);
+    const pin = sortearPinProvisorio();
+    const hash = await pinHashGestor(pid, pin);
+    const expiraEm = new Date(Date.now() + PIN_PROVISORIO_EXPIRA_HORAS * 3600000).toISOString();
+
+    const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await setDoc(doc(fbDb, CLIENTE_ID + '_pins', pid), {
+      hash: hash, nome: m.nome, provisorio: true,
+      criadoEm: new Date().toISOString(), expiraEm: expiraEm,
+      criadoPor: (fbAuth && fbAuth.currentUser && fbAuth.currentUser.email) || '',
+      aparelhos: []
+    });
+    const v = await pinsAtivosAtualizar(pid, { prov: true, exp: expiraEm });
+    await auditarAcesso(meta ? 'pin_provisorio_regenerado' : 'pin_provisorio_criado', m,
+                        { versao: v, expiraEm: expiraEm });
+
+    mostrarPinProvisorio(m.nome, pin, expiraEm);
+    renderMotoristaList();
+  } catch (e) {
+    alert('N\u00e3o foi poss\u00edvel ativar: ' + (e && e.message ? e.message : e));
+  }
+}
+
+async function revogarAcessoMotorista(id) {
+  const m = MOTORISTAS.find(x => x.id === id);
+  if (!m) return;
+  if (!confirm('Revogar o acesso de ' + m.nome + '?\n\n' +
+               'Ele perde a entrada no app at\u00e9 voc\u00ea ativar de novo.')) return;
+  try {
+    const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const pid = pinIdDoMotorista(m);
+    await deleteDoc(doc(fbDb, CLIENTE_ID + '_pins', pid));
+    const v = await pinsAtivosAtualizar(pid, null);
+    await auditarAcesso('acesso_revogado', m, { versao: v });
+    alert('Acesso de ' + m.nome + ' revogado.');
+    renderMotoristaList();
+  } catch (e) {
+    alert('N\u00e3o foi poss\u00edvel revogar: ' + (e && e.message ? e.message : e));
+  }
+}
+
 async function zerarPinMotorista(id) {
   const m = MOTORISTAS.find(x => x.id === id);
   if (!m) return;
@@ -8184,12 +8377,10 @@ async function zerarPinMotorista(id) {
     const { doc, deleteDoc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const pid = pinIdDoMotorista(m);
     await deleteDoc(doc(fbDb, CLIENTE_ID + '_pins', pid));
-    const ref = doc(fbDb, CLIENTE_ID, 'pins_ativos');
-    const snap = await getDoc(ref);
-    const lista = (snap.exists() ? (snap.data().lista || []) : []).filter(x => x !== pid);
-    await setDoc(ref, { lista, updatedAt: new Date().toISOString() });
-    PINS_ATIVOS = lista;
-    alert('PIN de ' + m.nome + ' zerado. Avise para ele criar um novo ao abrir o app.');
+    const v = await pinsAtivosAtualizar(pid, null);
+    await auditarAcesso('pin_zerado', m, { versao: v });
+    alert('PIN de ' + m.nome + ' zerado.\n\nEle perde o acesso at\u00e9 voc\u00ea usar ' +
+          '"Ativar acesso" e passar o PIN provis\u00f3rio novo.');
     renderMotoristaList();
   } catch (e) {
     alert('Nao foi possivel zerar: ' + (e && e.message ? e.message : e));

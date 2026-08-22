@@ -880,7 +880,8 @@ function popularMotoristasHoje() {
   // Nomes de motoristas que têm rota hoje
   const comRota = [...new Set(ROTAS_HOJE.map(r => r.motorista))];
   const todos = MOTORISTAS.map(m => m.nome);
-  const ordenados = [...new Set([...comRota, ...todos])];
+  const comIdentidade = new Set(MOTORISTAS.filter(temIdentidade).map(m => m.nome));
+  const ordenados = [...new Set([...comRota, ...todos])].filter(n => comIdentidade.has(n));
   ordenados.forEach(nome => {
     const temRota = comRota.includes(nome);
     const opt = document.createElement('option');
@@ -1454,7 +1455,9 @@ function showLoading() {
 function populateMotoristas() {
   const sel = document.getElementById('selMotorista');
   sel.innerHTML = '<option value="">— Selecione o motorista —</option>';
-  MOTORISTAS.forEach(m => {
+  // So quem tem identidade aparece aqui. Sem telefone nao ha PIN possivel, e
+  // oferecer o nome so produz uma tentativa que sempre falha.
+  MOTORISTAS.filter(temIdentidade).forEach(m => {
     const opt = document.createElement('option');
     opt.value = m.nome;
     opt.textContent = m.nome;
@@ -1485,11 +1488,19 @@ function populateMotoristas() {
 // Quem erra o PIN nem consegue escrever, e ninguem consegue ler o hash.
 // ============================================================
 
-const PIN_DIGITOS = 4;
+const PIN_DIGITOS = 6;
 const PIN_ITERACOES = 200000;
 
 // Identificador do motorista na colecao de PINs: telefone quando existe,
 // senao o nome normalizado (Firestore nao aceita barra no id).
+// Identidade exige telefone. Sem ele nao ha id estavel, nao ha PIN e nao ha
+// conta na Fase 2. O motorista continua no cadastro operacional e continua
+// aparecendo na cobertura — so nao autentica.
+function temIdentidade(m) {
+  const tel = (m && m.tel) ? String(m.tel).replace(/\D/g, '') : '';
+  return tel.length >= 8 && !/^(\d)\1+$/.test(tel);
+}
+
 function commPinId(m, nome) {
   const tel = (m && m.tel) ? String(m.tel).replace(/\D/g, '') : '';
   if (tel.length >= 8) return tel;
@@ -1506,7 +1517,29 @@ function commAparelhoId() {
   } catch (e) { return 'ap_sem_storage'; }
 }
 
+// A marca do aparelho guarda a VERSAO do acesso, nao um "1" eterno. Quando o
+// gestor zera, revoga ou regenera, a versao sobe e a marca deixa de valer.
+//
+// LIMITE REAL: o gestor nao apaga localStorage de aparelho alheio. A marca
+// so e invalidada quando aquele aparelho conseguir consultar pins_ativos —
+// ou seja, quando tiver conexao. Sem rede, o aparelho ja reconhecido continua
+// entrando ate voltar a se conectar. Isso e consequencia do requisito de o
+// motorista funcionar offline, e esta documentado como limitacao.
 const commPinChaveLocal = id => 'temvia_pinok_' + CLIENTE_ID + '_' + id;
+
+function commAparelhoReconhecido(id, versaoAtual) {
+  try {
+    const v = localStorage.getItem(commPinChaveLocal(id));
+    if (!v) return false;
+    if (versaoAtual == null) return true;      // sem rede: vale o que ha
+    return String(v) === String(versaoAtual);
+  } catch (e) { return false; }
+}
+
+function commMarcarAparelho(id, versao) {
+  try { localStorage.setItem(commPinChaveLocal(id), String(versao == null ? 1 : versao)); }
+  catch (e) {}
+}
 
 // Hash lento: mesmo que alguem obtenha o valor, testar os 10 mil PINs sai caro.
 async function commPinHash(id, pin) {
@@ -1520,14 +1553,36 @@ async function commPinHash(id, pin) {
 
 // Lista publica de quem JA tem PIN. Serve so para a tela saber se pede ou cria;
 // nao guarda segredo nenhum e nao decide acesso.
-async function commPinJaTem(id) {
+// Estado do acesso, lido de pins_ativos. O documento com o hash tem
+// `allow read: if false` — ninguem le o hash, nem o proprio dono. Por isso o
+// que a tela precisa saber (existe? e provisorio? expirou? qual a versao?)
+// mora aqui, sem segredo nenhum.
+//
+// Devolve { existe, prov, exp, v } ou null quando nao deu para consultar —
+// nao confundir "nao sei" com "nao tem". Ver TRANSICAO_CHAT §4.
+async function commAcessoMeta(id) {
   try {
     const db = await commGetDb();
     const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const snap = await getDoc(doc(db, CLIENTE_ID, 'pins_ativos'));
-    const lista = snap.exists() ? (snap.data().lista || []) : [];
-    return lista.indexOf(id) > -1;
-  } catch (e) { return false; }
+    if (!snap.exists()) return { existe: false, prov: false, exp: null, v: 1 };
+    const d = snap.data();
+    const lista = d.lista || [];
+    const meta = (d.meta || {})[id] || null;
+    const existe = lista.indexOf(id) > -1 || !!meta;
+    return {
+      existe: existe,
+      prov: !!(meta && meta.prov),
+      exp: (meta && meta.exp) || null,
+      v: (meta && meta.v) || 1
+    };
+  } catch (e) { return null; }
+}
+
+function commProvisorioExpirado(meta) {
+  if (!meta || !meta.prov || !meta.exp) return false;
+  const t = new Date(meta.exp).getTime();
+  return !isNaN(t) && Date.now() > t;
 }
 
 async function commPinMarcarAtivo(id) {
@@ -1553,14 +1608,32 @@ async function commPinConferir(id, hash) {
   });
 }
 
-async function commPinCriar(id, nome, hash) {
+// commPinCriar foi REMOVIDA de proposito. Criar o primeiro acesso e acao
+// exclusiva do gestor ("Ativar acesso"), e a regra do Firestore recusa
+// `create` de quem nao for conta real. Enquanto isso existia aqui, qualquer
+// pessoa criava o PIN de um colega que ainda nao tinha — e ficava sabendo.
+
+// Troca do provisorio pelo definitivo. So o dono consegue, porque precisa
+// PROVAR que conhece o hash atual: a regra confere `provaAnterior` contra o
+// hash gravado antes de aceitar o novo.
+async function commPinTrocar(id, hashAtual, hashNovo) {
   const db = await commGetDb();
-  const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-  await setDoc(doc(db, CLIENTE_ID + '_pins', id), {
-    hash: hash, nome: nome || '', criadoEm: new Date().toISOString(),
-    ultimoAcesso: new Date().toISOString(), aparelhos: [commAparelhoId()]
+  const { doc, updateDoc, arrayUnion } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  const ref = doc(db, CLIENTE_ID + '_pins', id);
+  await updateDoc(ref, {
+    provaAnterior: hashAtual,
+    hash: hashNovo,
+    provisorio: false,
+    trocadoEm: new Date().toISOString(),
+    ultimoAcesso: new Date().toISOString(),
+    aparelhos: arrayUnion(commAparelhoId())
   });
-  await commPinMarcarAtivo(id);
+  // Segunda escrita, sem mexer no hash: apaga a prova. Se falhar, o que fica
+  // guardado e o hash de um PIN provisorio ja morto.
+  try {
+    const { deleteField } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await updateDoc(ref, { provaAnterior: deleteField() });
+  } catch (e) {}
 }
 
 // Teclado numerico proprio: prompt() abre teclado de letras no celular.
@@ -1620,15 +1693,47 @@ function commPinAviso(texto) {
 async function commVerificarPin(nome) {
   const m = MOTORISTAS.find(x => x.nome === nome);
   const id = commPinId(m, nome);
-  if (!id || id === 'nome_') return true;
 
-  // Aparelho ja reconhecido: entra direto (funciona ate sem sinal).
-  try { if (localStorage.getItem(commPinChaveLocal(id))) return true; } catch (e) {}
+  // Sem telefone valido nao ha identidade. Antes isto devolvia `true` e a
+  // pessoa entrava sem PIN nenhum — foi assim que "A DEFINIR" virou porta
+  // aberta para toda a operacao pela cobertura.
+  if (!id || id.indexOf('nome_') === 0) {
+    await commPinAviso('Este motorista nao tem telefone cadastrado, entao nao ' +
+      'tem acesso ao app. Peca ao gestor da transportadora para completar o cadastro.');
+    return false;
+  }
 
-  const jaTem = await commPinJaTem(id);
-  const pin = jaTem
-    ? await commPinTela('Ola, ' + nome, 'Digite seu PIN de ' + PIN_DIGITOS + ' digitos para continuar.', false)
-    : await commPinTela('Primeiro acesso', 'Crie um PIN de ' + PIN_DIGITOS + ' digitos. Ele e so seu \u2014 nem o gestor consegue ver. Se esquecer, peca para ele zerar.', true);
+  const meta = await commAcessoMeta(id);
+
+  // Nao deu para consultar: se o aparelho ja era reconhecido, entra (o app
+  // precisa funcionar sem sinal). Se nao era, nao inventa resposta.
+  if (meta === null) {
+    if (commAparelhoReconhecido(id, null)) return true;
+    await commPinAviso('Nao foi possivel verificar seu acesso agora. ' +
+      'Verifique sua conexao e tente novamente.');
+    return false;
+  }
+
+  if (!meta.existe) {
+    await commPinAviso('PIN ainda nao ativado. Solicite ao gestor da ' +
+      'transportadora a ativacao do seu acesso.');
+    return false;
+  }
+
+  if (commProvisorioExpirado(meta)) {
+    await commPinAviso('O acesso provisorio expirou. Peca ao gestor para gerar outro.');
+    return false;
+  }
+
+  // Provisorio NUNCA usa reconhecimento de aparelho: ele existe justamente
+  // para ser trocado por quem recebeu o codigo.
+  if (!meta.prov && commAparelhoReconhecido(id, meta.v)) return true;
+
+  const titulo = meta.prov ? 'Primeiro acesso' : 'Ola, ' + nome;
+  const sub = meta.prov
+    ? 'Digite o PIN provisorio de ' + PIN_DIGITOS + ' digitos que o gestor lhe passou.'
+    : 'Digite seu PIN de ' + PIN_DIGITOS + ' digitos para continuar.';
+  const pin = await commPinTela(titulo, sub, false);
   if (pin === null) return false;
 
   let hash;
@@ -1636,25 +1741,36 @@ async function commVerificarPin(nome) {
   catch (e) { alert('Nao foi possivel validar o PIN neste navegador. Fale com o gestor.'); return false; }
 
   try {
-    if (jaTem) await commPinConferir(id, hash);
-    else await commPinCriar(id, nome, hash);
-    try { localStorage.setItem(commPinChaveLocal(id), '1'); } catch (e) {}
-    return true;
+    await commPinConferir(id, hash);
   } catch (e) {
-    if (!jaTem) {
-      // O marcador dizia que nao havia PIN, mas ha: tenta conferir como se fosse entrada normal.
-      try {
-        await commPinConferir(id, hash);
-        await commPinMarcarAtivo(id);
-        try { localStorage.setItem(commPinChaveLocal(id), '1'); } catch (e2) {}
-        return true;
-      } catch (e2) {}
-      await commPinAviso('Voce ja tem um PIN cadastrado e este nao confere. Tente de novo ou peca ao gestor para zerar.');
-      return false;
-    }
-    await commPinAviso('PIN incorreto. Se esqueceu, peca ao gestor para zerar o seu.');
+    await commPinAviso(meta.prov
+      ? 'PIN provisorio incorreto. Confira com o gestor.'
+      : 'PIN incorreto. Se esqueceu, peca ao gestor para zerar o seu.');
     return false;
   }
+
+  // Acertou. Se era provisorio, so entra depois de definir o definitivo.
+  if (meta.prov) {
+    const novo = await commPinTela('Crie o seu PIN',
+      'O provisorio deixa de valer agora. Escolha um PIN de ' + PIN_DIGITOS +
+      ' digitos que so voce saiba.', true);
+    if (novo === null) return false;
+    if (novo === pin) {
+      await commPinAviso('O PIN novo precisa ser diferente do provisorio.');
+      return false;
+    }
+    let hashNovo;
+    try { hashNovo = await commPinHash(id, novo); }
+    catch (e) { alert('Nao foi possivel gravar o PIN neste navegador.'); return false; }
+    try { await commPinTrocar(id, hash, hashNovo); }
+    catch (e) {
+      await commPinAviso('Nao foi possivel gravar seu PIN. Tente de novo com conexao.');
+      return false;
+    }
+  }
+
+  commMarcarAparelho(id, meta.v);
+  return true;
 }
 
 async function loadLinhas(restoreLinhaId) {
