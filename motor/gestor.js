@@ -3765,8 +3765,8 @@ function impAbrir() {
 
 function impBaixarModelo() {
   // Gera uma planilha-modelo .xlsx com cabeçalho e uma linha de exemplo
-  const cab = ['NOME COMPLETO','LINHA','TURNO','HORÁRIO EMBARQUE','LOCAL EMBARQUE','ENDEREÇO RESIDENCIAL','BAIRRO','CIDADE','TELEFONE','COORDENADAS','TIPO DE VEÍCULO','MOTORISTA'];
-  const exemplo = ['João da Silva','1','ADM','05:45','Av. Exemplo, 100 (Ponto de ônibus)','Rua de Casa, 50','Centro','Sorocaba','15 99999-0000','-23.50, -47.45','VAN',''];
+  const cab = ['NOME COMPLETO','MATRÍCULA','LINHA','TURNO','HORÁRIO EMBARQUE','LOCAL EMBARQUE','ENDEREÇO RESIDENCIAL','BAIRRO','CIDADE','TELEFONE','COORDENADAS','TIPO DE VEÍCULO','MOTORISTA'];
+  const exemplo = ['João da Silva','01234','1','ADM','05:45','Av. Exemplo, 100 (Ponto de ônibus)','Rua de Casa, 50','Centro','Sorocaba','15 99999-0000','-23.50, -47.45','VAN',''];
   const ws = XLSX.utils.aoa_to_sheet([cab, exemplo]);
   ws['!cols'] = cab.map(() => ({ wch: 22 }));
   const wb = XLSX.utils.book_new();
@@ -3827,6 +3827,66 @@ function impLerArquivo(ev) {
   reader.readAsArrayBuffer(file);
 }
 
+// Telefone canonico via motor/comum.js — fonte unica. Se o comum.js nao tiver
+// carregado, devolve o que veio: melhor guardar o original do que inventar.
+function impTelCanonico(bruto) {
+  try {
+    const r = window.temviaComum.normalizarTelefone(bruto, { obrigatorio: false });
+    return r.ok && r.valor ? r.valor : bruto;
+  } catch (e) { return bruto; }
+}
+
+// Confere identidade do lote inteiro. Devolve { erros, avisos }.
+// ERRO impede importar. AVISO importa, mas a pessoa fica sem login.
+function impValidarIdentidade(passageiros) {
+  const erros = [], avisos = [];
+  if (!window.temviaComum) {
+    erros.push('O modulo comum.js nao carregou — nao consigo validar telefone. ' +
+               'Recarregue a pagina antes de importar.');
+    return { erros, avisos };
+  }
+
+  const porTelefone = {}, porMatricula = {};
+
+  passageiros.forEach((p, i) => {
+    const onde = 'linha ' + (i + 1) + ' (' + p.nome + ')';
+
+    const t = window.temviaComum.normalizarTelefone(p.telefone, { obrigatorio: false });
+    if (!t.ok) {
+      erros.push(onde + ': telefone "' + p.telefone + '" — ' + t.motivo);
+    } else if (!t.valor) {
+      avisos.push(onde + ': sem telefone — entra no cadastro, mas nao tera acesso ao app.');
+    } else {
+      (porTelefone[t.valor] = porTelefone[t.valor] || []).push(p.nome);
+    }
+
+    if (!p.matricula) {
+      avisos.push(onde + ': sem matricula — precisara dela para ativar o acesso.');
+    } else {
+      (porMatricula[p.matricula] = porMatricula[p.matricula] || []).push(p.nome);
+    }
+  });
+
+  // Telefone repetido = duas pessoas disputando a MESMA identidade. Bloqueia.
+  Object.keys(porTelefone).forEach(t => {
+    if (porTelefone[t].length > 1) {
+      erros.push('Telefone ' + window.temviaComum.formatarTelefone(t) +
+                 ' aparece em ' + porTelefone[t].length + ' pessoas: ' +
+                 porTelefone[t].join(', ') + '. Cada pessoa precisa do proprio numero.');
+    }
+  });
+
+  // Matricula repetida = quase sempre erro de planilha, mas nao impede login,
+  // porque a chave e o telefone. Ver o cabecalho do patch.
+  Object.keys(porMatricula).forEach(m => {
+    if (porMatricula[m].length > 1) {
+      avisos.push('Matricula ' + m + ' repetida em: ' + porMatricula[m].join(', ') + '.');
+    }
+  });
+
+  return { erros, avisos };
+}
+
 function impProcessar(linhas) {
   // Acha a linha de cabeçalho (a que tem "NOME")
   let hIdx = -1;
@@ -3838,6 +3898,7 @@ function impProcessar(linhas) {
   const headers = linhas[hIdx];
   const col = {
     nome: impAcharColuna(headers, 'NOME COMPLETO'),
+    matricula: impAcharColuna(headers, 'MATRICULA'),
     linha: impAcharColuna(headers, 'LINHA'),
     turno: impAcharColuna(headers, 'TURNO'),
     horario: impAcharColuna(headers, 'HORARIO EMBARQUE'),
@@ -3881,7 +3942,10 @@ function impProcessar(linhas) {
       endereco: String(col.endereco >= 0 ? r[col.endereco] : '').trim(),
       bairro: String(col.bairro >= 0 ? r[col.bairro] : '').trim(),
       cidade: String(col.cidade >= 0 ? r[col.cidade] : '').trim() || 'Sorocaba',
-      telefone: String(col.telefone >= 0 ? r[col.telefone] : '').trim(),
+      // Canonico quando valido; o que veio da planilha quando nao. A tela de
+      // conferencia mostra os invalidos antes de deixar importar.
+      telefone: impTelCanonico(String(col.telefone >= 0 ? r[col.telefone] : '').trim()),
+      matricula: String(col.matricula >= 0 ? r[col.matricula] : '').trim(),
       veiculo: String(col.veiculo >= 0 ? r[col.veiculo] : '').trim() || 'Van',
       motorista: String(col.motorista >= 0 ? r[col.motorista] : '').trim(),
       lat, lng,
@@ -3899,23 +3963,26 @@ function impProcessar(linhas) {
     rotasMap[key].push(p);
   });
 
-  IMP_DADOS = { passageiros, rotasMap, avisos };
+  const val = impValidarIdentidade(passageiros);
+  IMP_DADOS = { passageiros, rotasMap, avisos: avisos.concat(val.avisos), erros: val.erros };
   impMostrarPrevia();
 }
 
 function impMostrarPrevia() {
   const { passageiros, rotasMap, avisos } = IMP_DADOS;
+  const erros = IMP_DADOS.erros || [];
   const nRotas = Object.keys(rotasMap).length;
   document.getElementById('impResumo').innerHTML =
     '<b>' + passageiros.length + '</b> passageiros em <b>' + nRotas + '</b> linha(s)/turno(s): ' +
     Object.keys(rotasMap).map(k => k + ' (' + rotasMap[k].length + ')').join(', ');
 
   let html = '<thead><tr style="position:sticky;top:0;background:var(--surface2)">' +
-    ['Nome','Linha','Turno','Horário','Bairro','Telefone','Coords'].map(h => '<th style="padding:7px 9px;text-align:left;border-bottom:1px solid var(--border)">'+h+'</th>').join('') +
+    ['Nome','Matrícula','Linha','Turno','Horário','Bairro','Telefone','Coords'].map(h => '<th style="padding:7px 9px;text-align:left;border-bottom:1px solid var(--border)">'+h+'</th>').join('') +
     '</tr></thead><tbody>';
   passageiros.forEach(p => {
     html += '<tr>' +
       '<td style="padding:6px 9px;border-bottom:1px solid var(--border)">'+esc(p.nome)+'</td>' +
+      '<td style="padding:6px 9px;border-bottom:1px solid var(--border)">'+esc(p.matricula||'\u2014')+'</td>' +
       '<td style="padding:6px 9px;border-bottom:1px solid var(--border)">'+esc(p.linha)+'</td>' +
       '<td style="padding:6px 9px;border-bottom:1px solid var(--border)">'+esc(p.turno)+'</td>' +
       '<td style="padding:6px 9px;border-bottom:1px solid var(--border)">'+esc(p.horario)+'</td>' +
@@ -3928,6 +3995,26 @@ function impMostrarPrevia() {
   document.getElementById('impPreviaTabela').innerHTML = html;
   document.getElementById('impAvisos').innerHTML = avisos.length ? ('' + avisos.length + ' aviso(s):<br>' + avisos.slice(0,8).join('<br>') + (avisos.length>8?'<br>...':'')) : '';
 
+  // Erro de identidade impede importar. Nao e aviso: telefone repetido faz
+  // duas pessoas disputarem o mesmo login, e a segunda apaga a primeira.
+  const cxErro = document.getElementById('impAvisos');
+  if (erros.length && cxErro) {
+    cxErro.innerHTML =
+      '<div style="border:1px solid var(--red);border-radius:8px;padding:10px 12px;margin-bottom:8px">' +
+      '<b style="color:var(--red)">' + erros.length + ' problema(s) impedem a importa\u00e7\u00e3o</b>' +
+      '<div style="font-size:11.5px;margin-top:6px;line-height:1.6">' +
+      erros.slice(0, 12).map(esc).join('<br>') +
+      (erros.length > 12 ? '<br>\u2026 e mais ' + (erros.length - 12) : '') +
+      '</div><div style="font-size:11.5px;margin-top:8px;color:var(--muted)">' +
+      'Corrija a planilha e importe de novo.</div></div>' + cxErro.innerHTML;
+  }
+  const btn = document.getElementById('impBtnConfirmar');
+  if (btn) {
+    btn.disabled = erros.length > 0;
+    btn.style.opacity = erros.length ? '.5' : '';
+    btn.style.cursor = erros.length ? 'not-allowed' : 'pointer';
+  }
+
   document.getElementById('impPasso1').style.display = 'none';
   document.getElementById('impPasso2').style.display = 'block';
 }
@@ -3938,6 +4025,11 @@ function impVoltar() {
 }
 
 function impConfirmar() {
+  if ((IMP_DADOS.erros || []).length) {
+    alert('A planilha tem ' + IMP_DADOS.erros.length + ' problema(s) de identidade.\n\n' +
+          'Corrija e importe de novo.');
+    return;
+  }
   if (!IMP_DADOS) return;
   const modo = document.querySelector('input[name="impModo"]:checked').value;
   const { rotasMap } = IMP_DADOS;

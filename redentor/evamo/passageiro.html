@@ -55,6 +55,23 @@ window.CLIENTE_CONFIG = {
   }
 };
 </script>
+<!-- ===================================================================
+     App do passageiro fechado em producao ate a autoativacao existir.
+     O engine e a casca de teste continuam intactos; so a porta esta fechada.
+     Para reabrir: apagar este bloco e a linha do style abaixo.
+     =================================================================== -->
+<div id="tvIndisponivel" style="position:fixed;inset:0;z-index:99999;display:flex;
+  align-items:center;justify-content:center;flex-direction:column;gap:14px;
+  background:#0d1117;color:#e6edf3;font-family:Inter,system-ui,sans-serif;
+  text-align:center;padding:32px">
+  <div style="font-size:17px;font-weight:700">App do passageiro indispon&iacute;vel</div>
+  <div style="font-size:13.5px;color:#8b949e;max-width:340px;line-height:1.6">
+    O acesso do passageiro est&aacute; sendo preparado.
+    Fale com o gestor da sua empresa para saber sobre a sua rota.
+  </div>
+</div>
+<style>body > *:not(#tvIndisponivel) { display: none !important; }</style>
+
 <script src="/motor/comum.js"></script>
 <script type="module" src="/motor/passageiro.js"></script>
 </body>
