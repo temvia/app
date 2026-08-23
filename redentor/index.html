@@ -73,7 +73,9 @@
         { id: 'evamo', nome: 'Evamo', desc: 'Transporte de funcionarios · Sorocaba', cor: '#3b82f6', inicial: 'E',
           path: '/redentor/evamo/', clienteId: 'evamo', passKey: 'evamo_pass_tel', senhaClienteFallback: 'evamo@26',
           fb: { apiKey: 'AIzaSyBN1VE2mS5nn5LxfxWMqJyHSe1aDtwYiCE', authDomain: 'evamo-transporte.firebaseapp.com', projectId: 'evamo-transporte' } },
-        { id: 'evamo_teste', nome: 'Evamo · TESTE', desc: 'Ambiente de teste — não afeta a operação', cor: '#E0A94A', inicial: 'E',
+        // oculta: true -> nao aparece no portal e nao entra na busca de login.
+        // O ambiente de teste se acessa pela URL direta, nunca por engano.
+        { id: 'evamo_teste', nome: 'Evamo · TESTE', desc: 'Ambiente de teste — não afeta a operação', cor: '#E0A94A', inicial: 'E', oculta: true,
           path: '/redentor/evamo-teste/', clienteId: 'evamo_teste', passKey: 'evamo_teste_pass_tel', senhaClienteFallback: 'evamo@26',
           fb: { apiKey: 'AIzaSyBN1VE2mS5nn5LxfxWMqJyHSe1aDtwYiCE', authDomain: 'evamo-transporte.firebaseapp.com', projectId: 'evamo-transporte' } }
       ]
@@ -102,7 +104,9 @@
   const K_PERFIL='temvia_ultimo_perfil', K_OPER='temvia_ultima_operacao';
   const get=k=>{try{return localStorage.getItem(k)||''}catch(e){return ''}};
   const set=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
-  const opers=()=>{const o=[];TRANSPORTADORAS.forEach(t=>t.operacoes.forEach(op=>o.push({...op,transp:t.nome,transpId:t.id,key:t.id+':'+op.id})));return o;};
+  // Operacoes ocultas ficam de fora de TUDO: cartoes, busca de login e
+  // "continuar de onde parou".
+  const opers=()=>{const o=[];TRANSPORTADORAS.forEach(t=>t.operacoes.filter(op=>!op.oculta).forEach(op=>o.push({...op,transp:t.nome,transpId:t.id,key:t.id+':'+op.id})));return o;};
   const soDigitos=t=>(t||'').replace(/\D/g,'');
   // Comparacao de telefone IGUAL a usada pelos apps (motorista/passageiro):
   // exige numero com pelo menos 8 digitos e compara os 8 ultimos.
