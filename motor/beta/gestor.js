@@ -1564,6 +1564,7 @@ function openAddModal(rotaId) {
   document.getElementById('retornoGroup').style.display = 'none';
   document.getElementById('fCoords').value = '';
   document.getElementById('fCoordsStatus').style.display = 'none';
+  paxLimparCamposNovos();
   updateLinhaOptions(rotaId);
   document.getElementById('btnExcluirPass').style.display = 'none';
   document.getElementById('modalOverlay').classList.add('open');
@@ -1587,6 +1588,7 @@ function openAddNovoModal() {
   document.getElementById('retornoGroup').style.display = 'none';
   document.getElementById('fCoords').value = '';
   document.getElementById('fCoordsStatus').style.display = 'none';
+  paxLimparCamposNovos();
   updateLinhaOptions(null);
   document.getElementById('btnExcluirPass').style.display = 'none';
   document.getElementById('modalOverlay').classList.add('open');
@@ -1638,6 +1640,7 @@ function openEditModal(rotaId, idx) {
     coordsStatus.style.color = 'var(--muted)';
     coordsStatus.textContent = 'Sem coordenadas — sistema usará geocodificação pelo endereço';
   }
+  paxPreencherCamposNovos(p);
   toggleRetorno();
   updateLinhaOptions(rotaId);
   document.getElementById('btnExcluirPass').style.display = 'inline-flex';
@@ -1685,6 +1688,8 @@ function savePassageiro() {
 
   // Parse coordinates from field
   let newLat = null, newLng = null;
+  const _novos = paxLerCamposNovos();
+  if (_novos.erro) { alert(_novos.erro); return; }
   const coordsRaw = document.getElementById('fCoords').value.trim();
   if (coordsRaw) {
     const parts = coordsRaw.split(',').map(s => parseFloat(s.trim()));
@@ -1709,6 +1714,11 @@ function savePassageiro() {
     horario: document.getElementById('fHorario').value || '--:--',
     lat: (newLat === undefined ? null : newLat),
     lng: (newLng === undefined ? null : newLng),
+    // as duas coordenadas sao independentes: a residencia nao e o embarque
+    latCasa: _novos.latCasa, lngCasa: _novos.lngCasa,
+    embarcaEmCasa: _novos.embarcaEmCasa,
+    embarcaEmCasaAte: _novos.embarcaEmCasaAte,
+    raioCaminhada: _novos.raioCaminhada,
     km: 0
   };
   // Se o turno for "A Definir", guarda essa marca no passageiro (fica sem rota)
@@ -2976,7 +2986,7 @@ function ocRestaurarPadroes() {
 // A coluna agrupa as seções que já existem: marca cada bloco com a seção a
 // que pertence e mostra uma de cada vez. Sem reescrever o conteúdo — só a
 // navegação, que é onde estava o problema.
-const CFG_SECOES = [["oper", "Operação", "Dados da empresa e horários dos turnos", ["DADOS DA EMPRESA", "Horários de chegada por turno"]], ["pontos", "Pontos", "Origem e destino das rotas", ["Pontos de origem e destino"]], ["frota", "Frota", "Veículos e capacidades", ["Frota"]], ["otim", "Otimização", "Regras do planejamento de rotas", ["Otimização de rotas"]], ["acesso", "Acesso", "Chave do Google Maps e logins", ["GOOGLE MAPS API KEY", "LOGINS DA EMPRESA CLIENTE"]], ["dados", "Dados", "Backup e restauração", []]];
+const CFG_SECOES = [["oper", "Operação", "Dados da empresa e horários dos turnos", ["DADOS DA EMPRESA", "Horários de chegada por turno"]], ["pontos", "Pontos", "Origem e destino das rotas", ["Pontos de origem e destino"]], ["frota", "Frota", "Veículos e capacidades", ["Frota"]], ["otim", "Otimização", "Regras do planejamento de rotas", ["Otimização de rotas"]], ["acesso", "Acesso", "Logins da empresa cliente", ["GOOGLE MAPS API KEY", "LOGINS DA EMPRESA CLIENTE"]], ["dados", "Dados", "Backup e restauração", []]];
 let CFG_ATUAL = 'oper';
 
 function cfgClassificar() {
@@ -3480,6 +3490,52 @@ function geoConferirEmbarques(lista, limiteMetros) {
 // Raio padrão de caminhada, em metros. Serve para desenhar até onde a pessoa
 // pode ir a pé, e assim definir ponto de embarque coletivo.
 const RAIO_PADRAO = 400;
+
+// Limpa, preenche e le os campos que acrescentei ao cadastro. Sem estes
+// tres, o valor digitado ficava so na tela e sumia ao salvar.
+function paxLimparCamposNovos() {
+  const v = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+  const c = (id, val) => { const el = document.getElementById(id); if (el) el.checked = val; };
+  v('fCoordsCasa', ''); v('fEmCasaAte', ''); v('fRaio', '');
+  c('fEmCasa', false);
+  const box = document.getElementById('fEmCasaBox'); if (box) box.style.display = 'none';
+  const cam = document.getElementById('fCaminhada'); if (cam) cam.textContent = '';
+}
+
+function paxPreencherCamposNovos(p) {
+  const v = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+  const c = (id, val) => { const el = document.getElementById(id); if (el) el.checked = val; };
+  v('fCoordsCasa', (p.latCasa && p.lngCasa) ? (p.latCasa + ', ' + p.lngCasa) : '');
+  c('fEmCasa', !!p.embarcaEmCasa);
+  v('fEmCasaAte', p.embarcaEmCasaAte || '');
+  // vazio e zero significam coisas diferentes: vazio usa o padrao
+  v('fRaio', (p.raioCaminhada === 0 || p.raioCaminhada) ? p.raioCaminhada : '');
+  paxToggleEmCasa();
+}
+
+function paxLerCamposNovos() {
+  const txt = id => String((document.getElementById(id) || {}).value || '').trim();
+  const out = { erro: '' };
+  const cc = txt('fCoordsCasa');
+  if (cc) {
+    const m = cc.replace(/[()]/g, '').split(/[,;]/).map(x => parseFloat(String(x).trim()));
+    if (m.length !== 2 || isNaN(m[0]) || isNaN(m[1])) {
+      out.erro = 'Coordenadas da residência inválidas.\n\nUse o formato "-23.514606, -47.516711".';
+      return out;
+    }
+    if (m[0] < -90 || m[0] > 90 || m[1] < -180 || m[1] > 180) {
+      out.erro = 'Coordenadas da residência fora do intervalo válido.';
+      return out;
+    }
+    out.latCasa = m[0]; out.lngCasa = m[1];
+  } else { out.latCasa = null; out.lngCasa = null; }
+
+  out.embarcaEmCasa = !!(document.getElementById('fEmCasa') || {}).checked;
+  out.embarcaEmCasaAte = txt('fEmCasaAte');
+  const r = txt('fRaio');
+  out.raioCaminhada = (r === '') ? null : (parseInt(r, 10) || 0);
+  return out;
+}
 
 function paxToggleEmCasa() {
   const on = (document.getElementById('fEmCasa') || {}).checked;
