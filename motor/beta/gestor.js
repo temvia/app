@@ -4450,12 +4450,13 @@ function motoLoadRota() {
     const isVertiv = String(rota.linha).startsWith('VERTIV');
     const dest = isVertiv ? vertAddr : empAddr;
     if (stops.length === 0) return 'https://www.google.com/maps/dir/?api=1&origin=' + garAddr + '&destination=' + dest + '&travelmode=driving';
-    const waypoints = stops.slice(0,8).map(p => p.lat && p.lng ? p.lat+','+p.lng : encodeURIComponent((p.embarque||p.endereco||'')+', '+(p.cidade||'Sorocaba')+' SP'));
+    const waypoints = stops.slice(0,8).map(p => { const c = paxCoordEmbarque(p); return c ? c.lat+','+c.lng : encodeURIComponent((p.embarque||p.endereco||'')+', '+(p.cidade||'Sorocaba')+' SP'); });
     return 'https://www.google.com/maps/dir/?api=1&origin=' + garAddr + '&destination=' + dest + '&waypoints=' + waypoints.join('%7C') + '&travelmode=driving';
   }
 
   function buildWazeUrlLocal(p) {
-    if (p && p.lat && p.lng) return 'https://waze.com/ul?ll=' + p.lat + ',' + p.lng + '&navigate=yes&zoom=17';
+    const cW = paxCoordEmbarque(p);
+      if (cW) return 'https://waze.com/ul?ll=' + cW.lat + ',' + cW.lng + '&navigate=yes&zoom=17';
     const q = encodeURIComponent(((p&&(p.embarque||p.endereco))||'') + ', ' + ((p&&p.cidade)||'Sorocaba') + ' SP');
     return 'https://waze.com/ul?q=' + q + '&navigate=yes';
   }
@@ -4488,7 +4489,8 @@ function motoLoadRota() {
   html += '<div class="moto-info-card"><div class="moto-info-title">Paradas</div>';
   sorted.forEach((p, i) => {
     const addr = p.embarque || p.endereco || '—';
-    const mapsStop = p.lat && p.lng ? 'https://www.google.com/maps/search/?api=1&query=' + p.lat + ',' + p.lng : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addr + ', ' + (p.cidade||'Sorocaba') + ' SP');
+    const cG = paxCoordEmbarque(p);
+      const mapsStop = cG ? 'https://www.google.com/maps/search/?api=1&query=' + cG.lat + ',' + cG.lng : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addr + ', ' + (p.cidade||'Sorocaba') + ' SP');
     const wazeStop = buildWazeUrlLocal(p);
     html += '<div class="moto-stop"><div class="moto-stop-num">' + (i+1) + '</div>';
     html += '<div style="flex:1"><div style="display:flex;gap:8px;align-items:center">';
@@ -5539,7 +5541,8 @@ async function optObterMatriz(pontos, aoProgredir, sentido) {
 function optLimparCacheMatriz() { Object.keys(OPT_MATRIZ_CACHE).forEach(k => delete OPT_MATRIZ_CACHE[k]); }
 
 async function getCoords(geocoder, p) {
-  if (p.lat && p.lng && Math.abs(p.lat) > 1 && Math.abs(p.lng) > 1) {
+  const _cm = paxCoordEmbarque(p);
+    if (_cm && Math.abs(_cm.lat) > 1 && Math.abs(_cm.lng) > 1) {
     return { lat: p.lat, lng: p.lng };
   }
   const addr = getPassengerAddress(p);
@@ -6639,7 +6642,7 @@ async function renderMapaGeral(rotaExtraIdx) {
 
   // Show sem-rota passengers as gray markers
   DATA.forEach(rota => {
-    rota.passageiros.filter(p => p.status === 'sem-rota' && p.lat && p.lng).forEach(p => {
+    rota.passageiros.filter(p => p.status === 'sem-rota' && paxCoordEmbarque(p)).forEach(p => {
       const pos = new google.maps.LatLng(p.lat, p.lng);
       bounds.extend(pos);
       hasPoints = true;
@@ -6677,7 +6680,7 @@ async function renderMapaGeral(rotaExtraIdx) {
       <span style="color:var(--muted)">${re.passageiros.length} pass.</span>
     </div>`;
 
-    re.passageiros.filter(p => p.lat && p.lng).forEach((p, i) => {
+    re.passageiros.filter(p => paxCoordEmbarque(p)).forEach((p, i) => {
       const pos = new google.maps.LatLng(p.lat, p.lng);
       bounds.extend(pos);
       hasPoints = true;
@@ -6702,8 +6705,8 @@ async function renderMapaGeral(rotaExtraIdx) {
     });
 
     // Traçar rota: Garagem → Passageiros → Empresa/Vertiv (se showRoutes ativo)
-    if (showRoutes && re.passageiros.filter(p => p.lat && p.lng).length > 0) {
-      const stops = re.passageiros.filter(p => p.lat && p.lng);
+    if (showRoutes && re.passageiros.filter(p => paxCoordEmbarque(p)).length > 0) {
+      const stops = re.passageiros.filter(p => paxCoordEmbarque(p));
       const waypoints = stops.slice(0, -1).map(p => ({
         location: new google.maps.LatLng(p.lat, p.lng),
         stopover: true
@@ -6735,7 +6738,7 @@ async function renderMapaGeral(rotaExtraIdx) {
     const rota = rotas[ri];
     const color = corLinha(rota);
     const passAtivos = rota.passageiros
-      .filter(p => p.status === 'ativo' && p.lat && p.lng)
+      .filter(p => p.status === 'ativo' && paxCoordEmbarque(p))
       .sort((a,b) => (a.horario||'99:99').localeCompare(b.horario||'99:99'));
 
     if (passAtivos.length === 0) continue;
@@ -7186,6 +7189,56 @@ function absFechar() {
   ABS_ESTADO = null;
 }
 
+// "Nao mexer em ninguem: 0 entram, 1 de fora" nao e um cenario — e um
+// nao-resultado apresentado como opcao escolhivel. O gestor clica e nada
+// acontece. Quando ninguem entra, a tela precisa dizer POR QUE, para cada
+// um, e oferecer o proximo passo.
+function absDiagnostico(novos, cenarios) {
+  const entrouAlguem = (cenarios || []).some(c => (c.entraram || []).length > 0);
+  if (entrouAlguem) return '';
+  const linhas = (novos || []).map(p => {
+    const semCoord = !paxCoordEmbarque(p);
+    const motivo = semCoord
+      ? 'sem coordenada — informe a residencia ou o ponto de embarque no cadastro'
+      : 'nenhuma linha comporta: ou esta cheia, ou o desvio passa do limite de ' +
+        OPT_CFG.maxRideMin + ' min por passageiro';
+    const btn = semCoord
+      ? '<button class="export-btn" onclick="absIrCadastro(' + JSON.stringify(p.nome) + ')">Abrir cadastro</button>'
+      : '<button class="export-btn" onclick="absIrSugerir(' + JSON.stringify(p.nome) + ')">Ver posicoes no mapa</button>';
+    return '<div class="abs-diag-l"><div><b>' + esc(p.nome) + '</b>' +
+           '<span>' + esc(motivo) + '</span></div>' + btn + '</div>';
+  }).join('');
+  return '<div class="abs-diag">' +
+    '<div class="abs-diag-tit">Ninguem coube nas linhas de hoje</div>' + linhas +
+    '<div class="abs-diag-pe">Criar linha nova resolve, mas e o caminho mais caro. ' +
+    'Confira antes se falta coordenada ou se da para mover o ponto de embarque.</div></div>';
+}
+
+function absAcharPax(nome) {
+  return (typeof SEM_ROTA !== 'undefined' && SEM_ROTA.find(x => x.nome === nome)) ||
+         DATA.reduce((a, r) => a || r.passageiros.find(x => x.nome === nome), null);
+}
+function absFecharPainel() {
+  const ov = document.getElementById('absOverlay');
+  if (ov) ov.remove();
+}
+function absIrCadastro(nome) {
+  absFecharPainel();
+  const p = absAcharPax(nome);
+  if (!p) return;
+  const i = (typeof SEM_ROTA !== 'undefined') ? SEM_ROTA.findIndex(x => x === p) : -1;
+  if (i >= 0 && typeof openEditModalSemRota === 'function') return openEditModalSemRota(i);
+  for (const r of DATA) {
+    const j = r.passageiros.findIndex(x => x === p);
+    if (j >= 0) return openEditModal(r.id, j);
+  }
+}
+function absIrSugerir(nome) {
+  absFecharPainel();
+  const p = absAcharPax(nome);
+  if (p && typeof sugerirDoCadastro === 'function') sugerirDoCadastro(p);
+}
+
 function absRenderCenarios() {
   const st = ABS_ESTADO;
   if (!st) return;
@@ -7193,6 +7246,7 @@ function absRenderCenarios() {
     'Cada opção respeita a capacidade dos veículos e o limite de ' + OPT_CFG.maxRideMin +
     ' min por passageiro. <b>Mover alguém tem custo fora do sistema</b>: você vai precisar avisar a pessoa.</div>';
 
+  h += absDiagnostico(st.novos, st.cenarios);
   h += '<div class="abs-cenarios">';
   st.cenarios.forEach((c, i) => {
     const sel = i === st.escolhido;
@@ -8388,7 +8442,7 @@ function renderSemRotaList() {
       <div style="flex:1">
         <div style="font-weight:600;font-size:14px">${p.nome}</div>
         <div style="font-size:12px;color:var(--muted)">${p.bairro||''} · ${p.cidade||''}</div>
-        <div style="font-size:11px;color:var(--muted)">${p.embarque||p.endereco||'—'} ${p.lat&&p.lng?'· coords':'· sem coords'}</div>
+        <div style="font-size:11px;color:var(--muted)">${p.embarque||p.endereco||'—'} ${paxCoordEmbarque(p)?'· coords':'· sem coords'}</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px">
         <button onclick="event.stopPropagation();sugerirLinhaSemRota('${source}','${rotaId||''}',${idx})" class="export-btn" style="padding:4px 10px;font-size:11px;color:var(--green);border-color:var(--green)">Sugerir</button>

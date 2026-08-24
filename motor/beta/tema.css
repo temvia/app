@@ -2164,3 +2164,16 @@ html[data-ambiente="teste"] .tv-shell { border: 2px solid rgba(255,176,0,.35); }
   padding-top: 5px; border-top: 1px solid var(--border); }
 .tv-sum-vazio { font-size: 11.5px; color: var(--muted); line-height: 1.55; }
 .tv-sum-vazio b { color: var(--accent); }
+
+/* diagnóstico quando ninguém coube */
+.abs-diag { border: 1px solid rgba(224,169,74,.45); background: rgba(224,169,74,.07);
+  border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+.abs-diag-tit { font-size: 13.5px; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+.abs-diag-l { display: flex; align-items: center; gap: 12px; justify-content: space-between;
+  padding: 9px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.abs-diag-l:first-of-type { border-top: none; }
+.abs-diag-l b { display: block; font-size: 13px; }
+.abs-diag-l span { display: block; font-size: 11.5px; color: var(--muted); line-height: 1.45; margin-top: 2px; }
+.abs-diag-l .export-btn { flex-shrink: 0; font-size: 11.5px; }
+.abs-diag-pe { font-size: 11.5px; color: var(--muted); line-height: 1.5;
+  margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--border); }
