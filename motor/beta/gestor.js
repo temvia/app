@@ -3840,6 +3840,251 @@ function paxCaminhada(p) {
 // o motorista encosta na porta dessa pessoa.
 function paxAgrupavel(p) { return !paxEmbarcaEmCasa(p); }
 
+// ==================================================================
+// VIAGEM E EVENTOS  —  o que realmente aconteceu na rota
+// ------------------------------------------------------------------
+// Ate aqui o sistema so sabia quem CONFIRMOU que ia. Nao sabia se
+// embarcou, a que horas, nem se desembarcou. Sem isso nao ha
+// pontualidade, nem acompanhamento para quem espera do outro lado.
+//
+// DUAS CAMADAS, de proposito:
+//   viagem  — uma corrida de uma linha, num sentido, num dia
+//   evento  — o que aconteceu, com previsto E real
+//
+// PREVISTO e REAL sao a fonte da verdade; ATRASO e derivado. Assim
+// mudar "ate 5 min e pontual" nao exige reinterpretar historico.
+//
+// IDA e VOLTA sao viagens SEPARADAS. Uma pode estar em curso e a
+// outra nao — e no escolar o aluno pode ter contraturno.
+//
+// VIAJANTE, nao "passageiro": hoje e funcionario, amanha e aluno com
+// responsavel vinculado. O motor nao muda; muda quem le os eventos.
+// ==================================================================
+
+const VG_SENTIDOS = ['ida', 'volta'];
+const VG_ESTADOS = ['programada', 'em_curso', 'encerrada'];
+
+// Eventos da VIAGEM (nao de uma pessoa)
+const VG_EV_VIAGEM = ['partida', 'chegada', 'desembarque_coletivo', 'fim'];
+// Eventos do VIAJANTE
+const VG_EV_PESSOA = ['embarque', 'desembarque', 'ausencia'];
+
+const VG_MOTIVOS_AUSENCIA = [
+  { id: 'nao_estava', rotulo: 'Não estava no ponto' },
+  { id: 'avisou', rotulo: 'Avisou que não iria' },
+  { id: 'outro_ponto', rotulo: 'Embarcou em outro ponto' },
+  { id: 'outro', rotulo: 'Outro motivo' }
+];
+
+function vgId() {
+  return 'vg' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+// Uma viagem nasce PROGRAMADA, a partir da linha e do dia. Chegada e
+// partida programadas vem do calendario do turno — nao de um horario fixo.
+function vgCriar(rota, dataIso, sentido) {
+  const t = (typeof turnoNoDia === 'function') ? turnoNoDia(rota.turno, dataIso) : null;
+  if (t && !t.opera) return null;             // linha nao roda nesse dia
+  const chegada = (t && t.chegada) || (TURNOS_CHEGADA || {})[rota.turno] || '';
+  const saida = (t && t.saida) || '';
+  const c = rota.calc || {};
+  return {
+    id: vgId(), rotaId: rota.id, linha: rota.linha, turno: rota.turno,
+    data: dataIso, sentido: sentido === 'volta' ? 'volta' : 'ida',
+    estado: 'programada',
+    motorista: rota.motorista || '', veiculo: rota.veiculo || '',
+    // programados
+    inicioProgramado: (sentido === 'volta') ? saida : (c.departure || ''),
+    chegadaProgramada: (sentido === 'volta') ? '' : chegada,
+    // reais: preenchidos pelo motorista
+    inicioReal: '', chegadaReal: '', fimReal: '',
+    eventos: []
+  };
+}
+
+function vgAgora() {
+  const d = new Date();
+  return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+
+// Registra um evento. 'previsto' vem do plano; 'real' do relogio.
+// O atraso NAO e gravado: e calculado quando alguem perguntar.
+function vgRegistrar(viagem, tipo, dados) {
+  if (!viagem) return null;
+  const ev = Object.assign({
+    tipo: tipo,
+    real: vgAgora(),
+    em: new Date().toISOString(),
+    por: (typeof MOTORISTA_ATUAL !== 'undefined' && MOTORISTA_ATUAL) || viagem.motorista || ''
+  }, dados || {});
+  viagem.eventos.push(ev);
+  return ev;
+}
+
+// Atraso em minutos: positivo = atrasado. Derivado, nunca guardado.
+function vgAtraso(previsto, real) {
+  const p = vgMin(previsto), r = vgMin(real);
+  if (p == null || r == null) return null;
+  let d = r - p;
+  // virada de meia-noite: 3o turno chega no dia seguinte
+  if (d > 720) d -= 1440;
+  if (d < -720) d += 1440;
+  return d;
+}
+function vgMin(hhmm) {
+  const m = String(hhmm || '').match(/^(\d{1,2}):(\d{2})/);
+  return m ? (+m[1] * 60 + +m[2]) : null;
+}
+
+// ---- ciclo da viagem ----
+function vgIniciar(viagem) {
+  if (!viagem || viagem.estado !== 'programada') return false;
+  viagem.estado = 'em_curso';
+  viagem.inicioReal = vgAgora();
+  vgRegistrar(viagem, 'partida', { previsto: viagem.inicioProgramado, real: viagem.inicioReal });
+  return true;
+}
+
+// Chegar a empresa e todos desembarcarem sao eventos DIFERENTES, mesmo
+// quando acontecem no mesmo minuto. A interface pode juntar num toque;
+// o registro nao pode perder a distincao.
+function vgChegar(viagem) {
+  if (!viagem || viagem.estado !== 'em_curso') return false;
+  viagem.chegadaReal = vgAgora();
+  vgRegistrar(viagem, 'chegada', { previsto: viagem.chegadaProgramada, real: viagem.chegadaReal });
+  return true;
+}
+
+function vgDesembarqueColetivo(viagem, viajantes) {
+  if (!viagem || viagem.estado !== 'em_curso') return 0;
+  const hora = vgAgora();
+  let n = 0;
+  (viajantes || []).forEach(v => {
+    if (vgEstadoDe(viagem, v.id || v.nome) !== 'embarcou') return;
+    vgRegistrar(viagem, 'desembarque', { viajante: v.id || v.nome, real: hora, coletivo: true });
+    n++;
+  });
+  vgRegistrar(viagem, 'desembarque_coletivo', { real: hora, quantidade: n });
+  return n;
+}
+
+function vgEncerrar(viagem) {
+  if (!viagem || viagem.estado !== 'em_curso') return false;
+  viagem.estado = 'encerrada';
+  viagem.fimReal = vgAgora();
+  vgRegistrar(viagem, 'fim', { real: viagem.fimReal });
+  return true;
+}
+
+// ---- eventos por viajante ----
+function vgEmbarcou(viagem, viajanteId, previsto, pos) {
+  if (!viagem || viagem.estado !== 'em_curso') return false;
+  vgRegistrar(viagem, 'embarque', Object.assign(
+    { viajante: viajanteId, previsto: previsto || '' }, pos || {}));
+  return true;
+}
+
+function vgAusente(viagem, viajanteId, motivo, previsto) {
+  if (!viagem || viagem.estado !== 'em_curso') return false;
+  vgRegistrar(viagem, 'ausencia', { viajante: viajanteId, motivo: motivo || 'outro',
+                                    previsto: previsto || '' });
+  return true;
+}
+
+function vgDesembarcou(viagem, viajanteId, previsto, pos) {
+  if (!viagem || viagem.estado !== 'em_curso') return false;
+  vgRegistrar(viagem, 'desembarque', Object.assign(
+    { viajante: viajanteId, previsto: previsto || '' }, pos || {}));
+  return true;
+}
+
+// Desfazer a ULTIMA acao daquele viajante. Errar acontece, e o registro
+// vai para quem espera do outro lado.
+function vgDesfazer(viagem, viajanteId) {
+  if (!viagem) return false;
+  for (let i = viagem.eventos.length - 1; i >= 0; i--) {
+    const e = viagem.eventos[i];
+    if (e.viajante === viajanteId && VG_EV_PESSOA.indexOf(e.tipo) >= 0) {
+      viagem.eventos.splice(i, 1);
+      return true;
+    }
+  }
+  return false;
+}
+
+// Estado atual de um viajante nesta viagem.
+function vgEstadoDe(viagem, viajanteId) {
+  if (!viagem) return 'pendente';
+  let st = 'pendente';
+  viagem.eventos.forEach(e => {
+    if (e.viajante !== viajanteId) return;
+    if (e.tipo === 'embarque') st = 'embarcou';
+    else if (e.tipo === 'ausencia') st = 'ausente';
+    else if (e.tipo === 'desembarque') st = 'desembarcou';
+  });
+  return st;
+}
+
+// Quem falta. Na ida, quem nao embarcou nem faltou; na volta, quem
+// embarcou e ainda nao desceu.
+function vgPendentes(viagem, ordem) {
+  if (!viagem) return [];
+  return (ordem || []).filter(v => {
+    const id = v.id || v.nome;
+    const st = vgEstadoDe(viagem, id);
+    return viagem.sentido === 'volta' ? (st !== 'desembarcou') : (st === 'pendente');
+  });
+}
+
+// O proximo da fila — o que o cartao principal mostra.
+function vgProximo(viagem, ordem) {
+  const p = vgPendentes(viagem, ordem);
+  return p.length ? p[0] : null;
+}
+
+// Quanto a viagem esta atrasada AGORA, para o aviso do topo.
+function vgAtrasoAtual(viagem) {
+  if (!viagem || !viagem.eventos.length) return null;
+  for (let i = viagem.eventos.length - 1; i >= 0; i--) {
+    const e = viagem.eventos[i];
+    if (e.previsto && e.real) {
+      const a = vgAtraso(e.previsto, e.real);
+      if (a != null) return a;
+    }
+  }
+  return null;
+}
+
+// Resumo da viagem, base dos relatorios de pontualidade.
+function vgResumo(viagem) {
+  if (!viagem) return null;
+  const cont = { embarcaram: 0, ausentes: 0, desembarcaram: 0 };
+  viagem.eventos.forEach(e => {
+    if (e.tipo === 'embarque') cont.embarcaram++;
+    else if (e.tipo === 'ausencia') cont.ausentes++;
+    else if (e.tipo === 'desembarque') cont.desembarcaram++;
+  });
+  return Object.assign(cont, {
+    sentido: viagem.sentido, estado: viagem.estado,
+    atrasoSaida: vgAtraso(viagem.inicioProgramado, viagem.inicioReal),
+    atrasoChegada: vgAtraso(viagem.chegadaProgramada, viagem.chegadaReal),
+    duracaoMin: (vgMin(viagem.fimReal) != null && vgMin(viagem.inicioReal) != null)
+      ? vgAtraso(viagem.inicioReal, viagem.fimReal) : null
+  });
+}
+
+// Qual viagem vem agora — o motorista NAO escolhe ida ou volta.
+function vgProximaViagem(viagens, agoraMin) {
+  const emCurso = (viagens || []).find(v => v.estado === 'em_curso');
+  if (emCurso) return emCurso;
+  const m = (agoraMin != null) ? agoraMin : vgMin(vgAgora());
+  const prog = (viagens || []).filter(v => v.estado === 'programada')
+    .map(v => ({ v: v, ini: vgMin(v.inicioProgramado) }))
+    .filter(x => x.ini != null)
+    .sort((a, b) => Math.abs(a.ini - m) - Math.abs(b.ini - m));
+  return prog.length ? prog[0].v : null;
+}
+
 // ---------------- Cadastro de pontos (Config) ----------------
 // Origem e destino deixam de ser duas variaveis presas no codigo. Enquanto os
 // seletores por rota nao chegam, a garagem e o destino do sistema continuam
