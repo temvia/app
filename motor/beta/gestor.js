@@ -985,7 +985,7 @@ function selectLine(id) {
           <button class="tv-btn tv-btn-primary" type="button" onclick="openOtimizar('${id}')">${icoOtim} Otimizar Rota</button>
           <button class="tv-btn" type="button" onclick="tvToggleMenu('tvMenuExport', event)">${icoBaixar} Exportar</button>
           <div class="tv-menu" id="tvMenuExport">
-            <button type="button" onclick="pdfPerguntarDia('${id}');tvToggleMenu('tvMenuExport',event)">${icoPdf} PDF desta linha</button>
+            <button type="button" onclick="exportPDF('${id}');tvToggleMenu('tvMenuExport',event)">${icoPdf} PDF desta linha</button>
             <button type="button" onclick="exportExcel();tvToggleMenu('tvMenuExport',event)">${icoExcel} Excel (todas as linhas)</button>
           </div>
         </div>
@@ -2462,7 +2462,7 @@ function otHmToMin(hhmm) {
 
 // Pergunta o dia antes de gerar. Sem isto o PDF sai sempre com o horario
 // do dia util, mesmo quando impresso para o sabado.
-function pdfPerguntarDia(rotaId) {
+function pdfPerguntarDia(rotaId, todas) {
   const hoje = hojeLocal();
   let ov = document.getElementById('pdfDiaOverlay');
   if (ov) ov.remove();
@@ -2480,21 +2480,23 @@ function pdfPerguntarDia(rotaId) {
         '<div id="pdfDiaPrevia" class="pdf-dia-previa"></div>' +
         '<div style="display:flex;gap:8px;margin-top:14px">' +
           '<button class="btn-cancel" style="flex:1" onclick="pdfFecharDia()">Cancelar</button>' +
-          '<button class="add-btn" style="flex:2" onclick="pdfConfirmarDia(' +
-            JSON.stringify(rotaId || '') + ')">Gerar PDF</button>' +
+          '<button class="add-btn" style="flex:2" onclick="pdfConfirmarDia(&#39;' +
+            escAttr(rotaId || '') + '&#39;, ' + (todas ? 'true' : 'false') +
+            ')">Gerar PDF' + (todas ? ' de todas as linhas' : '') + '</button>' +
         '</div>' +
       '</div></div>';
   document.body.appendChild(ov);
   const inp = document.getElementById('pdfDiaData');
-  inp.addEventListener('change', () => pdfPreviaDia(rotaId));
-  pdfPreviaDia(rotaId);
+  inp.addEventListener('change', () => pdfPreviaDia(todas ? null : rotaId, todas));
+  pdfPreviaDia(todas ? null : rotaId, todas);
 }
 
-function pdfPreviaDia(rotaId) {
+function pdfPreviaDia(rotaId, todas) {
   const el = document.getElementById('pdfDiaPrevia');
   const data = (document.getElementById('pdfDiaData') || {}).value;
   if (!el || !data) return;
-  const ids = rotaId ? [rotaId] : (activeId ? [activeId] : DATA.map(r => r.id));
+  const ids = todas ? DATA.map(r => r.id)
+    : (rotaId ? [rotaId] : (activeId ? [activeId] : DATA.map(r => r.id)));
   const linhas = ids.map(id => DATA.find(r => r.id === id)).filter(Boolean);
   const partes = linhas.map(r => {
     const t = (typeof turnoNoDia === 'function') ? turnoNoDia(r.turno, data) : { opera: true };
@@ -2513,9 +2515,10 @@ function pdfFecharDia() {
   const ov = document.getElementById('pdfDiaOverlay');
   if (ov) ov.remove();
 }
-function pdfConfirmarDia(rotaId) {
+function pdfConfirmarDia(rotaId, todas) {
   const data = (document.getElementById('pdfDiaData') || {}).value || hojeLocal();
   pdfFecharDia();
+  if (todas) return pdfGerarTodas(data);
   exportPDF(rotaId || null, data);
 }
 
@@ -2529,6 +2532,35 @@ function pdfDiaSemanaBr(iso) {
   const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (!m) return '';
   return nomes[new Date(+m[1], +m[2] - 1, +m[3]).getDay()];
+}
+
+// Dias que tem horario proprio neste turno, alem do dia util. Devolve
+// so o que DIFERE — coluna que repete o dia util nao informa nada.
+function pdfDiasVariantes(turno) {
+  if (typeof turnoPorNome !== 'function') return [];
+  const t = turnoPorNome(turno);
+  if (!t) return [];
+  const padrao = t.chegada || (TURNOS_CHEGADA || {})[turno] || '';
+  const out = [];
+  DIAS_SEMANA.forEach(d => {
+    const r = t.dias && t.dias[d];
+    if (!r || r === false) return;                    // nao opera: nao e coluna
+    const ch = r.chegada || '';
+    if (!ch || ch === padrao) return;                 // igual ao padrao: nao informa
+    out.push({ dia: d, nome: DIAS_NOME[d], chegada: ch,
+               alternado: !!(t.alternado && t.alternado.dia === d),
+               alt: t.alternado });
+  });
+  return out;
+}
+
+// Desloca o horario do passageiro para aquele dia.
+function pdfHoraVariante(horario, turno, chegadaDoDia) {
+  const base = otHmToMin(horario);
+  const cd = otHmToMin(chegadaDoDia);
+  const cp = otHmToMin((TURNOS_CHEGADA || {})[turno] || '');
+  if (base == null || cd == null || cp == null) return horario || '--:--';
+  return otHHMM(base + (cd - cp));
 }
 
 async function exportPDF(rotaId, dataPdf) {
@@ -2660,19 +2692,31 @@ async function exportPDF(rotaId, dataPdf) {
       retorno: (p.status === 'ferias' || p.status === 'afastado') ? fmtRetorno(p.retorno) : ''
     }));
 
-    const rows = sorted.map((p, i) => [
-      i + 1,
-      pdfHorarioNoDia(p.horario, rota.turno, dataPdf).txt,
-      p.nome,
-      p.telefone || '—',
-      p.embarque || p.endereco || '—',
-      p.bairro || '—',
-      ''  // status desenhado à mão, como pílula
-    ]);
+    // Dias com horario proprio neste turno. Vazio = tabela como sempre foi.
+    const variantes = pdfDiasVariantes(rota.turno);
+    const rows = sorted.map((p, i) => [i + 1,
+        pdfHorarioNoDia(p.horario, rota.turno, dataPdf).txt
+      ].concat(
+        variantes.map(v => pdfHoraVariante(p.horario, rota.turno, v.chegada))
+      ).concat([
+        p.nome,
+        p.telefone || '—',
+        p.embarque || p.endereco || '—',
+        p.bairro || '—',
+        ''  // status desenhado à mão, como pílula
+      ]));
+
+    // A coluna diz o horario, nao QUAL sabado. Com alternancia isso
+    // precisa estar escrito, senao o papel promete o que nao cumpre.
+    const notasVar = variantes.filter(v => v.alternado && v.alt && v.alt.desde)
+      .map(v => v.nome + ': esta linha opera a cada ' + (v.alt.semanas || 2) +
+                ' semanas, a partir de ' + pdfDataBr(v.alt.desde));
 
     doc.autoTable({
       startY: y,
-      head: [['#', 'Horário', 'Passageiro', 'Telefone', 'Ponto de Embarque', 'Bairro', 'Status']],
+      head: [['#', variantes.length ? 'Dia útil' : 'Horário'].concat(
+               variantes.map(v => v.nome)
+             ).concat(['Passageiro', 'Telefone', 'Ponto de Embarque', 'Bairro', 'Status'])],
       body: rows,
       theme: 'plain',
       styles: {
@@ -2820,13 +2864,29 @@ async function exportPDF(rotaId, dataPdf) {
     const turnoNum = rota.turno.replace('°', '');
     const dataFile = hojeLocal(now) + '_' +
       now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }).replace(':', '');
+    // Nota da alternancia, logo abaixo da tabela.
+    if (notasVar.length) {
+      const yN = (doc.lastAutoTable && doc.lastAutoTable.finalY || y) + 6;
+      doc.setFontSize(7.5);
+      doc.setTextColor.apply(doc, PDF_COR.suave || PDF_COR.tinta);
+      notasVar.forEach((n, i) => doc.text(n, L, yN + i * 4));
+      doc.setTextColor.apply(doc, PDF_COR.tinta);
+    }
+
     const filename = 'L' + rota.linha + 'T' + turnoNum + '_R' + rev + '_' + dataFile + '.pdf';
     doc.save(filename);
   }
 }
 
 function exportAllPDF() {
-  DATA.forEach(rota => exportPDF(rota.id));
+  // Pergunta o dia UMA vez e vale para todas as linhas: perguntar por
+  // linha seria insuportavel, e gerar sem perguntar produz PDF ambiguo.
+  pdfPerguntarDia(null, true);
+}
+
+// Gera todas as linhas com a data escolhida.
+async function pdfGerarTodas(data) {
+  for (const rota of DATA) await exportPDF(rota.id, data);
 }
 
 
@@ -3347,6 +3407,8 @@ function tnRenderExcecoes() {
 
   // alternância
   const alt = tnRascunhoAlt || {};
+  const altDia = (alt.dia && tnRascunhoDias[alt.dia] && typeof tnRascunhoDias[alt.dia] === 'object')
+    ? tnRascunhoDias[alt.dia] : {};
   h += '<div class="tn-exc-tit" style="margin-top:12px">Dia alternado ' +
        '<span>sábado sim, sábado não — e o outro turno na semana seguinte</span></div>';
   h += '<div class="tn-alt">' +
@@ -3365,6 +3427,15 @@ function tnRenderExcecoes() {
         '<input class="form-input" type="date" value="' + (alt.desde || '') + '" ' +
           'onchange="tnAltCampo(\'desde\', this.value)">' +
       '</div>' +
+      '<div class="tn-alt-campos">' +
+        '<span>Nesse dia, chega</span>' +
+        '<input class="form-input" type="time" value="' + (altDia.chegada || '') + '" ' +
+          'onchange="tnAltHora(\'chegada\', this.value)">' +
+        '<span>e sai</span>' +
+        '<input class="form-input" type="time" value="' + (altDia.saida || '') + '" ' +
+          'onchange="tnAltHora(\'saida\', this.value)">' +
+      '</div>' +
+      '<div class="tn-exc-vazio">Em branco, usa o horário padrão do turno.</div>' +
       '<div class="tn-exc-vazio">Escolha um dia em que este turno realmente opera. Para revezar ' +
       'com outro turno, use a mesma data mais uma semana no outro.</div>'
       : '') +
@@ -3394,7 +3465,25 @@ function tnAltToggle() {
 }
 function tnAltCampo(campo, v) {
   if (!tnRascunhoAlt) return;
+  const antes = tnRascunhoAlt.dia;
   tnRascunhoAlt[campo] = (campo === 'semanas') ? (parseInt(v, 10) || 2) : v;
+  if (campo === 'dia' && antes && antes !== v && tnRascunhoDias[antes]) {
+    tnRascunhoDias[v] = tnRascunhoDias[antes];
+    delete tnRascunhoDias[antes];
+    tnRenderExcecoes();
+  }
+}
+
+// O horario do dia alternado e gravado como excecao DAQUELE dia — o mesmo
+// lugar que turnoNoDia ja consulta. Antes, o bloco dizia QUANDO o dia opera
+// mas nao COM QUE HORARIO: o gestor teria de cadastrar o sabado duas vezes,
+// e nada na tela dizia isso.
+function tnAltHora(campo, v) {
+  if (!tnRascunhoAlt || !tnRascunhoAlt.dia) return;
+  const d = tnRascunhoAlt.dia;
+  if (!tnRascunhoDias[d] || typeof tnRascunhoDias[d] !== 'object') tnRascunhoDias[d] = {};
+  tnRascunhoDias[d][campo] = v;
+  if (!tnRascunhoDias[d].chegada && !tnRascunhoDias[d].saida) delete tnRascunhoDias[d];
 }
 
 function tnMsg(txt, erro) {
