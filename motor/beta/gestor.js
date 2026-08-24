@@ -7239,6 +7239,18 @@ function absIrCadastro(nome) {
     if (j >= 0) return openEditModal(r.id, j);
   }
 }
+// Leva ao mapa do Sugerir, onde da para arrastar o ponto e ver o ganho.
+// O painel do Encaixar e reaberto depois, para nao perder o cenario que
+// o gestor ja tinha na tela.
+function absVerNoMapa(nome) {
+  const p = absAcharPax(nome);
+  if (!p) return;
+  ABS_VOLTAR = true;
+  absFecharPainel();
+  setTimeout(() => { try { sugerirDoCadastro(p); } catch (e) { console.warn(e); } }, 80);
+}
+let ABS_VOLTAR = false;
+
 function absIrSugerir(nome) {
   absFecharPainel();
   const p = absAcharPax(nome);
@@ -7284,9 +7296,24 @@ function absRenderCenarios() {
     if (c.entraram.length) {
       h += '<div class="abs-bloco"><div class="abs-bloco-t">Entram (' + c.entraram.length + ')</div>';
       c.entraram.forEach(e => {
-        h += '<div class="abs-item"><b>' + esc(e.nome) + '</b> → ' + esc(e.rotulo) +
+        const pax = absAcharPax(e.nome);
+        const cam = pax ? paxCaminhada(pax) : null;
+        const raio = pax && typeof paxRaio === 'function' ? paxRaio(pax) : 400;
+        const emb = pax ? (pax.embarque || pax.endereco || '') : '';
+        h += '<div class="abs-item abs-item-mapa">' +
+          '<div class="abs-item-txt"><b>' + esc(e.nome) + '</b> → ' + esc(e.rotulo) +
           '<span class="abs-hora">' + _sugMinToHm(e.horario) + '</span>' +
-          (e.desvioMin ? '<span class="abs-obs2">+' + e.desvioMin + ' min na rota</span>' : '') + '</div>';
+          (e.desvioMin ? '<span class="abs-obs2">+' + e.desvioMin + ' min na rota</span>' : '') +
+          // De ONDE ela embarca: sem isto o gestor aplica sem saber o ponto.
+          (emb ? '<div class="abs-item-end">Embarque: ' + esc(emb) + '</div>' : '') +
+          (cam != null && cam > 0
+            ? '<div class="abs-item-cam' + (cam > raio ? ' alerta' : '') + '">Caminha ' + cam +
+              ' m de casa' + (cam > raio ? ' — acima do raio de ' + raio + ' m' : '') + '</div>'
+            : (pax && paxEmbarcaEmCasa(pax) ? '<div class="abs-item-cam">Embarca na porta</div>' : '')) +
+          '</div>' +
+          '<button class="export-btn abs-item-btn" onclick="absVerNoMapa(' + JSON.stringify(e.nome) + ')" ' +
+          'title="Ver no mapa e ajustar o ponto de embarque">Ver no mapa</button>' +
+          '</div>';
       });
       h += '</div>';
     }
@@ -8034,6 +8061,15 @@ function _sugAplicarArraste(modo) {
   _sugArrastePendente = null;
   const ovS = document.getElementById('sugestaoOverlay');
   if (ovS) ovS.remove();
+
+  // Veio do Encaixar? O ponto mudou, entao o encaixe tem de ser refeito —
+  // reabrir o painel antigo mostraria um plano calculado com a coordenada
+  // anterior.
+  if (typeof ABS_VOLTAR !== 'undefined' && ABS_VOLTAR) {
+    ABS_VOLTAR = false;
+    setTimeout(() => { try { absAbrirPainel(); } catch (e) { console.warn(e); } }, 120);
+    return;
+  }
   // A sugestao foi calculada com a coordenada antiga: refazer, senao a tela
   // mostraria posicoes que ja nao valem.
   setTimeout(() => { try { sugerirDoCadastro(p); } catch (e) {} }, 60);
