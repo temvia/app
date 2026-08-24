@@ -997,6 +997,7 @@ function selectLine(id) {
         <thead>
           <tr>
             
+            <th style="text-align:center">#</th>
             <th>Horário</th>
             <th>Passageiro</th>
             <th>Contato</th>
@@ -2756,6 +2757,24 @@ function renderOptResult(opt, chegadaHora) {
   body.innerHTML = html;
 }
 
+// Guarda as metricas na linha. Sem isto o calculo se perdia: os horarios
+// dos passageiros eram atualizados e duracao, distancia e jornada sumiam.
+function rotaGravarMetricas(rota, m) {
+  if (!rota || !m) return;
+  rota.calc = {
+    totalMin: m.durMin != null ? m.durMin : m.totalMin,
+    totalKm: (m.distKm != null) ? (Math.round(m.distKm * 10) / 10)
+             : (m.totalKm != null ? m.totalKm : null),
+    departure: m.saidaGaragem != null ? otHHMM(m.saidaGaragem) : (m.departure || ''),
+    paradas: m.ordem ? m.ordem.length : (rota.passageiros || []).length,
+    maiorRide: m.maiorRideMin != null ? m.maiorRideMin : m.maiorRide,
+    violacoes: m.violacoes || 0,
+    jornadaMin: m.jornadaMin, vazioIdaMin: m.vazioIdaMin,
+    aBordoMin: m.aBordoMin, voltaMin: m.voltaMin,
+    em: new Date().toISOString()
+  };
+}
+
 function aplicarOtimizacao() {
   if (!pendingOptimization || !pendingOptimization.ctx) return;
   const { rotaId, ctx, metrica, keepOrder, anterior } = pendingOptimization;
@@ -2775,6 +2794,7 @@ function aplicarOtimizacao() {
     setOptStatus('Não apliquei: ' + erros.join('; ') + '. A rota continua como estava.', 'error');
     return;
   }
+  rotaGravarMetricas(rota, metrica);
   if (!OPT_CFG.permitirAcimaDoLimite && metrica.violacoes > 0 &&
       !confirm('Esta rota deixa ' + metrica.violacoes + ' passageiro(s) acima de ' +
                OPT_CFG.maxRideMin + ' min em viagem.\n\nAplicar mesmo assim?')) return;
@@ -5813,6 +5833,9 @@ async function recalcularApenasHorarios() {
     const ctx = { dur: matriz.dur, dist: matriz.dist, pontos: pontos, chegadaMin: alvoMin };
     const ordemAtual = optOrdemAtual(pontos, passAtivos);
     const metrica = optAvaliarOrdem(ordemAtual, ctx);
+    // Guarda na linha: sem isto o resumo do cabecalho fica sem numero mesmo
+    // depois de o gestor recalcular.
+    try { rotaGravarMetricas(rota, metrica); } catch (e) {}
     otPasso('Horários recalculados mantendo a ordem atual');
 
     ultimoCtxOtimizacao = ctx;
@@ -7854,6 +7877,9 @@ function _sugPerguntarDestino(d, lat, lng, mk, casaPos, cmp) {
       '<div class="abs-topo"><div class="abs-titulo">Mover ' + esc(p.nome) + ' para cá?</div></div>' +
       '<div class="abs-corpo">' +
         '<div class="sug-arr-coord">' + coord + '</div>' + ganho + dist +
+        '<label class="form-label" style="font-size:11px">Como o motorista vai identificar o ponto</label>' +
+        '<input class="form-input" id="sugArrEndereco" type="text" style="margin-bottom:10px" ' +
+        'placeholder="Buscando o endereço…" value="">' +
         (semCoord
           ? '<button class="add-btn sug-arr-op" onclick="_sugAplicarArraste(\'ambos\')">' +
             '<b>Definir como endereço e ponto de embarque</b>' +
@@ -7870,6 +7896,23 @@ function _sugPerguntarDestino(d, lat, lng, mk, casaPos, cmp) {
     '</div>';
   document.body.appendChild(ov);
   _sugArrastePendente = { p: p, lat: lat, lng: lng, mk: mk, d: d };
+
+  // Busca o endereco daquele ponto exato. E so uma sugestao: o gestor edita,
+  // porque "esquina com a escola" diz mais ao motorista que o numero.
+  const campo = document.getElementById('sugArrEndereco');
+  if (campo) {
+    try {
+      new google.maps.Geocoder().geocode({ location: { lat: lat, lng: lng } }, (res, st) => {
+        if (st === 'OK' && res && res[0]) {
+          campo.value = res[0].formatted_address.replace(/,\s*(Brasil|Brazil)$/i, '')
+                                                .replace(/,\s*\d{5}-?\d{3}/, '');
+          campo.placeholder = '';
+        } else {
+          campo.placeholder = 'Descreva o ponto (ex.: em frente ao mercado)';
+        }
+      });
+    } catch (e) { campo.placeholder = 'Descreva o ponto'; }
+  }
 }
 
 let _sugArrastePendente = null;
@@ -7904,11 +7947,20 @@ function _sugAplicarArraste(modo) {
       a.lat.toFixed(6) + ', ' + a.lng.toFixed(6), 'Endereço corrigido no mapa');
   } else if (modo === 'ambos') {
     p.latCasa = a.lat; p.lngCasa = a.lng; p.lat = a.lat; p.lng = a.lng;
+    const txt0 = (document.getElementById('sugArrEndereco') || {}).value;
+    if (txt0 && txt0.trim()) {
+      if (!String(p.endereco || '').trim()) p.endereco = txt0.trim();
+      p.embarque = txt0.trim();
+    }
     logChange('alteracao', p.nome, 'Sem coordenada',
       a.lat.toFixed(6) + ', ' + a.lng.toFixed(6), 'Definido no mapa');
   } else {
     p.lat = a.lat; p.lng = a.lng;
-    // Definir ponto de embarque contradiz "embarca na porta": a marcacao sai.
+    // O TEXTO do ponto tem de acompanhar a coordenada. Sem ele a tela cai no
+    // endereco residencial, e o motorista le "casa" onde a van encosta na
+    // esquina — duas informacoes diferentes para o mesmo lugar.
+    const txt = (document.getElementById('sugArrEndereco') || {}).value;
+    if (txt && txt.trim()) p.embarque = txt.trim();
     if (p.embarcaEmCasa) p.embarcaEmCasa = false;
     logChange('alteracao', p.nome, 'Embarque ' + (antes.lat || '—'),
       a.lat.toFixed(6) + ', ' + a.lng.toFixed(6), 'Ponto de embarque movido no mapa');
