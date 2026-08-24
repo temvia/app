@@ -2736,22 +2736,34 @@ async function exportPDF(rotaId, dataPdf) {
       rowPageBreak: 'avoid',
       // Somam 182mm (largura util). Telefone e Horario levam folga porque o
       // conteudo deles nao pode quebrar em duas linhas sem ficar ilegivel.
-      columnStyles: {
-        0: { cellWidth: 10, halign: 'center', textColor: PDF_COR.suave },
-        1: { cellWidth: 17, halign: 'center', fontStyle: 'bold' },
-        2: { cellWidth: 42 },
-        3: { cellWidth: 25, fontSize: 7.6 },
-        4: { cellWidth: 43 },
-        5: { cellWidth: 23, fontSize: 7.8, textColor: PDF_COR.texto },
-        6: { cellWidth: 22, halign: 'center' }
-      },
+      columnStyles: (function () {
+        // Larguras por POSICAO calculada, nao por indice fixo: cada
+        // variante empurra as colunas seguintes.
+        const nv = variantes.length;
+        const st = {};
+        st[0] = { cellWidth: 9, halign: 'center', textColor: PDF_COR.suave };
+        st[1] = { cellWidth: 16, halign: 'center', fontStyle: 'bold' };
+        for (let k = 0; k < nv; k++)
+          st[2 + k] = { cellWidth: 16, halign: 'center', fontStyle: 'bold',
+                        textColor: PDF_COR.destaque };
+        // o espaco das variantes sai do nome e do ponto de embarque
+        const corte = nv * 16;
+        st[2 + nv] = { cellWidth: Math.max(30, 42 - Math.round(corte * 0.45)) };
+        st[3 + nv] = { cellWidth: 24, fontSize: 7.6 };
+        st[4 + nv] = { cellWidth: Math.max(30, 43 - Math.round(corte * 0.55)) };
+        st[5 + nv] = { cellWidth: 21, fontSize: 7.8, textColor: PDF_COR.texto };
+        st[6 + nv] = { cellWidth: 20, halign: 'center' };
+        return st;
+      })(),
       margin: { left: L, right: 210 - R, top: 24, bottom: 18 },
       didParseCell: function (d) {
         if (d.section === 'head' && d.column.index === 0) d.cell.styles.halign = 'center';
-        if (d.section === 'head' && (d.column.index === 1 || d.column.index === 6)) d.cell.styles.halign = 'center';
+        if (d.section === 'head' && (d.column.index >= 1 && d.column.index <= 1 + variantes.length))
+          d.cell.styles.halign = 'center';
+        if (d.section === 'head' && d.column.index === 6 + variantes.length) d.cell.styles.halign = 'center';
       },
       didDrawCell: function (d) {
-        if (d.section !== 'body' || d.column.index !== 6) return;
+        if (d.section !== 'body' || d.column.index !== 6 + variantes.length) return;
         const info = meta[d.row.index];
         if (!info) return;
         const rot = statusLabel[info.status] || info.status;
