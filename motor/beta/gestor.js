@@ -7733,6 +7733,132 @@ let _sugMapa = null, _sugMapaDados = null;
 // linha reta enquanto os minutos ao lado vem de rota real medida no Google —
 // duas informacoes diferentes na mesma tela, e a errada e a que se olha.
 let _sugRotaDesenhada = null;
+let _sugEstrela = null, _sugCirculo = null;
+
+// A estrela e o circulo acompanham o marcador enquanto ele e arrastado,
+// senao a pessoa ve o ponto num lugar e o raio noutro.
+function _sugLigarArraste(mk, d) {
+  mk.addListener('drag', () => {
+    const pos = mk.getPosition();
+    if (_sugEstrela) _sugEstrela.setPosition(pos);
+    if (_sugCirculo) _sugCirculo.setCenter(pos);
+  });
+  mk.addListener('dragend', () => {
+    const pos = mk.getPosition();
+    _sugPerguntarDestino(d, pos.lat(), pos.lng(), mk);
+  });
+}
+
+// Ao soltar, a pergunta que importa: e o endereco que estava errado, ou a
+// pessoa vai caminhar ate aqui? Sao decisoes diferentes e ficam em campos
+// diferentes — juntar apagaria onde ela mora.
+function _sugPerguntarDestino(d, lat, lng, mk) {
+  const p = d.pax;
+  if (!p) return;
+  const casa = (p.latCasa && p.lngCasa)
+    ? { lat: +p.latCasa, lng: +p.lngCasa } : null;
+  const metros = casa ? Math.round(_sugDist(casa, { lat: lat, lng: lng }) * 1000) : null;
+  const raio = (typeof paxRaio === 'function') ? paxRaio(p) : 400;
+  const semCoord = !casa && !(p.lat && p.lng);
+
+  let ov = document.getElementById('sugArrastarOverlay');
+  if (ov) ov.remove();
+  ov = document.createElement('div');
+  ov.id = 'sugArrastarOverlay';
+  ov.className = 'abs-overlay';
+  ov.style.zIndex = '10001';
+
+  const coord = lat.toFixed(6) + ', ' + lng.toFixed(6);
+  let dist = '';
+  if (metros !== null) {
+    dist = '<div class="sug-arr-dist' + (metros > raio ? ' alerta' : '') + '">' +
+      'Fica a <b>' + metros + ' m</b> da casa de ' + esc(p.nome.split(' ')[0]) +
+      (metros > raio ? ' — acima do raio de ' + raio + ' m desta pessoa.'
+                     : ' — dentro do raio de ' + raio + ' m.') + '</div>';
+  }
+
+  ov.innerHTML =
+    '<div class="abs-caixa" style="max-width:460px">' +
+      '<div class="abs-topo"><div class="abs-titulo">Mover ' + esc(p.nome) + ' para cá?</div></div>' +
+      '<div class="abs-corpo">' +
+        '<div class="sug-arr-coord">' + coord + '</div>' + dist +
+        (semCoord
+          ? '<button class="add-btn sug-arr-op" onclick="_sugAplicarArraste(\'ambos\')">' +
+            '<b>Definir como endereço e ponto de embarque</b>' +
+            '<small>Este passageiro ainda não tem coordenada nenhuma.</small></button>'
+          : '<button class="add-btn sug-arr-op" onclick="_sugAplicarArraste(\'embarque\')">' +
+            '<b>Definir o ponto de embarque</b>' +
+            '<small>A pessoa caminha até aqui. O endereço da casa não muda.</small></button>' +
+            '<button class="add-btn sug-arr-op secundaria" onclick="_sugAplicarArraste(\'casa\')">' +
+            '<b>Corrigir o endereço da residência</b>' +
+            '<small>O sistema tinha achado o lugar errado. Use quando o ponto do mapa não é onde ela mora.</small></button>') +
+        '<button class="btn-cancel" style="width:100%;margin-top:4px" ' +
+          'onclick="_sugCancelarArraste()">Cancelar</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(ov);
+  _sugArrastePendente = { p: p, lat: lat, lng: lng, mk: mk, d: d };
+}
+
+let _sugArrastePendente = null;
+
+// Cancelar devolve o marcador para onde estava: sem isso a tela fica dizendo
+// uma coisa e o cadastro outra.
+function _sugCancelarArraste() {
+  const a = _sugArrastePendente;
+  const ov = document.getElementById('sugArrastarOverlay');
+  if (ov) ov.remove();
+  if (a && a.mk && a.d && a.d.ponto) {
+    const volta = new google.maps.LatLng(a.d.ponto.lat, a.d.ponto.lng);
+    a.mk.setPosition(volta);
+    if (_sugEstrela) _sugEstrela.setPosition(volta);
+    if (_sugCirculo) _sugCirculo.setCenter(volta);
+  }
+  _sugArrastePendente = null;
+}
+
+function _sugAplicarArraste(modo) {
+  const a = _sugArrastePendente;
+  if (!a) return;
+  const p = a.p;
+  const antes = { lat: p.lat, lng: p.lng, latCasa: p.latCasa, lngCasa: p.lngCasa };
+
+  if (modo === 'casa') {
+    p.latCasa = a.lat; p.lngCasa = a.lng;
+    logChange('alteracao', p.nome, 'Residência ' + (antes.latCasa || '—'),
+      a.lat.toFixed(6) + ', ' + a.lng.toFixed(6), 'Endereço corrigido no mapa');
+  } else if (modo === 'ambos') {
+    p.latCasa = a.lat; p.lngCasa = a.lng; p.lat = a.lat; p.lng = a.lng;
+    logChange('alteracao', p.nome, 'Sem coordenada',
+      a.lat.toFixed(6) + ', ' + a.lng.toFixed(6), 'Definido no mapa');
+  } else {
+    p.lat = a.lat; p.lng = a.lng;
+    // Definir ponto de embarque contradiz "embarca na porta": a marcacao sai.
+    if (p.embarcaEmCasa) p.embarcaEmCasa = false;
+    logChange('alteracao', p.nome, 'Embarque ' + (antes.lat || '—'),
+      a.lat.toFixed(6) + ', ' + a.lng.toFixed(6), 'Ponto de embarque movido no mapa');
+  }
+
+  saveAfterChange();
+  const ov = document.getElementById('sugArrastarOverlay');
+  if (ov) ov.remove();
+  _sugArrastePendente = null;
+  const ovS = document.getElementById('sugestaoOverlay');
+  if (ovS) ovS.remove();
+  // A sugestao foi calculada com a coordenada antiga: refazer, senao a tela
+  // mostraria posicoes que ja nao valem.
+  setTimeout(() => { try { sugerirDoCadastro(p); } catch (e) {} }, 60);
+}
+
+// Refaz a sugestao para o passageiro, achando-o onde ele estiver.
+function sugerirDoCadastro(p) {
+  let idx = SEM_ROTA.findIndex(x => x === p || x.nome === p.nome);
+  if (idx >= 0) return sugerirLinhaSemRota('pool', '', idx);
+  for (const r of DATA) {
+    const i = r.passageiros.findIndex(x => x === p || x.nome === p.nome);
+    if (i >= 0) return sugerirLinhaSemRota('rota', r.id, i);
+  }
+}
 function _sugTracarRota(path, cor, provisorio) {
   if (!path || path.length < 2) return;
   try {
@@ -7803,12 +7929,15 @@ async function _sugDesenharMapa(rotaId) {
 
   // Passageiro NOVO em vermelho, maior
   const novo = { lat: d.ponto.lat, lng: d.ponto.lng };
-  new google.maps.Marker({ position: novo, map:_sugMapa, zIndex: 999, title: 'NOVO: ' + d.nome,
+  const mkNovo = new google.maps.Marker({ position: novo, map:_sugMapa, zIndex: 999,
+    title: 'Arraste para escolher o ponto de embarque de ' + d.nome,
+    draggable: true, cursor: 'grab',
     icon: { path: google.maps.SymbolPath.CIRCLE, scale: 14, fillColor:'#ef4444',
             fillOpacity:1, strokeColor:'#fff', strokeWeight:3 } });
+  _sugLigarArraste(mkNovo, d);
   // A estrela por cima: desenhada, nao emoji. O label estava com text:'' —
   // resquicio de uma limpeza antiga que apagou o simbolo e ninguem repos.
-  new google.maps.Marker({ position: novo, map:_sugMapa, zIndex: 1000, clickable: false,
+  _sugEstrela = new google.maps.Marker({ position: novo, map:_sugMapa, zIndex: 1000, clickable: false,
     icon: { path: 'M 0,-5 L 1.4,-1.6 L 5,-1.6 L 2.2,0.6 L 3.2,4.2 L 0,2 L -3.2,4.2 L -2.2,0.6 L -5,-1.6 L -1.4,-1.6 Z',
             fillColor:'#fff', fillOpacity:1, strokeWeight:0, scale:1.5, anchor: new google.maps.Point(0,0) } });
   bounds.extend(novo);
@@ -7819,10 +7948,10 @@ async function _sugDesenharMapa(rotaId) {
   const _raio = (typeof paxRaio === 'function' && d.pax) ? paxRaio(d.pax)
               : ((typeof OPT_CFG !== 'undefined' && OPT_CFG.raioCaminhada) || 400);
   if (_raio > 0) {
-    const circ = new google.maps.Circle({ map:_sugMapa, center: novo, radius: _raio,
+    _sugCirculo = new google.maps.Circle({ map:_sugMapa, center: novo, radius: _raio,
       fillColor:'#ef4444', fillOpacity:0.07, strokeColor:'#ef4444',
       strokeOpacity:0.45, strokeWeight:1.5, clickable:false, zIndex: 1 });
-    bounds.union(circ.getBounds());
+    bounds.union(_sugCirculo.getBounds());
   }
 
   _sugMapa.fitBounds(bounds, 40);
@@ -8001,7 +8130,9 @@ function sugRenderCartoes(source, rotaId, idx, p, turnoP, ponto, resultados) {
     (turnoP ? ' · ' + turnoP + ' Turno' : ' · turno a definir (todas as linhas)') + '</div>';
   html += '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">' +
     'Tempos medidos de carro, não em linha reta. O acréscimo mostrado é o desvio que ' +
-    'a linha faz para buscar este passageiro.</div>';
+    'a linha faz para buscar este passageiro.<br>' +
+    '<b>Arraste o marcador vermelho</b> para escolher onde a van encosta. O círculo é ' +
+    'até onde esta pessoa caminha.</div>';
   html += '<div id="sugMapa" style="width:100%;height:230px;border-radius:10px;border:1px solid var(--border);' +
     'background:var(--surface2);margin-bottom:4px"></div>';
   html += '<div id="sugMapaLinha" style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:12px"></div>';

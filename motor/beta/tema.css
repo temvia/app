@@ -2125,3 +2125,17 @@ html[data-ambiente="teste"] .tv-shell { border: 2px solid rgba(255,176,0,.35); }
 .pax-casa input { margin-top: 2px; cursor: pointer; flex-shrink: 0; }
 .pax-casa b { color: var(--text); }
 .pax-casa span { color: var(--muted); }
+
+/* arrastar o marcador no mapa da sugestão */
+.sug-arr-coord { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted);
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; margin-bottom: 10px; text-align: center; }
+.sug-arr-dist { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 12px; }
+.sug-arr-dist.alerta { color: var(--warn, #E0A94A); }
+.sug-arr-dist b { color: var(--text); }
+.sug-arr-op { display: block; width: 100%; text-align: left; margin-bottom: 8px;
+  padding: 11px 13px; line-height: 1.45; }
+.sug-arr-op b { display: block; font-size: 13px; }
+.sug-arr-op small { display: block; font-size: 11px; opacity: .8; margin-top: 3px; font-weight: 400; }
+.sug-arr-op.secundaria { background: var(--surface2); color: var(--text);
+  border: 1px solid var(--border); }
