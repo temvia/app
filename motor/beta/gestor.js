@@ -5415,6 +5415,64 @@ function optResolver(ctx) {
 // Cache por conjunto de coordenadas: a matriz e o item caro da conta.
 // (K+1)x(K+1) elementos; com 9 pontos sao 100 elementos, o teto de um
 // unico request client-side do Distance Matrix.
+// ==================================================================
+// TELEMETRIA DE CUSTO  (interna — nada disso aparece para o cliente)
+// ------------------------------------------------------------------
+// Um documento POR MES por operacao, com os eventos dentro. Agregar doze
+// meses custa 12 leituras, nao mil e trezentas. Cabem ~4.000 eventos por
+// documento; acima disso ele parte em -b, -c.
+//
+// NAO guarda nada vindo do Google: so contagem de elementos e parametros
+// da propria temvia. Duracao e distancia nunca entram aqui.
+// ==================================================================
+
+const TEL_FILA = [];
+let TEL_GRAVANDO = false;
+
+function telRegistrar(funcao, dados) {
+  try {
+    const agora = new Date();
+    const ev = Object.assign({
+      f: funcao,
+      t: agora.toISOString(),
+      el: 0,                       // elementos consultados
+      usd: 0                       // custo estimado
+    }, dados || {});
+    ev.usd = Math.round((ev.el || 0) * 0.005 * 10000) / 10000;
+    TEL_FILA.push(ev);
+    console.log('[telemetria] ' + funcao + ' · ' + ev.el + ' elementos · US$ ' + ev.usd.toFixed(3));
+    telAgendarGravacao();
+  } catch (e) { /* telemetria nunca pode quebrar a operacao */ }
+}
+
+// Agrupa as gravacoes: varias chamadas seguidas viram uma escrita so.
+let TEL_TIMER = null;
+function telAgendarGravacao() {
+  if (TEL_TIMER) clearTimeout(TEL_TIMER);
+  TEL_TIMER = setTimeout(() => { telGravar(); }, 4000);
+}
+
+async function telGravar() {
+  if (TEL_GRAVANDO || !TEL_FILA.length) return;
+  TEL_GRAVANDO = true;
+  const lote = TEL_FILA.splice(0, TEL_FILA.length);
+  try {
+    if (!fbDb) await initFirebase();
+    if (!fbDb) { TEL_FILA.unshift(...lote); return; }
+    const { doc, setDoc, arrayUnion } =
+      await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const d = new Date();
+    const mes = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    await setDoc(doc(fbDb, CLIENTE_ID, 'uso_' + mes),
+      { operacao: CLIENTE_ID, mes: mes,
+        eventos: arrayUnion.apply(null, lote),
+        atualizadoEm: d.toISOString() }, { merge: true });
+  } catch (e) {
+    console.warn('[telemetria] não gravou:', e && e.message);
+    TEL_FILA.unshift(...lote);          // tenta de novo na proxima
+  } finally { TEL_GRAVANDO = false; }
+}
+
 const OPT_MATRIZ_CACHE = {};
 
 function optChaveMatriz(pontos) {
@@ -5470,6 +5528,47 @@ function optPedirMatriz(svc, origens, destinos) {
 // sentido = 'entrada' (garagem -> pontos -> empresa) ou 'saida'
 // (empresa -> pontos -> garagem). NUNCA transpor a matriz da entrada para
 // obter a da saída: rua de mão única e viaduto fazem t(a,b) != t(b,a).
+// A ordem NAO vai mudar: so os trechos consecutivos serao lidos. Pedir a
+// matriz cheia mede 182 pares de 197 e joga fora. Aqui a matriz sai
+// esparsa de proposito, preenchida so onde o avaliador olha — o resultado
+// e identico por construcao.
+async function optMatrizDaOrdem(pontos, ordem, aoProgredir, sentido) {
+  await ensureMapsLoaded();
+  const K = pontos.length, N = K + 2, EMP = K + 1;
+  const dur = Array.from({ length: N }, () => new Array(N).fill(null));
+  const dist = Array.from({ length: N }, () => new Array(N).fill(null));
+  const LL = c => new google.maps.LatLng(c.lat, c.lng);
+  const PARTIDA = (sentido === 'saida') ? EMPRESA_COORDS : GARAGEM_COORDS;
+  const FIM = (sentido === 'saida') ? GARAGEM_COORDS : EMPRESA_COORDS;
+  const svc = new google.maps.DistanceMatrixService();
+
+  // a cadeia: partida -> ordem[0] -> ordem[1] -> ... -> fim, mais a volta
+  const cadeia = [];
+  cadeia.push({ i: 0, j: ordem[0] + 1, a: PARTIDA, b: pontos[ordem[0]] });
+  for (let k = 0; k < ordem.length - 1; k++)
+    cadeia.push({ i: ordem[k] + 1, j: ordem[k + 1] + 1,
+                  a: pontos[ordem[k]], b: pontos[ordem[k + 1]] });
+  cadeia.push({ i: ordem[ordem.length - 1] + 1, j: EMP,
+                a: pontos[ordem[ordem.length - 1]], b: FIM });
+  cadeia.push({ i: EMP, j: 0, a: FIM, b: PARTIDA });   // volta vazia
+
+  let elementos = 0;
+  // uma requisicao por trecho manteria o custo igual mas faria N chamadas;
+  // agrupamos em lotes de origens distintas contra seus destinos
+  for (const t of cadeia) {
+    const r = await optPedirMatriz(svc, [LL(t.a)], [LL(t.b)]);
+    const el = r.rows[0].elements[0];
+    if (el && el.status === 'OK') {
+      dur[t.i][t.j] = el.duration.value;
+      dist[t.i][t.j] = el.distance.value;
+    }
+    elementos++;
+  }
+  telRegistrar('recalcular-horarios', { pontos: K, el: elementos, ordemMantida: true });
+  if (aoProgredir) aoProgredir('Tempos dos ' + elementos + ' trechos da rota atual');
+  return { dur: dur, dist: dist, elementos: elementos, parcial: true };
+}
+
 async function optObterMatriz(pontos, aoProgredir, sentido) {
   const chave = (sentido === 'saida' ? 'S|' : 'E|') + optChaveMatriz(pontos);
   if (OPT_MATRIZ_CACHE[chave]) {
@@ -5531,6 +5630,9 @@ async function optObterMatriz(pontos, aoProgredir, sentido) {
   if (aoProgredir) aoProgredir('Tempos entre os pontos calculados (' + elementos + ' trechos)');
 
   const m = { dur: dur, dist: dist, elementos: elementos, requisicoes: requisicoes };
+  telRegistrar(sentido === 'saida' ? 'roteirizador-saida' : 'roteirizador', {
+    pontos: pontos.length, el: elementos, sentido: sentido || 'entrada'
+  });
   OPT_MATRIZ_CACHE[chave] = m;
   // Diagnostico interno. O custo nunca aparece para o gestor.
   console.info('[matriz]', K, 'pontos ·', elementos, 'elementos ·', requisicoes,
@@ -5830,7 +5932,9 @@ async function recalcularApenasHorarios() {
     if (elQtd) elQtd.textContent = String(pontos.length);
     setOptStatus('Calculando os tempos da ordem atual...', 'running');
     // Reaproveita a matriz se ela já existir nesta sessão; senão calcula.
-    const matriz = await optObterMatriz(pontos, msg => otPasso(msg));
+    // A ordem atual e conhecida: so os trechos dela serao lidos.
+    const ordemPrevia = optOrdemAtual(pontos, passAtivos);
+    const matriz = await optMatrizDaOrdem(pontos, ordemPrevia, msg => otPasso(msg));
     const [hh, mm] = chegadaHora.split(':').map(Number);
     const alvoMin = hh * 60 + mm - OPT_CFG.margemChegadaMin;
     const ctx = { dur: matriz.dur, dist: matriz.dist, pontos: pontos, chegadaMin: alvoMin };
@@ -7060,30 +7164,21 @@ async function absRodar(novos) {
     await ensureMapsLoaded();
 
     // --- linhas candidatas por turno, com vaga ---
+    // ---- ETAPA LOCAL (gratuita) ----
+    // Capacidade e turno cortam de vez; Haversine e eixo apenas ORDENAM.
+    // O nivel comeca em 2 candidatas e amplia se ninguem couber.
     const porNovo = [];
     const linhasUsadas = new Map();
+    const todasLinhas = [];
+    DATA.forEach(rota => { const L = absLinha(rota); if (L) todasLinhas.push(L); });
+
+    ABS_NIVEL_USADO = ABS_NIVEIS[ABS_NIVEL_IDX];
     novos.forEach(P => {
       const tRaw = P.turno || P._turno;
       const turnoP = (tRaw && tRaw !== 'A Definir') ? tRaw : null;
-      const cands = [];
-      DATA.forEach(rota => {
-        if (turnoP && rota.turno !== turnoP) return;
-        const L = absLinha(rota);
-        if (!L) return;
-        const ponto = { lat: +P.lat, lng: +P.lng };
-        let melhor = 1e9;
-        const seq = [{ lat: GARAGEM_COORDS.lat, lng: GARAGEM_COORDS.lng }]
-          .concat(L.stops).concat([{ lat: EMPRESA_COORDS.lat, lng: EMPRESA_COORDS.lng }]);
-        for (let i = 0; i < seq.length - 1; i++) {
-          const d = _sugDist(seq[i], ponto) + _sugDist(ponto, seq[i + 1]) - _sugDist(seq[i], seq[i + 1]);
-          if (d < melhor) melhor = d;
-        }
-        cands.push({ L: L, aprox: melhor });
-      });
-      cands.sort((a, b) => a.aprox - b.aprox);
-      const top = cands.slice(0, SUG_CFG.candidatas);
-      top.forEach(c => linhasUsadas.set(c.L.id, c.L));
-      porNovo.push({ P: P, linhas: top.map(c => c.L) });
+      const escolhidas = absPreFiltrar(todasLinhas, P, ABS_NIVEL_USADO, turnoP);
+      escolhidas.forEach(L => linhasUsadas.set(L.id, L));
+      porNovo.push({ P: P, linhas: escolhidas });
     });
 
     const linhas = [...linhasUsadas.values()];
@@ -7125,11 +7220,14 @@ async function absRodar(novos) {
     for (const item of porNovo) {
       const alvos = [];
       const vistos = new Set();
-      item.linhas.forEach(L => alvosDe(L).forEach(a => {
-        const n = nomeDe(a);
-        if (vistos.has(n)) return;
-        vistos.add(n); alvos.push(a);
-      }));
+      // So as paradas relevantes: medir as 12 de uma linha quando apenas 4
+      // sao candidatas a vizinhanca e desperdicio puro.
+      item.linhas.forEach(L => absParadasRelevantes(L, item.P, ABS_CFG.paradasRelevantes)
+        .forEach(a => {
+          const n = nomeDe(a);
+          if (vistos.has(n)) return;
+          vistos.add(n); alvos.push(a);
+        }));
       await pedir(item.P, item.P.nome, alvos);
     }
 
@@ -7160,12 +7258,20 @@ async function absRodar(novos) {
     }
 
     const T = (a, b) => (a === b ? 0 : (tabela[chave(a, b)] === undefined ? null : tabela[chave(a, b)]));
+    telRegistrar('encaixar', {
+      passageiros: novos.length,
+      linhasCandidatas: linhas.length,
+      el: trechos,
+      nivelBusca: ABS_NIVEL_USADO === Infinity ? 'todas' : ABS_NIVEL_USADO,
+      ampliou: ABS_NIVEL_IDX > 0,
+      remanejou: false          // atualizado abaixo se houver movimento
+    });
     console.info('[absorção]', trechos, 'trechos consultados · custo estimado US$',
                  (trechos * 0.005).toFixed(2));
 
     const cenarios = absCenarios(linhas, novos.map(P => ({ nome: P.nome, lat: +P.lat, lng: +P.lng })), T);
     ABS_ESTADO = { cenarios: cenarios, escolhido: 0, novos: novos, linhas: linhas, trechos: trechos };
-    absRenderCenarios();
+    absVerificarEAmpliar();
   } catch (e) {
     console.error(e);
     absPainel('<div class="abs-erro"><b>Não foi possível calcular</b><div>' + esc(e.message) +
@@ -7197,6 +7303,23 @@ function absFechar() {
 // nao-resultado apresentado como opcao escolhivel. O gestor clica e nada
 // acontece. Quando ninguem entra, a tela precisa dizer POR QUE, para cada
 // um, e oferecer o proximo passo.
+// O filtro local nao pode eliminar em silencio uma solucao boa. Se nada
+// coube, a busca AMPLIA — 2 candidatas, depois 4, depois todas — e so
+// entao o sistema diz que nao cabe.
+async function absAmpliarSePreciso(cenarios) {
+  const entrou = (cenarios || []).some(c => (c.entraram || []).length > 0);
+  if (entrou) { ABS_NIVEL_IDX = 0; return false; }
+  if (ABS_NIVEL_IDX >= ABS_NIVEIS.length - 1) { ABS_NIVEL_IDX = 0; return false; }
+  ABS_NIVEL_IDX++;
+  const prox = ABS_NIVEIS[ABS_NIVEL_IDX];
+  absPainel('<div class="abs-carregando">Ninguém coube nas linhas mais próximas.<br>' +
+    '<span>Ampliando a busca para ' + (prox === Infinity ? 'todas as linhas' : prox + ' linhas') +
+    '…</span></div>');
+  await new Promise(r => setTimeout(r, 120));
+  await absAbrirPainel();
+  return true;
+}
+
 function absDiagnostico(novos, cenarios) {
   const entrouAlguem = (cenarios || []).some(c => (c.entraram || []).length > 0);
   if (entrouAlguem) return '';
@@ -7213,7 +7336,9 @@ function absDiagnostico(novos, cenarios) {
            '<span>' + esc(motivo) + '</span></div>' + btn + '</div>';
   }).join('');
   return '<div class="abs-diag">' +
-    '<div class="abs-diag-tit">Ninguem coube nas linhas de hoje</div>' + linhas +
+    '<div class="abs-diag-tit">Ninguem coube em nenhuma linha</div>' +
+    '<div class="abs-diag-sub">A busca foi ampliada ate todas as linhas com vaga ' +
+    'antes de chegar a esta conclusao.</div>' + linhas +
     '<div class="abs-diag-pe">Criar linha nova resolve, mas e o caminho mais caro. ' +
     'Confira antes se falta coordenada ou se da para mover o ponto de embarque.</div></div>';
 }
@@ -7257,6 +7382,13 @@ function absIrSugerir(nome) {
   if (!p) return;
   // sem o setTimeout a sugestao abre atras do painel que esta fechando
   setTimeout(() => { try { sugerirDoCadastro(p); } catch (e) { console.warn(e); } }, 80);
+}
+
+async function absVerificarEAmpliar() {
+  const st = ABS_ESTADO;
+  if (!st) return;
+  if (await absAmpliarSePreciso(st.cenarios)) return;   // refez num nivel maior
+  absRenderCenarios();
 }
 
 function absRenderCenarios() {
@@ -7364,6 +7496,17 @@ function absIrParaRoteirizador() {
 
 // ---------- aplicar: aqui mexe no cadastro mestre ----------
 function absAplicar() {
+  try {
+    const c = ABS_ESTADO && ABS_ESTADO.cenarios[ABS_ESTADO.escolhido];
+    if (c) telRegistrar('encaixar-aplicado', {
+      passageiros: (c.entraram || []).length,
+      remanejou: (c.movimentos || []).length > 0,
+      movimentos: (c.movimentos || []).length,
+      criouLinha: !!c.criaLinha,
+      el: 0
+    });
+  } catch (e) {}
+
   const st = ABS_ESTADO;
   if (!st) return;
   const c = st.cenarios[st.escolhido];
@@ -7463,11 +7606,106 @@ function absLinhaRotulo(rota) { return 'Linha ' + rota.linha + ' · ' + rota.tur
 // ==================================================================
 
 const ABS_CFG = {
-  candidatosPorLinha: 4,   // quantos remanejamentos são testados por linha
+  candidatosPorLinha: 2,   // quantos remanejamentos são testados por linha
+  paradasRelevantes: 4,    // paradas medidas por linha candidata
   cenarioMovimentos: [0, 3, 8]  // tetos de remanejamento dos cenários
 };
 
+// Nivel da busca. Comeca estreito e amplia sozinho quando nada da certo.
+let ABS_NIVEL_IDX = 0, ABS_NIVEL_USADO = 2;
+
 // Uma linha, no formato que o motor entende.
+// ==================================================================
+// PRÉ-FILTRO LOCAL DO ENCAIXAR  (etapa gratuita)
+// ------------------------------------------------------------------
+// todas as linhas -> filtros locais -> ate 2 candidatas -> Google so nelas.
+//
+// O custo do Encaixar crescia ao QUADRADO do numero de linhas: com 20
+// linhas, um clique media 42.884 elementos (US$ 214). Quase tudo era
+// medicao de remanejamento que, na maioria das vezes, nem era usada.
+//
+// PROTECAO CONTRA FALSO NEGATIVO
+// Haversine e eixo sao aproximacoes: uma linha geograficamente proxima
+// pode ser inviavel pelo trajeto real, e a terceira melhor ser perfeita.
+// Por isso a busca AMPLIA sozinha — 2 candidatas, depois 4, depois todas —
+// antes de dizer "nao cabe". Economiza no caso normal sem transformar a
+// geometria em verdade absoluta.
+// ==================================================================
+
+const ABS_NIVEIS = [2, 4, Infinity];
+
+// Distancia em km, sem custo.
+function _absKm(a, b) {
+  if (!a || !b) return Infinity;
+  return _sugDist({ lat: +a.lat, lng: +a.lng }, { lat: +b.lat, lng: +b.lng });
+}
+
+// A linha corre num eixo garagem -> empresa. Se o passageiro esta muito fora
+// desse eixo, buscá-lo custa desvio grande — mas isto e so um SINAL de
+// ordenacao, nunca um corte definitivo.
+function absAfastamentoDoEixo(P, linha) {
+  const A = GARAGEM_COORDS, B = EMPRESA_COORDS;
+  const c = paxCoordEmbarque(P);
+  if (!c || !A || !B) return 0;
+  // projecao do ponto sobre o segmento A-B, em graus (suficiente para ordenar)
+  const dx = B.lng - A.lng, dy = B.lat - A.lat;
+  const den = dx * dx + dy * dy;
+  if (!den) return 0;
+  let t = ((c.lng - A.lng) * dx + (c.lat - A.lat) * dy) / den;
+  t = Math.max(0, Math.min(1, t));
+  const px = A.lng + t * dx, py = A.lat + t * dy;
+  return _sugDist({ lat: c.lat, lng: c.lng }, { lat: py, lng: px });
+}
+
+// Capacidade e restricao DURA: linha cheia nao entra, em nenhum nivel.
+function absCabeNaCapacidade(linha, quantos) {
+  return (linha.stops.length + (quantos || 1)) <= linha.capacidade;
+}
+
+// Ordena as linhas por proximidade real do passageiro e devolve as N
+// primeiras. Nivel Infinity devolve todas as que cabem.
+function absPreFiltrar(linhas, P, nivel, turnoP) {
+  const c = paxCoordEmbarque(P);
+  const viaveis = linhas.filter(L => {
+    if (!absCabeNaCapacidade(L, 1)) return false;
+    // turno diferente nao e candidato: e regra de negocio, nao geometria
+    if (turnoP && L.turno && L.turno !== turnoP) return false;
+    return true;
+  });
+  if (!c) return viaveis.slice(0, nivel === Infinity ? viaveis.length : nivel);
+
+  const comNota = viaveis.map(L => {
+    // menor distancia ate uma parada da linha: quem passa perto custa pouco
+    let perto = Infinity;
+    L.stops.forEach(s => { const d = _absKm(c, s); if (d < perto) perto = d; });
+    return { L: L, perto: perto, eixo: absAfastamentoDoEixo(P, L) };
+  });
+  // proximidade de parada domina; o eixo desempata
+  comNota.sort((a, b) => (a.perto - b.perto) || (a.eixo - b.eixo));
+  const n = (nivel === Infinity) ? comNota.length : Math.min(nivel, comNota.length);
+  return comNota.slice(0, n).map(x => x.L);
+}
+
+// As paradas que realmente importam para medir: as mais proximas do
+// passageiro, mais garagem e empresa. Medir as 12 paradas de uma linha
+// quando so 4 sao candidatas a vizinhanca e desperdicio.
+function absParadasRelevantes(linha, P, quantas) {
+  const c = paxCoordEmbarque(P);
+  const G = { _tag: 'G', lat: GARAGEM_COORDS.lat, lng: GARAGEM_COORDS.lng };
+  const E = { _tag: 'E', lat: EMPRESA_COORDS.lat, lng: EMPRESA_COORDS.lng };
+  if (!c) return [G].concat(linha.stops).concat([E]);
+  const ord = linha.stops.slice()
+    .map((s, i) => ({ s: s, i: i, d: _absKm(c, s) }))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, quantas || 4);
+  // leva tambem os vizinhos imediatos de cada escolhida: o encaixe acontece
+  // ENTRE duas paradas, e sem o vizinho o intervalo nao pode ser avaliado
+  const idx = new Set();
+  ord.forEach(x => { idx.add(x.i); if (x.i > 0) idx.add(x.i - 1); if (x.i < linha.stops.length - 1) idx.add(x.i + 1); });
+  const sel = [...idx].sort((a, b) => a - b).map(i => linha.stops[i]);
+  return [G].concat(sel).concat([E]);
+}
+
 function absLinha(rota) {
   const seq = sugSequenciaDaLinha(rota);
   if (!seq) return null;
