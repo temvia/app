@@ -2139,3 +2139,16 @@ html[data-ambiente="teste"] .tv-shell { border: 2px solid rgba(255,176,0,.35); }
 .sug-arr-op small { display: block; font-size: 11px; opacity: .8; margin-top: 3px; font-weight: 400; }
 .sug-arr-op.secundaria { background: var(--surface2); color: var(--text);
   border: 1px solid var(--border); }
+
+/* casa fixa x embarque móvel */
+.sug-vivo { font-size: 12px; text-align: center; padding: 7px 10px; margin-top: 6px;
+  border-radius: 8px; background: var(--surface2); border: 1px solid var(--border);
+  color: var(--muted); }
+.sug-vivo b { color: var(--text); }
+.sug-vivo.alerta { color: var(--warn, #E0A94A); border-color: rgba(224,169,74,.45); }
+.sug-ganho { font-size: 12.5px; line-height: 1.5; padding: 10px 12px; border-radius: 9px;
+  margin-bottom: 12px; background: var(--surface2); border: 1px solid var(--border); }
+.sug-ganho.bom { border-color: rgba(16,185,129,.45); background: rgba(16,185,129,.08); }
+.sug-ganho.ruim { border-color: rgba(224,169,74,.45); background: rgba(224,169,74,.08); }
+.sug-ganho b { color: var(--text); }
+.sug-ganho small { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; }

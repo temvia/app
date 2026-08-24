@@ -7733,30 +7733,87 @@ let _sugMapa = null, _sugMapaDados = null;
 // linha reta enquanto os minutos ao lado vem de rota real medida no Google —
 // duas informacoes diferentes na mesma tela, e a errada e a que se olha.
 let _sugRotaDesenhada = null;
-let _sugEstrela = null, _sugCirculo = null;
+let _sugEstrela = null, _sugCirculo = null, _sugCasa = null, _sugCaminhada = null;
 
 // A estrela e o circulo acompanham o marcador enquanto ele e arrastado,
 // senao a pessoa ve o ponto num lugar e o raio noutro.
-function _sugLigarArraste(mk, d) {
+function _sugLigarArraste(mk, d, casaPos) {
+  const raio = (typeof paxRaio === 'function' && d.pax) ? paxRaio(d.pax) : 400;
   mk.addListener('drag', () => {
     const pos = mk.getPosition();
+    // O CIRCULO NAO SE MOVE: ele e o alcance a partir da casa. Movê-lo junto
+    // era o erro — deixava de significar qualquer coisa.
     if (_sugEstrela) _sugEstrela.setPosition(pos);
-    if (_sugCirculo) _sugCirculo.setCenter(pos);
+    if (_sugCaminhada && casaPos)
+      _sugCaminhada.setPath([casaPos, { lat: pos.lat(), lng: pos.lng() }]);
+    if (casaPos) {
+      const m = Math.round(_sugDist(casaPos, { lat: pos.lat(), lng: pos.lng() }) * 1000);
+      _sugMostrarCaminhada(m, raio);
+    }
   });
   mk.addListener('dragend', () => {
     const pos = mk.getPosition();
-    _sugPerguntarDestino(d, pos.lat(), pos.lng(), mk);
+    _sugAvaliarPonto(d, pos.lat(), pos.lng(), mk, casaPos);
   });
+}
+
+// Enquanto arrasta, quanto a pessoa vai caminhar. Passar do raio nao bloqueia
+// — quem conhece o bairro e o gestor — mas precisa estar na cara.
+function _sugMostrarCaminhada(metros, raio) {
+  let el = document.getElementById('sugCaminhadaAoVivo');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sugCaminhadaAoVivo';
+    el.className = 'sug-vivo';
+    const box = document.getElementById('sugMapa');
+    if (box && box.parentElement) box.parentElement.appendChild(el);
+  }
+  el.style.display = '';
+  el.className = 'sug-vivo' + (metros > raio ? ' alerta' : '');
+  el.innerHTML = 'Caminhada: <b>' + metros + ' m</b>' +
+    (metros > raio ? ' — passou do raio de ' + raio + ' m' : ' de ' + raio + ' m');
+}
+
+// Ao soltar: mede de novo com tempo real de carro e mostra o que MUDA.
+// "Vale a pena andar até ali?" so se responde com numero.
+// Mede o desvio da linha se a van buscasse a pessoa NESTE ponto. Reaproveita
+// exatamente o mesmo caminho da sugestao — se usasse outro calculo, os dois
+// numeros na tela nao seriam comparaveis.
+async function _sugMedirNoPonto(d, lat, lng) {
+  const c = (d.seqs && d.seqs[0]) ? d.seqs[0] : null;
+  if (!c || !c.seq) return null;
+  const ponto = { lat: lat, lng: lng };
+  const idxDe = {};
+  const lista = c.seq.stops.slice();
+  const tPonto = await sugTemposDoPonto(ponto, lista);
+  const tGar = await sugTemposDoPonto(
+    { lat: GARAGEM_COORDS.lat, lng: GARAGEM_COORDS.lng }, [c.seq.stops[0]]);
+  const tGarStop0 = tGar.ida[0] ? tGar.ida[0].seg : 0;
+  const pos = sugAvaliarInsercoes(c.seq, tGarStop0, tPonto, idxDe);
+  const v = pos.filter(x => x.viavel).map(x => x.acrescimoMin);
+  return v.length ? Math.min.apply(null, v) : null;
+}
+
+async function _sugAvaliarPonto(d, lat, lng, mk, casaPos) {
+  const el = document.getElementById('sugCaminhadaAoVivo');
+  if (el) el.innerHTML = 'Medindo o ganho neste ponto…';
+  try {
+    const antes = (d.top && d.top[0] && d.top[0]._melhor != null) ? d.top[0]._melhor : null;
+    const novo = await _sugMedirNoPonto(d, lat, lng);
+    _sugPerguntarDestino(d, lat, lng, mk, casaPos, { antes: antes, depois: novo });
+  } catch (e) {
+    _sugPerguntarDestino(d, lat, lng, mk, casaPos, null);
+  }
 }
 
 // Ao soltar, a pergunta que importa: e o endereco que estava errado, ou a
 // pessoa vai caminhar ate aqui? Sao decisoes diferentes e ficam em campos
 // diferentes — juntar apagaria onde ela mora.
-function _sugPerguntarDestino(d, lat, lng, mk) {
+function _sugPerguntarDestino(d, lat, lng, mk, casaPos, cmp) {
   const p = d.pax;
   if (!p) return;
-  const casa = (p.latCasa && p.lngCasa)
-    ? { lat: +p.latCasa, lng: +p.lngCasa } : null;
+  const casa = casaPos || ((p.latCasa && p.lngCasa)
+    ? { lat: +p.latCasa, lng: +p.lngCasa } : null);
   const metros = casa ? Math.round(_sugDist(casa, { lat: lat, lng: lng }) * 1000) : null;
   const raio = (typeof paxRaio === 'function') ? paxRaio(p) : 400;
   const semCoord = !casa && !(p.lat && p.lng);
@@ -7769,6 +7826,15 @@ function _sugPerguntarDestino(d, lat, lng, mk) {
   ov.style.zIndex = '10001';
 
   const coord = lat.toFixed(6) + ', ' + lng.toFixed(6);
+  let ganho = '';
+  if (cmp && cmp.antes != null && cmp.depois != null) {
+    const dif = cmp.depois - cmp.antes;
+    ganho = '<div class="sug-ganho ' + (dif < 0 ? 'bom' : dif > 0 ? 'ruim' : '') + '">' +
+      (dif < 0 ? 'A linha desvia <b>' + Math.abs(dif) + ' min a menos</b> para buscar aqui.'
+       : dif > 0 ? 'A linha desvia <b>' + dif + ' min a mais</b> para buscar aqui.'
+       : 'O desvio da linha <b>não muda</b>: dá no mesmo buscar aqui ou na casa.') +
+      '<small>Antes ' + cmp.antes + ' min · aqui ' + cmp.depois + ' min</small></div>';
+  }
   let dist = '';
   if (metros !== null) {
     dist = '<div class="sug-arr-dist' + (metros > raio ? ' alerta' : '') + '">' +
@@ -7781,7 +7847,7 @@ function _sugPerguntarDestino(d, lat, lng, mk) {
     '<div class="abs-caixa" style="max-width:460px">' +
       '<div class="abs-topo"><div class="abs-titulo">Mover ' + esc(p.nome) + ' para cá?</div></div>' +
       '<div class="abs-corpo">' +
-        '<div class="sug-arr-coord">' + coord + '</div>' + dist +
+        '<div class="sug-arr-coord">' + coord + '</div>' + ganho + dist +
         (semCoord
           ? '<button class="add-btn sug-arr-op" onclick="_sugAplicarArraste(\'ambos\')">' +
             '<b>Definir como endereço e ponto de embarque</b>' +
@@ -7812,7 +7878,10 @@ function _sugCancelarArraste() {
     const volta = new google.maps.LatLng(a.d.ponto.lat, a.d.ponto.lng);
     a.mk.setPosition(volta);
     if (_sugEstrela) _sugEstrela.setPosition(volta);
-    if (_sugCirculo) _sugCirculo.setCenter(volta);
+    if (_sugCaminhada && _sugCasa)
+      _sugCaminhada.setPath([_sugCasa.getPosition(), volta]);
+    const vv = document.getElementById('sugCaminhadaAoVivo');
+    if (vv) vv.style.display = 'none';
   }
   _sugArrastePendente = null;
 }
@@ -7929,12 +7998,30 @@ async function _sugDesenharMapa(rotaId) {
 
   // Passageiro NOVO em vermelho, maior
   const novo = { lat: d.ponto.lat, lng: d.ponto.lng };
+  // A CASA e uma referencia fixa: casa de bolinha pequena, sem arrastar.
+  const casaPos = (d.pax && d.pax.latCasa && d.pax.lngCasa)
+    ? { lat: +d.pax.latCasa, lng: +d.pax.lngCasa } : null;
+  if (casaPos) {
+    _sugCasa = new google.maps.Marker({ position: casaPos, map:_sugMapa, zIndex: 998,
+      title: 'Casa de ' + d.nome, clickable: false,
+      icon: { path: google.maps.SymbolPath.CIRCLE, scale: 7, fillColor:'#0f1115',
+              fillOpacity:1, strokeColor:'#ef4444', strokeWeight:2.5 } });
+    bounds.extend(casaPos);
+  }
+
   const mkNovo = new google.maps.Marker({ position: novo, map:_sugMapa, zIndex: 999,
-    title: 'Arraste para escolher o ponto de embarque de ' + d.nome,
+    title: 'Arraste para onde a van encosta',
     draggable: true, cursor: 'grab',
     icon: { path: google.maps.SymbolPath.CIRCLE, scale: 14, fillColor:'#ef4444',
             fillOpacity:1, strokeColor:'#fff', strokeWeight:3 } });
-  _sugLigarArraste(mkNovo, d);
+  // Linha entre a casa e o ponto: e a caminhada, e ela precisa ser visivel.
+  if (casaPos) {
+    _sugCaminhada = new google.maps.Polyline({ map:_sugMapa, path:[casaPos, novo],
+      strokeOpacity:0, clickable:false, zIndex: 3,
+      icons:[{ icon:{ path:'M 0,-1 0,1', strokeOpacity:0.9, strokeColor:'#ef4444', scale:2.5 },
+               offset:'0', repeat:'8px' }] });
+  }
+  _sugLigarArraste(mkNovo, d, casaPos);
   // A estrela por cima: desenhada, nao emoji. O label estava com text:'' —
   // resquicio de uma limpeza antiga que apagou o simbolo e ninguem repos.
   _sugEstrela = new google.maps.Marker({ position: novo, map:_sugMapa, zIndex: 1000, clickable: false,
@@ -7948,7 +8035,8 @@ async function _sugDesenharMapa(rotaId) {
   const _raio = (typeof paxRaio === 'function' && d.pax) ? paxRaio(d.pax)
               : ((typeof OPT_CFG !== 'undefined' && OPT_CFG.raioCaminhada) || 400);
   if (_raio > 0) {
-    _sugCirculo = new google.maps.Circle({ map:_sugMapa, center: novo, radius: _raio,
+    // centrado na CASA: o raio e o quanto a pessoa caminha a partir de onde mora
+    _sugCirculo = new google.maps.Circle({ map:_sugMapa, center: (casaPos || novo), radius: _raio,
       fillColor:'#ef4444', fillOpacity:0.07, strokeColor:'#ef4444',
       strokeOpacity:0.45, strokeWeight:1.5, clickable:false, zIndex: 1 });
     bounds.union(_sugCirculo.getBounds());
@@ -8119,8 +8207,15 @@ function sugRenderCartoes(source, rotaId, idx, p, turnoP, ponto, resultados) {
 
   const cores = ['#f59e0b', '#3b82f6', '#a855f7'];
   resultados.forEach((r, i) => { r.cor = cores[i % cores.length]; });
-  _sugMapaDados = { ponto: ponto, nome: p.nome, pax: p,
-    top: resultados.map(r => ({ rotaId: r.rota.id, cor: r.cor, linha: r.rota.linha, turno: r.rota.turno })) };
+  // Guarda o melhor acrescimo de cada linha: e o "antes" da comparacao quando
+  // o gestor arrastar o marcador para outro ponto.
+  const _melhorDe = r => {
+    const v = (r.posicoes || []).filter(x => x.viavel).map(x => x.acrescimoMin);
+    return v.length ? Math.min.apply(null, v) : null;
+  };
+  _sugMapaDados = { ponto: ponto, nome: p.nome, pax: p, seqs: resultados,
+    top: resultados.map(r => ({ rotaId: r.rota.id, cor: r.cor, linha: r.rota.linha,
+                                turno: r.rota.turno, _melhor: _melhorDe(r) })) };
 
   let html = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;' +
     'max-width:540px;width:100%;padding:18px;max-height:88vh;overflow:auto">';
