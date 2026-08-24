@@ -6956,7 +6956,7 @@ function absAbrirPainel() {
 
   if (!selecionados.length) { alert('Não há passageiros sem rota para encaixar.'); return; }
 
-  const semCoord = selecionados.filter(({ p }) => !p.lat || !p.lng);
+  const semCoord = selecionados.filter(({ p }) => !paxCoordEmbarque(p));
   if (semCoord.length) {
     alert('Antes de encaixar, ' + semCoord.length + ' passageiro(s) precisam de endereço localizado:\n\n' +
           semCoord.map(({ p }) => '· ' + p.nome).join('\n') +
@@ -7731,11 +7731,15 @@ async function _sugDesenharMapa(rotaId) {
 async function sugerirLinhaSemRota(source, rotaId, idx) {
   let p = (source === 'pool') ? SEM_ROTA[idx] : (DATA.find(r => r.id === rotaId) || { passageiros: [] }).passageiros[idx];
   if (!p) return;
-  if (!p.lat || !p.lng) {
-    alert('Este passageiro está sem coordenadas.\nAbra o cadastro (Editar), localize o endereço no mapa e salve. Depois use a sugestão.');
+  // A residencia serve de embarque quando nao ha ponto proprio.
+  const _pt = paxCoordEmbarque(p);
+  if (!_pt) {
+    alert('Este passageiro está sem coordenadas.\n\n' +
+          'Informe a coordenada da residência OU a do ponto de embarque no cadastro (Editar). ' +
+          'Só uma das duas já basta.');
     return;
   }
-  const ponto = { lat: parseFloat(p.lat), lng: parseFloat(p.lng) };
+  const ponto = { lat: _pt.lat, lng: _pt.lng };
   const tRaw = p.turno || p._turno;
   const turnoP = (tRaw && tRaw !== 'A Definir') ? tRaw : null;
 
@@ -10546,7 +10550,8 @@ async function plGerarPlano(preservarTravas) {
     const coordsMap = {};
     for (let i = 0; i < candidatos.length; i++) {
       const p = candidatos[i];
-      if (rtValidCoord(p.lat, p.lng)) { coordsMap[p.nome] = { lat: +p.lat, lng: +p.lng }; continue; }
+      const _c = paxCoordEmbarque(p);
+      if (_c && rtValidCoord(_c.lat, _c.lng)) { coordsMap[p.nome] = { lat: _c.lat, lng: _c.lng }; continue; }
       coordsMap[p.nome] = await getCoords(geocoder, p);
       await new Promise(r => setTimeout(r, 120));
     }
