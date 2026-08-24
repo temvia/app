@@ -7729,6 +7729,31 @@ function _sugMinToHm(m){ m=Math.max(0,Math.round(m)); const h=Math.floor(m/60)%2
 
 let _sugMapa = null, _sugMapaDados = null;
 
+// Desenha o caminho que o veiculo faz de verdade. Sem isto o mapa mostra
+// linha reta enquanto os minutos ao lado vem de rota real medida no Google —
+// duas informacoes diferentes na mesma tela, e a errada e a que se olha.
+let _sugRotaDesenhada = null;
+function _sugTracarRota(path, cor, provisorio) {
+  if (!path || path.length < 2) return;
+  try {
+    if (_sugRotaDesenhada) { _sugRotaDesenhada.setMap(null); _sugRotaDesenhada = null; }
+    // O Directions aceita 25 pontos intermediarios; acima disso fica o esboco.
+    if (path.length > 25) return;
+    new google.maps.DirectionsService().route({
+      origin: path[0], destination: path[path.length - 1],
+      waypoints: path.slice(1, -1).map(pt => ({ location: pt, stopover: true })),
+      optimizeWaypoints: false,
+      travelMode: google.maps.TravelMode.DRIVING
+    }, (res, st) => {
+      if (st !== 'OK' || !res.routes || !res.routes[0]) return;   // mantem o esboco
+      _sugRotaDesenhada = new google.maps.Polyline({
+        map: _sugMapa, path: res.routes[0].overview_path,
+        strokeColor: cor, strokeOpacity: 0.85, strokeWeight: 4, zIndex: 2, clickable: false });
+      if (provisorio) provisorio.setMap(null);
+    });
+  } catch (e) { console.warn('traçado real:', e && e.message); }
+}
+
 async function _sugDesenharMapa(rotaId) {
   const el = document.getElementById('sugMapa');
   if (!el || !_sugMapaDados) return;
@@ -7770,14 +7795,35 @@ async function _sugDesenharMapa(rotaId) {
   addMk({lat:EMPRESA_COORDS.lat,lng:EMPRESA_COORDS.lng}, 'F', '#3b82f6', 'Destino final');
 
   // Linha tracejada mostrando a ORDEM da rota
-  new google.maps.Polyline({ map:_sugMapa, path, strokeOpacity:0, icons:[{ icon:{ path:'M 0,-1 0,1', strokeOpacity:0.7, strokeColor:corLinha, scale:2 }, offset:'0', repeat:'12px' }] });
+  // Pontilhado como esboco imediato; o tracado real chega logo depois.
+  const _provisorio = new google.maps.Polyline({ map:_sugMapa, path, strokeOpacity:0,
+    icons:[{ icon:{ path:'M 0,-1 0,1', strokeOpacity:0.7, strokeColor:corLinha, scale:2 },
+             offset:'0', repeat:'12px' }] });
+  _sugTracarRota(path, corLinha, _provisorio);
 
   // Passageiro NOVO em vermelho, maior
   const novo = { lat: d.ponto.lat, lng: d.ponto.lng };
   new google.maps.Marker({ position: novo, map:_sugMapa, zIndex: 999, title: 'NOVO: ' + d.nome,
-    label: { text:'', color:'#fff', fontSize:'13px', fontWeight:'bold' },
-    icon: { path: google.maps.SymbolPath.CIRCLE, scale: 13, fillColor:'#ef4444', fillOpacity:1, strokeColor:'#fff', strokeWeight:3 } });
+    icon: { path: google.maps.SymbolPath.CIRCLE, scale: 14, fillColor:'#ef4444',
+            fillOpacity:1, strokeColor:'#fff', strokeWeight:3 } });
+  // A estrela por cima: desenhada, nao emoji. O label estava com text:'' —
+  // resquicio de uma limpeza antiga que apagou o simbolo e ninguem repos.
+  new google.maps.Marker({ position: novo, map:_sugMapa, zIndex: 1000, clickable: false,
+    icon: { path: 'M 0,-5 L 1.4,-1.6 L 5,-1.6 L 2.2,0.6 L 3.2,4.2 L 0,2 L -3.2,4.2 L -2.2,0.6 L -5,-1.6 L -1.4,-1.6 Z',
+            fillColor:'#fff', fillOpacity:1, strokeWeight:0, scale:1.5, anchor: new google.maps.Point(0,0) } });
   bounds.extend(novo);
+
+  // Raio de caminhada: ate onde esta pessoa pode ir a pe. E o circulo que
+  // mostra ONDE cabe um ponto de embarque — inclusive coletivo, quando os
+  // circulos de varios passageiros se cruzam.
+  const _raio = (typeof paxRaio === 'function' && d.pax) ? paxRaio(d.pax)
+              : ((typeof OPT_CFG !== 'undefined' && OPT_CFG.raioCaminhada) || 400);
+  if (_raio > 0) {
+    const circ = new google.maps.Circle({ map:_sugMapa, center: novo, radius: _raio,
+      fillColor:'#ef4444', fillOpacity:0.07, strokeColor:'#ef4444',
+      strokeOpacity:0.45, strokeWeight:1.5, clickable:false, zIndex: 1 });
+    bounds.union(circ.getBounds());
+  }
 
   _sugMapa.fitBounds(bounds, 40);
   const lbl = document.getElementById('sugMapaLinha');
@@ -7944,7 +7990,7 @@ function sugRenderCartoes(source, rotaId, idx, p, turnoP, ponto, resultados) {
 
   const cores = ['#f59e0b', '#3b82f6', '#a855f7'];
   resultados.forEach((r, i) => { r.cor = cores[i % cores.length]; });
-  _sugMapaDados = { ponto: ponto, nome: p.nome,
+  _sugMapaDados = { ponto: ponto, nome: p.nome, pax: p,
     top: resultados.map(r => ({ rotaId: r.rota.id, cor: r.cor, linha: r.rota.linha, turno: r.rota.turno })) };
 
   let html = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;' +
