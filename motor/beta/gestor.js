@@ -7368,29 +7368,49 @@ async function absRodar(novos) {
       await pedir(item.P, item.P.nome, alvos);
     }
 
-    // trechos internos que sobram ao remover alguém do meio + recolocação
+    // ---- REMANEJAMENTO: so quando o encaixe direto FALHA ----
+    // Este bloco media os trechos internos de TODAS as paradas de TODAS as
+    // linhas, mais os candidatos a mover contra as outras linhas — mesmo
+    // quando ninguem precisava sair do lugar. Era 85% do custo, gasto
+    // antes de saber se seria usado.
     const T0 = (a, b) => (a === b ? 0 : (tabela[chave(a, b)] === undefined ? null : tabela[chave(a, b)]));
-    for (const L of linhas) {
-      for (let k = 0; k < L.stops.length; k++) {
-        const antes = k === 0 ? G : L.stops[k - 1];
-        const depois = k === L.stops.length - 1 ? E : L.stops[k + 1];
-        if (T0(nomeDe(antes), nomeDe(depois)) == null) {
-          const r = await sugTemposDoPonto({ lat: antes.lat, lng: antes.lng }, [depois]);
-          if (r.ida[0]) registrar(nomeDe(antes), nomeDe(depois), r.ida[0].seg);
-          trechos += r.elementos;
-        }
+
+    // Cabe alguem direto, sem mexer em ninguem?
+    let cabeDireto = false;
+    for (const item of porNovo) {
+      for (const L of item.linhas) {
+        const r = absInserir(L, item.P, T0);
+        if (r && r.ok) { cabeDireto = true; break; }
       }
-      // candidatos a sair medidos contra as outras linhas
-      const cands = L.stops.slice()
-        .map((s, k) => ({ s: s, k: k, dG: T0('G', s.nome) == null ? 1e9 : T0('G', s.nome) }))
-        .sort((a, b) => a.dG - b.dG)
-        .slice(0, ABS_CFG.candidatosPorLinha);
-      for (const c of cands) {
-        const alvos = [];
-        const vistos = new Set([c.s.nome]);
-        linhas.forEach(L2 => { if (L2.id === L.id) return;
-          alvosDe(L2).forEach(a => { const n = nomeDe(a); if (vistos.has(n)) return; vistos.add(n); alvos.push(a); }); });
-        if (alvos.length) await pedir(c.s, c.s.nome, alvos);
+      if (cabeDireto) break;
+    }
+
+    if (!cabeDireto) {
+      absPainel('<div class="abs-carregando">Ninguém coube direto.<br>' +
+        '<span>Medindo remanejamentos possíveis…</span></div>');
+      for (const L of linhas) {
+        for (let k = 0; k < L.stops.length; k++) {
+          const antes = k === 0 ? G : L.stops[k - 1];
+          const depois = k === L.stops.length - 1 ? E : L.stops[k + 1];
+          if (T0(nomeDe(antes), nomeDe(depois)) == null) {
+            const r = await sugTemposDoPonto({ lat: antes.lat, lng: antes.lng }, [depois]);
+            if (r.ida[0]) registrar(nomeDe(antes), nomeDe(depois), r.ida[0].seg);
+            trechos += r.elementos;
+          }
+        }
+        const cands = L.stops.slice()
+          .map((s2, k) => ({ s: s2, k: k, dG: T0('G', s2.nome) == null ? 1e9 : T0('G', s2.nome) }))
+          .sort((a, b) => a.dG - b.dG)
+          .slice(0, ABS_CFG.candidatosPorLinha);
+        for (const c of cands) {
+          const alvos = [];
+          const vistos2 = new Set([c.s.nome]);
+          linhas.forEach(L2 => { if (L2.id === L.id) return;
+            absParadasRelevantes(L2, c.s, ABS_CFG.paradasRelevantes).forEach(a => {
+              const n = nomeDe(a); if (vistos2.has(n)) return; vistos2.add(n); alvos.push(a); });
+          });
+          if (alvos.length) await pedir(c.s, c.s.nome, alvos);
+        }
       }
     }
 
