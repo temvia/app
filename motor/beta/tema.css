@@ -2118,3 +2118,10 @@ html[data-ambiente="teste"] .tv-shell { border: 2px solid rgba(255,176,0,.35); }
 }
 .tn-alt-campos .form-input { padding: 6px 9px; font-size: 12.5px; width: auto; }
 .tn-alt-campos span { font-size: 12px; color: var(--muted); }
+
+.pax-casa { display: flex; gap: 9px; align-items: flex-start; cursor: pointer;
+  font-size: 12.5px; line-height: 1.5; padding: 10px 12px; border-radius: 10px;
+  background: var(--surface2); border: 1px solid var(--border); }
+.pax-casa input { margin-top: 2px; cursor: pointer; flex-shrink: 0; }
+.pax-casa b { color: var(--text); }
+.pax-casa span { color: var(--muted); }
