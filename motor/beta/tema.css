@@ -2152,3 +2152,15 @@ html[data-ambiente="teste"] .tv-shell { border: 2px solid rgba(255,176,0,.35); }
 .sug-ganho.ruim { border-color: rgba(224,169,74,.45); background: rgba(224,169,74,.08); }
 .sug-ganho b { color: var(--text); }
 .sug-ganho small { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* resumo da rota no cabeçalho da linha */
+.tv-sum-res { display: flex; flex-direction: column; gap: 4px; margin-top: 2px; }
+.tv-sum-r { display: flex; justify-content: space-between; gap: 10px;
+  font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+.tv-sum-r b { color: var(--text); font-weight: 600; white-space: nowrap; }
+.tv-sum-r b.ruim { color: var(--red); }
+.tv-sum-r b.bom { color: var(--green); }
+.tv-sum-det { font-size: 10.5px; color: var(--muted); line-height: 1.45; margin-top: 2px;
+  padding-top: 5px; border-top: 1px solid var(--border); }
+.tv-sum-vazio { font-size: 11.5px; color: var(--muted); line-height: 1.55; }
+.tv-sum-vazio b { color: var(--accent); }
