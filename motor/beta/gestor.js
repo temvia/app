@@ -7107,7 +7107,11 @@ async function absRodar(novos) {
 
     let trechos = 0;
     const pedir = async (ponto, nomePonto, alvos) => {
-      const r = await sugTemposDoPonto({ lat: +ponto.lat, lng: +ponto.lng }, alvos);
+      // A residencia serve de embarque: ler ponto.lat direto dava NaN para
+      // quem so tem a coordenada de casa, e a medicao voltava vazia.
+      const c = paxCoordEmbarque(ponto) || { lat: +ponto.lat, lng: +ponto.lng };
+      if (!isFinite(c.lat) || !isFinite(c.lng)) return;
+      const r = await sugTemposDoPonto({ lat: c.lat, lng: c.lng }, alvos);
       alvos.forEach((a, k) => {
         if (r.volta[k]) registrar(nomeDe(a), nomePonto, r.volta[k].seg);
         if (r.ida[k]) registrar(nomePonto, nomeDe(a), r.ida[k].seg);
@@ -7226,8 +7230,10 @@ function absIrCadastro(nome) {
   absFecharPainel();
   const p = absAcharPax(nome);
   if (!p) return;
+  // Passageiro sem rota abre pelo id especial '__semrota__' — nao existe
+  // funcao propria para isso, e inventar uma quebrava o botao em silencio.
   const i = (typeof SEM_ROTA !== 'undefined') ? SEM_ROTA.findIndex(x => x === p) : -1;
-  if (i >= 0 && typeof openEditModalSemRota === 'function') return openEditModalSemRota(i);
+  if (i >= 0) return openEditModal('__semrota__', i);
   for (const r of DATA) {
     const j = r.passageiros.findIndex(x => x === p);
     if (j >= 0) return openEditModal(r.id, j);
@@ -7236,7 +7242,9 @@ function absIrCadastro(nome) {
 function absIrSugerir(nome) {
   absFecharPainel();
   const p = absAcharPax(nome);
-  if (p && typeof sugerirDoCadastro === 'function') sugerirDoCadastro(p);
+  if (!p) return;
+  // sem o setTimeout a sugestao abre atras do painel que esta fechando
+  setTimeout(() => { try { sugerirDoCadastro(p); } catch (e) { console.warn(e); } }, 80);
 }
 
 function absRenderCenarios() {
