@@ -7487,8 +7487,8 @@ function absDiagnostico(novos, cenarios) {
       : 'nenhuma linha comporta: ou esta cheia, ou o desvio passa do limite de ' +
         OPT_CFG.maxRideMin + ' min por passageiro';
     const btn = semCoord
-      ? '<button class="export-btn" onclick="absIrCadastro(' + JSON.stringify(p.nome) + ')">Abrir cadastro</button>'
-      : '<button class="export-btn" onclick="absIrSugerir(' + JSON.stringify(p.nome) + ')">Ver posicoes no mapa</button>';
+      ? '<button class="export-btn" onclick="absIrCadastro(&#39;' + escAttr(p.nome) + '&#39;)">Abrir cadastro</button>'
+      : '<button class="export-btn" onclick="absIrSugerir(&#39;' + escAttr(p.nome) + '&#39;)">Ver posicoes no mapa</button>';
     return '<div class="abs-diag-l"><div><b>' + esc(p.nome) + '</b>' +
            '<span>' + esc(motivo) + '</span></div>' + btn + '</div>';
   }).join('');
@@ -7498,6 +7498,20 @@ function absDiagnostico(novos, cenarios) {
     'antes de chegar a esta conclusao.</div>' + linhas +
     '<div class="abs-diag-pe">Criar linha nova resolve, mas e o caminho mais caro. ' +
     'Confira antes se falta coordenada ou se da para mover o ponto de embarque.</div></div>';
+}
+
+// Escapa um texto para caber DENTRO de um atributo HTML entre aspas.
+// Sem isto, nome com aspas, & ou < quebra o atributo — e o botao morre
+// em silencio, sem erro no clique.
+function escAttr(txt) {
+  // A string JS fica entre aspas SIMPLES dentro do atributo. Entao a aspa
+  // simples do texto precisa virar escape JS (\\'), e so depois o texto
+  // inteiro e escapado para o atributo HTML.
+  return String(txt || '')
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function absAcharPax(nome) {
@@ -7600,7 +7614,7 @@ function absRenderCenarios() {
               ' m de casa' + (cam > raio ? ' — acima do raio de ' + raio + ' m' : '') + '</div>'
             : (pax && paxEmbarcaEmCasa(pax) ? '<div class="abs-item-cam">Embarca na porta</div>' : '')) +
           '</div>' +
-          '<button class="export-btn abs-item-btn" onclick="absVerNoMapa(' + JSON.stringify(e.nome) + ')" ' +
+          '<button class="export-btn abs-item-btn" onclick="absVerNoMapa(&#39;' + escAttr(e.nome) + '&#39;)" ' +
           'title="Ver no mapa e ajustar o ponto de embarque">Ver no mapa</button>' +
           '</div>';
       });
