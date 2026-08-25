@@ -1491,6 +1491,28 @@ async function vgFilaEnviar() {
     for (const id of Object.keys(ultimo)) {
       await setDoc(doc(db, CLIENTE_ID, 'viagem_' + id), ultimo[id], { merge: true });
     }
+    // O passageiro le a lista do dia: sem isto ele teria de adivinhar o id
+    // da viagem. So os campos que ele precisa — nem tudo da viagem interessa
+    // a quem espera no ponto.
+    try {
+      const { getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      const ref = doc(db, CLIENTE_ID, 'viagens_do_dia');
+      const snap = await getDoc(ref);
+      const hoje = (new Date()).toISOString().slice(0, 10);
+      let lista = (snap.exists() && snap.data().lista) ? snap.data().lista : [];
+      lista = lista.filter(v => v.data === hoje);
+      Object.keys(ultimo).forEach(id => {
+        const v = ultimo[id];
+        const publico = { id: v.id, linha: v.linha, turno: v.turno, data: v.data,
+          sentido: v.sentido, estado: v.estado, motorista: v.motorista,
+          inicioProgramado: v.inicioProgramado, chegadaProgramada: v.chegadaProgramada,
+          eventos: (v.eventos || []).map(e => ({ tipo: e.tipo, viajante: e.viajante,
+            previsto: e.previsto, real: e.real, motivo: e.motivo })) };
+        const k = lista.findIndex(x => x.id === id);
+        if (k >= 0) lista[k] = publico; else lista.push(publico);
+      });
+      await setDoc(ref, { lista: lista, updatedAt: new Date().toISOString() }, { merge: true });
+    } catch (e) { console.warn('[viagem] lista do dia:', e && e.message); }
   } catch (e) {
     console.warn('[viagem] fila:', e && e.message);
   }

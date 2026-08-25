@@ -6,15 +6,15 @@
    Fase 2 da profissionalizacao (extracao + limpeza visual).
    ============================================================ */
 
-const CSS_MOTOR = "\n:root {\n  --bg: #0d1117; --surface: #161b22; --surface2: #1c2330; --surface3: #232b3a;\n  --border: #2d3748; --accent: #f59e0b; --accent2: #3b82f6; --green: #10b981;\n  --red: #ef4444; --text: #e6edf3; --muted: #8b949e;\n}\n* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }\nbody { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; max-width: 600px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 70px; }\nh1,h2,h3,.brand { font-family: 'Barlow', sans-serif; }\n.hidden { display: none !important; }\n.login-wrap { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 30px 24px; }\n.login-logo { text-align: center; margin-bottom: 30px; }\n.login-logo .ico { font-size: 54px; }\n.login-logo .brand { font-size: 30px; font-weight: 800; letter-spacing: 1px; margin-top: 6px; }\n.login-logo .sub { color: var(--muted); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }\n.login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 26px 22px; }\n.login-card h2 { font-size: 20px; margin-bottom: 6px; }\n.login-card p { color: var(--muted); font-size: 13px; margin-bottom: 18px; }\n.field-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }\n.input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); font-size: 17px; font-family: inherit; }\n.input:focus { outline: none; border-color: var(--accent); }\n.btn { width: 100%; background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; font-family: 'Barlow',sans-serif; cursor: pointer; margin-top: 16px; }\n.btn:active { transform: scale(0.98); }\n.login-err { color: var(--red); font-size: 13px; margin-top: 12px; text-align: center; display: none; }\n.app-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 18px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 50; }\n.app-header .ava { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),#d97706); display: flex; align-items: center; justify-content: center; font-weight: 800; color: #000; font-size: 17px; font-family: 'Barlow'; }\n.app-header .who { flex: 1; min-width:0; }\n.app-header .who .nm { font-weight: 700; font-size: 15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }\n.app-header .who .ln { font-size: 12px; color: var(--muted); }\n.app-header .logout { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }\n.view { padding: 18px; }\n.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 14px; }\n.card-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }\n.big { font-size: 28px; font-weight: 800; font-family: 'Barlow'; color: var(--accent); }\n.vou-wrap { display: flex; gap: 10px; margin-top: 4px; }\n.vou-btn { flex: 1; padding: 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface2); color: var(--text); font-family: 'Barlow'; font-weight: 700; font-size: 14px; cursor: pointer; }\n.vou-btn.sim.on { background: rgba(16,185,129,0.15); border-color: var(--green); color: var(--green); }\n.vou-btn.ida.on { background: rgba(59,130,246,0.15); border-color: var(--accent2); color: var(--accent2); }\n.vou-btn.volta.on { background: rgba(245,158,11,0.15); border-color: var(--accent); color: var(--accent); }\n.vou-btn.nao.on { background: rgba(239,68,68,0.15); border-color: var(--red); color: var(--red); }\n.track-card { background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.04)); border-color: rgba(59,130,246,0.3); }\n.estrela { font-size: 38px; cursor: pointer; color: #f59e0b; line-height: 1; user-select: none; transition: transform 0.1s; }\n.estrela:active { transform: scale(1.2); }\n.track-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--accent2); color: #fff; border: none; border-radius: 12px; padding: 14px; font-weight: 700; font-family: 'Barlow'; font-size: 15px; cursor: pointer; text-decoration: none; }\n.track-off { text-align: center; color: var(--muted); font-size: 13px; padding: 6px; }\n.live-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse 1.5s infinite; }\n@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }\n.chat-wrap { padding: 0; }\n.chat-msgs { padding: 16px; min-height: calc(100vh - 270px); display: flex; flex-direction: column; gap: 10px; }\n.msg { max-width: 80%; padding: 10px 13px; border-radius: 14px; font-size: 14px; line-height: 1.4; }\n.msg .meta { font-size: 11px; margin-bottom: 3px; font-weight: 700; }\n.msg .time { font-size: 10px; color: var(--muted); margin-top: 3px; text-align: right; }\n.msg.gestor { align-self: flex-start; background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.25); }\n.msg.gestor .meta { color: var(--accent); }\n.msg.motorista { align-self: flex-start; background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.25); }\n.msg.motorista .meta { color: var(--accent2); }\n.msg.passageiro { align-self: flex-start; background: var(--surface2); border: 1px solid var(--border); }\n.msg.passageiro .meta { color: var(--muted); }\n.msg.eu { align-self: flex-end; background: var(--surface3); border: 1px solid var(--border); }\n.msg.eu .meta { color: var(--green); text-align: right; }\n.msg.sistema { align-self: center; background: transparent; color: var(--muted); font-size: 12px; text-align: center; max-width: 90%; }\n.msg.loc { align-self: flex-start; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); }\n.msg.loc .meta { color: var(--green); }\n.chat-input { position: sticky; bottom: 60px; background: var(--surface); border-top: 1px solid var(--border); padding: 10px; display: flex; gap: 8px; }\n.chat-input input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 22px; padding: 11px 16px; color: var(--text); font-size: 14px; font-family: inherit; }\n.chat-input input:focus { outline: none; border-color: var(--accent); }\n.chat-input button { background: var(--accent); border: none; border-radius: 50%; width: 44px; height: 44px; font-size: 18px; cursor: pointer; flex-shrink: 0; }\n.aviso { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 14px; margin-bottom: 12px; }\n.aviso .top { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 6px; }\n.aviso .txt { font-size: 14px; line-height: 1.5; }\n.aviso.pdf { border-left-color: var(--accent2); }\n.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; background: var(--surface); border-top: 1px solid var(--border); display: flex; z-index: 50; }\n.bnav { flex: 1; padding: 9px 4px 7px; text-align: center; background: none; border: none; color: var(--muted); cursor: pointer; position: relative; }\n.bnav .ic { font-size: 21px; display: block; }\n.bnav .lb { font-size: 10px; font-family: 'Barlow'; font-weight: 700; margin-top: 1px; }\n.bnav.active { color: var(--accent); }\n.bnav .dot { position: absolute; top: 6px; right: 28%; width: 9px; height: 9px; background: var(--red); border-radius: 50%; }\n.loading { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; color:var(--muted); }\n.spin { width:38px; height:38px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:rot 0.8s linear infinite; }\n@keyframes rot { to { transform: rotate(360deg); } }\n/* ===== Notificação in-app (banner) ===== */\n#notifBanner { position: fixed; top: 12px; left: 50%; transform: translateX(-50%) translateY(-150%); width: calc(100% - 24px); max-width: 560px; background: var(--surface); border: 1px solid var(--accent); border-left: 5px solid var(--accent); border-radius: 12px; padding: 12px 14px; z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; transition: transform 0.35s cubic-bezier(.2,.8,.2,1); cursor: pointer; }\n#notifBanner.show { transform: translateX(-50%) translateY(0); }\n#notifBanner .nf-ic { font-size: 24px; flex-shrink: 0; }\n#notifBanner .nf-tt { font-size: 14px; font-weight: 700; color: var(--text); font-family: 'Barlow'; }\n#notifBanner .nf-tx { font-size: 12px; color: var(--muted); margin-top: 2px; }\n#notifBanner .nf-cl { margin-left: auto; color: var(--muted); font-size: 18px; background: none; border: none; cursor: pointer; flex-shrink: 0; }\n\n\n/* Safe-area: evita que o cabecalho fique atras da barra de status do celular */\n.app-header { padding-top: calc(14px + env(safe-area-inset-top)) !important; }\n\n/* --- Icones em SVG (fase 2: profissionalizacao) --- */\n.login-logo .ico svg { width: 54px; height: 54px; color: var(--accent); }\n.app-header .logout svg { width: 20px; height: 20px; display: block; }\n.bnav .ic svg { width: 22px; height: 22px; display: block; margin: 0 auto; }\n.chat-send button svg, #viewChat button svg { width: 20px; height: 20px; display: block; }\n.nf-ic:empty { display: none; }\n\n.marca-bar { display:flex; align-items:center; gap:8px; padding: calc(10px + env(safe-area-inset-top)) 16px 8px; }\n.marca-bar .mb-ico { display:flex; color: var(--accent); }\n.marca-bar .mb-ico svg { width:20px; height:20px; }\n.marca-bar .mb-nome { font-family:'Barlow',sans-serif; font-weight:800; font-size:15px; letter-spacing:.5px; color: var(--accent); }\n.marca-bar .mb-sub { font-size:11px; color: var(--muted); letter-spacing:.6px; text-transform:uppercase; }\n.marca-bar + .app-header { padding-top: 10px !important; }\n";
+const CSS_MOTOR = "\n:root {\n  --bg: #0d1117; --surface: #161b22; --surface2: #1c2330; --surface3: #232b3a;\n  --border: #2d3748; --accent: #f59e0b; --accent2: #3b82f6; --green: #10b981;\n  --red: #ef4444; --text: #e6edf3; --muted: #8b949e;\n}\n* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }\nbody { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; max-width: 600px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 70px; }\nh1,h2,h3,.brand { font-family: 'Barlow', sans-serif; }\n.hidden { display: none !important; }\n.login-wrap { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 30px 24px; }\n.login-logo { text-align: center; margin-bottom: 30px; }\n.login-logo .ico { font-size: 54px; }\n.login-logo .brand { font-size: 30px; font-weight: 800; letter-spacing: 1px; margin-top: 6px; }\n.login-logo .sub { color: var(--muted); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }\n.login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 26px 22px; }\n.login-card h2 { font-size: 20px; margin-bottom: 6px; }\n.login-card p { color: var(--muted); font-size: 13px; margin-bottom: 18px; }\n.field-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }\n.input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); font-size: 17px; font-family: inherit; }\n.input:focus { outline: none; border-color: var(--accent); }\n.btn { width: 100%; background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; font-family: 'Barlow',sans-serif; cursor: pointer; margin-top: 16px; }\n.btn:active { transform: scale(0.98); }\n.login-err { color: var(--red); font-size: 13px; margin-top: 12px; text-align: center; display: none; }\n.app-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 18px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 50; }\n.app-header .ava { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),#d97706); display: flex; align-items: center; justify-content: center; font-weight: 800; color: #000; font-size: 17px; font-family: 'Barlow'; }\n.app-header .who { flex: 1; min-width:0; }\n.app-header .who .nm { font-weight: 700; font-size: 15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }\n.app-header .who .ln { font-size: 12px; color: var(--muted); }\n.app-header .logout { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }\n.view { padding: 18px; }\n.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 14px; }\n.card-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }\n.big { font-size: 28px; font-weight: 800; font-family: 'Barlow'; color: var(--accent); }\n.vou-wrap { display: flex; gap: 10px; margin-top: 4px; }\n.vou-btn { flex: 1; padding: 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface2); color: var(--text); font-family: 'Barlow'; font-weight: 700; font-size: 14px; cursor: pointer; }\n.vou-btn.sim.on { background: rgba(16,185,129,0.15); border-color: var(--green); color: var(--green); }\n.vou-btn.ida.on { background: rgba(59,130,246,0.15); border-color: var(--accent2); color: var(--accent2); }\n.vou-btn.volta.on { background: rgba(245,158,11,0.15); border-color: var(--accent); color: var(--accent); }\n.vou-btn.nao.on { background: rgba(239,68,68,0.15); border-color: var(--red); color: var(--red); }\n.track-card { background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.04)); border-color: rgba(59,130,246,0.3); }\n.estrela { font-size: 38px; cursor: pointer; color: #f59e0b; line-height: 1; user-select: none; transition: transform 0.1s; }\n.estrela:active { transform: scale(1.2); }\n.track-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--accent2); color: #fff; border: none; border-radius: 12px; padding: 14px; font-weight: 700; font-family: 'Barlow'; font-size: 15px; cursor: pointer; text-decoration: none; }\n.track-off { text-align: center; color: var(--muted); font-size: 13px; padding: 6px; }\n.live-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse 1.5s infinite; }\n@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }\n.chat-wrap { padding: 0; }\n.chat-msgs { padding: 16px; min-height: calc(100vh - 270px); display: flex; flex-direction: column; gap: 10px; }\n.msg { max-width: 80%; padding: 10px 13px; border-radius: 14px; font-size: 14px; line-height: 1.4; }\n.msg .meta { font-size: 11px; margin-bottom: 3px; font-weight: 700; }\n.msg .time { font-size: 10px; color: var(--muted); margin-top: 3px; text-align: right; }\n.msg.gestor { align-self: flex-start; background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.25); }\n.msg.gestor .meta { color: var(--accent); }\n.msg.motorista { align-self: flex-start; background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.25); }\n.msg.motorista .meta { color: var(--accent2); }\n.msg.passageiro { align-self: flex-start; background: var(--surface2); border: 1px solid var(--border); }\n.msg.passageiro .meta { color: var(--muted); }\n.msg.eu { align-self: flex-end; background: var(--surface3); border: 1px solid var(--border); }\n.msg.eu .meta { color: var(--green); text-align: right; }\n.msg.sistema { align-self: center; background: transparent; color: var(--muted); font-size: 12px; text-align: center; max-width: 90%; }\n.msg.loc { align-self: flex-start; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); }\n.msg.loc .meta { color: var(--green); }\n.chat-input { position: sticky; bottom: 60px; background: var(--surface); border-top: 1px solid var(--border); padding: 10px; display: flex; gap: 8px; }\n.chat-input input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 22px; padding: 11px 16px; color: var(--text); font-size: 14px; font-family: inherit; }\n.chat-input input:focus { outline: none; border-color: var(--accent); }\n.chat-input button { background: var(--accent); border: none; border-radius: 50%; width: 44px; height: 44px; font-size: 18px; cursor: pointer; flex-shrink: 0; }\n.aviso { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 14px; margin-bottom: 12px; }\n.aviso .top { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 6px; }\n.aviso .txt { font-size: 14px; line-height: 1.5; }\n.aviso.pdf { border-left-color: var(--accent2); }\n.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; background: var(--surface); border-top: 1px solid var(--border); display: flex; z-index: 50; }\n.bnav { flex: 1; padding: 9px 4px 7px; text-align: center; background: none; border: none; color: var(--muted); cursor: pointer; position: relative; }\n.bnav .ic { font-size: 21px; display: block; }\n.bnav .lb { font-size: 10px; font-family: 'Barlow'; font-weight: 700; margin-top: 1px; }\n.bnav.active { color: var(--accent); }\n.bnav .dot { position: absolute; top: 6px; right: 28%; width: 9px; height: 9px; background: var(--red); border-radius: 50%; }\n.loading { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; color:var(--muted); }\n.spin { width:38px; height:38px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:rot 0.8s linear infinite; }\n@keyframes rot { to { transform: rotate(360deg); } }\n/* ===== Notificação in-app (banner) ===== */\n#notifBanner { position: fixed; top: 12px; left: 50%; transform: translateX(-50%) translateY(-150%); width: calc(100% - 24px); max-width: 560px; background: var(--surface); border: 1px solid var(--accent); border-left: 5px solid var(--accent); border-radius: 12px; padding: 12px 14px; z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; transition: transform 0.35s cubic-bezier(.2,.8,.2,1); cursor: pointer; }\n#notifBanner.show { transform: translateX(-50%) translateY(0); }\n#notifBanner .nf-ic { font-size: 24px; flex-shrink: 0; }\n#notifBanner .nf-tt { font-size: 14px; font-weight: 700; color: var(--text); font-family: 'Barlow'; }\n#notifBanner .nf-tx { font-size: 12px; color: var(--muted); margin-top: 2px; }\n#notifBanner .nf-cl { margin-left: auto; color: var(--muted); font-size: 18px; background: none; border: none; cursor: pointer; flex-shrink: 0; }\n\n\n/* Safe-area: evita que o cabecalho fique atras da barra de status do celular */\n.app-header { padding-top: calc(14px + env(safe-area-inset-top)) !important; }\n\n/* --- Icones em SVG (fase 2: profissionalizacao) --- */\n.login-logo .ico svg { width: 54px; height: 54px; color: var(--accent); }\n.app-header .logout svg { width: 20px; height: 20px; display: block; }\n.bnav .ic svg { width: 22px; height: 22px; display: block; margin: 0 auto; }\n.chat-send button svg, #viewChat button svg { width: 20px; height: 20px; display: block; }\n.nf-ic:empty { display: none; }\n\n.marca-bar { display:flex; align-items:center; gap:8px; padding: calc(10px + env(safe-area-inset-top)) 16px 8px; }\n.marca-bar .mb-ico { display:flex; color: var(--accent); }\n.marca-bar .mb-ico svg { width:20px; height:20px; }\n.marca-bar .mb-nome { font-family:'Barlow',sans-serif; font-weight:800; font-size:0.9375rem; letter-spacing:.5px; color: var(--accent); }\n.marca-bar .mb-sub { font-size:0.6875rem; color: var(--muted); letter-spacing:.6px; text-transform:uppercase; }\n.marca-bar + .app-header { padding-top: 10px !important; }\n";
 
 const TV_CSS_HORA = '<style>' +
-  '.hor-nota{font-size:11.5px;line-height:1.5;margin-top:9px;padding:8px 10px;' +
+  '.hor-nota{font-size:0.7188rem;line-height:1.5;margin-top:9px;padding:8px 10px;' +
   'border-radius:9px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);' +
   'color:#f0c070}' +
   '.hor-nota-off{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.35);color:#f08a8a}' +
   '</style>';
-const HTML_MOTOR = "\n<!-- Banner de notificação in-app -->\n<div id=\"notifBanner\" onclick=\"notifClick()\">\n  <span class=\"nf-ic\" id=\"notifIc\"></span>\n  <div style=\"flex:1;min-width:0\">\n    <div class=\"nf-tt\" id=\"notifTt\">Notificação</div>\n    <div class=\"nf-tx\" id=\"notifTx\"></div>\n  </div>\n  <button class=\"nf-cl\" onclick=\"event.stopPropagation();fecharNotif()\">✕</button>\n</div>\n\n<div id=\"loadingScreen\" class=\"loading\">\n  <div class=\"spin\"></div>\n  <div>Carregando...</div>\n</div>\n\n<div id=\"loginScreen\" class=\"login-wrap hidden\">\n  <div class=\"login-logo\">\n    <div class=\"ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 16V8a1 1 0 0 1 1-1h10v9\"/><path d=\"M13 10h4l3 3.5V16\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/><path d=\"M9 17h6\"/></svg></div>\n    <div class=\"brand\" id=\"brandLogin\"></div>\n    <div class=\"sub\">Transporte · Passageiro</div>\n  </div>\n  <div class=\"login-card\">\n    <h2>Entrar</h2>\n    <p>Digite seu telefone cadastrado para acessar sua linha.</p>\n    <label class=\"field-label\">Telefone</label>\n    <input class=\"input\" id=\"loginTel\" type=\"tel\" placeholder=\"(15) 99999-9999\" inputmode=\"tel\" onkeydown=\"if(event.key==='Enter'){event.preventDefault();fazerLogin();}\">\n    <button class=\"btn\" id=\"loginBtn\" onclick=\"fazerLogin()\">Entrar</button>\n    <div class=\"login-err\" id=\"loginErr\">Telefone não encontrado. Confira com o gestor.</div>\n  </div>\n</div>\n\n<div id=\"appScreen\" class=\"hidden\">\n  <div class=\"marca-bar\"><span class=\"mb-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 16V8a1 1 0 0 1 1-1h10v9\"/><path d=\"M13 10h4l3 3.5V16\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/><path d=\"M9 17h6\"/></svg></span><span class=\"mb-nome\" id=\"brandApp\"></span><span class=\"mb-sub\">Passageiro</span></div>\n  <div class=\"app-header\">\n    <div class=\"ava\" id=\"hAva\">M</div>\n    <div class=\"who\">\n      <div class=\"nm\" id=\"hNome\">—</div>\n      <div class=\"ln\" id=\"hLinha\">—</div>\n    </div>\n    <button class=\"logout\" onclick=\"logout()\" title=\"Sair\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10 5H6a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4\"/><path d=\"M15 8l4 4-4 4\"/><path d=\"M19 12H9\"/></svg></button>\n  </div>\n\n  <div id=\"viewInicio\" class=\"view\">\n    <div class=\"card\" id=\"rotaExtraCard\" style=\"display:none;border-color:rgba(236,72,153,0.5);background:linear-gradient(135deg,rgba(236,72,153,0.12),rgba(236,72,153,0.03))\">\n      <div class=\"card-lbl\" style=\"color:#ec4899\">Rota extra de hoje</div>\n      <div id=\"rotaExtraConteudo\"></div>\n    </div>\n    <div class=\"card track-card\">\n      <div class=\"card-lbl\">Localização da van</div>\n      <div id=\"trackArea\"><div class=\"track-off\">O motorista ainda não compartilhou a localização hoje.</div></div>\n    </div>\n\n    <div class=\"card\" id=\"horarioDiaCard\" style=\"display:none;border-color:rgba(245,158,11,0.4);background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.03))\">\n      <div class=\"card-lbl\" style=\"color:var(--accent)\">Horário especial de hoje</div>\n      <div id=\"horarioDiaConteudo\"></div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Você vai hoje?</div>\n      <div class=\"vou-wrap\" style=\"flex-wrap:wrap\">\n        <button class=\"vou-btn sim\" id=\"btnVou\" onclick=\"marcarPresenca('ambos')\" style=\"flex:1 1 100%\">Vou (ida e volta)</button>\n        <button class=\"vou-btn ida\" id=\"btnIda\" onclick=\"marcarPresenca('ida')\" style=\"flex:1 1 45%\">→ Só ida</button>\n        <button class=\"vou-btn volta\" id=\"btnVolta\" onclick=\"marcarPresenca('volta')\" style=\"flex:1 1 45%\">← Só volta</button>\n        <button class=\"vou-btn nao\" id=\"btnNaoVou\" onclick=\"marcarPresenca('nao')\" style=\"flex:1 1 100%\">Não vou hoje</button>\n      </div>\n      <div id=\"presencaMsg\" style=\"font-size:12px;color:var(--muted);margin-top:10px;text-align:center\"></div>\n    </div>\n\n    <div class=\"card\" id=\"avaliacaoCard\">\n      <div class=\"card-lbl\">Avalie sua viagem de hoje</div>\n      <div id=\"avaliacaoForm\">\n        <div style=\"display:flex;justify-content:center;gap:8px;margin:8px 0\" id=\"estrelas\">\n          <span class=\"estrela\" data-v=\"1\" onclick=\"selecionarEstrela(1)\">☆</span>\n          <span class=\"estrela\" data-v=\"2\" onclick=\"selecionarEstrela(2)\">☆</span>\n          <span class=\"estrela\" data-v=\"3\" onclick=\"selecionarEstrela(3)\">☆</span>\n          <span class=\"estrela\" data-v=\"4\" onclick=\"selecionarEstrela(4)\">☆</span>\n          <span class=\"estrela\" data-v=\"5\" onclick=\"selecionarEstrela(5)\">☆</span>\n        </div>\n        <div id=\"avJustificativaWrap\" style=\"display:none;margin-top:8px\">\n          <textarea class=\"input\" id=\"avJustificativa\" rows=\"2\" placeholder=\"Conte o que podemos melhorar...\" style=\"resize:vertical;font-size:14px\"></textarea>\n        </div>\n        <button class=\"btn\" style=\"margin-top:10px\" onclick=\"enviarAvaliacao()\" id=\"btnAvaliar\" disabled>Enviar avaliação</button>\n      </div>\n      <div id=\"avaliacaoFeita\" style=\"display:none;text-align:center;padding:8px\">\n        <div style=\"font-size:15px;font-weight:700;color:var(--green)\">Obrigado pela avaliação!</div>\n        <div style=\"font-size:13px;color:var(--muted);margin-top:4px\" id=\"avaliacaoResumo\"></div>\n      </div>\n    </div>\n\n    <div class=\"card\" id=\"feriasCard\">\n      <div class=\"card-lbl\">Férias / afastamento</div>\n      <div id=\"feriasAtiva\" style=\"display:none\">\n        <div style=\"background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px;text-align:center\">\n          <div style=\"font-weight:700;color:var(--accent);font-size:15px\" id=\"feriasLabel\">—</div>\n          <div style=\"font-size:12px;color:var(--muted);margin-top:4px\">Sua vaga na linha está mantida. Você não embarca neste período.</div>\n        </div>\n        <button class=\"vou-btn\" style=\"margin-top:10px;width:100%\" onclick=\"cancelarFerias()\">Cancelar período</button>\n      </div>\n      <div id=\"feriasForm\">\n        <div style=\"font-size:12px;color:var(--muted);margin-bottom:10px\">Vai se ausentar por um período? Informe as datas e sua vaga fica reservada.</div>\n        <div style=\"display:flex;gap:10px\">\n          <div style=\"flex:1\">\n            <label class=\"field-label\">Início</label>\n            <input class=\"input\" type=\"date\" id=\"feriasInicio\" style=\"font-size:14px;padding:10px\">\n          </div>\n          <div style=\"flex:1\">\n            <label class=\"field-label\">Retorno</label>\n            <input class=\"input\" type=\"date\" id=\"feriasFim\" style=\"font-size:14px;padding:10px\">\n          </div>\n        </div>\n        <button class=\"btn\" onclick=\"salvarFerias()\">Registrar período</button>\n      </div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Seu embarque</div>\n      <div style=\"display:flex;justify-content:space-between;align-items:flex-start;gap:12px\">\n        <div>\n          <div style=\"font-weight:700;font-size:15px\" id=\"iEmbarque\">—</div>\n          <div style=\"font-size:13px;color:var(--muted);margin-top:2px\" id=\"iBairro\">—</div>\n        </div>\n        <div style=\"text-align:right\">\n          <div class=\"big\" id=\"iHorario\">—</div>\n          <div style=\"font-size:11px;color:var(--muted)\">horário</div>\n        </div>\n      </div>\n    </div>\n      <div id=\"iHorarioNota\" class=\"hor-nota\" style=\"display:none\"></div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Sua linha hoje</div>\n      <div style=\"display:flex;align-items:center;gap:12px\">\n        <div id=\"iBadge\" style=\"width:44px;height:44px;border-radius:12px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;font-family:'Barlow'\">—</div>\n        <div style=\"flex:1\">\n          <div style=\"font-weight:700\" id=\"iLinhaTurno\">—</div>\n          <div style=\"font-size:13px;color:var(--muted)\" id=\"iMotorista\">Motorista: —</div>\n        </div>\n      </div>\n      <a id=\"iMotoWhats\" href=\"#\" target=\"_blank\" style=\"display:none;align-items:center;justify-content:center;gap:8px;margin-top:12px;background:rgba(37,211,102,0.12);color:#25D366;border:1px solid rgba(37,211,102,0.3);border-radius:10px;padding:11px;font-weight:700;font-family:'Barlow';font-size:14px;text-decoration:none\">Falar com o motorista no WhatsApp</a>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Quem vai hoje · Linha <span id=\"qvLinha\">—</span></div>\n      <div id=\"quemVaiResumo\" style=\"display:flex;gap:10px;margin-bottom:12px\"></div>\n      <div id=\"quemVaiListas\"></div>\n    </div>\n  </div>\n\n  <div id=\"viewChat\" class=\"view chat-wrap hidden\">\n    <div class=\"chat-msgs\" id=\"chatMsgs\"></div>\n    <div class=\"chat-input\">\n      <input id=\"chatInput\" placeholder=\"Mensagem para a linha...\" onkeypress=\"if(event.key==='Enter')enviarMsg()\">\n      <button onclick=\"enviarMsg()\" title=\"Enviar\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 12 20 5l-7 15-2.5-6.5L4 12Z\"/></svg></button>\n    </div>\n  </div>\n\n  <div id=\"viewAvisos\" class=\"view hidden\">\n    <div id=\"avisosList\"></div>\n  </div>\n  <div id=\"viewContatos\" class=\"view hidden\">\n    <div class=\"card\">\n      <label class=\"field-label\">Fale com a gente</label>\n      <div style=\"font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5\">Precisa de ajuda ou quer avisar algo? Fale direto pelo WhatsApp.</div>\n      <div id=\"contatosBtns\"></div>\n      <div id=\"contatosVazio\" style=\"display:none;font-size:13px;color:var(--muted);text-align:center;padding:16px\">Nenhum contato configurado ainda. Fale com o gestor.</div>\n    </div>\n  </div>\n</div>\n\n<div id=\"bottomNav\" class=\"bottom-nav hidden\">\n  <button class=\"bnav active\" id=\"navInicio\" onclick=\"irPara('inicio')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 10.5 12 4l9 6.5\"/><path d=\"M5.5 9.5V20h13V9.5\"/><path d=\"M10 20v-5h4v5\"/></svg></span><span class=\"lb\">Início</span></button>\n  <button class=\"bnav\" id=\"navChat\" onclick=\"irPara('chat')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 12a7 7 0 0 1-7 7H8l-4 3v-4.5A7 7 0 0 1 4 12v-.5A6.5 6.5 0 0 1 10.5 5h3A6.5 6.5 0 0 1 20 11.5Z\"/></svg></span><span class=\"lb\">Chat</span><span class=\"dot hidden\" id=\"dotChat\"></span></button>\n  <button class=\"bnav\" id=\"navAvisos\" onclick=\"irPara('avisos')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 10v4h3l6 4V6l-6 4H4Z\"/><path d=\"M17 9.5a4 4 0 0 1 0 5\"/><path d=\"M19.5 7a7 7 0 0 1 0 10\"/></svg></span><span class=\"lb\">Avisos</span><span class=\"dot hidden\" id=\"dotAvisos\"></span></button>\n  <button class=\"bnav\" id=\"navContatos\" onclick=\"irPara('contatos')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 4h3.5l1.8 4-2.2 1.6a11 11 0 0 0 5.3 5.3L15 12.7l4 1.8V18a2 2 0 0 1-2.2 2A15 15 0 0 1 4 6.2 2 2 0 0 1 5 4Z\"/></svg></span><span class=\"lb\">Contatos</span></button>\n</div>\n\n";
+const HTML_MOTOR = "\n<!-- Banner de notificação in-app -->\n<div id=\"notifBanner\" onclick=\"notifClick()\">\n  <span class=\"nf-ic\" id=\"notifIc\"></span>\n  <div style=\"flex:1;min-width:0\">\n    <div class=\"nf-tt\" id=\"notifTt\">Notificação</div>\n    <div class=\"nf-tx\" id=\"notifTx\"></div>\n  </div>\n  <button class=\"nf-cl\" onclick=\"event.stopPropagation();fecharNotif()\">✕</button>\n</div>\n\n<div id=\"loadingScreen\" class=\"loading\">\n  <div class=\"spin\"></div>\n  <div>Carregando...</div>\n</div>\n\n<div id=\"loginScreen\" class=\"login-wrap hidden\">\n  <div class=\"login-logo\">\n    <div class=\"ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 16V8a1 1 0 0 1 1-1h10v9\"/><path d=\"M13 10h4l3 3.5V16\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/><path d=\"M9 17h6\"/></svg></div>\n    <div class=\"brand\" id=\"brandLogin\"></div>\n    <div class=\"sub\">Transporte · Passageiro</div>\n  </div>\n  <div class=\"login-card\">\n    <h2>Entrar</h2>\n    <p>Digite seu telefone cadastrado para acessar sua linha.</p>\n    <label class=\"field-label\">Telefone</label>\n    <input class=\"input\" id=\"loginTel\" type=\"tel\" placeholder=\"(15) 99999-9999\" inputmode=\"tel\" onkeydown=\"if(event.key==='Enter'){event.preventDefault();fazerLogin();}\">\n    <button class=\"btn\" id=\"loginBtn\" onclick=\"fazerLogin()\">Entrar</button>\n    <div class=\"login-err\" id=\"loginErr\">Telefone não encontrado. Confira com o gestor.</div>\n  </div>\n</div>\n\n<div id=\"appScreen\" class=\"hidden\">\n  <div class=\"marca-bar\"><span class=\"mb-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 16V8a1 1 0 0 1 1-1h10v9\"/><path d=\"M13 10h4l3 3.5V16\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/><path d=\"M9 17h6\"/></svg></span><span class=\"mb-nome\" id=\"brandApp\"></span><span class=\"mb-sub\">Passageiro</span></div>\n  <div class=\"app-header\">\n    <div class=\"ava\" id=\"hAva\">M</div>\n    <div class=\"who\">\n      <div class=\"nm\" id=\"hNome\">—</div>\n      <div class=\"ln\" id=\"hLinha\">—</div>\n    </div>\n    <button class=\"logout\" onclick=\"logout()\" title=\"Sair\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10 5H6a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4\"/><path d=\"M15 8l4 4-4 4\"/><path d=\"M19 12H9\"/></svg></button>\n  </div>\n\n  <div id=\"viewInicio\" class=\"view\">\n    <div class=\"card px-st\" id=\"pxStatusCard\" style=\"display:none\"></div>\n    <div class=\"card\" id=\"rotaExtraCard\" style=\"display:none;border-color:rgba(236,72,153,0.5);background:linear-gradient(135deg,rgba(236,72,153,0.12),rgba(236,72,153,0.03))\">\n      <div class=\"card-lbl\" style=\"color:#ec4899\">Rota extra de hoje</div>\n      <div id=\"rotaExtraConteudo\"></div>\n    </div>\n    <div class=\"card track-card\">\n      <div class=\"card-lbl\">Localização da van</div>\n      <div id=\"trackArea\"><div class=\"track-off\">O motorista ainda não compartilhou a localização hoje.</div></div>\n    </div>\n\n    <div class=\"card\" id=\"horarioDiaCard\" style=\"display:none;border-color:rgba(245,158,11,0.4);background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.03))\">\n      <div class=\"card-lbl\" style=\"color:var(--accent)\">Horário especial de hoje</div>\n      <div id=\"horarioDiaConteudo\"></div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Você vai hoje?</div>\n      <div class=\"vou-wrap\" style=\"flex-wrap:wrap\">\n        <button class=\"vou-btn sim\" id=\"btnVou\" onclick=\"marcarPresenca('ambos')\" style=\"flex:1 1 100%\">Vou (ida e volta)</button>\n        <button class=\"vou-btn ida\" id=\"btnIda\" onclick=\"marcarPresenca('ida')\" style=\"flex:1 1 45%\">Só ida</button>\n        <button class=\"vou-btn volta\" id=\"btnVolta\" onclick=\"marcarPresenca('volta')\" style=\"flex:1 1 45%\">Só volta</button>\n        <button class=\"vou-btn nao\" id=\"btnNaoVou\" onclick=\"marcarPresenca('nao')\" style=\"flex:1 1 100%\">Não vou hoje</button>\n      </div>\n      <div id=\"presencaMsg\" style=\"font-size:0.75rem;color:var(--muted);margin-top:10px;text-align:center\"></div>\n    </div>\n\n    <div class=\"card\" id=\"avaliacaoCard\">\n      <div class=\"card-lbl\">Avalie sua viagem de hoje</div>\n      <div id=\"avaliacaoForm\">\n        <div style=\"display:flex;justify-content:center;gap:8px;margin:8px 0\" id=\"estrelas\">\n          <span class=\"estrela\" data-v=\"1\" onclick=\"selecionarEstrela(1)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"2\" onclick=\"selecionarEstrela(2)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"3\" onclick=\"selecionarEstrela(3)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"4\" onclick=\"selecionarEstrela(4)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"5\" onclick=\"selecionarEstrela(5)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n        </div>\n        <div id=\"avJustificativaWrap\" style=\"display:none;margin-top:8px\">\n          <textarea class=\"input\" id=\"avJustificativa\" rows=\"2\" placeholder=\"Conte o que podemos melhorar...\" style=\"resize:vertical;font-size:0.875rem\"></textarea>\n        </div>\n        <button class=\"btn\" style=\"margin-top:10px\" onclick=\"enviarAvaliacao()\" id=\"btnAvaliar\" disabled>Enviar avaliação</button>\n      </div>\n      <div id=\"avaliacaoFeita\" style=\"display:none;text-align:center;padding:8px\">\n        <div style=\"font-size:0.9375rem;font-weight:700;color:var(--green)\">Obrigado pela avaliação!</div>\n        <div style=\"font-size:0.8125rem;color:var(--muted);margin-top:4px\" id=\"avaliacaoResumo\"></div>\n      </div>\n    </div>\n\n    <div class=\"card\" id=\"feriasCard\">\n      <div class=\"card-lbl\">Férias / afastamento</div>\n      <div id=\"feriasAtiva\" style=\"display:none\">\n        <div style=\"background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px;text-align:center\">\n          <div style=\"font-weight:700;color:var(--accent);font-size:0.9375rem\" id=\"feriasLabel\">—</div>\n          <div style=\"font-size:0.75rem;color:var(--muted);margin-top:4px\">Sua vaga na linha está mantida. Você não embarca neste período.</div>\n        </div>\n        <button class=\"vou-btn\" style=\"margin-top:10px;width:100%\" onclick=\"cancelarFerias()\">Cancelar período</button>\n      </div>\n      <div id=\"feriasForm\">\n        <div style=\"font-size:0.75rem;color:var(--muted);margin-bottom:10px\">Vai se ausentar por um período? Informe as datas e sua vaga fica reservada.</div>\n        <div style=\"display:flex;gap:10px\">\n          <div style=\"flex:1\">\n            <label class=\"field-label\">Início</label>\n            <input class=\"input\" type=\"date\" id=\"feriasInicio\" style=\"font-size:0.875rem;padding:10px\">\n          </div>\n          <div style=\"flex:1\">\n            <label class=\"field-label\">Retorno</label>\n            <input class=\"input\" type=\"date\" id=\"feriasFim\" style=\"font-size:0.875rem;padding:10px\">\n          </div>\n        </div>\n        <button class=\"btn\" onclick=\"salvarFerias()\">Registrar período</button>\n      </div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Seu embarque</div>\n      <div style=\"display:flex;justify-content:space-between;align-items:flex-start;gap:12px\">\n        <div>\n          <div style=\"font-weight:700;font-size:0.9375rem\" id=\"iEmbarque\">—</div>\n          <div style=\"font-size:0.8125rem;color:var(--muted);margin-top:2px\" id=\"iBairro\">—</div>\n        </div>\n        <div style=\"text-align:right\">\n          <div class=\"big\" id=\"iHorario\">—</div>\n          <div style=\"font-size:0.6875rem;color:var(--muted)\">horário</div>\n        </div>\n      </div>\n    </div>\n      <div id=\"iHorarioNota\" class=\"hor-nota\" style=\"display:none\"></div>\n    </div>\n    <div class=\"card\" id=\"timelineCard\" style=\"display:none\">\n      <div class=\"card-lbl\">Viagem de hoje</div>\n      <div id=\"timelineConteudo\"></div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Sua linha hoje</div>\n      <div style=\"display:flex;align-items:center;gap:12px\">\n        <div id=\"iBadge\" style=\"width:44px;height:44px;border-radius:12px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.125rem;font-family:'Barlow'\">—</div>\n        <div style=\"flex:1\">\n          <div style=\"font-weight:700\" id=\"iLinhaTurno\">—</div>\n          <div style=\"font-size:0.8125rem;color:var(--muted)\" id=\"iMotorista\">Motorista: —</div>\n        </div>\n      </div>\n      <a id=\"iMotoWhats\" href=\"#\" target=\"_blank\" style=\"display:none;align-items:center;justify-content:center;gap:8px;margin-top:12px;background:rgba(37,211,102,0.12);color:#25D366;border:1px solid rgba(37,211,102,0.3);border-radius:10px;padding:11px;font-weight:700;font-family:'Barlow';font-size:0.875rem;text-decoration:none\">Falar com o motorista no WhatsApp</a>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Quem vai hoje · Linha <span id=\"qvLinha\">—</span></div>\n      <div id=\"quemVaiResumo\" style=\"display:flex;gap:10px;margin-bottom:12px\"></div>\n      <div id=\"quemVaiListas\"></div>\n    </div>\n  </div>\n\n  <div id=\"viewChat\" class=\"view chat-wrap hidden\">\n    <div class=\"chat-msgs\" id=\"chatMsgs\"></div>\n    <div class=\"chat-input\">\n      <input id=\"chatInput\" placeholder=\"Mensagem para a linha...\" onkeypress=\"if(event.key==='Enter')enviarMsg()\">\n      <button onclick=\"enviarMsg()\" title=\"Enviar\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 12 20 5l-7 15-2.5-6.5L4 12Z\"/></svg></button>\n    </div>\n  </div>\n\n  <div id=\"viewAvisos\" class=\"view hidden\">\n    <div id=\"avisosList\"></div>\n  </div>\n  <div id=\"viewContatos\" class=\"view hidden\">\n    <div class=\"card\">\n      <label class=\"field-label\">Fale com a gente</label>\n      <div style=\"font-size:0.8125rem;color:var(--muted);margin-bottom:14px;line-height:1.5\">Precisa de ajuda ou quer avisar algo? Fale direto pelo WhatsApp.</div>\n      <div id=\"contatosBtns\"></div>\n      <div id=\"contatosVazio\" style=\"display:none;font-size:0.8125rem;color:var(--muted);text-align:center;padding:16px\">Nenhum contato configurado ainda. Fale com o gestor.</div>\n    </div>\n  </div>\n</div>\n\n<div id=\"bottomNav\" class=\"bottom-nav hidden\">\n  <button class=\"bnav active\" id=\"navInicio\" onclick=\"irPara('inicio')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 10.5 12 4l9 6.5\"/><path d=\"M5.5 9.5V20h13V9.5\"/><path d=\"M10 20v-5h4v5\"/></svg></span><span class=\"lb\">Início</span></button>\n  <button class=\"bnav\" id=\"navChat\" onclick=\"irPara('chat')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 12a7 7 0 0 1-7 7H8l-4 3v-4.5A7 7 0 0 1 4 12v-.5A6.5 6.5 0 0 1 10.5 5h3A6.5 6.5 0 0 1 20 11.5Z\"/></svg></span><span class=\"lb\">Chat</span><span class=\"dot hidden\" id=\"dotChat\"></span></button>\n  <button class=\"bnav\" id=\"navAvisos\" onclick=\"irPara('avisos')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 10v4h3l6 4V6l-6 4H4Z\"/><path d=\"M17 9.5a4 4 0 0 1 0 5\"/><path d=\"M19.5 7a7 7 0 0 1 0 10\"/></svg></span><span class=\"lb\">Avisos</span><span class=\"dot hidden\" id=\"dotAvisos\"></span></button>\n  <button class=\"bnav\" id=\"navContatos\" onclick=\"irPara('contatos')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 4h3.5l1.8 4-2.2 1.6a11 11 0 0 0 5.3 5.3L15 12.7l4 1.8V18a2 2 0 0 1-2.2 2A15 15 0 0 1 4 6.2 2 2 0 0 1 5 4Z\"/></svg></span><span class=\"lb\">Contatos</span></button>\n</div>\n\n";
 
 let TURNOS_CHEGADA = { '1°': '05:45', '2°': '14:45', '3°': '20:55', 'ADM': '07:15' };
 
@@ -116,7 +116,7 @@ async function tvCarregarTurnos(db, docFn, getDocFn) {
 const C = window.CLIENTE_CONFIG;
 
 function bloqueio(titulo, msg) {
-  document.body.innerHTML = '<div style="max-width:560px;margin:80px auto;padding:32px;font-family:sans-serif;background:#1a1208;border:2px solid #f59e0b;border-radius:14px;color:#fff;text-align:center"><div style="font-size:48px;margin-bottom:12px">\u26A0\uFE0F</div><h2 style="color:#f59e0b">' + titulo + '</h2><p>' + msg + '</p></div>';
+  document.body.innerHTML = '<div style="max-width:560px;margin:80px auto;padding:32px;font-family:sans-serif;background:#1a1208;border:2px solid #f59e0b;border-radius:14px;color:#fff;text-align:center"><div style="font-size:3rem;margin-bottom:12px">\u26A0\uFE0F</div><h2 style="color:#f59e0b">' + titulo + '</h2><p>' + msg + '</p></div>';
 }
 
 if (!C || !C.fb || !C.clienteId) {
@@ -142,6 +142,7 @@ document.head.insertAdjacentHTML('beforeend',
   '<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">' +
   '<style>' + CSS_MOTOR + '</style>');
 document.body.innerHTML = HTML_MOTOR;
+document.head.insertAdjacentHTML('beforeend', TL_CSS + PX_CSS);
 document.head.insertAdjacentHTML('beforeend', TV_CSS_HORA);
 var _marca = C.marcaUpper || (C.marca || '').toUpperCase();
 ['brandLogin', 'brandApp'].forEach(function (id) {
@@ -158,8 +159,8 @@ try {
 } catch (e) {
   const ld = document.getElementById('loadingScreen');
   if (ld) ld.innerHTML = '<div style="text-align:center;padding:30px;color:#e6edf3;font-family:sans-serif">' +
-    '<div style="font-size:15px;font-weight:700;margin-bottom:8px">Sem conexao com o servidor</div>' +
-    '<div style="font-size:13px;color:#8b949e">Verifique a internet e recarregue a pagina.</div></div>';
+    '<div style="font-size:0.9375rem;font-weight:700;margin-bottom:8px">Sem conexao com o servidor</div>' +
+    '<div style="font-size:0.8125rem;color:#8b949e">Verifique a internet e recarregue a pagina.</div></div>';
   throw e;
 }
 
@@ -179,7 +180,7 @@ function verificarIdentidade() {
   if (real !== PROJETO_ESPERADO) {
     TRAVA_OK = false;
     try {
-      document.body.innerHTML = '<div style="max-width:560px;margin:80px auto;padding:32px;font-family:sans-serif;background:#1a1208;border:2px solid #f59e0b;border-radius:14px;color:#fff;text-align:center"><div style="font-size:48px;margin-bottom:12px">⚠️</div><h2 style="color:#f59e0b">Arquivo no lugar errado</h2><p>Este arquivo é do cliente <b>' + CLIENTE_ID.toUpperCase() + '</b> (projeto <b>' + PROJETO_ESPERADO + '</b>), mas está conectado ao projeto <b>' + real + '</b>.</p><p style="color:#fca5a5">Bloqueado por segurança para NÃO sobrescrever dados de outro cliente.</p></div>';
+      document.body.innerHTML = '<div style="max-width:560px;margin:80px auto;padding:32px;font-family:sans-serif;background:#1a1208;border:2px solid #f59e0b;border-radius:14px;color:#fff;text-align:center"><div style="font-size:3rem;margin-bottom:12px">⚠️</div><h2 style="color:#f59e0b">Arquivo no lugar errado</h2><p>Este arquivo é do cliente <b>' + CLIENTE_ID.toUpperCase() + '</b> (projeto <b>' + PROJETO_ESPERADO + '</b>), mas está conectado ao projeto <b>' + real + '</b>.</p><p style="color:#fca5a5">Bloqueado por segurança para NÃO sobrescrever dados de outro cliente.</p></div>';
     } catch(e) {}
     return false;
   }
@@ -428,14 +429,14 @@ function iniciarApp() {
     document.getElementById('rotaExtraCard').style.display = 'block';
     const mObjE = MOTORISTAS.find(m => m.nome === rd.motorista);
     let waBtn = '';
-    if (mObjE && mObjE.tel) waBtn = '<a href="https://wa.me/55' + soDigitos(mObjE.tel) + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;background:rgba(37,211,102,0.12);color:#25D366;border:1px solid rgba(37,211,102,0.3);border-radius:10px;padding:11px;font-weight:700;font-family:Barlow;font-size:14px;text-decoration:none">Falar com o motorista</a>';
+    if (mObjE && mObjE.tel) waBtn = '<a href="https://wa.me/55' + soDigitos(mObjE.tel) + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;background:rgba(37,211,102,0.12);color:#25D366;border:1px solid rgba(37,211,102,0.3);border-radius:10px;padding:11px;font-weight:700;font-family:Barlow;font-size:0.875rem;text-decoration:none">Falar com o motorista</a>';
     document.getElementById('rotaExtraConteudo').innerHTML =
-      '<div style="font-weight:800;font-size:17px;font-family:Barlow;margin-bottom:8px">' + esc(rd.nomeRota || 'Rota Extra') + '</div>' +
+      '<div style="font-weight:800;font-size:1.0625rem;font-family:Barlow;margin-bottom:8px">' + esc(rd.nomeRota || 'Rota Extra') + '</div>' +
       '<div style="display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border-radius:10px;padding:12px;margin-bottom:8px">' +
-        '<div><div style="font-size:11px;color:var(--muted)">Seu embarque</div><div style="font-weight:700;font-size:14px">' + esc(par.embarque || '—') + '</div>' + (par.bairro?'<div style="font-size:12px;color:var(--muted)">'+esc(par.bairro)+'</div>':'') + '</div>' +
-        '<div style="text-align:right"><div style="font-size:26px;font-weight:800;font-family:Barlow;color:#ec4899">' + (par.horario||'--:--') + '</div><div style="font-size:10px;color:var(--muted)">horário</div></div>' +
+        '<div><div style="font-size:0.6875rem;color:var(--muted)">Seu embarque</div><div style="font-weight:700;font-size:0.875rem">' + esc(par.embarque || '—') + '</div>' + (par.bairro?'<div style="font-size:0.75rem;color:var(--muted)">'+esc(par.bairro)+'</div>':'') + '</div>' +
+        '<div style="text-align:right"><div style="font-size:1.625rem;font-weight:800;font-family:Barlow;color:#ec4899">' + (par.horario||'--:--') + '</div><div style="font-size:0.625rem;color:var(--muted)">horário</div></div>' +
       '</div>' +
-      '<div style="font-size:13px;color:var(--muted)">Motorista: <b style="color:var(--text)">' + esc(rd.motorista || '—') + '</b></div>' +
+      '<div style="font-size:0.8125rem;color:var(--muted)">Motorista: <b style="color:var(--text)">' + esc(rd.motorista || '—') + '</b></div>' +
       waBtn;
 
     // Esconder os cards de linha fixa (presença, embarque fixo, linha, quem vai)
@@ -495,6 +496,8 @@ function iniciarApp() {
     wa.href = 'https://wa.me/55' + soDigitos(mObj.tel);
     wa.style.display = 'flex';
   }
+  tlEscutar();
+  try { pxOrdenar(); setInterval(pxOrdenar, 60000); } catch (e) {}
   escutarChat();
   escutarPresencas();
   escutarAvisos();
@@ -503,6 +506,344 @@ function iniciarApp() {
   escutarHorarioDia();
   verificarAvaliacaoHoje();
 }
+
+
+// ==================================================================
+// TIMELINE DA VIAGEM  —  o que aconteceu, nao o que estava previsto
+// ------------------------------------------------------------------
+// Ate aqui o passageiro via um horario de cadastro. Agora ve os
+// eventos reais: partiu, embarcou, chegou, desembarcou.
+//
+// PREVISTO e REAL aparecem JUNTOS. Mostrar so o real esconde o
+// atraso; mostrar so o previsto e o que ja existia.
+//
+// Enquanto a viagem nao roda no app novo, os eventos nao existem —
+// e a tela DIZ isso, em vez de fingir que esta acompanhando.
+// ==================================================================
+let TL_VIAGEM = null;
+let TL_UNSUB = null;
+
+function tlMin(h) {
+  const m = String(h || '').match(/^(\d{1,2}):(\d{2})/);
+  return m ? (+m[1] * 60 + +m[2]) : null;
+}
+function tlAtraso(prev, real) {
+  const p = tlMin(prev), r = tlMin(real);
+  if (p == null || r == null) return null;
+  let d = r - p;
+  if (d > 720) d -= 1440;
+  if (d < -720) d += 1440;
+  return d;
+}
+function tlSelo(min) {
+  if (min == null) return '';
+  if (Math.abs(min) > 120) return '';       // relogio fora de contexto
+  if (min <= 2 && min >= -5) return '<i class="tl-ok">no horário</i>';
+  if (min > 2) return '<i class="tl-atr">' + min + ' min de atraso</i>';
+  return '<i class="tl-adi">' + Math.abs(min) + ' min adiantado</i>';
+}
+
+// Monta os passos a partir dos eventos. O que ainda nao aconteceu
+// aparece como PREVISTO, apagado — a pessoa ve o que falta.
+function tlPassos(v, meuId) {
+  if (!v) return [];
+  const ev = v.eventos || [];
+  const meu = t => ev.find(e => e.tipo === t && e.viajante === meuId);
+  const geral = t => ev.find(e => e.tipo === t && !e.viajante);
+  const volta = v.sentido === 'volta';
+  const passos = [];
+
+  const partida = geral('partida');
+  passos.push({ rotulo: volta ? 'Van saiu da empresa' : 'Van saiu da garagem',
+                prev: v.inicioProgramado, real: partida ? partida.real : null,
+                feito: !!partida });
+
+  if (!volta) {
+    const emb = meu('embarque'), aus = ev.find(e => e.tipo === 'ausencia' && e.viajante === meuId);
+    if (aus) {
+      passos.push({ rotulo: 'Você não embarcou', real: aus.real, feito: true, alerta: true,
+                    detalhe: tlMotivo(aus.motivo) });
+    } else {
+      passos.push({ rotulo: 'Seu embarque', prev: (emb && emb.previsto) || '',
+                    real: emb ? emb.real : null, feito: !!emb, meu: true });
+    }
+    const ch = geral('chegada');
+    passos.push({ rotulo: 'Chegada na empresa', prev: v.chegadaProgramada,
+                  real: ch ? ch.real : null, feito: !!ch });
+    const ds = meu('desembarque');
+    passos.push({ rotulo: 'Você desembarcou', real: ds ? ds.real : null, feito: !!ds, meu: true });
+  } else {
+    const ds = meu('desembarque');
+    passos.push({ rotulo: 'Seu desembarque', prev: (ds && ds.previsto) || '',
+                  real: ds ? ds.real : null, feito: !!ds, meu: true });
+  }
+
+  const fim = geral('fim');
+  if (fim) passos.push({ rotulo: 'Viagem encerrada', real: fim.real, feito: true });
+  return passos;
+}
+
+function tlMotivo(id) {
+  return ({ nao_estava: 'não estava no ponto', avisou: 'você avisou que não iria',
+            outro_ponto: 'embarcou em outro ponto' })[id] || '';
+}
+
+function tlPintar() {
+  const card = document.getElementById('timelineCard');
+  const box = document.getElementById('timelineConteudo');
+  if (!card || !box) return;
+
+  const meuId = (PASSAGEIRO && (PASSAGEIRO.id || PASSAGEIRO.nome)) || '';
+  if (!TL_VIAGEM) {
+    // Honesto: sem viagem registrada, nao ha o que acompanhar.
+    card.style.display = '';
+    box.innerHTML = '<div class="tl-vazio">A viagem de hoje ainda não começou. ' +
+      'Quando o motorista iniciar a rota, os horários reais aparecem aqui.</div>';
+    return;
+  }
+  const v = TL_VIAGEM;
+  const passos = tlPassos(v, meuId);
+  card.style.display = '';
+
+  const titulo = (v.sentido === 'volta' ? 'Retorno' : 'Ida') +
+    (v.estado === 'encerrada' ? ' · encerrada' : (v.estado === 'em_curso' ? ' · em andamento' : ''));
+
+  box.innerHTML = '<div class="tl-tit">' + titulo + '</div>' +
+    '<div class="tl">' + passos.map((x, i) => {
+      const at = (x.prev && x.real) ? tlAtraso(x.prev, x.real) : null;
+      const cls = 'tl-p' + (x.feito ? ' tl-feito' : '') + (x.meu ? ' tl-meu' : '') +
+                  (x.alerta ? ' tl-alerta' : '');
+      return '<div class="' + cls + '">' +
+        '<span class="tl-bola"></span>' +
+        '<div class="tl-txt">' +
+          '<b>' + x.rotulo + '</b>' +
+          (x.detalhe ? '<em>' + x.detalhe + '</em>' : '') +
+          (x.feito
+            ? '<span class="tl-h">' + (x.real || '--:--') +
+              (x.prev ? ' <s>previsto ' + x.prev + '</s>' : '') + '</span>' + tlSelo(at)
+            : '<span class="tl-h tl-prev">' + (x.prev ? 'previsto ' + x.prev : 'aguardando') + '</span>') +
+        '</div></div>';
+    }).join('') + '</div>';
+}
+
+// Le a viagem do dia. Sem dado, a tela diz que nao ha — nao inventa.
+function tlEscutar() {
+  try {
+    if (TL_UNSUB) { TL_UNSUB(); TL_UNSUB = null; }
+    if (!db || !PASSAGEIRO) return;
+    const ref = doc(db, CLIENTE_ID, 'viagens_do_dia');
+    TL_UNSUB = onSnapshot(ref, (snap) => {
+      const lista = (snap.exists() && snap.data().lista) ? snap.data().lista : [];
+      const minha = lista.filter(v =>
+        String(v.linha) === String(PASSAGEIRO.linha) && v.turno === PASSAGEIRO.turno);
+      // em curso vence; senao a ultima encerrada
+      TL_VIAGEM = minha.find(v => v.estado === 'em_curso') ||
+                  minha.filter(v => v.estado === 'encerrada').pop() ||
+                  minha[0] || null;
+      tlPintar(); try { pxOrdenar(); } catch (e) {}
+    }, () => { tlPintar(); });
+  } catch (e) { console.warn('timeline:', e && e.message); tlPintar(); }
+}
+
+var TL_CSS = '<style>' +
+'#timelineCard .tl-tit{font-size:0.75rem;color:var(--muted);margin-bottom:12px}' +
+'.tl{position:relative;padding-left:22px}' +
+'.tl:before{content:"";position:absolute;left:5px;top:6px;bottom:10px;width:2px;background:var(--surface2)}' +
+'.tl-p{position:relative;padding:0 0 16px}' +
+'.tl-p:last-child{padding-bottom:0}' +
+'.tl-bola{position:absolute;left:-22px;top:3px;width:12px;height:12px;border-radius:50%;' +
+'background:var(--surface2);border:2px solid var(--surface2)}' +
+'.tl-feito .tl-bola{background:var(--green,#16a34a);border-color:var(--green,#16a34a)}' +
+'.tl-meu.tl-feito .tl-bola{background:var(--accent,#f59e0b);border-color:var(--accent,#f59e0b)}' +
+'.tl-alerta .tl-bola{background:#ef4444;border-color:#ef4444}' +
+'.tl-txt b{display:block;font-size:0.875rem;font-weight:600}' +
+'.tl-p:not(.tl-feito) .tl-txt b{color:var(--muted);font-weight:500}' +
+'.tl-txt em{display:block;font-size:0.75rem;color:var(--muted);font-style:normal;margin-top:1px}' +
+'.tl-h{display:block;font-size:0.8125rem;color:var(--muted);margin-top:2px}' +
+'.tl-h s{opacity:.65;font-size:0.7188rem}' +
+'.tl-prev{font-style:italic}' +
+'.tl-ok,.tl-atr,.tl-adi{display:inline-block;font-size:0.6875rem;font-style:normal;margin-top:4px;' +
+'padding:2px 8px;border-radius:999px}' +
+'.tl-ok{background:rgba(22,163,74,.14);color:#16a34a}' +
+'.tl-atr{background:rgba(245,158,11,.14);color:#f59e0b}' +
+'.tl-adi{background:rgba(59,130,246,.14);color:#60a5fa}' +
+'.tl-vazio{font-size:0.8125rem;color:var(--muted);line-height:1.55}' +
+'</style>';
+
+
+// ==================================================================
+// A TELA SEGUE O MOMENTO DO DIA
+// ------------------------------------------------------------------
+// Dez cartoes com o mesmo peso obrigavam a rolar tudo para achar a
+// unica coisa que importa agora. O que importa MUDA com a hora:
+//   longe do horario  -> confirmar presenca
+//   perto             -> onde a van esta
+//   depois            -> avaliar a viagem
+// A ordem dos cartoes acompanha; nada some, so muda de lugar.
+// ==================================================================
+// ==================================================================
+// A TELA SEGUE A JORNADA DA PESSOA — nao o GPS da van
+// ------------------------------------------------------------------
+// A regra, em uma frase: EVENTO DA VIAGEM atualiza conteudo; EVENTO DO
+// PROPRIO VIAJANTE muda a prioridade da tela.
+//
+// Assim a tela nao pula quando outro passageiro embarca, mas responde
+// na hora ao que aconteceu COM VOCE. E o que vale no corporativo e,
+// mais ainda, no escolar: o pai nao quer saber que a van esta andando,
+// quer saber se o filho embarcou.
+//
+// O GPS NUNCA determina estado nem ordem. Ele so alimenta a
+// localizacao quando existe — se o motorista esquecer de compartilhar,
+// a tela continua fazendo sentido.
+// ==================================================================
+function pxMeuId() {
+  return (typeof PASSAGEIRO !== 'undefined' && PASSAGEIRO)
+    ? (PASSAGEIRO.id || PASSAGEIRO.nome) : '';
+}
+
+// O evento MEU mais recente, na ordem em que a jornada acontece.
+function pxMeuEvento(v) {
+  if (!v || !v.eventos) return null;
+  const meu = pxMeuId();
+  let r = null;
+  v.eventos.forEach(e => {
+    if (e.viajante !== meu) return;
+    if (e.tipo === 'embarque' || e.tipo === 'ausencia' || e.tipo === 'desembarque') r = e;
+  });
+  return r;
+}
+
+// Estado da tela. Antes de existir viagem, o relogio manda. Depois,
+// mandam os eventos — e os MEUS tem prioridade sobre os da viagem.
+function pxMomento() {
+  const v = (typeof TL_VIAGEM !== 'undefined') ? TL_VIAGEM : null;
+
+  if (v) {
+    const meu = pxMeuEvento(v);
+    // 1. o que aconteceu COMIGO vem primeiro
+    if (meu && meu.tipo === 'ausencia') return 'ausente';
+    if (meu && meu.tipo === 'desembarque') return 'desembarquei';
+    if (meu && meu.tipo === 'embarque') return 'embarquei';
+    // 2. depois o estado da viagem
+    if (v.estado === 'encerrada') return 'depois';
+    if (v.estado === 'em_curso') return 'em_viagem';
+  }
+
+  // 3. sem viagem: relogio e programacao
+  const agora = new Date();
+  const m = agora.getHours() * 60 + agora.getMinutes();
+  const t = String((typeof PASSAGEIRO !== 'undefined' && PASSAGEIRO && PASSAGEIRO.horario) || '')
+    .match(/^(\d{1,2}):(\d{2})/);
+  const emb = t ? (+t[1] * 60 + +t[2]) : null;
+  if (emb == null) return 'antes';
+  const falta = emb - m;
+  if (falta > 120) return 'antes';
+  if (falta > -60) return 'perto';
+  return 'depois';
+}
+
+// A frase do topo, no lugar de o passageiro deduzir do horario.
+function pxStatus(mom, v) {
+  const meu = v ? pxMeuEvento(v) : null;
+  const volta = v && v.sentido === 'volta';
+  const hora = meu ? meu.real : '';
+  switch (mom) {
+    case 'ausente':
+      return { cls: 'px-st-alerta', tit: 'Você foi registrado como ausente' +
+        (hora ? ' às ' + hora : ''),
+        sub: 'Se isso não estiver certo, fale com a operação.' };
+    case 'embarquei':
+      return { cls: 'px-st-ok', tit: 'Você embarcou' + (hora ? ' às ' + hora : ''),
+        sub: 'A caminho da empresa' +
+             (v && v.chegadaProgramada ? ' · chegada prevista ' + v.chegadaProgramada : '') };
+    case 'desembarquei':
+      return { cls: 'px-st-ok', tit: 'Desembarque confirmado' + (hora ? ' às ' + hora : ''),
+        sub: 'Viagem concluída.' };
+    case 'em_viagem':
+      return { cls: 'px-st-info',
+        tit: volta ? 'A van saiu da empresa' : 'A rota começou',
+        sub: volta ? 'Acompanhe a aproximação.' : 'Acompanhe abaixo até o seu embarque.' };
+    case 'perto':
+      return { cls: 'px-st-info', tit: 'Sua van está a caminho',
+        sub: 'Embarque previsto às ' +
+             ((typeof PASSAGEIRO !== 'undefined' && PASSAGEIRO && PASSAGEIRO.horario) || '--:--') };
+    case 'depois':
+      return { cls: '', tit: 'Viagem de hoje concluída', sub: 'Que tal avaliar?' };
+    default: return null;
+  }
+}
+
+function pxPintarStatus(mom) {
+  const el = document.getElementById('pxStatusCard');
+  if (!el) return;
+  const st = pxStatus(mom, (typeof TL_VIAGEM !== 'undefined') ? TL_VIAGEM : null);
+  if (!st || mom === 'antes') { el.style.display = 'none'; return; }
+  el.style.display = '';
+  el.className = 'card px-st ' + st.cls;
+  el.innerHTML = '<div class="px-st-t">' + st.tit + '</div>' +
+                 '<div class="px-st-s">' + st.sub + '</div>';
+}
+
+// Reordena os cartoes. Nada some — so muda de lugar.
+function pxOrdenar() {
+  const view = document.getElementById('viewInicio');
+  if (!view) return;
+  const mom = pxMomento();
+  pxPintarStatus(mom);
+
+  const id = n => document.getElementById(n);
+  const cartao = el => el && el.closest ? el.closest('.card') : null;
+  const status = id('pxStatusCard');
+  const embarque = cartao(id('iEmbarque'));
+  const presenca = cartao(id('btnVou'));
+  const local = view.querySelector('.track-card');
+  const timeline = id('timelineCard');
+  const avaliacao = id('avaliacaoCard');
+  const ferias = id('feriasCard');
+  const linha = cartao(id('iLinhaTurno'));
+  const quemVai = cartao(id('qvLinha'));
+  const extra = id('rotaExtraCard');
+  const especial = id('horarioDiaCard');
+
+  const ordens = {
+    // longe do horario: confirmar presenca
+    antes:        [extra, especial, presenca, embarque, local, timeline, linha, quemVai, avaliacao, ferias],
+    // perto: onde esta a van
+    perto:        [extra, especial, status, local, embarque, timeline, presenca, linha, quemVai, avaliacao, ferias],
+    // rota comecou: acompanhamento
+    em_viagem:    [extra, status, timeline, local, embarque, especial, linha, quemVai, presenca, avaliacao, ferias],
+    // MEU embarque: status e timeline no topo
+    embarquei:    [extra, status, timeline, local, linha, embarque, quemVai, especial, presenca, avaliacao, ferias],
+    // MINHA ausencia: o aviso domina; localizacao desce, nao interessa mais
+    ausente:      [extra, status, timeline, embarque, linha, quemVai, presenca, especial, local, ferias, avaliacao],
+    // MEU desembarque: concluido, avaliacao assume
+    desembarquei: [extra, status, avaliacao, timeline, embarque, linha, quemVai, presenca, local, especial, ferias],
+    depois:       [extra, status, avaliacao, timeline, embarque, linha, quemVai, presenca, local, especial, ferias]
+  };
+  (ordens[mom] || ordens.antes).forEach(el => { if (el) view.appendChild(el); });
+  view.setAttribute('data-momento', mom);
+
+  view.querySelectorAll('.card').forEach(c => c.classList.remove('px-foco'));
+  const topo = (ordens[mom] || ordens.antes).find(el => el && el.style.display !== 'none');
+  if (topo) topo.classList.add('px-foco');
+}
+
+var PX_CSS = '<style>' +
+'.px-st{text-align:center}' +
+'.px-st-t{font-size:1.0625rem;font-weight:700;line-height:1.3}' +
+'.px-st-s{font-size:0.8125rem;color:var(--muted);margin-top:5px;line-height:1.45}' +
+'.px-st-ok{border-color:rgba(22,163,74,.5)}' +
+'.px-st-ok .px-st-t{color:var(--green,#16a34a)}' +
+'.px-st-info{border-color:rgba(245,158,11,.45)}' +
+'.px-st-info .px-st-t{color:var(--accent,#f59e0b)}' +
+'.px-st-alerta{border-color:rgba(239,68,68,.55);background:rgba(239,68,68,.06)}' +
+'.px-st-alerta .px-st-t{color:#ef4444}' +
+'.px-foco{border-color:var(--accent,#f59e0b)!important;box-shadow:0 0 0 1px rgba(245,158,11,.25)}' +
+'#estrelas .estrela{cursor:pointer;color:var(--muted);display:inline-flex}' +
+'#estrelas .estrela svg{width:30px;height:30px}' +
+'#estrelas .estrela.on{color:var(--accent,#f59e0b)}' +
+'#estrelas .estrela.on svg{fill:currentColor}' +
+'</style>';
 
 function rodadaAtual() {
   const agora = new Date();
@@ -535,7 +876,7 @@ function montarContatos() {
     return '<a href="https://wa.me/' + num + '?text=' + texto + '" target="_blank" '
       + 'style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;'
       + 'background:rgba(37,211,102,0.12);color:#25D366;border:1px solid rgba(37,211,102,0.3);'
-      + 'border-radius:10px;padding:13px;font-weight:700;font-family:Barlow,sans-serif;font-size:14px;text-decoration:none">'
+      + 'border-radius:10px;padding:13px;font-weight:700;font-family:Barlow,sans-serif;font-size:0.875rem;text-decoration:none">'
       + label + '</a>';
   };
   html += btn(C.contatoCliente.rotulo, WHATS_CLIENTE, C.contatoCliente.mensagem);
@@ -623,9 +964,14 @@ let MINHA_FERIAS = null;
 let avEstrelas = 0;
 
 window.selecionarEstrela = function(v) {
+  // a estrela cheia e o fill do SVG, nao outro caractere: emoji e simbolo
+  // de texto mudam de forma entre aparelhos e alguns nem aparecem.
+  document.querySelectorAll('#estrelas .estrela').forEach(e => {
+    e.classList.toggle('on', +e.dataset.v <= v);
+  });
   avEstrelas = v;
   document.querySelectorAll('#estrelas .estrela').forEach(e => {
-    e.textContent = parseInt(e.dataset.v) <= v ? '★' : '☆';
+    e.classList.toggle('on', +e.dataset.v <= n);
   });
   // 4 ou menos exige justificativa
   document.getElementById('avJustificativaWrap').style.display = v <= 4 ? 'block' : 'none';
@@ -646,7 +992,11 @@ async function verificarAvaliacaoHoje() {
     if (jaAvaliou) {
       document.getElementById('avaliacaoForm').style.display = 'none';
       document.getElementById('avaliacaoFeita').style.display = 'block';
-      document.getElementById('avaliacaoResumo').textContent = '★'.repeat(jaAvaliou.estrelas) + '☆'.repeat(5-jaAvaliou.estrelas);
+      // resumo em texto: caractere de estrela nao renderiza igual em todo
+      // aparelho, e aqui nem ha SVG. Diz o numero, que e inequivoco.
+      document.getElementById('avaliacaoResumo').textContent =
+        jaAvaliou.estrelas + ' de 5' +
+        (jaAvaliou.justificativa ? ' · ' + jaAvaliou.justificativa : '');
     } else {
       document.getElementById('avaliacaoForm').style.display = 'block';
       document.getElementById('avaliacaoFeita').style.display = 'none';
@@ -680,7 +1030,7 @@ window.enviarAvaliacao = async function() {
     await setDoc(ref, { lista, updatedAt: new Date().toISOString() });
     document.getElementById('avaliacaoForm').style.display = 'none';
     document.getElementById('avaliacaoFeita').style.display = 'block';
-    document.getElementById('avaliacaoResumo').textContent = '★'.repeat(avEstrelas) + '☆'.repeat(5-avEstrelas);
+    document.getElementById('avaliacaoResumo').textContent = avEstrelas + ' de 5';
   } catch(e) { alert('Erro ao enviar avaliação. Tente de novo.'); }
 };
 
@@ -710,11 +1060,11 @@ let unsubHorario = null;function escutarHorarioDia() {
           _ultimoHorarioNotif = minhaParada.horarioNovo;
         }
         document.getElementById('horarioDiaConteudo').innerHTML =
-          '<div style="font-size:13px;color:var(--muted);margin-bottom:6px">Horário ajustado para hoje:</div>' +
+          '<div style="font-size:0.8125rem;color:var(--muted);margin-bottom:6px">Horário ajustado para hoje:</div>' +
           '<div style="display:flex;align-items:center;justify-content:center;gap:12px">' +
-          (mudou ? '<span style="font-size:18px;color:var(--muted);text-decoration:line-through">' + PASSAGEIRO.horario + '</span><span style="font-size:20px">→</span>' : '') +
-          '<span style="font-size:32px;font-weight:800;font-family:Barlow;color:var(--accent)">' + minhaParada.horarioNovo + '</span></div>' +
-          '<div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px">Válido só para hoje. Amanhã volta ao horário normal.</div>';
+          (mudou ? '<span style="font-size:1.125rem;color:var(--muted);text-decoration:line-through">' + PASSAGEIRO.horario + '</span><span style="font-size:1.25rem">→</span>' : '') +
+          '<span style="font-size:2rem;font-weight:800;font-family:Barlow;color:var(--accent)">' + minhaParada.horarioNovo + '</span></div>' +
+          '<div style="font-size:0.6875rem;color:var(--muted);text-align:center;margin-top:6px">Válido só para hoje. Amanhã volta ao horário normal.</div>';
       } else { card.style.display = 'none'; }
     } else {
       card.style.display = 'none';
@@ -853,18 +1203,18 @@ function renderPresencas(lista) {
   const vao = lista.filter(p => p.vai);
   const naoVao = lista.filter(p => !p.vai);
   document.getElementById('quemVaiResumo').innerHTML =
-    '<div style="flex:1;text-align:center;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:10px"><div style="font-size:22px;font-weight:800;font-family:Barlow;color:var(--green)">' + vao.length + '</div><div style="font-size:11px;color:var(--muted)">confirmaram</div></div>' +
-    '<div style="flex:1;text-align:center;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:10px"><div style="font-size:22px;font-weight:800;font-family:Barlow;color:var(--red)">' + naoVao.length + '</div><div style="font-size:11px;color:var(--muted)">não vão</div></div>';
+    '<div style="flex:1;text-align:center;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:10px"><div style="font-size:1.375rem;font-weight:800;font-family:Barlow;color:var(--green)">' + vao.length + '</div><div style="font-size:0.6875rem;color:var(--muted)">confirmaram</div></div>' +
+    '<div style="flex:1;text-align:center;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:10px"><div style="font-size:1.375rem;font-weight:800;font-family:Barlow;color:var(--red)">' + naoVao.length + '</div><div style="font-size:0.6875rem;color:var(--muted)">não vão</div></div>';
   let html = '';
   if (vao.length) {
-    html += '<div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:6px">Vão</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">' +
-      vao.map(p => { const s = senLabel(p.sentido); return '<span style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:4px 10px;font-size:12px">' + esc(nome2(p.nome)) + s + '</span>'; }).join('') + '</div>';
+    html += '<div style="font-size:0.75rem;color:var(--green);font-weight:700;margin-bottom:6px">Vão</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">' +
+      vao.map(p => { const s = senLabel(p.sentido); return '<span style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:4px 10px;font-size:0.75rem">' + esc(nome2(p.nome)) + s + '</span>'; }).join('') + '</div>';
   }
   if (naoVao.length) {
-    html += '<div style="font-size:12px;color:var(--red);font-weight:700;margin-bottom:6px">Não vão</div><div style="display:flex;flex-wrap:wrap;gap:6px">' +
-      naoVao.map(p => '<span style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:4px 10px;font-size:12px;color:var(--muted);text-decoration:line-through">' + esc(nome2(p.nome)) + '</span>').join('') + '</div>';
+    html += '<div style="font-size:0.75rem;color:var(--red);font-weight:700;margin-bottom:6px">Não vão</div><div style="display:flex;flex-wrap:wrap;gap:6px">' +
+      naoVao.map(p => '<span style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:4px 10px;font-size:0.75rem;color:var(--muted);text-decoration:line-through">' + esc(nome2(p.nome)) + '</span>').join('') + '</div>';
   }
-  if (!lista.length) html = '<div style="color:var(--muted);font-size:13px;text-align:center;padding:6px">Ninguém respondeu ainda.</div>';
+  if (!lista.length) html = '<div style="color:var(--muted);font-size:0.8125rem;text-align:center;padding:6px">Ninguém respondeu ainda.</div>';
   document.getElementById('quemVaiListas').innerHTML = html;
 }
 function nome2(n){ return (n||'').split(' ').slice(0,2).join(' '); }
@@ -906,7 +1256,7 @@ function renderChat(msgs) {
     if (m.autor && !ehEu) inner += '<div class="meta">' + esc(m.autor) + '</div>';
     if (m.tipo === 'loc') {
       inner += '<div><span class="live-dot"></span> ' + esc(m.txt) + '</div>';
-      if (m.link) inner += '<a href="' + esc(m.link) + '" target="_blank" style="display:inline-block;margin-top:6px;color:var(--green);font-weight:700;font-size:13px">Abrir no mapa →</a>';
+      if (m.link) inner += '<a href="' + esc(m.link) + '" target="_blank" style="display:inline-block;margin-top:6px;color:var(--green);font-weight:700;font-size:0.8125rem">Abrir no mapa →</a>';
     } else {
       inner += '<div>' + esc(m.txt) + '</div>';
     }
@@ -992,21 +1342,21 @@ function escutarRastreador() {
         const distTxt = km < 1 ? Math.round(km*1000)+' m' : km.toFixed(1).replace('.',',')+' km';
         info = '<div style=\"background:var(--surface2);border-radius:12px;padding:12px;margin-bottom:10px\">' +
           '<div style=\"display:flex;justify-content:space-between;align-items:center\">' +
-          '<div><div style=\"font-size:11px;color:var(--muted)\">Dist\u00e2ncia at\u00e9 voc\u00ea</div>' +
-          '<div style=\"font-size:22px;font-weight:800;font-family:Barlow;color:var(--accent)\">'+distTxt+'</div></div>' +
-          '<div style=\"text-align:right\"><div style=\"font-size:11px;color:var(--muted)\">Chega em ~</div>' +
-          '<div style=\"font-size:22px;font-weight:800;font-family:Barlow;color:var(--green)\">'+minutos+' min</div></div></div>' +
-          '<div style=\"font-size:10px;color:var(--muted);margin-top:6px\">Estimativa aproximada (linha reta). O tempo real depende do tr\u00e2nsito.</div>' +
+          '<div><div style=\"font-size:0.6875rem;color:var(--muted)\">Dist\u00e2ncia at\u00e9 voc\u00ea</div>' +
+          '<div style=\"font-size:1.375rem;font-weight:800;font-family:Barlow;color:var(--accent)\">'+distTxt+'</div></div>' +
+          '<div style=\"text-align:right\"><div style=\"font-size:0.6875rem;color:var(--muted)\">Chega em ~</div>' +
+          '<div style=\"font-size:1.375rem;font-weight:800;font-family:Barlow;color:var(--green)\">'+minutos+' min</div></div></div>' +
+          '<div style=\"font-size:0.625rem;color:var(--muted);margin-top:6px\">Estimativa aproximada (linha reta). O tempo real depende do tr\u00e2nsito.</div>' +
           '</div>';
       }
       const mapsUrl = 'https://www.google.com/maps?q=' + meu.lat + ',' + meu.lng;
-      area.innerHTML = '<div style=\"display:flex;align-items:center;gap:8px;margin-bottom:10px\"><span class=\"live-dot\"></span><span style=\"font-size:13px;color:var(--green);font-weight:600\">Van ao vivo \u00b7 GPS do motorista</span></div>' + info +
+      area.innerHTML = '<div style=\"display:flex;align-items:center;gap:8px;margin-bottom:10px\"><span class=\"live-dot\"></span><span style=\"font-size:0.8125rem;color:var(--green);font-weight:600\">Van ao vivo \u00b7 GPS do motorista</span></div>' + info +
         '<a href=\"' + mapsUrl + '\" target=\"_blank\" class=\"track-btn\">\uD83D\uDDFA\uFE0F Ver van no mapa</a>';
       return;
     }
     // 2) Link colado manual (modo antigo) - mantido
     if (meu && meu.link) {
-      area.innerHTML = '<div style=\"display:flex;align-items:center;gap:8px;margin-bottom:10px\"><span class=\"live-dot\"></span><span style=\"font-size:13px;color:var(--green);font-weight:600\">Van compartilhando localiza\u00e7\u00e3o</span></div>' +
+      area.innerHTML = '<div style=\"display:flex;align-items:center;gap:8px;margin-bottom:10px\"><span class=\"live-dot\"></span><span style=\"font-size:0.8125rem;color:var(--green);font-weight:600\">Van compartilhando localiza\u00e7\u00e3o</span></div>' +
         '<a href=\"' + esc(meu.link) + '\" target=\"_blank\" class=\"track-btn\">\uD83D\uDDFA\uFE0F Acompanhar van ao vivo</a>';
       return;
     }
@@ -1034,7 +1384,7 @@ function mesLocal(baseDate){
 
 function _diaChat(m){ try{ var d = m && m.em ? new Date(m.em) : null; if(!d || isNaN(d)) return ''; return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }catch(e){ return ''; } }
 function _fmtDiaChat(m){ try{ var d = new Date(m.em); var hoje=new Date(); var ymd=function(x){return x.getFullYear()+'-'+x.getMonth()+'-'+x.getDate();}; var ont=new Date(hoje); ont.setDate(hoje.getDate()-1); if(ymd(d)===ymd(hoje)) return 'Hoje'; if(ymd(d)===ymd(ont)) return 'Ontem'; return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }catch(e){ return ''; } }
-function _sepDataChat(m, anterior){ var dAtual=_diaChat(m); if(!dAtual) return ''; var dAnt = anterior ? _diaChat(anterior) : ''; if(dAtual===dAnt) return ''; var lbl=_fmtDiaChat(m); if(!lbl) return ''; return '<div style="align-self:center;margin:8px auto;padding:3px 12px;background:rgba(128,128,128,0.18);border-radius:12px;font-size:11px;font-weight:600;color:var(--muted);text-align:center">'+lbl+'</div>'; }
+function _sepDataChat(m, anterior){ var dAtual=_diaChat(m); if(!dAtual) return ''; var dAnt = anterior ? _diaChat(anterior) : ''; if(dAtual===dAnt) return ''; var lbl=_fmtDiaChat(m); if(!lbl) return ''; return '<div style="align-self:center;margin:8px auto;padding:3px 12px;background:rgba(128,128,128,0.18);border-radius:12px;font-size:0.6875rem;font-weight:600;color:var(--muted);text-align:center">'+lbl+'</div>'; }
 function agora(){ const d=new Date(); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
 
 document.getElementById('loginTel').addEventListener('input', function(e){
