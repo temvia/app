@@ -571,6 +571,10 @@ body {
 ` + '</style>');
 
   // Estrutura da tela (marca do cliente injetada)
+  document.head.insertAdjacentHTML('beforeend', '<style>' + VG_CSS + '</style>');
+  try { vgTema(); vgFilaCarregar(); } catch (e) {}
+  window.addEventListener('online', () => { VG_ONLINE = true; vgPintarSync(); vgFilaEnviar(); });
+  window.addEventListener('offline', () => { VG_ONLINE = false; vgPintarSync(); });
   document.body.innerHTML = `
 
 <!-- LOGIN SCREEN -->
@@ -662,6 +666,8 @@ body {
 
     <!-- ABA MINHA ROTA -->
     <div id="abaRota">
+      <div class="vg-cab"><span id="vgLinhaAtual"></span><span id="vgSync" class="vg-sync"></span></div>
+      <div id="vgTela"></div>
       <div style="margin-bottom:8px">
         <label class="section-label">Selecione seu nome</label>
         <select class="select-input" id="selMotorista" onchange="loadLinhas()">
@@ -1169,6 +1175,639 @@ const EMPRESA_COORDS = window.CLIENTE_CONFIG.destino;
 // Fallback inicial; os valores reais vêm dos Dados da Empresa (config no Firebase),
 // carregados por commCarregarTurnos() ao iniciar a rota.
 let TURNOS_CHEGADA = { '1°': '05:45', '2°': '14:45', '3°': '20:55', 'ADM': '07:15' };
+
+var VG_CSS = `
+:root{--vgbg:#14161a;--vgcard:#1c2028;--vgtxt:#e8e6e1;--vgmut:#8b8f96;--vgbrd:#33383f}
+html[data-vg-tema="claro"]{--vgbg:#fbfaf7;--vgcard:#fff;--vgtxt:#2C2C2A;--vgmut:#5F5E5A;--vgbrd:#D3D1C7}
+.vg-cab{display:flex;justify-content:space-between;align-items:center;padding:2px 2px 10px;font-size:0.8125rem;color:var(--vgtxt)}
+.vg-sync{font-size:0.6875rem;color:var(--vgmut)}
+.vg-sync-pend{color:#EF9F27}
+.vg-topo{display:flex;justify-content:space-between;background:var(--vgcard);border-radius:10px;padding:8px 11px;margin-bottom:10px;font-size:0.7188rem;color:var(--vgmut)}
+.vg-topo b{color:#1D9E75;font-weight:600}
+.vg-topo.vg-atrasado b{color:#EF9F27}
+.vg-card{background:var(--vgcard);border:1px solid var(--vgbrd);border-radius:12px;padding:14px;margin-bottom:10px}
+.vg-card-foco{border:2px solid #EF9F27}
+.vg-card-ok{border:2px solid #1D9E75}
+.vg-card-antes{border:2px solid #378ADD}
+.vg-card-fim{border:1px solid var(--vgbrd);opacity:.92}
+.vg-tag{font-size:0.625rem;letter-spacing:.1em;color:#EF9F27;margin-bottom:8px}
+.vg-card-ok .vg-tag{color:#1D9E75}.vg-card-antes .vg-tag{color:#378ADD}
+.vg-nome{font-size:1.1875rem;font-weight:600;line-height:1.25;color:var(--vgtxt);overflow-wrap:anywhere}
+.vg-titulo{font-size:1.125rem;font-weight:600;color:var(--vgtxt)}
+.vg-sub,.vg-local{font-size:0.7812rem;line-height:1.45;color:var(--vgmut);margin-top:5px}
+.vg-prev{font-size:0.7188rem;color:var(--vgmut);margin-top:3px}
+.vg-grade{display:flex;gap:14px;margin:12px 0 4px;flex-wrap:wrap}
+.vg-dado b{display:block;font-size:1.0625rem;font-weight:600;color:var(--vgtxt)}
+.vg-dado span{font-size:0.6562rem;color:var(--vgmut)}
+.vg-linha-info{font-size:0.7188rem;color:var(--vgmut);margin-top:8px}
+.vg-btn{border-radius:9px;font-size:0.9375rem;padding:0.94em 1em;min-height:48px;border:none;cursor:pointer;font-weight:500}
+.vg-btn-grande{width:100%;margin-top:13px;background:#1D9E75;color:#04342C}
+.vg-card-antes .vg-btn-grande{background:#378ADD;color:#042C53}
+.vg-btn-nav{width:100%;margin-top:12px;background:transparent;border:1px solid var(--vgbrd);color:var(--vgtxt);padding:0.8em;min-height:46px;font-size:0.875rem}
+.vg-acoes{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.vg-acoes .vg-btn{min-width:44%}
+.vg-flex2{flex:2}
+.vg-btn-ok{flex:2;background:#1D9E75;color:#04342C}
+.vg-btn-nao{flex:1;background:transparent;border:1px solid #A32D2D;color:#F09595;font-size:0.875rem}
+.vg-btn-mini{padding:8px 12px;font-size:0.7812rem;flex:none}
+.vg-btn-motivo{width:100%;margin-bottom:7px;background:var(--vgcard);border:1px solid var(--vgbrd);color:var(--vgtxt);font-size:0.875rem;text-align:left}
+.vg-btn-cancel{width:100%;margin-top:6px;background:transparent;border:1px solid var(--vgbrd);color:var(--vgmut);font-size:0.875rem}
+.vg-desfazer{display:flex;justify-content:space-between;align-items:center;background:var(--vgcard);border:1px solid var(--vgbrd);border-radius:9px;padding:9px 12px;margin-bottom:10px;font-size:0.75rem;color:var(--vgmut)}
+.vg-desfazer button{background:none;border:none;color:#EF9F27;font-size:0.7812rem;font-weight:600;cursor:pointer}
+.vg-atalhos{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.vg-atalho{position:relative;background:var(--vgcard);border:1px solid var(--vgbrd);color:var(--vgtxt);border-radius:9px;padding:0.9em 0.4em;min-height:56px;font-size:0.7188rem;cursor:pointer}
+.vg-atalho svg{width:16px;height:16px;display:block;margin:0 auto 3px}
+.vg-badge{position:absolute;top:5px;right:14px;background:#E24B4A;color:#fff;font-size:0.5938rem;border-radius:9px;padding:1px 5px;font-style:normal}
+.vg-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
+.vg-ov-caixa{background:var(--vgbg);border:1px solid var(--vgbrd);border-radius:14px;padding:16px;max-width:340px;width:100%}
+.vg-ov-lista{max-height:80vh;overflow:auto}
+.vg-ov-tit{font-size:0.9375rem;font-weight:600;color:var(--vgtxt);margin-bottom:12px}
+.vg-li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--vgbrd)}
+.vg-li b{display:block;font-size:0.8438rem;color:var(--vgtxt);font-weight:500}
+.vg-li span{display:block;font-size:0.6875rem;color:var(--vgmut)}
+.vg-st{font-size:0.7188rem;color:var(--vgmut);font-style:normal}
+.vg-li-ausente .vg-st{color:#F09595}
+.vg-li-embarcou .vg-st,.vg-li-desembarcou .vg-st{color:#1D9E75}
+`;
+
+const VG_SENTIDOS = ['ida', 'volta'];
+const VG_ESTADOS = ['programada', 'em_curso', 'encerrada'];
+
+// Eventos da VIAGEM (nao de uma pessoa)
+const VG_EV_VIAGEM = ['partida', 'chegada', 'desembarque_coletivo', 'fim'];
+// Eventos do VIAJANTE
+const VG_EV_PESSOA = ['embarque', 'desembarque', 'ausencia'];
+
+const VG_MOTIVOS_AUSENCIA = [
+  { id: 'nao_estava', rotulo: 'Não estava no ponto' },
+  { id: 'avisou', rotulo: 'Avisou que não iria' },
+  { id: 'outro_ponto', rotulo: 'Embarcou em outro ponto' },
+  { id: 'outro', rotulo: 'Outro motivo' }
+];
+
+function vgId() {
+  return 'vg' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+// Uma viagem nasce PROGRAMADA, a partir da linha e do dia. Chegada e
+// partida programadas vem do calendario do turno — nao de um horario fixo.
+function vgCriar(rota, dataIso, sentido) {
+  const t = (typeof turnoNoDia === 'function') ? turnoNoDia(rota.turno, dataIso) : null;
+  if (t && !t.opera) return null;             // linha nao roda nesse dia
+  const chegada = (t && t.chegada) || (TURNOS_CHEGADA || {})[rota.turno] || '';
+  const saida = (t && t.saida) || '';
+  const c = rota.calc || {};
+  return {
+    id: vgId(), rotaId: rota.id, linha: rota.linha, turno: rota.turno,
+    data: dataIso, sentido: sentido === 'volta' ? 'volta' : 'ida',
+    estado: 'programada',
+    motorista: rota.motorista || '', veiculo: rota.veiculo || '',
+    // programados
+    inicioProgramado: (sentido === 'volta') ? saida : (c.departure || ''),
+    chegadaProgramada: (sentido === 'volta') ? '' : chegada,
+    // reais: preenchidos pelo motorista
+    inicioReal: '', chegadaReal: '', fimReal: '',
+    eventos: []
+  };
+}
+
+function vgAgora() {
+  const d = new Date();
+  return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+
+// Registra um evento. 'previsto' vem do plano; 'real' do relogio.
+// O atraso NAO e gravado: e calculado quando alguem perguntar.
+function vgRegistrar(viagem, tipo, dados) {
+  if (!viagem) return null;
+  const ev = Object.assign({
+    tipo: tipo,
+    real: vgAgora(),
+    em: new Date().toISOString(),
+    por: (typeof MOTORISTA_ATUAL !== 'undefined' && MOTORISTA_ATUAL) || viagem.motorista || ''
+  }, dados || {});
+  viagem.eventos.push(ev);
+  return ev;
+}
+
+// Atraso em minutos: positivo = atrasado. Derivado, nunca guardado.
+function vgAtraso(previsto, real) {
+  const p = vgMin(previsto), r = vgMin(real);
+  if (p == null || r == null) return null;
+  let d = r - p;
+  // virada de meia-noite: 3o turno chega no dia seguinte
+  if (d > 720) d -= 1440;
+  if (d < -720) d += 1440;
+  return d;
+}
+function vgMin(hhmm) {
+  const m = String(hhmm || '').match(/^(\d{1,2}):(\d{2})/);
+  return m ? (+m[1] * 60 + +m[2]) : null;
+}
+
+// ---- ciclo da viagem ----
+function vgIniciar(viagem) {
+  if (!viagem || viagem.estado !== 'programada') return false;
+  viagem.estado = 'em_curso';
+  viagem.inicioReal = vgAgora();
+  vgRegistrar(viagem, 'partida', { previsto: viagem.inicioProgramado, real: viagem.inicioReal });
+  return true;
+}
+
+// Chegar a empresa e todos desembarcarem sao eventos DIFERENTES, mesmo
+// quando acontecem no mesmo minuto. A interface pode juntar num toque;
+// o registro nao pode perder a distincao.
+function vgChegar(viagem) {
+  if (!viagem || viagem.estado !== 'em_curso') return false;
+  viagem.chegadaReal = vgAgora();
+  vgRegistrar(viagem, 'chegada', { previsto: viagem.chegadaProgramada, real: viagem.chegadaReal });
+  return true;
+}
+
+function vgDesembarqueColetivo(viagem, viajantes) {
+  if (!viagem || viagem.estado !== 'em_curso') return 0;
+  const hora = vgAgora();
+  let n = 0;
+  (viajantes || []).forEach(v => {
+    if (vgEstadoDe(viagem, v.id || v.nome) !== 'embarcou') return;
+    vgRegistrar(viagem, 'desembarque', { viajante: v.id || v.nome, real: hora, coletivo: true });
+    n++;
+  });
+  vgRegistrar(viagem, 'desembarque_coletivo', { real: hora, quantidade: n });
+  return n;
+}
+
+function vgEncerrar(viagem) {
+  if (!viagem || viagem.estado !== 'em_curso') return false;
+  viagem.estado = 'encerrada';
+  viagem.fimReal = vgAgora();
+  vgRegistrar(viagem, 'fim', { real: viagem.fimReal });
+  return true;
+}
+
+// ---- eventos por viajante ----
+function vgEmbarcou(viagem, viajanteId, previsto, pos) {
+  if (!viagem || viagem.estado !== 'em_curso') return false;
+  vgRegistrar(viagem, 'embarque', Object.assign(
+    { viajante: viajanteId, previsto: previsto || '' }, pos || {}));
+  return true;
+}
+
+function vgAusente(viagem, viajanteId, motivo, previsto) {
+  if (!viagem || viagem.estado !== 'em_curso') return false;
+  vgRegistrar(viagem, 'ausencia', { viajante: viajanteId, motivo: motivo || 'outro',
+                                    previsto: previsto || '' });
+  return true;
+}
+
+function vgDesembarcou(viagem, viajanteId, previsto, pos) {
+  if (!viagem || viagem.estado !== 'em_curso') return false;
+  vgRegistrar(viagem, 'desembarque', Object.assign(
+    { viajante: viajanteId, previsto: previsto || '' }, pos || {}));
+  return true;
+}
+
+// Desfazer a ULTIMA acao daquele viajante. Errar acontece, e o registro
+// vai para quem espera do outro lado.
+function vgDesfazer(viagem, viajanteId) {
+  if (!viagem) return false;
+  for (let i = viagem.eventos.length - 1; i >= 0; i--) {
+    const e = viagem.eventos[i];
+    if (e.viajante === viajanteId && VG_EV_PESSOA.indexOf(e.tipo) >= 0) {
+      viagem.eventos.splice(i, 1);
+      return true;
+    }
+  }
+  return false;
+}
+
+// Estado atual de um viajante nesta viagem.
+function vgEstadoDe(viagem, viajanteId) {
+  if (!viagem) return 'pendente';
+  let st = 'pendente';
+  viagem.eventos.forEach(e => {
+    if (e.viajante !== viajanteId) return;
+    if (e.tipo === 'embarque') st = 'embarcou';
+    else if (e.tipo === 'ausencia') st = 'ausente';
+    else if (e.tipo === 'desembarque') st = 'desembarcou';
+  });
+  return st;
+}
+
+// Quem falta. Na ida, quem nao embarcou nem faltou; na volta, quem
+// embarcou e ainda nao desceu.
+function vgPendentes(viagem, ordem) {
+  if (!viagem) return [];
+  return (ordem || []).filter(v => {
+    const id = v.id || v.nome;
+    const st = vgEstadoDe(viagem, id);
+    return viagem.sentido === 'volta' ? (st !== 'desembarcou') : (st === 'pendente');
+  });
+}
+
+// O proximo da fila — o que o cartao principal mostra.
+function vgProximo(viagem, ordem) {
+  const p = vgPendentes(viagem, ordem);
+  return p.length ? p[0] : null;
+}
+
+// Quanto a viagem esta atrasada AGORA, para o aviso do topo.
+function vgAtrasoAtual(viagem) {
+  if (!viagem || !viagem.eventos.length) return null;
+  for (let i = viagem.eventos.length - 1; i >= 0; i--) {
+    const e = viagem.eventos[i];
+    if (e.previsto && e.real) {
+      const a = vgAtraso(e.previsto, e.real);
+      if (a != null) return a;
+    }
+  }
+  return null;
+}
+
+// Resumo da viagem, base dos relatorios de pontualidade.
+function vgResumo(viagem) {
+  if (!viagem) return null;
+  const cont = { embarcaram: 0, ausentes: 0, desembarcaram: 0 };
+  viagem.eventos.forEach(e => {
+    if (e.tipo === 'embarque') cont.embarcaram++;
+    else if (e.tipo === 'ausencia') cont.ausentes++;
+    else if (e.tipo === 'desembarque') cont.desembarcaram++;
+  });
+  return Object.assign(cont, {
+    sentido: viagem.sentido, estado: viagem.estado,
+    atrasoSaida: vgAtraso(viagem.inicioProgramado, viagem.inicioReal),
+    atrasoChegada: vgAtraso(viagem.chegadaProgramada, viagem.chegadaReal),
+    duracaoMin: (vgMin(viagem.fimReal) != null && vgMin(viagem.inicioReal) != null)
+      ? vgAtraso(viagem.inicioReal, viagem.fimReal) : null
+  });
+}
+
+// Qual viagem vem agora — o motorista NAO escolhe ida ou volta.
+function vgProximaViagem(viagens, agoraMin) {
+  const emCurso = (viagens || []).find(v => v.estado === 'em_curso');
+  if (emCurso) return emCurso;
+  const m = (agoraMin != null) ? agoraMin : vgMin(vgAgora());
+  const prog = (viagens || []).filter(v => v.estado === 'programada')
+    .map(v => ({ v: v, ini: vgMin(v.inicioProgramado) }))
+    .filter(x => x.ini != null)
+    .sort((a, b) => Math.abs(a.ini - m) - Math.abs(b.ini - m));
+  return prog.length ? prog[0].v : null;
+}
+
+
+// ==================================================================
+// FILA OFFLINE — o motorista continua marcando sem sinal
+// ------------------------------------------------------------------
+// Em rota, sinal cai. Perder um embarque marcado e perder o dado que
+// vai para quem espera do outro lado. Grava local, envia depois.
+// ==================================================================
+const VG_FILA_KEY = (typeof C !== 'undefined' && C.storageKey ? C.storageKey : 'temvia') + '_fila_viagem';
+let VG_FILA = [];
+let VG_ONLINE = (typeof navigator === 'undefined') || navigator.onLine !== false;
+
+function vgFilaCarregar() {
+  try { VG_FILA = JSON.parse(localStorage.getItem(VG_FILA_KEY) || '[]'); }
+  catch (e) { VG_FILA = []; }
+}
+function vgFilaGravar() {
+  try { localStorage.setItem(VG_FILA_KEY, JSON.stringify(VG_FILA)); } catch (e) {}
+}
+function vgFilaPor(viagem) {
+  VG_FILA.push({ viagem: viagem.id, snapshot: JSON.parse(JSON.stringify(viagem)),
+                 em: new Date().toISOString() });
+  vgFilaGravar();
+  vgPintarSync();
+  vgFilaEnviar();
+}
+async function vgFilaEnviar() {
+  if (!VG_FILA.length || !VG_ONLINE) return;
+  try {
+    if (!db) return;
+    const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const lote = VG_FILA.splice(0, VG_FILA.length);
+    vgFilaGravar(); vgPintarSync();
+    const ultimo = {};
+    lote.forEach(x => { ultimo[x.viagem] = x.snapshot; });
+    for (const id of Object.keys(ultimo)) {
+      await setDoc(doc(db, CLIENTE_ID, 'viagem_' + id), ultimo[id], { merge: true });
+    }
+  } catch (e) {
+    console.warn('[viagem] fila:', e && e.message);
+  }
+  vgPintarSync();
+}
+
+// ==================================================================
+// TELA DA VIAGEM
+// ==================================================================
+let VG_ATUAL = null;        // viagem em curso ou programada
+let VG_ORDEM = [];          // viajantes na ordem da rota
+let VG_DESFAZER = null;     // { id, ate } — janela de arrependimento
+
+function vgPintar() {
+  const el = document.getElementById('vgTela');
+  if (!el) return;
+  if (!VG_ATUAL) { el.innerHTML = ''; return; }
+  const v = VG_ATUAL;
+
+  if (v.estado === 'programada') return vgPintarAntes(el, v);
+  if (v.estado === 'encerrada') return vgPintarEncerrada(el, v);
+
+  const prox = vgProximo(v, VG_ORDEM);
+  if (prox) return vgPintarProximo(el, v, prox);
+  if (!v.chegadaReal) return vgPintarACaminho(el, v);
+  return vgPintarChegou(el, v);
+}
+
+// ---- 1. antes de iniciar ----
+function vgPintarAntes(el, v) {
+  const sentido = v.sentido === 'volta' ? 'Retorno' : 'Entrada';
+  const trajeto = v.sentido === 'volta' ? 'Empresa → passageiros' : 'Garagem → empresa';
+  el.innerHTML =
+    '<div class="vg-card vg-card-antes">' +
+      '<div class="vg-tag">PRÓXIMA VIAGEM</div>' +
+      '<div class="vg-titulo">Linha ' + esc(v.linha) + ' · ' + esc(v.turno) + '</div>' +
+      '<div class="vg-sub">' + sentido + ' · ' + trajeto + '</div>' +
+      '<div class="vg-grade">' +
+        vgDado(VG_ORDEM.length, 'passageiros') +
+        vgDado(v.inicioProgramado || '--:--', 'saída programada') +
+        (v.chegadaProgramada ? vgDado(v.chegadaProgramada, 'chegada prevista') : '') +
+      '</div>' +
+      '<div class="vg-linha-info">' + esc(v.motorista || 'Motorista a definir') +
+        (v.veiculo ? ' · ' + esc(v.veiculo) : '') + '</div>' +
+      '<button class="vg-btn vg-btn-grande" onclick="vgUiIniciar()">Iniciar rota</button>' +
+    '</div>';
+}
+
+function vgDado(valor, rotulo) {
+  return '<div class="vg-dado"><b>' + esc(String(valor)) + '</b><span>' + rotulo + '</span></div>';
+}
+
+// ---- 2. próximo embarque / desembarque ----
+function vgPintarProximo(el, v, p) {
+  const volta = v.sentido === 'volta';
+  const total = VG_ORDEM.length;
+  const feitos = total - vgPendentes(v, VG_ORDEM).length;
+  const previsto = p.horario || '';
+  const atraso = vgAtrasoAtual(v);
+
+  el.innerHTML =
+    vgBarraTopo(v, atraso) +
+    '<div class="vg-card vg-card-foco">' +
+      '<div class="vg-tag">' + (volta ? 'PRÓXIMO DESEMBARQUE' : 'PRÓXIMO EMBARQUE') +
+        ' · ' + (feitos + 1) + ' DE ' + total + '</div>' +
+      '<div class="vg-nome">' + esc(p.nome) + '</div>' +
+      '<div class="vg-local">' + esc(p.embarque || p.endereco || '—') + '</div>' +
+      (previsto ? '<div class="vg-prev">previsto ' + esc(previsto) + '</div>' : '') +
+      '<button class="vg-btn vg-btn-nav" onclick="vgUiNavegar()">Navegar</button>' +
+      '<div class="vg-acoes">' +
+        (volta
+          ? '<button class="vg-btn vg-btn-ok vg-flex2" onclick="vgUiDesembarcou()">Desembarcou</button>'
+          : '<button class="vg-btn vg-btn-ok vg-flex2" onclick="vgUiEmbarcou()">Embarcou</button>' +
+            '<button class="vg-btn vg-btn-nao" onclick="vgUiAusente()">Ausente</button>') +
+      '</div>' +
+    '</div>' +
+    vgDesfazerHtml() + vgAtalhos();
+}
+
+// ---- 3. todos processados, a caminho ----
+function vgPintarACaminho(el, v) {
+  const r = vgResumo(v);
+  el.innerHTML =
+    vgBarraTopo(v, vgAtrasoAtual(v)) +
+    '<div class="vg-card vg-card-ok">' +
+      '<div class="vg-tag">TODOS OS PASSAGEIROS PROCESSADOS</div>' +
+      '<div class="vg-nome">' + r.embarcaram + ' embarcaram' +
+        (r.ausentes ? ' · ' + r.ausentes + ' ausente' + (r.ausentes > 1 ? 's' : '') : '') + '</div>' +
+      '<div class="vg-local">A caminho da empresa' +
+        (v.chegadaProgramada ? ' · chegada prevista ' + esc(v.chegadaProgramada) : '') + '</div>' +
+      '<button class="vg-btn vg-btn-grande" onclick="vgUiChegou()">Cheguei à empresa</button>' +
+    '</div>' + vgDesfazerHtml() + vgAtalhos();
+}
+
+// ---- 4. chegou: desembarque coletivo e encerrar ----
+function vgPintarChegou(el, v) {
+  const r = vgResumo(v);
+  const desceram = r.desembarcaram;
+  el.innerHTML =
+    vgBarraTopo(v, vgAtraso(v.chegadaProgramada, v.chegadaReal)) +
+    '<div class="vg-card vg-card-ok">' +
+      '<div class="vg-tag">CHEGAMOS À EMPRESA · ' + esc(v.chegadaReal) + '</div>' +
+      (desceram
+        ? '<div class="vg-nome">' + desceram + ' desembarcaram</div>' +
+          '<div class="vg-local">Registrado. Falta encerrar a viagem.</div>' +
+          '<button class="vg-btn vg-btn-grande" onclick="vgUiEncerrar()">Encerrar ida</button>'
+        : '<div class="vg-nome">' + r.embarcaram + ' a bordo</div>' +
+          '<div class="vg-local">Registre o desembarque para fechar a viagem.</div>' +
+          '<button class="vg-btn vg-btn-grande" onclick="vgUiDesembarqueTodos()">Todos desembarcaram</button>') +
+    '</div>' + vgAtalhos();
+}
+
+// ---- 5. encerrada ----
+function vgPintarEncerrada(el, v) {
+  const r = vgResumo(v);
+  const at = r.atrasoChegada;
+  el.innerHTML =
+    '<div class="vg-card vg-card-fim">' +
+      '<div class="vg-tag">VIAGEM ENCERRADA · ' + esc(v.fimReal) + '</div>' +
+      '<div class="vg-nome">' + (v.sentido === 'volta' ? 'Retorno' : 'Entrada') +
+        ' · Linha ' + esc(v.linha) + '</div>' +
+      '<div class="vg-grade">' +
+        vgDado(r.embarcaram, 'embarcaram') +
+        vgDado(r.ausentes, 'ausentes') +
+        (at != null && Math.abs(at) <= 120
+          ? vgDado((at > 0 ? '+' : '') + at + ' min', 'na chegada') : '') +
+      '</div>' +
+    '</div>' + vgAtalhos();
+}
+
+// ---- barra do topo: atraso e sincronização ----
+function vgBarraTopo(v, atraso) {
+  // Diferenca acima de 2h nao e atraso: e relogio fora de contexto
+  // (teste, viagem de outro dia). Mostrar "-337 min" so confunde.
+  const fora = (atraso != null && Math.abs(atraso) > 120);
+  const txt = (atraso == null || fora) ? 'no horário'
+    : (atraso > 0 ? '+' + atraso + ' min' : (atraso < 0 ? atraso + ' min' : 'no horário'));
+  const cls = (!fora && atraso != null && atraso > 5) ? ' vg-atrasado' : '';
+  return '<div class="vg-topo' + cls + '">' +
+    '<span>' + (v.chegadaProgramada ? 'Chegada prevista ' + esc(v.chegadaProgramada) : 'Em rota') + '</span>' +
+    '<b>' + txt + '</b></div>';
+}
+
+function vgPintarSync() {
+  const el = document.getElementById('vgSync');
+  if (!el) return;
+  if (!VG_FILA.length) {
+    el.className = 'vg-sync';
+    el.textContent = VG_ONLINE ? 'sincronizado' : 'sem conexão';
+    return;
+  }
+  el.className = 'vg-sync vg-sync-pend';
+  el.textContent = (VG_ONLINE ? '' : 'sem conexão · ') + VG_FILA.length + ' aguardando envio';
+}
+
+// ---- desfazer temporário ----
+function vgDesfazerHtml() {
+  if (!VG_DESFAZER || Date.now() > VG_DESFAZER.ate) return '';
+  return '<div class="vg-desfazer">' +
+    '<span>' + esc(VG_DESFAZER.rotulo) + '</span>' +
+    '<button onclick="vgUiDesfazer()">Desfazer</button></div>';
+}
+function vgArmarDesfazer(id, rotulo) {
+  VG_DESFAZER = { id: id, rotulo: rotulo, ate: Date.now() + 8000 };
+  setTimeout(() => {
+    if (VG_DESFAZER && Date.now() >= VG_DESFAZER.ate) { VG_DESFAZER = null; vgPintar(); }
+  }, 8200);
+}
+
+// ---- atalhos ----
+function vgAtalhos() {
+  const n = (typeof _commNaoLidas !== 'undefined' && _commNaoLidas) || 0;
+  return '<div class="vg-atalhos">' +
+    vgAtalho('vgUiLista()', 'Lista', 'M4 6h16M4 12h16M4 18h10') +
+    vgAtalho('vgUiComunicados()', 'Comunicados', 'M4 5h16v11H8l-4 4V5Z', n) +
+    vgAtalho('vgUiOcorrencia()', 'Ocorrência', 'M12 3 2 20h20L12 3ZM12 9v5M12 17.5v.5') +
+    vgAtalho('vgUiCompartilhar()', 'Compartilhar', 'M6 12a3 3 0 1 0 0-.1M18 6a3 3 0 1 0 0-.1M18 18a3 3 0 1 0 0-.1M8.6 10.7l6.8-3.4M8.6 13.3l6.8 3.4') +
+    '</div>';
+}
+function vgAtalho(acao, rotulo, path, badge) {
+  return '<button class="vg-atalho" onclick="' + acao + '">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + path + '"/></svg>' +
+    rotulo + (badge ? '<i class="vg-badge">' + badge + '</i>' : '') + '</button>';
+}
+
+// ---- ações ----
+function vgUiIniciar() {
+  if (!vgIniciar(VG_ATUAL)) return;
+  vgFilaPor(VG_ATUAL); vgPintar();
+}
+function vgUiNavegar() {
+  const p = vgProximo(VG_ATUAL, VG_ORDEM);
+  if (!p) return;
+  const c = (p.lat && p.lng) ? p.lat + ',' + p.lng
+    : encodeURIComponent((p.embarque || p.endereco || '') + ', ' + (p.cidade || 'Sorocaba') + ' SP');
+  window.open('https://www.google.com/maps/dir/?api=1&destination=' + c + '&travelmode=driving', '_blank');
+}
+function vgUiEmbarcou(id) {
+  const p = id ? VG_ORDEM.find(x => (x.id || x.nome) === id) : vgProximo(VG_ATUAL, VG_ORDEM);
+  if (!p) return;
+  const k = p.id || p.nome;
+  vgEmbarcou(VG_ATUAL, k, p.horario || '');
+  vgArmarDesfazer(k, p.nome.split(' ')[0] + ' embarcou');
+  vgFilaPor(VG_ATUAL); vgPintar();
+}
+function vgUiDesembarcou(id) {
+  const p = id ? VG_ORDEM.find(x => (x.id || x.nome) === id) : vgProximo(VG_ATUAL, VG_ORDEM);
+  if (!p) return;
+  const k = p.id || p.nome;
+  vgDesembarcou(VG_ATUAL, k, p.horario || '');
+  vgArmarDesfazer(k, p.nome.split(' ')[0] + ' desembarcou');
+  vgFilaPor(VG_ATUAL); vgPintar();
+}
+
+// Ausente pede motivo em DOIS toques. Sem isso o relatorio diz que
+// faltou quem so mudou de ponto.
+function vgUiAusente(id) {
+  const p = id ? VG_ORDEM.find(x => (x.id || x.nome) === id) : vgProximo(VG_ATUAL, VG_ORDEM);
+  if (!p) return;
+  const k = p.id || p.nome;
+  let ov = document.getElementById('vgMotivoOv');
+  if (ov) ov.remove();
+  ov = document.createElement('div');
+  ov.id = 'vgMotivoOv';
+  ov.className = 'vg-ov';
+  ov.innerHTML = '<div class="vg-ov-caixa">' +
+    '<div class="vg-ov-tit">' + esc(p.nome) + ' não embarcou</div>' +
+    VG_MOTIVOS_AUSENCIA.map(m =>
+      '<button class="vg-btn vg-btn-motivo" onclick="vgUiConfirmarAusencia(&#39;' +
+      escAttrM(k) + '&#39;,&#39;' + m.id + '&#39;)">' + m.rotulo + '</button>').join('') +
+    '<button class="vg-btn vg-btn-cancel" onclick="vgFecharMotivo()">Cancelar</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+}
+function escAttrM(t) {
+  return String(t || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+    .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+function vgFecharMotivo() {
+  const ov = document.getElementById('vgMotivoOv');
+  if (ov) ov.remove();
+}
+function vgUiConfirmarAusencia(k, motivo) {
+  const p = VG_ORDEM.find(x => (x.id || x.nome) === k);
+  vgAusente(VG_ATUAL, k, motivo, p ? p.horario : '');
+  vgArmarDesfazer(k, (p ? p.nome.split(' ')[0] : 'Passageiro') + ' marcado como ausente');
+  vgFecharMotivo();
+  vgFilaPor(VG_ATUAL); vgPintar();
+}
+function vgUiDesfazer() {
+  if (!VG_DESFAZER) return;
+  vgDesfazer(VG_ATUAL, VG_DESFAZER.id);
+  VG_DESFAZER = null;
+  vgFilaPor(VG_ATUAL); vgPintar();
+}
+function vgUiChegou() {
+  if (!vgChegar(VG_ATUAL)) return;
+  vgFilaPor(VG_ATUAL); vgPintar();
+}
+function vgUiDesembarqueTodos() {
+  vgDesembarqueColetivo(VG_ATUAL, VG_ORDEM);
+  vgFilaPor(VG_ATUAL); vgPintar();
+}
+function vgUiEncerrar() {
+  if (!vgEncerrar(VG_ATUAL)) return;
+  vgFilaPor(VG_ATUAL); vgPintar();
+}
+
+// Embarque fora de ordem: pela Lista, sem poluir a tela principal.
+function vgUiLista() {
+  let ov = document.getElementById('vgListaOv');
+  if (ov) ov.remove();
+  ov = document.createElement('div');
+  ov.id = 'vgListaOv';
+  ov.className = 'vg-ov';
+  const volta = VG_ATUAL && VG_ATUAL.sentido === 'volta';
+  ov.innerHTML = '<div class="vg-ov-caixa vg-ov-lista">' +
+    '<div class="vg-ov-tit">Todos os passageiros</div>' +
+    VG_ORDEM.map(p => {
+      const k = p.id || p.nome;
+      const st = VG_ATUAL ? vgEstadoDe(VG_ATUAL, k) : 'pendente';
+      const rot = { pendente: '', embarcou: 'Embarcou', ausente: 'Ausente',
+                    desembarcou: 'Desembarcou' }[st];
+      return '<div class="vg-li vg-li-' + st + '">' +
+        '<div><b>' + esc(p.nome) + '</b><span>' + esc(p.embarque || p.endereco || '') + '</span></div>' +
+        (st === 'pendente'
+          ? '<button class="vg-btn vg-btn-ok vg-btn-mini" onclick="' +
+            (volta ? 'vgUiDesembarcou' : 'vgUiEmbarcou') + '(&#39;' + escAttrM(k) + '&#39;);vgFecharLista()">' +
+            (volta ? 'Desembarcou' : 'Embarcou') + '</button>'
+          : '<i class="vg-st">' + rot + '</i>') + '</div>';
+    }).join('') +
+    '<button class="vg-btn vg-btn-cancel" onclick="vgFecharLista()">Fechar</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+}
+function vgFecharLista() {
+  const ov = document.getElementById('vgListaOv');
+  if (ov) ov.remove();
+  vgPintar();
+}
+function vgUiComunicados() { if (typeof trocarAba === 'function') trocarAba('hoje'); }
+function vgUiOcorrencia() { alert('Ocorrências: em breve.'); }
+function vgUiCompartilhar() {
+  if (typeof compartilharRota === 'function') return compartilharRota();
+  alert('Compartilhar rota');
+}
+
+// ---- tema claro/escuro ----
+function vgTema(modo) {
+  const m = modo || localStorage.getItem('vg_tema') || 'auto';
+  try { localStorage.setItem('vg_tema', m); } catch (e) {}
+  const escuro = (m === 'escuro') ||
+    (m === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.setAttribute('data-vg-tema', escuro ? 'escuro' : 'claro');
+}
+
 
 // ==================================================================
 // CALENDÁRIO DO TURNO (mesma lógica do gestor)
