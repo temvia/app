@@ -1473,6 +1473,7 @@ function vgFilaGravar() {
   try { localStorage.setItem(VG_FILA_KEY, JSON.stringify(VG_FILA)); } catch (e) {}
 }
 function vgFilaPor(viagem) {
+  vgGuardar(viagem);
   VG_FILA.push({ viagem: viagem.id, snapshot: JSON.parse(JSON.stringify(viagem)),
                  em: new Date().toISOString() });
   vgFilaGravar();
@@ -1525,6 +1526,48 @@ async function vgFilaEnviar() {
 let VG_ATUAL = null;        // viagem em curso ou programada
 let VG_ORDEM = [];          // viajantes na ordem da rota
 let VG_DESFAZER = null;     // { id, ate } — janela de arrependimento
+
+// Recupera a viagem de hoje desta linha, ou cria a programada. O
+// motorista NAO escolhe ida ou volta: o horario decide.
+function vgPreparar(rota) {
+  if (!rota) return;
+  const hoje = (function () {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
+           '-' + String(d.getDate()).padStart(2, '0');
+  })();
+
+  // ordem dos viajantes = ordem de embarque da rota
+  VG_ORDEM = (rota.passageiros || [])
+    .filter(p => p.status !== 'desligado' && p.status !== 'ferias' && p.status !== 'afastado')
+    .slice()
+    .sort((a, b) => (a.horario || '99:99').localeCompare(b.horario || '99:99'));
+
+  // ja existe viagem em andamento guardada localmente?
+  const guardada = vgRecuperar(rota.id, hoje);
+  if (guardada) { VG_ATUAL = guardada; vgPintar(); vgPintarSync(); return; }
+
+  const ida = vgCriar(rota, hoje, 'ida');
+  const volta = vgCriar(rota, hoje, 'volta');
+  VG_ATUAL = vgProximaViagem([ida, volta].filter(Boolean));
+  vgPintar();
+  vgPintarSync();
+  const lbl = document.getElementById('vgLinhaAtual');
+  if (lbl) lbl.textContent = 'Linha ' + rota.linha + ' · ' + rota.turno;
+}
+
+// A viagem em curso sobrevive a recarregar a pagina: sem isso, fechar o
+// app no meio da rota perderia tudo o que ja foi marcado.
+function vgGuardar(v) {
+  try { localStorage.setItem(VG_FILA_KEY + '_atual', JSON.stringify(v)); } catch (e) {}
+}
+function vgRecuperar(rotaId, dataIso) {
+  try {
+    const v = JSON.parse(localStorage.getItem(VG_FILA_KEY + '_atual') || 'null');
+    if (v && v.rotaId === rotaId && v.data === dataIso && v.estado !== 'encerrada') return v;
+  } catch (e) {}
+  return null;
+}
 
 function vgPintar() {
   const el = document.getElementById('vgTela');
@@ -2569,6 +2612,10 @@ function loadRota() {
 
   const rota = DATA.find(r => r.id === rotaId);
   if (!rota) return;
+
+  // Prepara a viagem do dia para esta linha e pinta o cartao de proximo
+  // embarque. Sem isto a tela nova ficava sempre vazia.
+  try { vgPreparar(rota); } catch (e) { console.warn('viagem:', e && e.message); }
 
   // Carregar horários recalculados do dia (uma vez por seleção) e re-renderizar
   if (!window._horariosDoDiaCarregado || window._horariosDoDiaPara !== rotaId) {

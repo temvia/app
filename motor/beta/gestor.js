@@ -1899,8 +1899,8 @@ function renderMotoristaList() {
           '<div style="font-size:11px;color:var(--muted);padding:2px 2px 0">O PIN e criado pelo proprio motorista no primeiro acesso. Use o cadeado aberto para zerar se ele esquecer.</div>' +
         '</div>' +
         '<div style="display:flex;flex-direction:column;gap:4px">' +
-          '<button class="add-btn" style="font-size:11px;padding:4px 10px" onclick="saveMotoEdit(' + m.id + ')">Salvar</button>' +
-          '<button class="btn-cancel" style="font-size:11px;padding:4px 10px" onclick="cancelMotoEdit(' + m.id + ')">✕</button>' +
+          '<button class="add-btn" style="font-size:11px;padding:4px 10px" onclick="saveMotoEdit(\'' + m.id + '\')">Salvar</button>' +
+          '<button class="btn-cancel" style="font-size:11px;padding:4px 10px" onclick="cancelMotoEdit(\'' + m.id + '\')">✕</button>' +
         '</div>';
     } else {
       card.innerHTML =
@@ -1912,8 +1912,8 @@ function renderMotoristaList() {
         '</div>' +
         '<div style="display:flex;gap:4px">' +
           botoesAcesso(m) +
-          '<button class="action-btn" onclick="startMotoEdit(' + m.id + ')" title="Editar" style="color:var(--accent2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>' +
-          '<button class="action-btn" onclick="removeMotorista(' + m.id + ')" title="Remover" style="color:var(--red)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
+          '<button class="action-btn" onclick="startMotoEdit(\'' + m.id + '\')" title="Editar" style="color:var(--accent2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>' +
+          '<button class="action-btn" onclick="removeMotorista(\'' + m.id + '\')" title="Remover" style="color:var(--red)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
         '</div>';
     }
 
@@ -1922,16 +1922,19 @@ function renderMotoristaList() {
 }
 
 function startMotoEdit(id) {
+  id = (typeof id === 'string' && /^\d+$/.test(id)) ? Number(id) : id;
   const m = MOTORISTAS.find(x => x.id === id);
   if (m) { m._editing = true; renderMotoristaList(); }
 }
 
 function cancelMotoEdit(id) {
+  id = (typeof id === 'string' && /^\d+$/.test(id)) ? Number(id) : id;
   const m = MOTORISTAS.find(x => x.id === id);
   if (m) { m._editing = false; renderMotoristaList(); }
 }
 
 function saveMotoEdit(id) {
+  id = (typeof id === 'string' && /^\d+$/.test(id)) ? Number(id) : id;
   const m = MOTORISTAS.find(x => x.id === id);
   if (!m) return;
   const novoNome = document.getElementById('editMNome_' + id).value.trim();
@@ -1968,6 +1971,7 @@ function addMotorista() {
 }
 
 function removeMotorista(id) {
+  id = (typeof id === 'string' && /^\d+$/.test(id)) ? Number(id) : id;
   const m = MOTORISTAS.find(x => x.id === id);
   if (!m) return;
   // Antes so perguntava quando o motorista estava em uso: um toque
@@ -4619,8 +4623,7 @@ function impMotProcessar(linhas) {
 function impMotConfirmar() {
   if (!IMP_MOT_LINHAS || !IMP_MOT_LINHAS.length) return;
   IMP_MOT_LINHAS.forEach(m => {
-    MOTORISTAS.push({ id: 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
-                      nome: m.nome, tel: m.telefone, obs: m.obs });
+    MOTORISTAS.push({ id: nextMotoId++, nome: m.nome, tel: m.telefone, obs: m.obs });
     logChange('inclusao', 'Motorista ' + m.nome, '—', 'Importado da planilha', '');
   });
   const n = IMP_MOT_LINHAS.length;
