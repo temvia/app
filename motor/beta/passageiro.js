@@ -142,7 +142,7 @@ document.head.insertAdjacentHTML('beforeend',
   '<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">' +
   '<style>' + CSS_MOTOR + '</style>');
 document.body.innerHTML = HTML_MOTOR;
-document.head.insertAdjacentHTML('beforeend', TL_CSS + PX_CSS);
+// o estilo entra em pxPorEstilo(), onde TL_CSS e PX_CSS ja tem valor
 document.head.insertAdjacentHTML('beforeend', TV_CSS_HORA);
 var _marca = C.marcaUpper || (C.marca || '').toUpperCase();
 ['brandLogin', 'brandApp'].forEach(function (id) {
@@ -768,7 +768,12 @@ function pxStatus(mom, v) {
         sub: 'Embarque previsto às ' +
              ((typeof PASSAGEIRO !== 'undefined' && PASSAGEIRO && PASSAGEIRO.horario) || '--:--') };
     case 'depois':
-      return { cls: '', tit: 'Viagem de hoje concluída', sub: 'Que tal avaliar?' };
+      // Sem viagem registrada nao da para afirmar que ela aconteceu:
+      // a timeline logo abaixo diria o contrario.
+      return v
+        ? { cls: '', tit: 'Viagem de hoje concluída', sub: 'Que tal avaliar?' }
+        : { cls: '', tit: 'Seu horário de hoje já passou',
+            sub: 'Se você viajou, pode avaliar abaixo.' };
     default: return null;
   }
 }
@@ -785,7 +790,18 @@ function pxPintarStatus(mom) {
 }
 
 // Reordena os cartoes. Nada some — so muda de lugar.
+// PX_CSS era usado antes de ser definido: 'var' iça a declaracao, nao o
+// valor, e o navegador recebia "<style>undefined</style>". Por isso a
+// tela do passageiro nao refletia nenhuma melhoria.
+let PX_CSS_POSTO = false;
+function pxPorEstilo() {
+  if (PX_CSS_POSTO) return;
+  PX_CSS_POSTO = true;
+  document.head.insertAdjacentHTML('beforeend', TL_CSS + PX_CSS);
+}
+
 function pxOrdenar() {
+  pxPorEstilo();
   const view = document.getElementById('viewInicio');
   if (!view) return;
   const mom = pxMomento();

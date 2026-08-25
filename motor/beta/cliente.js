@@ -650,6 +650,244 @@ function pdfDataBr(iso) {
   return m ? (m[3] + '/' + m[2] + '/' + m[1]) : '';
 }
 
+function otHHMM(min) {
+  const m = ((Math.round(min) % 1440) + 1440) % 1440;
+  return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+}
+
+function pdfCabecalho(doc, ctx, completo) {
+  const L = 14, R = 196;
+  if (completo) {
+    if (PDF_LOGO) {
+      doc.addImage(PDF_LOGO, 'PNG', L, 11, 34, 8.1);
+    } else {
+      pdfDesenharMarca(doc, L, 11, 8.1);
+    }
+    doc.setDrawColor.apply(doc, PDF_COR.linha); doc.setLineWidth(0.4);
+    doc.line(L + 40, 10, L + 40, 22);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
+    doc.setTextColor.apply(doc, PDF_COR.laranja);
+    doc.text(ctx.transportadora, L + 45, 15.5);
+    if (ctx.operacao) {
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+      doc.setTextColor.apply(doc, PDF_COR.texto);
+      doc.text('Operação ' + ctx.operacao, L + 45, 20.5);
+    }
+    doc.setDrawColor.apply(doc, PDF_COR.ambar); doc.setLineWidth(0.5);
+    doc.circle(R - 8, 16, 7.4, 'S');
+    pdfIcone(doc, 'van', R - 12.2, 12, 8.4);
+    doc.setFillColor.apply(doc, PDF_COR.ambar);
+    doc.rect(L, 27, R - L, 0.9, 'F');
+    return 34;
+  }
+  // páginas seguintes: faixa fina, só para dar contexto
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+  doc.setTextColor.apply(doc, PDF_COR.tinta);
+  doc.text('temvia', L, 14);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  doc.setTextColor.apply(doc, PDF_COR.texto);
+  doc.text(ctx.transportadora + ' · ' + ctx.tituloLinha, L + 20, 14);
+  doc.setFillColor.apply(doc, PDF_COR.ambar);
+  doc.rect(L, 17.5, R - L, 0.6, 'F');
+  return 23;
+}
+
+async function pdfCarregarLogo() {
+  if (PDF_LOGO !== undefined) return PDF_LOGO;
+  // O ?v= existe porque um 404 antigo fica guardado no navegador: sem furar o
+  // cache, o arquivo pode estar no ar e o PDF continuar usando a marca vetorial.
+  // (Era o que acontecia com cache:'force-cache', que nem revalidava.)
+  const ver = window.TEMA_VERSAO || 'x';
+  const caminhos = ['/marca/temvia-horizontal-claro.png?v=' + ver,
+                    'marca/temvia-horizontal-claro.png?v=' + ver];
+  for (const url of caminhos) {
+    try {
+      const resp = await fetch(url, { cache: 'reload' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const tipo = resp.headers.get('content-type') || '';
+      // GitHub Pages devolve uma pagina HTML quando o caminho nao existe
+      if (tipo.indexOf('image/') !== 0) throw new Error('resposta não é imagem (' + tipo + ')');
+      const blob = await resp.blob();
+      if (blob.size < 500) throw new Error('arquivo vazio ou truncado (' + blob.size + ' bytes)');
+      PDF_LOGO = await new Promise((ok, err) => {
+        const fr = new FileReader();
+        fr.onload = () => ok(fr.result);
+        fr.onerror = () => err(new Error('leitura falhou'));
+        fr.readAsDataURL(blob);
+      });
+      return PDF_LOGO;
+    } catch (e) {
+      console.warn('[pdf] logo não carregou de ' + new URL(url, location.href).href + ' — ' + e.message);
+    }
+  }
+  // Sem o arquivo, desenhamos a marca em vetor. O PDF nunca sai sem marca.
+  console.warn('[pdf] usando a marca vetorial. Para usar o PNG oficial, ' +
+               'confira se /marca/temvia-horizontal-claro.png está no repositório.');
+  PDF_LOGO = null;
+  return PDF_LOGO;
+}
+
+function pdfFinalizarPaginas(doc, ctx, R) {
+  const total = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= total; i++) {
+    doc.setPage(i);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+    doc.setTextColor.apply(doc, PDF_COR.suave);
+    doc.text('Relatório de Embarque   \u2022   ' + ctx.tituloLinha + '   \u2022   Página ' + i + ' de ' + total,
+             R, 288, { align: 'right' });
+  }
+}
+
+function pdfIcone(doc, nome, x, y, t, cor) {
+  const c = cor || PDF_COR.ambar;
+  doc.setDrawColor(c[0], c[1], c[2]);
+  doc.setFillColor(c[0], c[1], c[2]);
+  doc.setLineWidth(0.35);
+  const m = t / 2;
+  switch (nome) {
+    case 'pessoa':
+      doc.circle(x + m, y + t * 0.32, t * 0.20, 'S');
+      doc.lines([[t * 0.34, -t * 0.30], [t * 0.34, t * 0.30]], x + m - t * 0.34, y + t * 0.92, [1, 1], 'S', false);
+      break;
+    case 'telefone':
+      doc.roundedRect(x + t * 0.28, y + t * 0.08, t * 0.44, t * 0.84, t * 0.10, t * 0.10, 'S');
+      doc.line(x + t * 0.42, y + t * 0.20, x + t * 0.58, y + t * 0.20);
+      break;
+    case 'relogio':
+      doc.circle(x + m, y + m, m * 0.86, 'S');
+      doc.line(x + m, y + m, x + m, y + m - t * 0.26);
+      doc.line(x + m, y + m, x + m + t * 0.18, y + m + t * 0.10);
+      break;
+    case 'van':
+      doc.roundedRect(x + t * 0.06, y + t * 0.26, t * 0.88, t * 0.42, t * 0.08, t * 0.08, 'S');
+      doc.line(x + t * 0.06, y + t * 0.46, x + t * 0.94, y + t * 0.46);
+      doc.circle(x + t * 0.26, y + t * 0.72, t * 0.09, 'S');
+      doc.circle(x + t * 0.72, y + t * 0.72, t * 0.09, 'S');
+      break;
+    case 'revisao':
+      doc.circle(x + m, y + m, m * 0.80, 'S');
+      doc.line(x + m, y + m - m * 0.80, x + m + t * 0.16, y + m - m * 0.80 + t * 0.10);
+      break;
+    case 'calendario':
+      doc.roundedRect(x + t * 0.10, y + t * 0.18, t * 0.80, t * 0.72, t * 0.08, t * 0.08, 'S');
+      doc.line(x + t * 0.10, y + t * 0.40, x + t * 0.90, y + t * 0.40);
+      doc.line(x + t * 0.32, y + t * 0.08, x + t * 0.32, y + t * 0.26);
+      doc.line(x + t * 0.68, y + t * 0.08, x + t * 0.68, y + t * 0.26);
+      break;
+    case 'casa':
+      doc.lines([[m, -t * 0.38], [m, t * 0.38]], x, y + t * 0.48, [1, 1], 'S', false);
+      doc.rect(x + t * 0.18, y + t * 0.48, t * 0.64, t * 0.40, 'S');
+      break;
+    case 'pino':
+      doc.circle(x + m, y + t * 0.38, t * 0.30, 'S');
+      doc.lines([[-t * 0.22, t * 0.34], [t * 0.44, 0]], x + m + t * 0.22, y + t * 0.56, [1, 1], 'S', false);
+      break;
+    case 'grupo':
+      doc.circle(x + t * 0.36, y + t * 0.30, t * 0.17, 'S');
+      doc.lines([[t * 0.28, -t * 0.26], [t * 0.28, t * 0.26]], x + t * 0.08, y + t * 0.86, [1, 1], 'S', false);
+      doc.circle(x + t * 0.76, y + t * 0.32, t * 0.13, 'S');
+      break;
+  }
+}
+
+function pdfRodapePagina(doc, ctx) {
+  const L = 14, R = 196;
+  doc.setDrawColor.apply(doc, PDF_COR.linha); doc.setLineWidth(0.3);
+  doc.line(L, 283, R, 283);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+  doc.setTextColor.apply(doc, PDF_COR.suave);
+  // O texto "Pagina X de Y" e escrito no fim, quando o total ja e conhecido.
+  doc.setFontSize(7);
+  doc.text('temvia', L, 288);
+}
+
+function pdfRotuloValor(doc, rotulo, valor, x, y, icone, larguraMax) {
+  if (icone) pdfIcone(doc, icone, x, y - 3.4, 4.2);
+  const dx = icone ? 6 : 0;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
+  doc.setTextColor.apply(doc, PDF_COR.suave);
+  doc.text(rotulo, x + dx, y - 0.6);
+  // O valor encolhe ate caber no proprio campo. Melhor um nome de motorista
+  // um ponto menor do que ele atravessando o divisor do campo seguinte.
+  const txt = String(valor || '—');
+  let corpo = 9.5;
+  if (larguraMax) {
+    doc.setFont('helvetica', 'bold');
+    while (corpo > 6.5) {
+      doc.setFontSize(corpo);
+      if (doc.getTextWidth(txt) <= larguraMax) break;
+      corpo -= 0.5;
+    }
+  }
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(corpo);
+  doc.setTextColor.apply(doc, PDF_COR.tinta);
+  doc.text(txt, x + dx, y + 4.2);
+}
+
+function turnoNoDia(nome, dataIso) {
+  const t = turnoPorNome(nome);
+  if (!t) {
+    // turno fora do cadastro: cai no mapa antigo, como sempre foi
+    const h = (TURNOS_CHEGADA || {})[nome] || '';
+    return { opera: true, chegada: h, saida: '', origem: 'legado', nome: nome };
+  }
+  const chave = turnoDiaChave(dataIso);
+  const regra = chave ? t.dias[chave] : undefined;
+
+  // dia explicitamente desligado
+  if (regra === false) {
+    return { opera: false, chegada: '', saida: '', origem: 'dia-desligado',
+             nome: nome, motivo: (DIAS_NOME[chave] || 'Este dia') + ' não opera neste turno.' };
+  }
+
+  // alternância: só vale para o dia configurado
+  if (t.alternado && chave === t.alternado.dia) {
+    const n = turnoSemanasEntre(t.alternado.desde, dataIso);
+    const passo = Math.max(1, parseInt(t.alternado.semanas, 10) || 2);
+    if (n === null) {
+      return { opera: true, chegada: (regra && regra.chegada) || t.chegada,
+               saida: (regra && regra.saida) || t.saida, origem: 'alternado-sem-referencia', nome: nome };
+    }
+    if (n < 0 || (n % passo) !== 0) {
+      return { opera: false, chegada: '', saida: '', origem: 'alternado',
+               nome: nome,
+               motivo: (DIAS_NOME[chave] || 'Este dia') + ' alternado: não é a vez deste turno.' };
+    }
+  }
+
+  const usa = (regra && typeof regra === 'object') ? regra : {};
+  return {
+    opera: true,
+    chegada: usa.chegada || t.chegada || '',
+    saida: usa.saida || t.saida || '',
+    origem: (usa.chegada || usa.saida) ? 'excecao-do-dia' : 'padrao',
+    nome: nome, dia: chave
+  };
+}
+
+function turnoPorNome(nome) {
+  turnosSemear();
+  return TURNOS.find(t => t.nome === nome) || null;
+}
+
+function pdfDesenharMarca(doc, x, y, alt) {
+  const s = alt * 1.06;                       // lado da caixa do símbolo
+  const P = (px, py) => [x + px / 64 * s, y + py / 64 * s];
+  doc.setLineCap('round'); doc.setLineJoin('round');
+  doc.setDrawColor(250, 168, 20);
+  doc.setLineWidth(7.5 / 64 * s);
+  const a = P(9, 17), b = P(49, 17), c = P(31, 51);
+  doc.lines([[b[0] - a[0], b[1] - a[1]], [c[0] - b[0], c[1] - b[1]], [a[0] - c[0], a[1] - c[1]]],
+            a[0], a[1], [1, 1], 'S', true);
+  const d = P(18, 29), e = P(38, 29);
+  doc.line(d[0], d[1], e[0], e[1]);
+  doc.setLineCap('butt'); doc.setLineJoin('miter');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(alt * 2.9);
+  doc.setTextColor.apply(doc, PDF_COR.tinta);
+  doc.text('temvia', x + s * 1.18, y + alt * 0.88);
+}
+
 function pdfDiasVariantes(turno) {
   if (typeof turnoPorNome !== 'function') return [];
   const t = turnoPorNome(turno);
