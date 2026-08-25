@@ -1013,6 +1013,227 @@ function pdfDesenharMarca(doc, x, y, alt) {
   doc.text('temvia', x + s * 1.18, y + alt * 0.88);
 }
 
+function sanitizeForFirestore(value) {
+  if (value === undefined) return null;
+  if (value === null) return value;
+  if (Array.isArray(value)) {
+    return value.map(v => (v === undefined ? null : sanitizeForFirestore(v)));
+  }
+  if (typeof value === 'object') {
+    const out = {};
+    for (const k in value) {
+      if (!Object.prototype.hasOwnProperty.call(value, k)) continue;
+      const v = value[k];
+      if (v === undefined) continue; // descarta a chave undefined
+      out[k] = sanitizeForFirestore(v);
+    }
+    return out;
+  }
+  return value;
+}
+
+function getSnapshot() {
+  return {
+    DATA, DESLIGADOS, MOTORISTAS, nextMotoId, pdfRevision,
+    changeLog, ROTAS_EXTRAS, SEM_ROTA,
+    dataVersion: DATA_VERSION,
+    savedAt: new Date().toISOString()
+  };
+}
+
+async function saveToFirebase(snap) {
+  try {
+    if (!fbDb) await initFirebase();
+    if (!fbDb || !fbDocRef) { console.error('Firebase não disponível'); return; }
+    const { setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await setDoc(fbDocRef, sanitizeForFirestore(snap));
+    console.log('Salvo no Firebase:', snap.savedAt);
+    // Visual feedback
+    let toast = document.getElementById('fbToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'fbToast';
+      toast.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;z-index:9999;transition:opacity 0.5s;pointer-events:none';
+      document.body.appendChild(toast);
+    }
+    toast.style.opacity = '1';
+    toast.style.background = '#10b981';
+    toast.style.color = '#000';
+    toast.textContent = 'Sincronizado';
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+  } catch(e) {
+    console.error('Erro Firebase:', e.message, e.code);
+    let toast = document.getElementById('fbToast');
+    if (!toast) { toast = document.createElement('div'); toast.id = 'fbToast'; toast.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;z-index:9999;pointer-events:none'; document.body.appendChild(toast); }
+    toast.style.opacity = '1'; toast.style.background = '#ef4444'; toast.style.color = '#fff';
+    toast.textContent = 'Erro: ' + e.message;
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 5000);
+  }
+}
+
+function saveData() {
+  const snap = getSnapshot();
+  saveToLocal(snap); // immediate
+  if (fbSaveTimeout) clearTimeout(fbSaveTimeout);
+  fbSaveTimeout = setTimeout(() => saveToFirebase(snap), 500);
+}
+
+function turnoData(iso) {
+  if (iso instanceof Date) return iso;
+  const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return null;
+  return new Date(+m[1], +m[2] - 1, +m[3]);   // meia-noite local
+}
+
+function logChange(tipo, nome, de, para, extra) {
+  const now = new Date();
+  const hora = now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+  const dia = now.toLocaleDateString('pt-BR');
+  changeLog.unshift({ tipo, nome, de, para, extra, hora, dia });
+}
+
+function frBuscar(id) { return FROTA.find(v => v.id === id) || null; }
+
+// O veiculo de uma linha. Prioriza o cadastro; cai no rotulo antigo se a linha
+// ainda nao foi migrada.
+function veiculoDaRota(rota) {
+  if (!rota) return null;
+  if (rota.veiculoId) { const v = frBuscar(rota.veiculoId); if (v) return v; }
+  return null;
+}
+
+function saveAfterChange() {
+  saveData();
+  updateStats();
+}
+
+function turnosSemear() {
+  if (TURNOS.length) return TURNOS;
+  Object.keys(TURNOS_CHEGADA || {}).forEach(nome => {
+    TURNOS.push({
+      id: 'tn-' + nome.replace(/[^A-Za-z0-9]/g, '') || ('tn' + TURNOS.length),
+      nome: nome,
+      chegada: TURNOS_CHEGADA[nome] || '',
+      saida: '',
+      dias: {},          // vazio = todos os dias usam o padrão
+      alternado: null    // { dia:'sab', semanas:2, desde:'YYYY-MM-DD' }
+    });
+  });
+  return TURNOS;
+}
+
+function veiculoDaRota(rota) {
+  if (!rota) return null;
+  if (rota.veiculoId) { const v = frBuscar(rota.veiculoId); if (v) return v; }
+  return null;
+}
+
+function movePassageiro(rotaId, idx, dir) {
+  const rota = DATA.find(r => r.id === rotaId);
+  if (!rota) return;
+
+  // mesma ordenacao usada por renderTable
+  const sorted = [...rota.passageiros].sort((a, b) => {
+    const ta = a.horario && a.horario !== '--:--' ? a.horario : '99:99';
+    const tb = b.horario && b.horario !== '--:--' ? b.horario : '99:99';
+    return ta.localeCompare(tb);
+  });
+
+  const p = rota.passageiros[idx];
+  if (!p) return;
+  const pos = sorted.indexOf(p);
+  const alvo = pos + dir;
+  if (pos < 0 || alvo < 0 || alvo >= sorted.length) return;
+
+  const q = sorted[alvo];
+  const valido = h => /^\d{2}:\d{2}$/.test(String(h || ''));
+  if (!valido(p.horario) || !valido(q.horario)) {
+    alert('Nao da para trocar a ordem: um dos dois passageiros esta sem horario de embarque.\n\n' +
+          'Preencha o horario dos dois (no lapis de editar) ou use o Roteirizador.');
+    return;
+  }
+  if (p.horario === q.horario) {
+    alert('Os dois passageiros tem o mesmo horario (' + p.horario + '). Trocar nao muda nada.\n\n' +
+          'Ajuste o horario de um deles para definir a ordem.');
+    return;
+  }
+
+  const hp = p.horario, hq = q.horario;
+  p.horario = hq;
+  q.horario = hp;
+
+  logChange('Ordem de embarque', p.nome, hp, hq, 'trocou com ' + q.nome);
+  logChange('Ordem de embarque', q.nome, hq, hp, 'trocou com ' + p.nome);
+
+  saveAfterChange();
+  renderTable(rota);
+}
+
+function turnoSemanasEntre(isoA, isoB) {
+  const a = turnoData(isoA), b = turnoData(isoB);
+  if (!a || !b) return null;
+  const dias = Math.round((b - a) / 86400000);
+  return Math.floor(dias / 7);
+}
+
+function turnoDiaChave(iso) {
+  const d = turnoData(iso);
+  return d ? DIAS_SEMANA[d.getDay()] : null;
+}
+
+function editMotorista(rotaId) {
+  activeId = rotaId;
+  const rota = DATA.find(r => r.id === rotaId);
+
+  function fillSelect(selId, selectedVal) {
+    const sel = document.getElementById(selId);
+    sel.innerHTML = selId === 'fMotoristaEntrada'
+      ? '<option value="">— A definir —</option>'
+      : '<option value="">— Mesmo da entrada —</option>';
+    MOTORISTAS.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.nome;
+      opt.textContent = m.nome + (m.tel ? ' · ' + m.tel : '');
+      if (selectedVal === m.nome) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  }
+
+  fillSelect('fMotoristaEntrada', rota.motorista || '');
+  fillSelect('fMotoristaSaida', rota.motoristaSaida || '');
+  document.getElementById('modalMotorista').classList.add('open');
+}
+
+function ocupacaoDaRota(rota) {
+  const cap = getCapacidade(rota);
+  const n = rota.passageiros.length;
+  const pct = cap > 0 ? Math.round((n / cap) * 100) : 0;
+  const excedeu = n > cap;
+  const restam = cap - n;
+  return {
+    n: n, cap: cap, pct: pct, excedeu: excedeu, restam: Math.max(0, restam),
+    acima: Math.max(0, n - cap),
+    // O alarme conta VAGAS, nao porcentagem. Porcentagem trata mal veiculos de
+    // tamanhos diferentes: 90% e "acabou" num carro de 4 e "cabem mais quatro"
+    // num onibus de 44. Uma vaga livre e uma vaga livre em qualquer veiculo.
+    //   verde  = 2 vagas ou mais
+    //   ambar  = ultima vaga, ou lotada
+    //   vermelho = excedeu
+    cor: excedeu ? 'var(--red)' : (restam <= 1 ? 'var(--warn, #E0A94A)' : 'var(--green)'),
+    texto: excedeu
+      ? (n + ' passageiros / ' + cap + ' vagas')
+      : (n + ' / ' + cap + ' vagas'),
+    detalhe: excedeu
+      ? (rota.passageiros.length - cap === 1 ? '1 passageiro acima da capacidade'
+                                             : (n - cap) + ' passageiros acima da capacidade')
+      : (restam === 0 ? 'lotada'
+         : restam === 1 ? 'última vaga'
+         : restam + ' vagas livres · ' + pct + '%')
+  };
+}
+
 function pdfDiasVariantes(turno) {
   if (typeof turnoPorNome !== 'function') return [];
   const t = turnoPorNome(turno);
