@@ -335,69 +335,188 @@ function setTurnoFilter(t, btn) {
 }
 
 // ---- MAIN ----
+function frCapacidadeDe(v) {
+  if (!v) return 0;
+  if (v.capacidadeManual != null && v.capacidadeManual !== '') return Math.max(0, parseInt(v.capacidadeManual, 10) || 0);
+  return Math.max(0, (parseInt(v.assentos, 10) || 0) - (parseInt(v.tripulacao, 10) || 0));
+}
+
+function frRotulo(v) {
+  if (!v) return '';
+  return v.apelido || (v.modelo ? v.tipo + ' ' + v.modelo : v.tipo);
+}
+
+function getCapacidade(rota) {
+  const v = veiculoDaRota(rota);
+  if (v) return frCapacidadeDe(v);
+  return CAP[rota.veiculo] || 15;
+}
+
+function tvToggleMenu(id, ev) {
+  if (ev) ev.stopPropagation();
+  var m = document.getElementById(id);
+  if (!m) return;
+  var abrindo = !m.classList.contains('tv-open');
+  document.querySelectorAll('.tv-menu.tv-open').forEach(function (x) { x.classList.remove('tv-open'); });
+  if (abrindo) m.classList.add('tv-open');
+}
+
+function tvResumoRota(rota) {
+  const c = rota && rota.calc;
+  if (!c || !c.totalMin) {
+    return '<div class="tv-sum-vazio">Ainda sem cálculo. Use <b>Otimizar Rota</b> para medir ' +
+           'duração, distância e tempo de cada passageiro.</div>';
+  }
+  const hhmm = m => {
+    const n = Math.round(m);
+    return n >= 60 ? (Math.floor(n / 60) + 'h' + String(n % 60).padStart(2, '0')) : (n + ' min');
+  };
+  const acima = c.violacoes > 0;
+  const linhas = [];
+  linhas.push('<div class="tv-sum-r"><span>Saída da garagem</span><b>' +
+    (c.departure || '--:--') + '</b></div>');
+  linhas.push('<div class="tv-sum-r"><span>Duração · distância</span><b>' +
+    hhmm(c.totalMin) + ' · ' + (c.totalKm || '—') + ' km</b></div>');
+  linhas.push('<div class="tv-sum-r"><span>Paradas</span><b>' +
+    (c.paradas != null ? c.paradas : (rota.passageiros || []).length) + '</b></div>');
+  if (c.maiorRide != null) {
+    linhas.push('<div class="tv-sum-r"><span>Maior tempo de passageiro</span><b class="' +
+      (acima ? 'ruim' : 'bom') + '">' + c.maiorRide + ' min</b></div>');
+  }
+  if (c.jornadaMin) {
+    linhas.push('<div class="tv-sum-r"><span>Jornada do veículo</span><b>' +
+      hhmm(c.jornadaMin) + '</b></div>');
+    linhas.push('<div class="tv-sum-det">' + (c.vazioIdaMin || 0) + ' min indo buscar · ' +
+      (c.aBordoMin || 0) + ' min a bordo · ' + (c.voltaMin || 0) + ' min voltando</div>');
+  }
+  return '<div class="tv-sum-res">' + linhas.join('') + '</div>';
+}
+
+function tvIniciais(nome) {
+  var p = String(nome || '').trim().split(/\s+/).filter(Boolean);
+  if (!p.length) return '--';
+  return ((p[0][0] || '') + (p.length > 1 ? (p[p.length - 1][0] || '') : '')).toUpperCase();
+}
+
 function selectLine(id) {
   activeId = id;
   renderSidebar();
   const rota = DATA.find(r => r.id === id);
   if (!rota) return;
 
-  const chegada = TURNOS_CHEGADA[rota.turno] || '';
-  const vcls = rota.veiculo === 'Carro' ? 'chip-carro' : 'chip-van';
+  // ---- Fase 1: apresentacao. Mesmas fontes de dados de sempre. ----
+  const chegada  = TURNOS_CHEGADA[rota.turno];
+  const ehVertiv = String(rota.linha).startsWith('VERTIV');
+  const origemNome = ehVertiv ? 'Vertiv' : 'Garagem';
+  const origemEnd  = ehVertiv ? 'Estr. dos Carvalhos, 1441 — Cajuru do Sul, Sorocaba-SP' : GARAGEM;
+  const destinoEnd = ehVertiv ? 'Estr. dos Carvalhos, 1441 — Cajuru do Sul, Sorocaba-SP' : DESTINO;
+
+  const mE = MOTORISTAS.find(x => x.nome === rota.motorista);
+  const mS = rota.motoristaSaida ? MOTORISTAS.find(x => x.nome === rota.motoristaSaida) : null;
+  const nomeMoto = rota.motorista || 'A definir';
+  const capac = getCapacidade(rota);
+  const _oc = ocupacaoDaRota(rota);
+  const totalPax = rota.passageiros.length;
+  const ativosPax = rota.passageiros.filter(p => p.status === 'ativo').length;
+  const codigo = (rota.cod || '').split(/[|·\/]/).map(x => x.trim()).filter(Boolean);
+
+  const svg = (p, w) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' +
+    (w || 1.9) + '" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
+  const icoCasa    = svg("<path d='M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z'/><path d='M9.5 21v-6h5v6'/>");
+  const icoPin     = svg("<path d='M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11Z'/><circle cx='12' cy='10' r='2.6'/>");
+  const icoRelogio = svg("<circle cx='12' cy='12' r='8.5'/><path d='M12 7.5V12l3 1.8'/>");
+  const icoVan     = svg("<rect x='2.5' y='7' width='19' height='9' rx='2'/><path d='M7 16v1.5M17 16v1.5M2.5 11.5h19'/>");
+  const icoPessoa  = svg("<circle cx='9' cy='8' r='3.2'/><path d='M3 20a6 6 0 0 1 12 0'/>");
+  const icoGrupo   = svg("<circle cx='9' cy='7' r='3.2'/><path d='M2.5 20a6.5 6.5 0 0 1 13 0'/><path d='M17 11.5a3 3 0 0 0 0-6'/><path d='M21.5 20a5.5 5.5 0 0 0-4-5.3'/>");
+  const icoOtim    = svg("<path d='M4 6h6l6 12h4'/><circle cx='4' cy='6' r='1.6'/><circle cx='20' cy='18' r='1.6'/>");
+  const icoBaixar  = svg("<path d='M12 3v12M8 11l4 4 4-4M4 19h16'/>");
+  const icoMais    = svg("<path d='M12 5v14M5 12h14'/>");
+  const icoPontos  = svg("<circle cx='12' cy='5' r='1.3'/><circle cx='12' cy='12' r='1.3'/><circle cx='12' cy='19' r='1.3'/>");
+  const icoLapis   = svg("<path d='M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3Z'/><path d='M14.5 6.5 17.5 9.5'/>");
+  const icoPdf     = svg("<path d='M6.5 3.5h7l5 5v12a1.5 1.5 0 0 1-1.5 1.5H6.5A1.5 1.5 0 0 1 5 20.5v-15A1.5 1.5 0 0 1 6.5 3.5Z'/><path d='M13 3.5v5.5h5.5'/>");
+  const icoExcel   = svg("<rect x='3.5' y='4' width='17' height='16' rx='2'/><path d='M9 9l6 6M15 9l-6 6'/>");
 
   document.getElementById('mainContent').innerHTML = `
-    <div class="route-header">
-      <div class="route-badge-big ${lc(rota.linha)}">${rota.linha}</div>
-      <div class="route-title">
+    <div class="tv-lh">
+      <div>
         <h2>Linha ${rota.linha} — ${rota.turno} Turno</h2>
-        <p>${rota.cod}</p>
+        <div class="tv-lh-codes">
+          ${codigo.map(c => '<span class="tv-code">' + c + '</span>').join('')}
+        </div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-        <!-- Otimizar Rota removido: reorganizar a rota e do gestor da transportadora -->
-      </div>
-      <div class="route-chips">
-        <span class="chip chip-turno">${rota.turno} Turno</span>
-        <span class="chip ${vcls}">${rota.veiculo}</span>
-        <span class="chip chip-motorista">
-          ${rota.motorista || 'A definir'}
-        </span>
-        <span class="chip chip-count">${rota.passageiros.length} passageiros</span>
+      <div class="tv-lh-acts">
       </div>
     </div>
 
-    <div class="destination" style="flex-direction:column;gap:8px;padding:14px 18px">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div class="dest-icon" style="background:rgba(16,185,129,0.12);color:var(--green)"></div>
-        <div>
-          <div class="dest-label">${GARAGEM_LABEL}</div>
-          <div class="dest-addr">${GARAGEM}</div>
+    <div class="tv-facts">
+      <span class="tv-fact tv-fact-live"><span class="tv-dot"></span>Em operação</span>
+      <span class="tv-fact">${icoVan}${rota.veiculo}</span>
+      <span class="tv-fact tv-fact-btn" onclick="editMotorista('${id}')" title="Alterar motorista">${icoPessoa}${nomeMoto}</span>
+      <span class="tv-fact" style="${_oc.excedeu ? 'color:var(--red);border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.07)' : ''}"
+        title="${_oc.detalhe}">${icoGrupo}<b>${_oc.n}</b> de ${_oc.cap} lugares · ${_oc.excedeu ? _oc.detalhe : _oc.pct + '%'}</span>
+    </div>
+
+    <div class="tv-summary">
+      <div class="tv-sum-cell">
+        <div class="tv-sum-lbl">Origem</div>
+        <div class="tv-sum-line" style="color:var(--green)">${icoCasa}
+          <div><div class="tv-sum-name" style="color:var(--text)">${origemNome}</div>
+          <div class="tv-sum-addr">${origemEnd}</div></div>
         </div>
       </div>
-      <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;align-items:center;gap:12px">
-        <div class="dest-icon"></div>
-        <div>
-          <div class="dest-label">Destino final — chegada às ${chegada}</div>
-          <div class="dest-addr">${DESTINO}</div>
+      <div class="tv-sum-cell">
+        <div class="tv-sum-lbl">Destino</div>
+        <div class="tv-sum-line" style="color:var(--red)">${icoPin}
+          <div><div class="tv-sum-name" style="color:var(--text)">${ehVertiv ? 'Vertiv' : 'Éden'}</div>
+          <div class="tv-sum-addr">${destinoEnd}</div></div>
         </div>
+        <div class="tv-sum-time">${icoRelogio} Chegada prevista <b>${chegada || '--:--'}</b></div>
+      </div>
+      <div class="tv-sum-cell">
+        <div class="tv-sum-lbl">Motorista</div>
+        <div class="tv-drv">
+          <div class="tv-drv-av">${tvIniciais(nomeMoto)}</div>
+          <div>
+            <div class="tv-drv-nm">${nomeMoto}</div>
+            <div class="tv-drv-tel">${mE && mE.tel ? waLink(mE.tel) : '—'}</div>
+          </div>
+        </div>
+        <div class="tv-sum-note">Saída: ${mS ? mS.nome : 'mesmo motorista da entrada'}</div>
+      </div>
+      <div class="tv-sum-cell">
+        <div class="tv-sum-lbl">Resumo da rota</div>
+        ${tvResumoRota(rota)}
       </div>
     </div>
 
-    ${getMotoristaSummaryHTML(rota)}
+    <div class="tv-tabs"><button class="tv-tab" type="button">Passageiros</button></div>
+
+    <div class="tv-ptool">
+      <h3>Passageiros <span>(${ativosPax} ativos de ${totalPax})</span></h3>
+      <div class="tv-ptool-r">
+        <div class="tv-menu-wrap">
+          <button class="tv-btn" type="button" onclick="tvToggleMenu('tvMenuExport', event)">${icoBaixar} Exportar</button>
+          <div class="tv-menu" id="tvMenuExport">
+            <button type="button" onclick="exportPDF('${id}');tvToggleMenu('tvMenuExport',event)">${icoPdf} PDF desta linha</button>
+            <button type="button" onclick="exportExcel();tvToggleMenu('tvMenuExport',event)">${icoExcel} Excel (todas as linhas)</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="table-wrap">
-      <div class="table-header">
-        <div class="table-title">Passageiros e Horários de Embarque</div>
-        <div style="display:flex;gap:8px"><button class="export-btn" style="font-size:12px" onclick="exportPDF(\'${id}\')">PDF</button></div>
-      </div>
       <table>
         <thead>
           <tr>
-            <th>#</th>
+            
+            <th style="text-align:center">#</th>
             <th>Horário</th>
             <th>Passageiro</th>
-            <th>Telefone</th>
-            <th>Ponto de Embarque</th>
+            <th>Contato</th>
+            <th>Ponto de Embarque<br><small style="font-weight:400;font-size:9.5px;color:var(--muted);text-transform:none;letter-spacing:0">End. Residencial</small></th>
+            <th>Bairro</th>
             <th>Status</th>
-            <th style="width:70px;text-align:center">Ordem</th>
+            <th style="text-align:right">Ações</th>
           </tr>
         </thead>
         <tbody id="passTable">
