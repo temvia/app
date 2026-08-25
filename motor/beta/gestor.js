@@ -2794,16 +2794,24 @@ async function exportPDF(rotaId, dataPdf) {
         // variante empurra as colunas seguintes.
         const nv = variantes.length;
         const st = {};
+        // 182mm uteis (L=14, R=196). O autoTable precisa de folga interna,
+        // entao o alvo e 172 — com 3+ variantes as colunas encolhem juntas
+        // em vez de estourar a pagina.
+        const UTIL = 172;
+        const fixas = 9 + 16 + 24 + 21 + 20;          // #, horario, tel, bairro, status
+        const largVar = nv ? Math.max(13, Math.min(16, Math.floor((UTIL - fixas - 48) / nv))) : 0;
+        const sobra = UTIL - fixas - largVar * nv;    // divide entre nome e ponto
+        const min = nv >= 4 ? 16 : 22;
+        const nome = Math.max(min, Math.round(sobra * 0.48));
+        const ponto = Math.max(min, sobra - nome);
         st[0] = { cellWidth: 9, halign: 'center', textColor: PDF_COR.suave };
         st[1] = { cellWidth: 16, halign: 'center', fontStyle: 'bold' };
         for (let k = 0; k < nv; k++)
-          st[2 + k] = { cellWidth: 16, halign: 'center', fontStyle: 'bold',
+          st[2 + k] = { cellWidth: largVar, halign: 'center', fontStyle: 'bold',
                         textColor: PDF_COR.destaque };
-        // o espaco das variantes sai do nome e do ponto de embarque
-        const corte = nv * 16;
-        st[2 + nv] = { cellWidth: Math.max(30, 42 - Math.round(corte * 0.45)) };
+        st[2 + nv] = { cellWidth: nome };
         st[3 + nv] = { cellWidth: 24, fontSize: 7.6 };
-        st[4 + nv] = { cellWidth: Math.max(30, 43 - Math.round(corte * 0.55)) };
+        st[4 + nv] = { cellWidth: ponto };
         st[5 + nv] = { cellWidth: 21, fontSize: 7.8, textColor: PDF_COR.texto };
         st[6 + nv] = { cellWidth: 20, halign: 'center' };
         return st;
