@@ -2073,6 +2073,45 @@ function exportExcel() {
       ]);
     });
   });
+  // Aba no formato de IMPORTACAO: exportar, editar e reimportar sem
+  // reformatar. As coordenadas saem preenchidas — e o trabalho manual
+  // que mais toma tempo hoje.
+  const impRows = [['NOME COMPLETO','MATRÍCULA','TELEFONE','ENDEREÇO RESIDENCIAL',
+    'BAIRRO','CIDADE','COORDENADAS DA RESIDÊNCIA','EMBARCA EM CASA','EMBARCA EM CASA ATÉ',
+    'LOCAL EMBARQUE','COORDENADAS DO EMBARQUE','LINHA','TURNO','HORÁRIO EMBARQUE']];
+  const par = (a, b) => (a != null && b != null && a !== '' && b !== '')
+    ? (Number(a).toFixed(6) + ', ' + Number(b).toFixed(6)) : '';
+  const linhasImp = DATA.slice().sort((a, b) =>
+    String(a.linha).localeCompare(String(b.linha), 'pt-BR', { numeric: true }));
+  linhasImp.forEach(rota => {
+    const ord = [...rota.passageiros].sort((a, b) =>
+      (a.horario || '99:99').localeCompare(b.horario || '99:99'));
+    ord.forEach(p => {
+      impRows.push([
+        p.nome || '', p.matricula || '', p.telefone || '',
+        p.endereco || '', p.bairro || '', p.cidade || '',
+        par(p.latCasa, p.lngCasa),
+        p.embarcaEmCasa ? 'SIM' : 'NAO', p.embarcaEmCasaAte || '',
+        p.embarque || '', par(p.lat, p.lng),
+        rota.linha, rota.turno, p.horario || ''
+      ]);
+    });
+  });
+  // Sem rota tambem entram: sao os que mais precisam de reimportacao
+  (typeof SEM_ROTA !== 'undefined' ? SEM_ROTA : []).forEach(p => {
+    impRows.push([
+      p.nome || '', p.matricula || '', p.telefone || '',
+      p.endereco || '', p.bairro || '', p.cidade || '',
+      par(p.latCasa, p.lngCasa),
+      p.embarcaEmCasa ? 'SIM' : 'NAO', p.embarcaEmCasaAte || '',
+      p.embarque || '', par(p.lat, p.lng),
+      '', p.turno || '', p.horario || ''
+    ]);
+  });
+  const wsImp = XLSX.utils.aoa_to_sheet(impRows);
+  wsImp['!cols'] = [26,10,14,30,14,12,22,10,14,30,22,7,9,10].map(w => ({ wch: w }));
+  XLSX.utils.book_append_sheet(wb, wsImp, 'Importação');
+
   const ws1 = XLSX.utils.aoa_to_sheet(allRows);
   ws1['!cols'] = [4,6,10,6,4,20,6,22,22,12,10,12,8,10].map(w => ({wch:w}));
   XLSX.utils.book_append_sheet(wb, ws1, 'Passageiros');
