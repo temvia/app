@@ -1237,6 +1237,57 @@ function ocupacaoDaRota(rota) {
   };
 }
 
+const DIAS_NOME = { dom: 'Domingo', seg: 'Segunda', ter: 'Terça', qua: 'Quarta',
+                    qui: 'Quinta', sex: 'Sexta', sab: 'Sábado' };
+
+const DIAS_SEMANA = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+
+const PDF_COR = {
+  ambar:    [245, 158, 11],
+  ambarClr: [254, 243, 219],
+  tinta:    [23, 23, 23],
+  texto:    [64, 64, 64],
+  suave:    [124, 124, 124],
+  linha:    [226, 228, 232],
+  fundo:    [249, 250, 251],
+  verde:    [21, 128, 61],
+  verdeClr: [230, 247, 237],
+  vermelho: [190, 32, 44],
+  vermeClr: [253, 235, 236],
+  laranja:  [180, 105, 10],
+  laranjaC: [254, 243, 219]
+};
+
+const EMPRESA_CONFIG = {
+  nome: C.empresaNome,
+  // Horários-alvo de chegada por turno
+  turnosChegada: C.turnosChegada,
+  // Garagem (origem das rotas)
+  garagem: {
+    label: 'Garagem Redentor (início da rota)',
+    endereco: 'R. Sebastiana Rosa Luposeli, 59 — Júlio de Mesquita Filho, Sorocaba-SP',
+    enderecoPdf: 'R. Sebastiana Rosa Luposeli, 59',
+    lat: -23.514606111185454,
+    lng: -47.51671157145018
+  },
+  // Destino principal (cliente)
+  destino: {
+    nome: 'Huawei — Empresa',
+    endereco: 'Av. Jerome Case, 2600 — Éden, Sorocaba-SP',
+    enderecoMaps: 'Av. Jerome Case, 2600, Eden, Sorocaba SP',
+    lat: -23.44293641550631,
+    lng: -47.389652010783614
+  },
+  // Destino alternativo (Vertiv) — específico de algumas linhas
+  destinoAlt: {
+    nome: 'Vertiv',
+    endereco: 'Estr. dos Carvalhos, 1441 — Cajuru do Sul, Sorocaba-SP',
+    enderecoMaps: 'Estr. dos Carvalhos, 1441, Cajuru do Sul, Sorocaba SP',
+    lat: -23.386451104226673,
+    lng: -47.38984559023686
+  }
+};
+
 function pdfDiasVariantes(turno) {
   if (typeof turnoPorNome !== 'function') return [];
   const t = turnoPorNome(turno);
