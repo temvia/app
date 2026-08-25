@@ -111,7 +111,11 @@ function loadGoogleMaps(key) {
 }
 
 // ============ APLICACAO ============
-const TURNOS_CHEGADA = { '1°': '05:45', '2°': '14:45', '3°': '20:55' };
+// Horarios dos turnos: os valores abaixo sao so semente. O que vale e o
+// cadastro da operacao, lido do Firestore logo apos a conexao — turno
+// novo (ADM, Especial) nao existia aqui e virava "chegada undefined".
+let TURNOS_CHEGADA = { '1°': '05:45', '2°': '14:45', '3°': '20:55' };
+let TURNOS = [];
 const DESTINO = 'Av. Jerome Case, 2600 — Éden, Sorocaba-SP';
 const GARAGEM = 'R. Sebastiana Rosa Luposeli, 59 — Júlio de Mesquita Filho, Sorocaba-SP';
 const GARAGEM_LABEL = 'Garagem Redentor (início da rota)';
@@ -335,7 +339,7 @@ function selectLine(id) {
   const rota = DATA.find(r => r.id === id);
   if (!rota) return;
 
-  const chegada = TURNOS_CHEGADA[rota.turno];
+  const chegada = TURNOS_CHEGADA[rota.turno] || '';
   const vcls = rota.veiculo === 'Carro' ? 'chip-carro' : 'chip-van';
 
   document.getElementById('mainContent').innerHTML = `
@@ -2383,6 +2387,13 @@ const autoEntradaDecidida = new Promise(r => { _resolverAuto = r; });
     if (window.temviaComum) await window.temviaComum.prepararFirebase(app);
     const db = getFirestore(app);
     const snap = await getDoc(doc(db, CLIENTE_ID, 'config'));
+    // a mesma leitura ja traz os turnos: sem isso o cliente mostra
+    // "chegada undefined" para qualquer turno cadastrado depois
+    if (snap.exists()) {
+      const d = snap.data();
+      if (d.turnosChegada) Object.assign(TURNOS_CHEGADA, d.turnosChegada);
+      if (Array.isArray(d.turnos) && d.turnos.length) TURNOS = d.turnos;
+    }
     const sc = snap.exists() ? (snap.data().senhaCliente || '') : '';
     if (sc) window._senhaClienteCfg = sc; // quando definida no config, ela passa a valer
   } catch(e) { /* sem rede: usa o fallback */ }
