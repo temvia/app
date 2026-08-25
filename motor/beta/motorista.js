@@ -1199,7 +1199,7 @@ function vgId() {
 // Uma viagem nasce PROGRAMADA, a partir da linha e do dia. Chegada e
 // partida programadas vem do calendario do turno — nao de um horario fixo.
 function vgCriar(rota, dataIso, sentido) {
-  const t = (typeof turnoNoDia === 'function') ? turnoNoDia(rota.turno, dataIso) : null;
+  const t = (typeof tvTurnoNoDia === 'function') ? tvTurnoNoDia(rota.turno, dataIso) : null;
   if (t && !t.opera) return null;             // linha nao roda nesse dia
   const chegada = (t && t.chegada) || (TURNOS_CHEGADA || {})[rota.turno] || '';
   const saida = (t && t.saida) || '';
