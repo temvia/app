@@ -49,6 +49,7 @@ document.head.insertAdjacentHTML('beforeend',
   '<meta name="theme-color" content="#0d1117">' +
   '<style>' + CSS_MOTOR + '</style>');
 
+document.documentElement.setAttribute('data-tema', 'fase1');
 document.body.innerHTML = HTML_MOTOR.split('LOGO_MARCA').join(LOGO_MARCA);
 
 var _marca = C.marcaUpper || (C.marca || '').toUpperCase();
@@ -461,6 +462,7 @@ let MOTORISTAS = [];  // vazio de proposito: vem do Firestore. Nomes e telefones
 let nextMotoId = 16;
 
 function openMotoristas() {
+  try { cliMarcarNav('Motoristas'); } catch (e) {}
   renderMotoristaList();
   document.getElementById('modalMotoristasGerenciar').classList.add('open');
 }
@@ -1190,7 +1192,146 @@ async function recalcularApenasHorarios() {
 }
 
 // ---- PAINEL GERAL ----
+
+// ==================================================================
+// CASCA DO CLIENTE — a mesma do gestor
+// ------------------------------------------------------------------
+// O gestor foi reformado e o cliente ficou para tras: barra de botoes
+// coloridos no topo, sem menu lateral, sem trilha.
+//
+// A casca e montada em TEMPO DE EXECUCAO, nao no HTML: o HTML antigo do
+// cliente tem uma tag sobrando, e envolver o container no texto fazia o
+// navegador descartar a casca inteira. Aqui o DOM ja esta normalizado.
+// ==================================================================
+var CLI_NAV = [
+  {grp:'Painel'},
+  {rot:'Painel Geral', ac:'openPainel()', d:'M5 20V11M12 20V4M19 20v-6'},
+  {grp:'Operação'},
+  {rot:'Linhas e Rotas', ac:'cliIrParaLinhas()', d:'M4 7h16M4 12h16M4 17h10'},
+  {rot:'Mapa Geral', ac:'openMapaGeral()', d:'M9 4 3 6.5v13L9 17l6 3 6-2.5v-13L15 7 9 4Z'},
+  {rot:'Solicitações', ac:'openSolicitacoes()', d:'M12 3v18M7.5 7h7a3 3 0 0 1 0 6H8.5a3 3 0 0 0 0 6H17'},
+  {rot:'Cadastro', ac:'openCadastro()', d:'M12 15V3M8 11l4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2'},
+  {grp:'Pessoas'},
+  {rot:'Motoristas', ac:'openMotoristas()', d:'M3 7h18v10H3zM7 17v2M17 17v2'},
+  {grp:'Relacionamento'},
+  {rot:'Avisos', ac:'openAvisos()', d:'M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 19a2.2 2.2 0 0 0 4 0'},
+  {rot:'Chats', ac:'openChats()', d:'M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z'},
+  {rot:'Reclamações', ac:'openReclamacoes()', d:'M12 9v4.5M12 17v.5M10.3 3.9 2.6 17.4A2 2 0 0 0 4.3 20.5h15.4a2 2 0 0 0 1.7-3.1L13.7 3.9a2 2 0 0 0-3.4 0Z'},
+  {grp:'Sistema'},
+  {rot:'Exportar Excel', ac:'exportExcel()', d:'M6.5 3.5h7l5 5v12a1.5 1.5 0 0 1-1.5 1.5H6.5A1.5 1.5 0 0 1 5 20.5v-15A1.5 1.5 0 0 1 6.5 3.5ZM13 3.5v5.5h5.5'},
+];
+
+function cliSvg(d) {
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg>';
+}
+
+function cliMontarCasca() {
+  if (document.getElementById('tvShell')) return;
+  const container = document.querySelector('.container');
+  const header = document.querySelector('header');
+  if (!container) return;
+
+  const shell = document.createElement('div');
+  shell.className = 'tv-shell';
+  shell.id = 'tvShell';
+  shell.innerHTML =
+    '<aside class="tv-side">' +
+      '<div class="tv-brand">' +
+        '<img class="tv-brand-mark" src="/marca/temvia-simbolo.png" alt="temvia" width="26" height="26">' +
+        '<img class="tv-brand-lockup" src="/marca/temvia-horizontal.png" alt="temvia">' +
+        '<div class="tv-brand-txt"><div class="tv-brand-sub" id="tvContextoConta">&nbsp;</div>' +
+        '<div class="tv-brand-op" id="tvOperacaoAtendida" style="display:none"></div></div>' +
+      '</div>' +
+      '<nav class="tv-nav" aria-label="Navegação principal">' +
+        CLI_NAV.map(x => x.grp
+          ? '<div class="tv-nav-grp">' + x.grp + '</div>'
+          : '<button class="tv-nav-item" type="button" title="' + x.rot + '" onclick="' + x.ac +
+            '"><span class="tv-nav-ico">' + cliSvg(x.d) + '</span>' +
+            '<span class="tv-lbl">' + x.rot + '</span></button>').join('') +
+      '</nav>' +
+      '<div class="tv-side-foot"><div class="tv-avatar" id="tvAvatar">--</div>' +
+        '<div class="tv-who"><b id="tvUserNome">—</b><small>Empresa cliente</small></div>' +
+        '<button class="tv-iconbtn" type="button" title="Sair" onclick="logout()" ' +
+        'style="width:26px;height:26px">' + cliSvg('M15 17l5-5-5-5M20 12H9M12 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6') +
+        '</button></div>' +
+    '</aside>' +
+    '<div class="tv-main" id="tvMain">' +
+      '<header class="tv-top">' +
+        '<button class="tv-iconbtn tv-topbar-only-desktop" type="button" title="Recolher menu" ' +
+        'onclick="tvToggleSidebar()">' + cliSvg('M14 6l-6 6 6 6') + '</button>' +
+        '<div class="tv-crumb">Operação <i>/</i> <b id="cliCrumb">Linhas e Rotas</b></div>' +
+        '<div class="tv-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+        'stroke-width="1.9" stroke-linecap="round" aria-hidden="true">' +
+        '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>' +
+        '<input type="text" id="tvBusca" placeholder="Buscar passageiro, bairro, cidade ou ponto de embarque..."></div>' +
+        '<button class="tv-btn tv-btn-primary" type="button" onclick="openSolicitacoes()">' +
+        cliSvg('M12 5v14M5 12h14') + 'Nova Solicitação</button>' +
+      '</header>' +
+    '</div>';
+
+  container.parentNode.insertBefore(shell, container);
+  shell.querySelector('.tv-main').appendChild(container);
+  if (header) header.style.display = 'none';   // a barra antiga sai de cena
+
+  // a busca do topo alimenta o filtro que ja existia
+  const antiga = document.getElementById('searchInput');
+  const nova = document.getElementById('tvBusca');
+  if (nova && antiga) {
+    nova.addEventListener('input', () => {
+      antiga.value = nova.value;
+      if (typeof filterSidebar === 'function') filterSidebar();
+    });
+  }
+  cliIdentificar();
+  cliMarcarNav('Linhas e Rotas');
+}
+
+function tvToggleSidebar() {
+  const sh = document.getElementById('tvShell');
+  if (!sh) return;
+  sh.classList.toggle('tv-collapsed');
+  try { localStorage.setItem('cli_sidebar', sh.classList.contains('tv-collapsed') ? '1' : '0'); } catch (e) {}
+}
+
+function cliIrParaLinhas() {
+  document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  cliMarcarNav('Linhas e Rotas');
+}
+
+// A trilha e o item ativo dizem onde a pessoa esta — sem isso o menu
+// seria so enfeite.
+function cliMarcarNav(rotulo) {
+  document.querySelectorAll('.tv-nav-item').forEach(b =>
+    b.classList.toggle('tv-on', b.getAttribute('title') === rotulo));
+  const c = document.getElementById('cliCrumb');
+  if (c) c.textContent = rotulo;
+}
+
+function cliIdentificar() {
+  const nome = (window.CLIENTE_CONFIG && (window.CLIENTE_CONFIG.marca || '')) || 'Empresa';
+  const el = document.getElementById('tvUserNome');
+  if (el) el.textContent = nome;
+  const av = document.getElementById('tvAvatar');
+  if (av) av.textContent = nome.trim().slice(0, 2).toUpperCase();
+  const ctx = document.getElementById('tvContextoConta');
+  if (ctx) ctx.textContent = nome;
+  const op = document.getElementById('tvOperacaoAtendida');
+  if (op && window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.ambienteTeste) {
+    op.style.display = ''; op.textContent = 'AMBIENTE DE TESTE';
+  }
+  try {
+    if (localStorage.getItem('cli_sidebar') === '1')
+      document.getElementById('tvShell').classList.add('tv-collapsed');
+  } catch (e) {}
+}
+
+// Monta assim que o bloco carrega — mesma funcao, mesmo escopo.
+// O DOM ja existe: o body foi preenchido no topo do arquivo.
+try { cliMontarCasca(); } catch (e) { console.warn('casca do cliente:', e && e.message); }
+
 function openPainel() {
+  try { cliMarcarNav('Painel Geral'); } catch (e) {}
   const body = document.getElementById('painelBody');
 
   const totalAtivos = DATA.reduce((s, r) => s + r.passageiros.filter(p => p.status === 'ativo').length, 0);
@@ -1340,6 +1481,7 @@ let mgDirectionsRenderers = [];
 let mgInfoWindow = null;
 
 async function openMapaGeral(rotaExtraIdx) {
+  try { cliMarcarNav('Mapa Geral'); } catch (e) {}
   // 1. Tentar cache local
   let key = getApiKey();
 
@@ -1979,6 +2121,7 @@ async function esqueciSenhaCliente() {
       }
     });
   } catch (e) { mostrarFormularioCliente(); }   // Firebase fora do ar: login local como reserva
+
 })();
 
 async function logout() {
@@ -2228,6 +2371,7 @@ const CLI_SOL_STATUS = {
 };
 
 function openSolicitacoes() {
+  try { cliMarcarNav('Solicitações'); } catch (e) {}
   const hoje = hojeLocal();
   document.getElementById('cliData').value = hoje;
   document.getElementById('cliFiltroMes').value = hoje.slice(0,7);
@@ -2699,6 +2843,7 @@ let CAD_PASSAGEIRO_SEL = null;
 const CAD_FB_KEY = 'solicitacoes_cadastro';
 
 function openCadastro() {
+  try { cliMarcarNav('Cadastro'); } catch (e) {}
   const hoje = hojeLocal();
   document.getElementById('cadFiltroMes').value = hoje.slice(0,7);
   CAD_TIPO_KEY = ''; CAD_TIPO_LABEL = ''; CAD_DADOS = {}; CAD_PASSAGEIRO_SEL = null;
@@ -2971,6 +3116,7 @@ function cadRenderHistorico() {
 // ===== AVISOS AOS PASSAGEIROS (Gestor DSV) =====
 let AV_LISTA = [];
 function openAvisos() {
+  try { cliMarcarNav('Avisos'); } catch (e) {}
   const sel = document.getElementById('avDestino');
   sel.innerHTML = '<option value="">Todas as linhas (aviso geral)</option>';
   DATA.forEach(r => {
@@ -3040,6 +3186,7 @@ async function avExcluir(id) {
 const GESTOR_NOME = 'Gestor DSV';
 let _chatUnsub = null, _chatChaveAtual = null;
 function openChats() {
+  try { cliMarcarNav('Chats'); } catch (e) {}
   const sel = document.getElementById('chatSelLinha');
   sel.innerHTML = '<option value="">— Selecione —</option>';
   DATA.forEach(r => {
@@ -3119,6 +3266,7 @@ const RC_STATUS = {
 };
 
 function openReclamacoes() {
+  try { cliMarcarNav('Reclamações'); } catch (e) {}
   const sel = document.getElementById('rcLinha');
   sel.innerHTML = '<option value="">—</option>';
   DATA.forEach(r => {
@@ -3340,3 +3488,4 @@ window.onload = () => {
     }, 2500);
   }
 };
+
