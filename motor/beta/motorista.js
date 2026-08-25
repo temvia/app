@@ -665,28 +665,39 @@ body {
 
     <!-- ABA MINHA ROTA -->
     <div id="abaRota">
-      <div class="vg-cab"><span id="vgLinhaAtual"></span><span id="vgSync" class="vg-sync"></span></div>
-      <div id="vgTela"></div>
-      <div style="margin-bottom:8px">
+      <!-- Cabecalho: quem sou e qual linha. Recolhe assim que a rota
+           esta escolhida — em movimento isso vira ruido. -->
+      <div class="vg-cab">
+        <button class="vg-quem" id="vgQuem" onclick="vgAbrirTroca()">
+          <span id="vgQuemNome">Selecione seu nome</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <span id="vgSync" class="vg-sync"></span>
+      </div>
+
+      <div id="vgSeletores" class="vg-seletores">
         <label class="section-label">Selecione seu nome</label>
         <select class="select-input" id="selMotorista" onchange="loadLinhas()">
           <option value="">— Selecione o motorista —</option>
         </select>
-      </div>
-      <div style="margin-bottom:8px">
-        <label class="section-label">Cobertura — ver rotas de outro motorista</label>
+        <label class="section-label" style="margin-top:10px">Cobertura — rodar a rota de um colega</label>
         <select class="select-input" id="selCoberturaRota" onchange="loadLinhas()">
           <option value="">— ninguém (só as minhas) —</option>
         </select>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px">Para quando um colega falta ou atrasa: veja e rode a rota dele sem precisar do PIN dele.</div>
+        <div class="vg-dica">Para quando um colega falta ou atrasa: veja e rode a rota dele
+          sem precisar do PIN dele.</div>
+        <div id="coberturaAvisoRota"></div>
+        <div id="linhaSection" style="display:none;margin-top:10px">
+          <label class="section-label">Linha e turno</label>
+          <select class="select-input" id="selLinha" onchange="loadRota()">
+            <option value="">— Selecione uma linha —</option>
+          </select>
+        </div>
       </div>
-      <div id="coberturaAvisoRota"></div>
-      <div id="linhaSection" style="display:none">
-        <label class="section-label">Selecione a linha e turno</label>
-        <select class="select-input" id="selLinha" onchange="loadRota()">
-          <option value="">— Selecione uma linha —</option>
-        </select>
-      </div>
+
+      <div id="vgTela"></div>
+      <!-- A tela antiga da rota so aparece quando nao ha viagem montada. -->
       <div id="rotaContent"></div>
     </div>
 
@@ -1519,7 +1530,13 @@ function vgRecuperar(rotaId, dataIso) {
 var VG_CSS = `
 :root{--vgbg:#14161a;--vgcard:#1c2028;--vgtxt:#e8e6e1;--vgmut:#8b8f96;--vgbrd:#33383f}
 html[data-vg-tema="claro"]{--vgbg:#fbfaf7;--vgcard:#fff;--vgtxt:#2C2C2A;--vgmut:#5F5E5A;--vgbrd:#D3D1C7}
-.vg-cab{display:flex;justify-content:space-between;align-items:center;padding:2px 2px 10px;font-size:0.8125rem;color:var(--vgtxt)}
+.vg-cab{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:2px 2px 10px;font-size:0.8125rem;color:var(--vgtxt)}
+.vg-quem{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--vgtxt);font-size:0.875rem;font-weight:600;cursor:pointer;padding:4px 0;text-align:left}
+.vg-quem svg{width:15px;height:15px;flex-shrink:0;transition:transform .15s}
+.vg-quem-aberto svg{transform:rotate(180deg)}
+.vg-seletores{background:var(--vgcard);border:1px solid var(--vgbrd);border-radius:12px;padding:12px;margin-bottom:10px}
+.vg-dica{font-size:0.6875rem;color:var(--vgmut);line-height:1.5;margin-top:5px}
+.vg-li-h{display:inline-block;font-style:normal;font-size:0.75rem;color:var(--vgmut);margin-left:8px}
 .vg-sync{font-size:0.6875rem;color:var(--vgmut)}
 .vg-sync-pend{color:#EF9F27}
 .vg-topo{display:flex;justify-content:space-between;background:var(--vgcard);border-radius:10px;padding:8px 11px;margin-bottom:10px;font-size:0.7188rem;color:var(--vgmut)}
@@ -1579,11 +1596,52 @@ function vgPorEstilo() {
   document.head.insertAdjacentHTML('beforeend', '<style>' + VG_CSS + '</style>');
 }
 
+
+// ==================================================================
+// CABECALHO: quem sou e qual linha
+// ------------------------------------------------------------------
+// Os seletores ficavam sempre visiveis, abaixo da tela da viagem —
+// duplicando a interface. Agora recolhem assim que a rota esta
+// escolhida, e voltam a um toque no nome.
+// ==================================================================
+function vgSeletoresVisiveis(mostrar) {
+  const box = document.getElementById('vgSeletores');
+  const btn = document.getElementById('vgQuem');
+  if (box) box.style.display = mostrar ? '' : 'none';
+  if (btn) btn.classList.toggle('vg-quem-aberto', !!mostrar);
+}
+
+function vgAbrirTroca() {
+  const box = document.getElementById('vgSeletores');
+  vgSeletoresVisiveis(!box || box.style.display === 'none');
+}
+
+// O nome no cabecalho: motorista + linha, para ele saber o que esta rodando.
+function vgAtualizarCabecalho() {
+  const el = document.getElementById('vgQuemNome');
+  if (!el) return;
+  const mot = (document.getElementById('selMotorista') || {}).value || '';
+  const sel = document.getElementById('selLinha');
+  const linha = sel && sel.selectedIndex > 0 ? sel.options[sel.selectedIndex].text : '';
+  el.textContent = mot ? (linha ? mot + ' · ' + linha : mot) : 'Selecione seu nome';
+}
+
+// A tela antiga da rota so vale quando NAO ha viagem montada. Deixar as
+// duas juntas foi o que produziu a tela duplicada.
+function vgEsconderAntiga(esconder) {
+  const rc = document.getElementById('rotaContent');
+  if (rc) rc.style.display = esconder ? 'none' : '';
+}
+
 function vgPintar() {
   vgPorEstilo();
   const el = document.getElementById('vgTela');
   if (!el) return;
-  if (!VG_ATUAL) { el.innerHTML = ''; return; }
+  vgAtualizarCabecalho();
+  if (!VG_ATUAL) { el.innerHTML = ''; vgEsconderAntiga(false); return; }
+  // ha viagem: a tela da viagem e a unica
+  vgEsconderAntiga(true);
+  vgSeletoresVisiveis(false);
   const v = VG_ATUAL;
 
   if (v.estado === 'programada') return vgPintarAntes(el, v);
@@ -1852,7 +1910,10 @@ function vgUiLista() {
       const rot = { pendente: '', embarcou: 'Embarcou', ausente: 'Ausente',
                     desembarcou: 'Desembarcou' }[st];
       return '<div class="vg-li vg-li-' + st + '">' +
-        '<div><b>' + esc(p.nome) + '</b><span>' + esc(p.embarque || p.endereco || '') + '</span></div>' +
+        '<div><b>' + esc(p.nome) + '</b>' +
+        // o horario previsto e o que o motorista procura na lista
+        (p.horario ? '<i class="vg-li-h">' + esc(p.horario) + '</i>' : '') +
+        '<span>' + esc(p.embarque || p.endereco || '') + '</span></div>' +
         (st === 'pendente'
           ? '<button class="vg-btn vg-btn-ok vg-btn-mini" onclick="' +
             (volta ? 'vgUiDesembarcou' : 'vgUiEmbarcou') + '(&#39;' + escAttrM(k) + '&#39;);vgFecharLista()">' +
@@ -1868,11 +1929,52 @@ function vgFecharLista() {
   if (ov) ov.remove();
   vgPintar();
 }
-function vgUiComunicados() { if (typeof trocarAba === 'function') trocarAba('hoje'); }
+// Comunicados = chat da linha. Antes ia para a aba "Rotas de Hoje",
+// que nao tem nada a ver.
+function vgUiComunicados() {
+  if (typeof commToggleChat === 'function') return commToggleChat();
+  if (typeof trocarAba === 'function') trocarAba('hoje');
+}
 function vgUiOcorrencia() { alert('Ocorrências: em breve.'); }
+// Compartilhar: monta o link do Maps com as paradas na ordem e oferece
+// para enviar. Antes so mostrava um alerta.
 function vgUiCompartilhar() {
-  if (typeof compartilharRota === 'function') return compartilharRota();
-  alert('Compartilhar rota');
+  const v = VG_ATUAL;
+  const pontos = (VG_ORDEM || [])
+    .map(p => (typeof paxCoordEmbarque === 'function' ? paxCoordEmbarque(p) : null)
+              || (p.lat && p.lng ? { lat: +p.lat, lng: +p.lng } : null))
+    .filter(Boolean);
+  if (!pontos.length) { alert('Sem coordenadas para montar o trajeto.'); return; }
+
+  const G = (typeof GARAGEM_COORDS !== 'undefined') ? GARAGEM_COORDS : null;
+  const E = (typeof EMPRESA_COORDS !== 'undefined') ? EMPRESA_COORDS : null;
+  const volta = v && v.sentido === 'volta';
+  const origem = volta ? E : G, destino = volta ? G : E;
+  const ll = c => c.lat + ',' + c.lng;
+  // o Maps aceita 25 pontos intermediarios
+  const meio = pontos.slice(0, 23).map(ll).join('|');
+  const url = 'https://www.google.com/maps/dir/?api=1' +
+    (origem ? '&origin=' + ll(origem) : '') +
+    (destino ? '&destination=' + ll(destino) : '') +
+    (meio ? '&waypoints=' + encodeURIComponent(meio) : '') +
+    '&travelmode=driving';
+
+  const texto = 'Rota ' + (v ? 'Linha ' + v.linha + ' · ' + v.turno : '') +
+    (volta ? ' (retorno)' : '') + '\n' + url;
+  if (navigator.share) {
+    navigator.share({ title: 'Rota temvia', text: texto }).catch(() => vgCopiar(texto));
+  } else {
+    vgCopiar(texto);
+  }
+}
+
+function vgCopiar(txt) {
+  try {
+    navigator.clipboard.writeText(txt);
+    alert('Link do trajeto copiado. Cole onde quiser enviar.');
+  } catch (e) {
+    prompt('Copie o link do trajeto:', txt);
+  }
 }
 
 // ---- tema claro/escuro ----
@@ -2024,6 +2126,15 @@ function resetSelecao() {
   document.getElementById('linhaSection').style.display = 'none';
   document.getElementById('rotaContent').innerHTML = '';
   document.getElementById('headerSub').textContent = 'Rota do Dia';
+  // A viagem tambem sai de cena: sem isto o "Trocar" parecia nao fazer
+  // nada, porque a tela da viagem continuava ocupando tudo.
+  try {
+    VG_ATUAL = null; VG_ORDEM = [];
+    const t = document.getElementById('vgTela'); if (t) t.innerHTML = '';
+    vgEsconderAntiga(false);
+    vgSeletoresVisiveis(true);
+    vgAtualizarCabecalho();
+  } catch (e) {}
   trocarAba('rota');
 }
 
