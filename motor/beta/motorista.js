@@ -1228,6 +1228,19 @@ const VG_MOTIVOS_AUSENCIA = [
   { id: 'outro', rotulo: 'Outro motivo' }
 ];
 
+// Na saída a pessoa não some do ponto: ela não aparece no veículo, ou
+// desce antes. Oferecer "não estava no ponto" ali só confunde.
+const VG_MOTIVOS_AUSENCIA_VOLTA = [
+  { id: 'nao_veio', rotulo: 'Não veio para o veículo' },
+  { id: 'avisou', rotulo: 'Avisou que não voltaria' },
+  { id: 'desceu_antes', rotulo: 'Desceu antes do ponto' },
+  { id: 'outro', rotulo: 'Outro motivo' }
+];
+
+function vgMotivosDoSentido(sentido) {
+  return sentido === 'volta' ? VG_MOTIVOS_AUSENCIA_VOLTA : VG_MOTIVOS_AUSENCIA;
+}
+
 function vgId() {
   return 'vg' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }
@@ -1634,6 +1647,14 @@ function vgTrocarSentido(sentido) {
 
 // So mostra a escolha quando ha realmente dois sentidos no dia. Com um
 // so, o seletor seria um botao que nao leva a lugar nenhum.
+// O horario que identifica o sentido para o motorista e o do cadastro do
+// turno: a chegada na entrada, a saida no retorno. Nao a saida da
+// garagem, que e consequencia do calculo da rota.
+function vgHorarioDoTurno(v) {
+  if (!v) return '';
+  return esc((v.sentido === 'volta' ? v.inicioProgramado : v.chegadaProgramada) || '');
+}
+
 function vgSeletorSentido() {
   const ida = VG_DISPONIVEIS.ida, volta = VG_DISPONIVEIS.volta;
   if (!ida || !volta) return '';
@@ -1643,7 +1664,7 @@ function vgSeletorSentido() {
     (v.estado === 'encerrada' ? ' vg-sent-fim' : '') +
     '" onclick="vgTrocarSentido(&#39;' + id + '&#39;)">' + rot +
     '<i>' + (v.estado === 'encerrada' ? 'encerrada'
-           : (v.inicioProgramado ? esc(v.inicioProgramado) : 'sem hor\u00e1rio')) + '</i></button>';
+           : (vgHorarioDoTurno(v) || 'sem hor\u00e1rio')) + '</i></button>';
   return '<div class="vg-sentidos">' +
     aba('ida', 'Entrada', ida) + aba('volta', 'Sa\u00edda', volta) + '</div>';
 }
@@ -1973,8 +1994,8 @@ function vgPintarProximo(el, v, p) {
       '<div class="vg-acoes">' +
         (volta
           ? '<button class="vg-btn vg-btn-ok vg-flex2" onclick="vgUiDesembarcou()">Desembarcou</button>'
-          : '<button class="vg-btn vg-btn-ok vg-flex2" onclick="vgUiEmbarcou()">Embarcou</button>' +
-            '<button class="vg-btn vg-btn-nao" onclick="vgUiAusente()">Ausente</button>') +
+          : '<button class="vg-btn vg-btn-ok vg-flex2" onclick="vgUiEmbarcou()">Embarcou</button>') +
+        '<button class="vg-btn vg-btn-nao" onclick="vgUiAusente()">Ausente</button>' +
       '</div>' +
     '</div>' +
     vgDepoisHtml(v, p) +
@@ -2237,8 +2258,9 @@ function vgUiAusente(id) {
   ov.id = 'vgMotivoOv';
   ov.className = 'vg-ov';
   ov.innerHTML = '<div class="vg-ov-caixa">' +
-    '<div class="vg-ov-tit">' + esc(p.nome) + ' não embarcou</div>' +
-    VG_MOTIVOS_AUSENCIA.map(m =>
+    '<div class="vg-ov-tit">' + esc(p.nome) +
+      (VG_ATUAL && VG_ATUAL.sentido === 'volta' ? ' não desembarcou' : ' não embarcou') + '</div>' +
+    vgMotivosDoSentido(VG_ATUAL && VG_ATUAL.sentido).map(m =>
       '<button class="vg-btn vg-btn-motivo" onclick="vgUiConfirmarAusencia(&#39;' +
       escAttrM(k) + '&#39;,&#39;' + m.id + '&#39;)">' + m.rotulo + '</button>').join('') +
     '<button class="vg-btn vg-btn-cancel" onclick="vgFecharMotivo()">Cancelar</button>' +

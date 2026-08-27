@@ -499,12 +499,17 @@ function tvRenderMenuCliente() {
   let h = '';
   if (ops.length > 1) {
     h += '<div class="tv-menu-tit">Trocar de cliente</div>';
+    const nomeCfg = (typeof EMPRESA_CONFIG !== 'undefined' && EMPRESA_CONFIG &&
+                     EMPRESA_CONFIG.nome) ? String(EMPRESA_CONFIG.nome).trim() : '';
     ops.forEach(o => {
       const atual = o.id === C.clienteId;
+      // Só a operação aberta tem cadastro disponível; as outras ficam com
+      // o apelido da casca, que é tudo o que se sabe delas daqui.
+      const rot = (atual && nomeCfg) ? nomeCfg : o.nome;
       h += '<button type="button"' + (atual ? ' class="on" disabled' : '') +
         ' onclick="tvTrocarCliente(\'' + o.id + '\')">' +
         '<span class="tv-menu-bola"' + (o.cor ? ' style="background:' + o.cor + '"' : '') + '></span>' +
-        esc(o.nome) + (atual ? '<small>aqui</small>' : '') + '</button>';
+        esc(rot) + (atual ? '<small>aqui</small>' : '') + '</button>';
     });
     h += '<div class="tv-menu-sep"></div>';
   }
@@ -541,11 +546,16 @@ function tvAplicarContextoConta() {
   var elNome = document.getElementById('tvUserNome');
   var elPapel = document.getElementById('tvUserPapel');
   var opAtual = tvOperacoesIrmas().find(function (o) { return o.id === C.clienteId; });
-  if (elNome) elNome.textContent = (opAtual && opAtual.nome) || C.empresaNome || C.marca || '—';
-  if (elPapel) elPapel.textContent = nome || 'Gestor';
+  // Nome da empresa vem do cadastro, nao do apelido da casca.
+  var nomeReal = nome || (opAtual && opAtual.nome) || C.empresaNome || C.marca || '—';
+  var opAtendida = (typeof EMPRESA_CONFIG !== 'undefined' && EMPRESA_CONFIG &&
+                    EMPRESA_CONFIG.operacaoNome)
+    ? String(EMPRESA_CONFIG.operacaoNome).trim() : '';
+  if (elNome) { elNome.textContent = nomeReal; elNome.title = nomeReal; }
+  if (elPapel) elPapel.textContent = opAtendida ? ('Atendendo ' + opAtendida) : 'Gestor';
   var elAv = document.getElementById('tvAvatar');
-  if (elAv) elAv.textContent = ((opAtual && opAtual.nome) || C.marca || '--')
-    .replace(/[^A-Za-zÀ-ÿ ]/g, '').trim().slice(0, 2).toUpperCase();
+  if (elAv) elAv.textContent = String(nomeReal)
+    .replace(/[^A-Za-zÀ-ÿ ]/g, '').trim().slice(0, 2).toUpperCase() || '--';
   tvRenderMenuCliente();
 
   var elOp = document.getElementById('tvOperacaoAtendida');
