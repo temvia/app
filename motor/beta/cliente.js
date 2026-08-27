@@ -37,7 +37,7 @@ const HTML_MOTOR = "\n<!-- LOGIN OVERLAY -->\n<div class=\"login-overlay\" id=\"
 const MOTOR_BASE = (document.currentScript && document.currentScript.src)
   ? document.currentScript.src.replace(/[^/]+$/, '')
   : '/motor/';
-const TEMA_VERSAO = '2026-08-18-2';
+const TEMA_VERSAO = '2026-08-20-16';
 document.title = (C.empresaNome || C.marca) + ' \u2014 Portal temvia \u2014 Cliente';
 document.head.insertAdjacentHTML('beforeend',
   '<link rel="stylesheet" href="' + MOTOR_BASE + 'tema.css?v=' + TEMA_VERSAO + '">' +
