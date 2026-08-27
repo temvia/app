@@ -1,0 +1,5 @@
+# app.temvia.com.br — ambiente de aplicação, não é conteúdo público.
+# O site institucional é https://temvia.com.br
+
+User-agent: *
+Disallow: /
