@@ -571,7 +571,7 @@ body {
 ` + '</style>');
 
   // Estrutura da tela (marca do cliente injetada)
-  try { vgTema(); vgFilaCarregar(); } catch (e) {}
+  try { vgTema(); vgFilaCarregar(); vgAvisosVistosCarregar(); } catch (e) {}
   window.addEventListener('online', () => { VG_ONLINE = true; vgPintarSync(); vgFilaEnviar(); });
   window.addEventListener('offline', () => { VG_ONLINE = false; vgPintarSync(); });
   document.body.innerHTML = `
@@ -670,8 +670,6 @@ body {
       <div class="vg-cab">
         <button class="vg-quem" id="vgQuem" onclick="vgAbrirTroca()">
           <span id="vgQuemNome">Selecione seu nome</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
         </button>
         <span id="vgSync" class="vg-sync"></span>
       </div>
@@ -1585,6 +1583,24 @@ html[data-vg-tema="claro"]{--vgbg:#fbfaf7;--vgcard:#fff;--vgtxt:#2C2C2A;--vgmut:
 .vg-st{font-size:0.7188rem;color:var(--vgmut);font-style:normal}
 .vg-li-ausente .vg-st{color:#F09595}
 .vg-li-embarcou .vg-st,.vg-li-desembarcou .vg-st{color:#1D9E75}
+.vg-btn-sec{width:100%;margin-top:8px;background:transparent;border:1px solid var(--vgbrd);color:var(--vgtxt);font-size:0.8125rem}
+.vg-btn-sel{border-color:#EF9F27;color:#EF9F27}
+.vg-depois{background:var(--vgcard);border:1px solid var(--vgbrd);border-radius:12px;padding:11px 13px;margin-bottom:10px}
+.vg-dep-tit{font-size:0.625rem;letter-spacing:.09em;color:var(--vgmut);margin-bottom:7px}
+.vg-dep-li{display:flex;gap:11px;align-items:baseline;padding:4px 0;font-size:0.8125rem;color:var(--vgtxt)}
+.vg-dep-li i{font-style:normal;font-size:0.75rem;color:var(--vgmut);min-width:42px}
+.vg-dep-fim{border-top:1px solid var(--vgbrd);margin-top:5px;padding-top:7px}
+.vg-dep-fim span{color:var(--vgmut)}
+.vg-dep-mais{font-size:0.6875rem;color:var(--vgmut);padding:4px 0 0 53px}
+.vg-ov-mais{max-height:85vh;overflow:auto}
+.vg-mais-item{position:relative;display:flex;align-items:center;gap:11px;width:100%;background:var(--vgcard);border:1px solid var(--vgbrd);color:var(--vgtxt);border-radius:10px;padding:0.85em 0.9em;margin-bottom:7px;font-size:0.875rem;font-family:inherit;text-align:left;cursor:pointer}
+.vg-mais-item svg{width:18px;height:18px;flex-shrink:0;color:var(--vgmut)}
+.vg-mais-item .vg-badge{position:static;margin-left:auto}
+.vg-aviso{border-top:1px solid var(--vgbrd);padding:11px 0}
+.vg-aviso-top{display:flex;justify-content:space-between;gap:10px;font-size:0.6875rem;color:var(--vgmut);margin-bottom:5px}
+.vg-aviso-txt{font-size:0.8438rem;color:var(--vgtxt);line-height:1.5;white-space:pre-wrap}
+.vg-aviso-link{display:inline-block;margin-top:6px;font-size:0.75rem;color:#EF9F27;text-decoration:none}
+.vg-vazio{font-size:0.8125rem;color:var(--vgmut);text-align:center;padding:26px 8px}
 `;
 
 // O estilo entra na primeira pintura: aqui o VG_CSS ja tem valor.
@@ -1633,14 +1649,31 @@ function vgEsconderAntiga(esconder) {
   if (rc) rc.style.display = esconder ? 'none' : '';
 }
 
+// As abas do topo saem de cena durante a viagem. Quem precisar delas
+// chega pelo + Mais..., que reaproveita o mesmo trocarAba().
+function vgAbasVisiveis(mostrar) {
+  const b = document.getElementById('abaRotaBtn');
+  const barra = b ? b.parentElement : null;
+  if (barra) barra.style.display = mostrar ? '' : 'none';
+}
+
+// So faz sentido esconder as abas quando a tela em foco E a da rota.
+// Sem esta guarda, um vgPintar disparado enquanto o motorista esta na
+// Busca apagava as abas e ele ficava sem caminho de volta.
+function vgNaAbaRota() {
+  const el = document.getElementById('abaRota');
+  return !el || el.style.display !== 'none';
+}
+
 function vgPintar() {
   vgPorEstilo();
   const el = document.getElementById('vgTela');
   if (!el) return;
   vgAtualizarCabecalho();
-  if (!VG_ATUAL) { el.innerHTML = ''; vgEsconderAntiga(false); return; }
+  if (!VG_ATUAL) { el.innerHTML = ''; vgEsconderAntiga(false); vgAbasVisiveis(true); return; }
   // ha viagem: a tela da viagem e a unica
   vgEsconderAntiga(true);
+  vgAbasVisiveis(!vgNaAbaRota());
   vgSeletoresVisiveis(false);
   const v = VG_ATUAL;
 
@@ -1670,6 +1703,8 @@ function vgPintarAntes(el, v) {
       '<div class="vg-linha-info">' + esc(v.motorista || 'Motorista a definir') +
         (v.veiculo ? ' · ' + esc(v.veiculo) : '') + '</div>' +
       '<button class="vg-btn vg-btn-grande" onclick="vgUiIniciar()">Iniciar rota</button>' +
+      '<button class="vg-btn vg-btn-sec" onclick="vgUiLocalizacao()">' +
+        'Compartilhar localização da van</button>' +
     '</div>';
 }
 
@@ -1701,21 +1736,49 @@ function vgPintarProximo(el, v, p) {
             '<button class="vg-btn vg-btn-nao" onclick="vgUiAusente()">Ausente</button>') +
       '</div>' +
     '</div>' +
+    vgDepoisHtml(v, p) +
     vgDesfazerHtml() + vgAtalhos();
+}
+
+// ---- lista DEPOIS: as proximas paradas, sem acao ----
+// So leitura. Marcar fora de ordem continua sendo pela Lista completa —
+// botao pequeno com o veiculo em movimento e toque errado garantido.
+function vgDepoisHtml(v, atual) {
+  const ka = atual ? (atual.id || atual.nome) : null;
+  const pend = vgPendentes(v, VG_ORDEM).filter(p => (p.id || p.nome) !== ka);
+  const volta = v.sentido === 'volta';
+  const linhas = pend.slice(0, 4).map(p =>
+    '<div class="vg-dep-li"><i>' + esc(p.horario || '--:--') + '</i>' +
+    '<span>' + esc(p.nome) + '</span></div>').join('');
+  const fim = v.chegadaProgramada
+    ? '<div class="vg-dep-li vg-dep-fim"><i>' + esc(v.chegadaProgramada) + '</i>' +
+      '<span>' + (volta ? 'Garagem' : 'Chegada \u00b7 empresa') + '</span></div>'
+    : '';
+  if (!linhas && !fim) return '';
+  const resto = pend.length > 4
+    ? '<div class="vg-dep-mais">+ ' + (pend.length - 4) + ' na lista completa</div>' : '';
+  return '<div class="vg-depois"><div class="vg-dep-tit">DEPOIS</div>' +
+    linhas + resto + fim + '</div>';
 }
 
 // ---- 3. todos processados, a caminho ----
 function vgPintarACaminho(el, v) {
   const r = vgResumo(v);
+  const volta = v.sentido === 'volta';
+  // Na volta ninguem embarca no caminho: o que se conta e quem desceu.
+  const feitos = volta ? r.desembarcaram : r.embarcaram;
+  const verbo = volta ? ' desembarcaram' : ' embarcaram';
   el.innerHTML =
     vgBarraTopo(v, vgAtrasoAtual(v)) +
     '<div class="vg-card vg-card-ok">' +
-      '<div class="vg-tag">TODOS OS PASSAGEIROS PROCESSADOS</div>' +
-      '<div class="vg-nome">' + r.embarcaram + ' embarcaram' +
+      '<div class="vg-tag">' + (volta ? 'TODOS OS DESEMBARQUES FEITOS'
+                                      : 'TODOS OS PASSAGEIROS PROCESSADOS') + '</div>' +
+      '<div class="vg-nome">' + feitos + verbo +
         (r.ausentes ? ' · ' + r.ausentes + ' ausente' + (r.ausentes > 1 ? 's' : '') : '') + '</div>' +
-      '<div class="vg-local">A caminho da empresa' +
+      '<div class="vg-local">A caminho da ' + vgDestinoNome(v) +
         (v.chegadaProgramada ? ' · chegada prevista ' + esc(v.chegadaProgramada) : '') + '</div>' +
-      '<button class="vg-btn vg-btn-grande" onclick="vgUiChegou()">Cheguei à empresa</button>' +
+      '<button class="vg-btn vg-btn-grande" onclick="vgUiChegou()">Cheguei ' +
+        (v.sentido === 'volta' ? 'à garagem' : 'à empresa') + '</button>' +
     '</div>' + vgDesfazerHtml() + vgAtalhos();
 }
 
@@ -1726,11 +1789,13 @@ function vgPintarChegou(el, v) {
   el.innerHTML =
     vgBarraTopo(v, vgAtraso(v.chegadaProgramada, v.chegadaReal)) +
     '<div class="vg-card vg-card-ok">' +
-      '<div class="vg-tag">CHEGAMOS À EMPRESA · ' + esc(v.chegadaReal) + '</div>' +
+      '<div class="vg-tag">' + (v.sentido === 'volta' ? 'CHEGAMOS À GARAGEM' : 'CHEGAMOS À EMPRESA') +
+        ' · ' + esc(v.chegadaReal) + '</div>' +
       (desceram
         ? '<div class="vg-nome">' + desceram + ' desembarcaram</div>' +
           '<div class="vg-local">Registrado. Falta encerrar a viagem.</div>' +
-          '<button class="vg-btn vg-btn-grande" onclick="vgUiEncerrar()">Encerrar ida</button>'
+          '<button class="vg-btn vg-btn-grande" onclick="vgUiEncerrar()">Encerrar ' +
+            (v.sentido === 'volta' ? 'retorno' : 'ida') + '</button>'
         : '<div class="vg-nome">' + r.embarcaram + ' a bordo</div>' +
           '<div class="vg-local">Registre o desembarque para fechar a viagem.</div>' +
           '<button class="vg-btn vg-btn-grande" onclick="vgUiDesembarqueTodos()">Todos desembarcaram</button>') +
@@ -1755,6 +1820,12 @@ function vgPintarEncerrada(el, v) {
     '</div>' + vgAtalhos();
 }
 
+// Na ida o destino e a empresa; na volta a van termina na garagem.
+// Estava fixo em "empresa" nos tres lugares, inclusive no retorno.
+function vgDestinoNome(v) {
+  return (v && v.sentido === 'volta') ? 'garagem' : 'empresa';
+}
+
 // ---- barra do topo: atraso e sincronização ----
 function vgBarraTopo(v, atraso) {
   // Diferenca acima de 2h nao e atraso: e relogio fora de contexto
@@ -1763,8 +1834,12 @@ function vgBarraTopo(v, atraso) {
   const txt = (atraso == null || fora) ? 'no horário'
     : (atraso > 0 ? '+' + atraso + ' min' : (atraso < 0 ? atraso + ' min' : 'no horário'));
   const cls = (!fora && atraso != null && atraso > 5) ? ' vg-atrasado' : '';
+  // Dizer O DESTINO, nao so "chegada": na volta nao e a empresa.
+  const onde = vgDestinoNome(v);
   return '<div class="vg-topo' + cls + '">' +
-    '<span>' + (v.chegadaProgramada ? 'Chegada prevista ' + esc(v.chegadaProgramada) : 'Em rota') + '</span>' +
+    '<span>' + (v.chegadaProgramada
+      ? 'Chegada prevista na ' + esc(onde) + ' ' + esc(v.chegadaProgramada)
+      : 'Em rota') + '</span>' +
     '<b>' + txt + '</b></div>';
 }
 
@@ -1777,7 +1852,8 @@ function vgPintarSync() {
     return;
   }
   el.className = 'vg-sync vg-sync-pend';
-  el.textContent = (VG_ONLINE ? '' : 'sem conexão · ') + VG_FILA.length + ' aguardando envio';
+  el.textContent = (VG_ONLINE ? '' : 'sem conexão · ') + VG_FILA.length +
+    (VG_FILA.length > 1 ? ' registros para enviar' : ' registro para enviar');
 }
 
 // ---- desfazer temporário ----
@@ -1796,12 +1872,12 @@ function vgArmarDesfazer(id, rotulo) {
 
 // ---- atalhos ----
 function vgAtalhos() {
-  const n = (typeof _commNaoLidas !== 'undefined' && _commNaoLidas) || 0;
+  // Contador de avisos nao lidos: fica no + Mais..., que agora e a porta
+  // de tudo o que nao e a parada da vez.
+  const n = vgAvisosNaoLidos();
   return '<div class="vg-atalhos">' +
-    vgAtalho('vgUiLista()', 'Lista', 'M4 6h16M4 12h16M4 18h10') +
-    vgAtalho('vgUiComunicados()', 'Comunicados', 'M4 5h16v11H8l-4 4V5Z', n) +
-    vgAtalho('vgUiOcorrencia()', 'Ocorrência', 'M12 3 2 20h20L12 3ZM12 9v5M12 17.5v.5') +
-    vgAtalho('vgUiCompartilhar()', 'Compartilhar', 'M6 12a3 3 0 1 0 0-.1M18 6a3 3 0 1 0 0-.1M18 18a3 3 0 1 0 0-.1M8.6 10.7l6.8-3.4M8.6 13.3l6.8 3.4') +
+    vgAtalho('vgUiLista()', 'Lista completa', 'M4 6h16M4 12h16M4 18h10') +
+    vgAtalho('vgUiMais()', '+ Mais\u2026', 'M12 5v14M5 12h14', n) +
     '</div>';
 }
 function vgAtalho(acao, rotulo, path, badge) {
@@ -1929,52 +2005,215 @@ function vgFecharLista() {
   if (ov) ov.remove();
   vgPintar();
 }
-// Comunicados = chat da linha. Antes ia para a aba "Rotas de Hoje",
-// que nao tem nada a ver.
-function vgUiComunicados() {
-  if (typeof commToggleChat === 'function') return commToggleChat();
-  if (typeof trocarAba === 'function') trocarAba('hoje');
+// ==================================================================
+// + MAIS... — tudo o que nao e a parada da vez
+// ------------------------------------------------------------------
+// Em movimento, cada botao a mais na tela e um erro a mais. O que se
+// usa a cada parada fica na tela; o resto mora aqui.
+// ==================================================================
+function vgUiMais() {
+  vgFecharMais();
+  const n = vgAvisosNaoLidos();
+  const ov = document.createElement('div');
+  ov.id = 'vgMaisOv';
+  ov.className = 'vg-ov';
+  ov.innerHTML = '<div class="vg-ov-caixa vg-ov-mais">' +
+    '<div class="vg-ov-tit">Mais</div>' +
+    vgItemMais('vgMaisIr(&#39;rota&#39;)', 'Minha rota',
+      'M4 17h3l2-9 3 12 2.5-7H20') +
+    vgItemMais('vgMaisIr(&#39;hoje&#39;)', 'Rotas de hoje',
+      'M4 5h16v15H4zM4 9h16M9 3v4M15 3v4') +
+    vgItemMais('vgMaisIr(&#39;busca&#39;)', 'Buscar passageiro',
+      'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14ZM16.5 16.5 21 21') +
+    vgItemMais('vgUiTrocarLinha()', 'Alterar linha',
+      'M4 8h13l-3-3M20 16H7l3 3') +
+    vgItemMais('vgUiAvisos()', 'Comunicados',
+      'M4 10v4h3l6 4V6l-6 4H4ZM17 9.5a4 4 0 0 1 0 5', n) +
+    vgItemMais('vgUiOcorrencia()', 'Registrar ocorr\u00eancia',
+      'M12 3 2 20h20L12 3ZM12 9v5M12 17.5v.5') +
+    vgItemMais('vgUiLocalizacao()', 'Compartilhar localiza\u00e7\u00e3o',
+      'M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11ZM12 10.5a1.5 1.5 0 1 0 0-.1') +
+    vgItemMais('vgUiTema()', 'Tema da tela',
+      'M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z') +
+    '<button class="vg-btn vg-btn-cancel" onclick="vgFecharMais()">Fechar</button>' +
+    '</div>';
+  document.body.appendChild(ov);
 }
-function vgUiOcorrencia() { alert('Ocorrências: em breve.'); }
-// Compartilhar: monta o link do Maps com as paradas na ordem e oferece
-// para enviar. Antes so mostrava um alerta.
-function vgUiCompartilhar() {
+
+function vgItemMais(acao, rotulo, path, badge) {
+  return '<button class="vg-mais-item" onclick="' + acao + '">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + path + '"/></svg>' +
+    '<span>' + rotulo + '</span>' +
+    (badge ? '<i class="vg-badge">' + badge + '</i>' : '') + '</button>';
+}
+
+function vgFecharMais() {
+  const ov = document.getElementById('vgMaisOv');
+  if (ov) ov.remove();
+}
+
+// As abas do topo somem durante a viagem; e por aqui que se chega a elas.
+function vgMaisIr(aba) {
+  vgFecharMais();
+  if (typeof trocarAba === 'function') trocarAba(aba);
+  vgAbasVisiveis(aba !== 'rota' || !VG_ATUAL);
+}
+
+// Alterar linha saiu do cabecalho: la parecia texto, nao botao.
+function vgUiTrocarLinha() {
+  vgFecharMais();
+  if (typeof trocarAba === 'function') trocarAba('rota');
+  vgAbasVisiveis(false);
+  vgSeletoresVisiveis(true);
+  const box = document.getElementById('vgSeletores');
+  if (box && box.scrollIntoView) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ==================================================================
+// COMUNICADOS — leitura dos avisos publicados
+// ------------------------------------------------------------------
+// O botao abria o CHAT da linha. O chat sai: o motorista dirigindo nao
+// responde mensagem. Ficam os avisos que o gestor e a empresa cliente
+// publicam, no MESMO documento que o app do passageiro ja le
+// (CLIENTE_ID/avisos) — nada de estrutura nova.
+// ==================================================================
+let VG_AVISOS = [];
+let VG_AVISOS_VISTOS = 0;
+
+function vgAvisosChave() {
+  if (window._commChave) return window._commChave;
   const v = VG_ATUAL;
-  const pontos = (VG_ORDEM || [])
-    .map(p => (typeof paxCoordEmbarque === 'function' ? paxCoordEmbarque(p) : null)
-              || (p.lat && p.lng ? { lat: +p.lat, lng: +p.lng } : null))
-    .filter(Boolean);
-  if (!pontos.length) { alert('Sem coordenadas para montar o trajeto.'); return; }
-
-  const G = (typeof GARAGEM_COORDS !== 'undefined') ? GARAGEM_COORDS : null;
-  const E = (typeof EMPRESA_COORDS !== 'undefined') ? EMPRESA_COORDS : null;
-  const volta = v && v.sentido === 'volta';
-  const origem = volta ? E : G, destino = volta ? G : E;
-  const ll = c => c.lat + ',' + c.lng;
-  // o Maps aceita 25 pontos intermediarios
-  const meio = pontos.slice(0, 23).map(ll).join('|');
-  const url = 'https://www.google.com/maps/dir/?api=1' +
-    (origem ? '&origin=' + ll(origem) : '') +
-    (destino ? '&destination=' + ll(destino) : '') +
-    (meio ? '&waypoints=' + encodeURIComponent(meio) : '') +
-    '&travelmode=driving';
-
-  const texto = 'Rota ' + (v ? 'Linha ' + v.linha + ' · ' + v.turno : '') +
-    (volta ? ' (retorno)' : '') + '\n' + url;
-  if (navigator.share) {
-    navigator.share({ title: 'Rota temvia', text: texto }).catch(() => vgCopiar(texto));
-  } else {
-    vgCopiar(texto);
-  }
+  return v ? (String(v.linha) + '_' + v.turno) : '';
 }
 
-function vgCopiar(txt) {
+// Aviso geral (sem chave) ou da linha que esta rodando.
+function vgAvisosMeus() {
+  const chave = vgAvisosChave();
+  return (VG_AVISOS || [])
+    .filter(a => !a.chave || a.chave === chave)
+    .sort((x, y) => String(y.em || '').localeCompare(String(x.em || '')));
+}
+
+function vgAvisosNaoLidos() {
+  const n = vgAvisosMeus().length - VG_AVISOS_VISTOS;
+  return n > 0 ? n : 0;
+}
+
+function vgAvisosVistosCarregar() {
+  try { VG_AVISOS_VISTOS = +(localStorage.getItem('vg_avisos_vistos') || 0) || 0; }
+  catch (e) { VG_AVISOS_VISTOS = 0; }
+}
+
+async function vgAvisosBuscar() {
   try {
-    navigator.clipboard.writeText(txt);
-    alert('Link do trajeto copiado. Cole onde quiser enviar.');
+    const db = await commGetDb();
+    if (!db) return;
+    const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const snap = await getDoc(doc(db, CLIENTE_ID, 'avisos'));
+    VG_AVISOS = (snap.exists() && snap.data().lista) ? snap.data().lista : [];
   } catch (e) {
-    prompt('Copie o link do trajeto:', txt);
+    // Sem rede o motorista continua rodando a viagem: avisos nao sao criticos.
+    VG_AVISOS = VG_AVISOS || [];
   }
+  vgPintar();
+}
+
+async function vgUiAvisos() {
+  vgFecharMais();
+  await vgAvisosBuscar();
+  const meus = vgAvisosMeus();
+  VG_AVISOS_VISTOS = meus.length;
+  try { localStorage.setItem('vg_avisos_vistos', String(VG_AVISOS_VISTOS)); } catch (e) {}
+
+  const ov = document.createElement('div');
+  ov.id = 'vgAvisosOv';
+  ov.className = 'vg-ov';
+  ov.innerHTML = '<div class="vg-ov-caixa vg-ov-lista">' +
+    '<div class="vg-ov-tit">Comunicados</div>' +
+    (meus.length
+      ? meus.map(a => {
+          const d = a.em ? new Date(a.em) : null;
+          const data = d && !isNaN(d)
+            ? d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit',
+                                          hour: '2-digit', minute: '2-digit' })
+            : '';
+          const corpo = esc(a.txt || '');
+          return '<div class="vg-aviso">' +
+            '<div class="vg-aviso-top"><span>' + esc(a.autor || 'Gest\u00e3o') + '</span>' +
+              '<span>' + data + '</span></div>' +
+            '<div class="vg-aviso-txt">' + corpo + '</div>' +
+            (a.link ? '<a class="vg-aviso-link" href="' + esc(a.link) +
+                      '" target="_blank" rel="noopener">Abrir anexo</a>' : '') +
+          '</div>';
+        }).join('')
+      : '<div class="vg-vazio">Nenhum comunicado no momento.</div>') +
+    '<button class="vg-btn vg-btn-cancel" onclick="vgFecharAvisos()">Fechar</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+}
+
+function vgFecharAvisos() {
+  const ov = document.getElementById('vgAvisosOv');
+  if (ov) ov.remove();
+  vgPintar();
+}
+
+function vgUiOcorrencia() {
+  vgFecharMais();
+  alert('Ocorr\u00eancias: em breve.');
+}
+
+// ==================================================================
+// COMPARTILHAR LOCALIZACAO DA VAN
+// ------------------------------------------------------------------
+// O que o passageiro espera ver e onde a van esta AGORA. O botao antigo
+// mandava um link de trajeto do Maps, que nao mostra nada disso.
+// A funcao ja existia, escondida num quadro de configuracao.
+// ==================================================================
+function vgUiLocalizacao() {
+  vgFecharMais();
+  if (typeof commCompartilharLocal === 'function') return commCompartilharLocal();
+  alert('Compartilhamento de localiza\u00e7\u00e3o indispon\u00edvel nesta tela.');
+}
+
+// ==================================================================
+// TEMA — escolha do motorista, nao do celular
+// ------------------------------------------------------------------
+// Cada um enxerga melhor de um jeito, e a cabine de dia nao e a mesma
+// coisa que a garagem as 4h. 'auto' segue o aparelho, como antes.
+// ==================================================================
+function vgUiTema() {
+  vgFecharMais();
+  const atual = (function () {
+    try { return localStorage.getItem('vg_tema') || 'auto'; } catch (e) { return 'auto'; }
+  })();
+  const opcoes = [
+    { id: 'auto',   rotulo: 'Autom\u00e1tico (segue o celular)' },
+    { id: 'claro',  rotulo: 'Claro' },
+    { id: 'escuro', rotulo: 'Escuro' }
+  ];
+  const ov = document.createElement('div');
+  ov.id = 'vgTemaOv';
+  ov.className = 'vg-ov';
+  ov.innerHTML = '<div class="vg-ov-caixa">' +
+    '<div class="vg-ov-tit">Tema da tela</div>' +
+    opcoes.map(o =>
+      '<button class="vg-btn vg-btn-motivo' + (o.id === atual ? ' vg-btn-sel' : '') +
+      '" onclick="vgUiTemaEscolher(&#39;' + o.id + '&#39;)">' + o.rotulo + '</button>').join('') +
+    '<button class="vg-btn vg-btn-cancel" onclick="vgFecharTema()">Fechar</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+}
+
+function vgUiTemaEscolher(modo) {
+  vgTema(modo);
+  vgFecharTema();
+}
+
+function vgFecharTema() {
+  const ov = document.getElementById('vgTemaOv');
+  if (ov) ov.remove();
 }
 
 // ---- tema claro/escuro ----
@@ -2811,6 +3050,8 @@ function loadRota() {
   window._commChave = chaveComm;
   window._commLinha = rota.linha;
   window._commTurno = rota.turno;
+  // Avisos da linha: buscados aqui porque so agora se sabe qual e a linha.
+  try { vgAvisosBuscar(); } catch (e) {}
   html += '<div class="card" style="border-color:rgba(16,185,129,0.3)">';
   html += '<div class="card-title" style="color:var(--green)">Comunicação com passageiros</div>';
   // Presenças
