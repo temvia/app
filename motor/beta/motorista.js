@@ -576,6 +576,9 @@ body {
     VG_ONLINE = true; vgPintarSync(); vgFilaEnviar(); vgOcEnviar();
   });
   window.addEventListener('offline', () => { VG_ONLINE = false; vgPintarSync(); });
+  // Se havia selecao gravada, a proxima tela e a rota — nao a escolha.
+  // Ligar isto ANTES do innerHTML nao funciona: o elemento ainda nem
+  // existe. Fica logo depois, junto da identidade.
   document.body.innerHTML = `
 
 <!-- LOGIN SCREEN -->
@@ -677,6 +680,11 @@ body {
         <span id="vgSync" class="vg-sync"></span>
       </div>
 
+      <div id="vgCarregando" class="vg-carregando" style="display:none">
+        <div class="vg-spin"></div>
+        <div>Buscando sua rota\u2026</div>
+      </div>
+
       <div id="vgSeletores" class="vg-seletores">
         <label class="section-label">Selecione seu nome</label>
         <select class="select-input" id="selMotorista" onchange="loadLinhas()">
@@ -735,6 +743,7 @@ body {
 
   // Só agora os elementos do topo existem no DOM.
   try { vgIdentidade(); } catch (e) {}
+
 })();
 
 // ================= CODIGO DO APP (escopo global) =================
@@ -1609,6 +1618,36 @@ let VG_DESFAZER = null;     // { id, ate } — janela de arrependimento
 // motorista NAO escolhe ida ou volta: o horario decide.
 let VG_ROTA = null;   // ultima rota escolhida, para repreparar
 
+// As duas viagens do dia ficam a mesa, para o motorista poder escolher.
+let VG_DISPONIVEIS = { ida: null, volta: null };
+let VG_BASE_ORDEM = [];
+
+// Troca de sentido a pedido do motorista. Nao cria viagem nova: pega a
+// que ja estava montada, com o que ela ja tiver de marcado.
+function vgTrocarSentido(sentido) {
+  const v = VG_DISPONIVEIS[sentido === 'volta' ? 'volta' : 'ida'];
+  if (!v) return;
+  VG_ATUAL = v;
+  VG_ORDEM = vgOrdemDoSentido(VG_BASE_ORDEM, v.sentido);
+  vgPintar();
+}
+
+// So mostra a escolha quando ha realmente dois sentidos no dia. Com um
+// so, o seletor seria um botao que nao leva a lugar nenhum.
+function vgSeletorSentido() {
+  const ida = VG_DISPONIVEIS.ida, volta = VG_DISPONIVEIS.volta;
+  if (!ida || !volta) return '';
+  const atual = VG_ATUAL && VG_ATUAL.sentido === 'volta' ? 'volta' : 'ida';
+  const aba = (id, rot, v) =>
+    '<button class="vg-sent' + (atual === id ? ' vg-sent-on' : '') +
+    (v.estado === 'encerrada' ? ' vg-sent-fim' : '') +
+    '" onclick="vgTrocarSentido(&#39;' + id + '&#39;)">' + rot +
+    '<i>' + (v.estado === 'encerrada' ? 'encerrada'
+           : (v.inicioProgramado ? esc(v.inicioProgramado) : 'sem hor\u00e1rio')) + '</i></button>';
+  return '<div class="vg-sentidos">' +
+    aba('ida', 'Entrada', ida) + aba('volta', 'Sa\u00edda', volta) + '</div>';
+}
+
 // A saida e a entrada invertida: quem embarca primeiro de manha mora
 // mais longe da empresa e e o ultimo a descer a tarde. Servir a mesma
 // ordem nos dois sentidos manda o motorista fazer o caminho ao contrario.
@@ -1636,13 +1675,14 @@ function vgPreparar(rota) {
   // apaga a entrada.
   const monta = (sentido) =>
     vgRecuperar(rota.id, hoje, sentido) || vgCriar(rota, hoje, sentido);
-  const ida = monta('ida');
-  const volta = monta('volta');
+  VG_DISPONIVEIS = { ida: monta('ida'), volta: monta('volta') };
+  VG_BASE_ORDEM = naEntrada;
 
   // vgProximaViagem prioriza a que estiver em curso; entre programadas,
   // escolhe a mais proxima do relogio. Encerrada nao concorre.
-  const candidatas = [ida, volta].filter(v => v && v.estado !== 'encerrada');
-  VG_ATUAL = vgProximaViagem(candidatas);
+  const candidatas = [VG_DISPONIVEIS.ida, VG_DISPONIVEIS.volta]
+    .filter(v => v && v.estado !== 'encerrada');
+  VG_ATUAL = vgProximaViagem(candidatas) || VG_DISPONIVEIS.ida || VG_DISPONIVEIS.volta;
   VG_ORDEM = vgOrdemDoSentido(naEntrada, VG_ATUAL && VG_ATUAL.sentido);
   vgPintar();
   vgPintarSync();
@@ -1758,8 +1798,22 @@ html[data-vg-tema="claro"] .vg-cab{color:#2C2C2A}
 .vg-aviso-txt{font-size:0.8438rem;color:var(--vgtxt);line-height:1.5;white-space:pre-wrap}
 .vg-aviso-link{display:inline-block;margin-top:6px;font-size:0.75rem;color:#EF9F27;text-decoration:none}
 .vg-vazio{font-size:0.8125rem;color:var(--vgmut);text-align:center;padding:26px 8px}
+.vg-li .vg-pres{margin-left:7px}
+.vg-li-nao b{opacity:.65}
+.vg-pres{margin-left:auto;font-size:0.625rem;font-weight:600;letter-spacing:.02em;color:#1D9E75;background:rgba(29,158,117,0.12);border-radius:20px;padding:2px 8px;white-space:nowrap}
+.vg-pres-nao{color:#D9534F;background:rgba(217,83,79,0.13)}
+.vg-dep-nao span:not(.vg-pres){opacity:.6;text-decoration:line-through}
+.vg-carregando{display:flex;flex-direction:column;align-items:center;gap:12px;padding:44px 16px;color:var(--vgmut);font-size:0.8125rem}
+.vg-spin{width:26px;height:26px;border:2.5px solid var(--vgbrd);border-top-color:#EF9F27;border-radius:50%;animation:vgspin .8s linear infinite}
+@keyframes vgspin{to{transform:rotate(360deg)}}
+.vg-sentidos{display:flex;gap:8px;margin-bottom:11px}
+.vg-sent{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--vgcard);border:1px solid var(--vgbrd);border-radius:11px;padding:9px 6px;color:var(--vgmut);font-family:inherit;font-size:0.8125rem;font-weight:600;cursor:pointer}
+.vg-sent i{font-style:normal;font-size:0.6875rem;font-weight:400;opacity:.85}
+.vg-sent-on{border-color:#EF9F27;color:#EF9F27;background:rgba(239,159,39,0.08)}
+.vg-sent-fim{opacity:.55}
 .vg-barra{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;gap:9px;padding:9px 13px calc(9px + env(safe-area-inset-bottom));background:var(--vgbg);border-top:1px solid var(--vgbrd)}
 .vg-barra .vg-atalho{flex:1;margin:0}
+.vg-barra .vg-atalho svg{stroke-width:3.4}
 .vg-barra-so-mais{justify-content:flex-end}
 .vg-barra-so-mais .vg-atalho{flex:0 0 78px}
 .vg-oc-lbl{font-size:0.6875rem;letter-spacing:.06em;color:var(--vgmut);margin-bottom:7px}
@@ -1788,6 +1842,16 @@ function vgPorEstilo() {
 // duplicando a interface. Agora recolhem assim que a rota esta
 // escolhida, e voltam a um toque no nome.
 // ==================================================================
+// Enquanto os dados nao chegam, a tela diz que esta buscando em vez de
+// mostrar os seletores vazios. So vale se havia selecao gravada: sem
+// ela, a escolha e mesmo a primeira coisa a fazer.
+function vgCarregando(ligar) {
+  const box = document.getElementById('vgCarregando');
+  const sel = document.getElementById('vgSeletores');
+  if (box) box.style.display = ligar ? '' : 'none';
+  if (sel && ligar) sel.style.display = 'none';
+}
+
 function vgSeletoresVisiveis(mostrar) {
   const box = document.getElementById('vgSeletores');
   const btn = document.getElementById('vgQuem');
@@ -1867,6 +1931,7 @@ function vgPintarAntes(el, v) {
   const sentido = v.sentido === 'volta' ? 'Retorno' : 'Entrada';
   const trajeto = v.sentido === 'volta' ? 'Empresa → passageiros' : 'Garagem → empresa';
   el.innerHTML =
+    vgSeletorSentido() +
     '<div class="vg-card vg-card-antes">' +
       '<div class="vg-tag">PRÓXIMA VIAGEM</div>' +
       '<div class="vg-titulo">Linha ' + esc(v.linha) + ' · ' + esc(v.turno) + '</div>' +
@@ -1916,6 +1981,38 @@ function vgPintarProximo(el, v, p) {
     vgDesfazerHtml() + vgAtalhos();
 }
 
+// ---- resposta do passageiro (confirmacao de presenca) ----
+// Casamento por telefone, como no resto do app.
+function vgPresencaDe(viajante) {
+  const tel = String((viajante && viajante.telefone) || '').replace(/\D/g, '');
+  if (!tel) return null;
+  const m = (window._commUltimaPres || [])
+    .find(x => String(x.telefone || '').replace(/\D/g, '') === tel);
+  if (!m) return null;
+  return m.sentido || (m.vai ? 'ambos' : 'nao');
+}
+
+// Devolve { txt, falta } — falta = a pessoa NAO vai neste sentido.
+// Sem resposta nao vira etiqueta: silencio nao e recusa, e encher a tela
+// de "sem resposta" esconderia justamente quem respondeu.
+function vgPresencaTag(viajante, sentido) {
+  const r = vgPresencaDe(viajante);
+  if (!r) return null;
+  const volta = sentido === 'volta';
+  if (r === 'nao')   return { txt: 'n\u00e3o vai hoje', falta: true };
+  if (r === 'ida')   return volta ? { txt: 's\u00f3 ida', falta: true }
+                                  : { txt: 'confirmou', falta: false };
+  if (r === 'volta') return volta ? { txt: 'confirmou', falta: false }
+                                  : { txt: 's\u00f3 volta', falta: true };
+  return { txt: 'confirmou', falta: false };
+}
+
+function vgPresencaHtml(viajante, sentido) {
+  const t = vgPresencaTag(viajante, sentido);
+  if (!t) return '';
+  return '<span class="vg-pres' + (t.falta ? ' vg-pres-nao' : '') + '">' + t.txt + '</span>';
+}
+
 // ---- lista DEPOIS: as proximas paradas, sem acao ----
 // So leitura. Marcar fora de ordem continua sendo pela Lista completa —
 // botao pequeno com o veiculo em movimento e toque errado garantido.
@@ -1923,9 +2020,13 @@ function vgDepoisHtml(v, atual) {
   const ka = atual ? (atual.id || atual.nome) : null;
   const pend = vgPendentes(v, VG_ORDEM).filter(p => (p.id || p.nome) !== ka);
   const volta = v.sentido === 'volta';
-  const linhas = pend.slice(0, 4).map(p =>
-    '<div class="vg-dep-li"><i>' + esc(p.horario || '--:--') + '</i>' +
-    '<span>' + esc(p.nome) + '</span></div>').join('');
+  const linhas = pend.slice(0, 4).map(p => {
+    const tag = vgPresencaTag(p, v.sentido);
+    return '<div class="vg-dep-li' + (tag && tag.falta ? ' vg-dep-nao' : '') + '">' +
+      '<i>' + esc(p.horario || '--:--') + '</i>' +
+      '<span>' + esc(p.nome) + '</span>' +
+      vgPresencaHtml(p, v.sentido) + '</div>';
+  }).join('');
   const fim = v.chegadaProgramada
     ? '<div class="vg-dep-li vg-dep-fim"><i>' + esc(v.chegadaProgramada) + '</i>' +
       '<span>' + (volta ? 'Garagem' : 'Chegada \u00b7 empresa') + '</span></div>'
@@ -2013,7 +2114,8 @@ function vgBarraTopo(v, atraso) {
   const cls = (!fora && atraso != null && atraso > 5) ? ' vg-atrasado' : '';
   // Dizer O DESTINO, nao so "chegada": na volta nao e a empresa.
   const onde = vgDestinoNome(v);
-  return '<div class="vg-topo' + cls + '">' +
+  return vgSeletorSentido() +
+    '<div class="vg-topo' + cls + '">' +
     '<span>' + (v.chegadaProgramada
       ? 'Chegada prevista na ' + esc(onde) + ' ' + esc(v.chegadaProgramada)
       : 'Em rota') + '</span>' +
@@ -2065,7 +2167,8 @@ function vgBarraPintar() {
     (temViagem
       ? vgAtalho('vgUiLista()', 'Lista completa', 'M4 6h16M4 12h16M4 18h10')
       : '') +
-    vgAtalho('vgUiMais()', '', 'M12 5v14M5 12h14', n);
+    vgAtalho('vgUiMais()', 'Op\u00e7\u00f5es',
+      'M6 12h.01M12 12h.01M18 12h.01', n);
   barra.className = 'vg-barra' + (temViagem ? '' : ' vg-barra-so-mais');
 }
 // rotulo vazio = so o icone (caso do + Mais).
@@ -2191,10 +2294,13 @@ function vgUiLista() {
       const st = VG_ATUAL ? vgEstadoDe(VG_ATUAL, k) : 'pendente';
       const rot = { pendente: '', embarcou: 'Embarcou', ausente: 'Ausente',
                     desembarcou: 'Desembarcou' }[st];
-      return '<div class="vg-li vg-li-' + st + '">' +
+      const sent = VG_ATUAL ? VG_ATUAL.sentido : 'ida';
+      const tag = vgPresencaTag(p, sent);
+      return '<div class="vg-li vg-li-' + st + (tag && tag.falta ? ' vg-li-nao' : '') + '">' +
         '<div><b>' + esc(p.nome) + '</b>' +
         // o horario previsto e o que o motorista procura na lista
         (p.horario ? '<i class="vg-li-h">' + esc(p.horario) + '</i>' : '') +
+        vgPresencaHtml(p, sent) +
         '<span>' + esc(p.embarque || p.endereco || '') + '</span></div>' +
         (st === 'pendente'
           ? '<button class="vg-btn vg-btn-ok vg-btn-mini" onclick="' +
@@ -2224,7 +2330,7 @@ function vgUiMais() {
   ov.id = 'vgMaisOv';
   ov.className = 'vg-ov';
   ov.innerHTML = '<div class="vg-ov-caixa vg-ov-mais">' +
-    '<div class="vg-ov-tit">Mais</div>' +
+    '<div class="vg-ov-tit">Op\u00e7\u00f5es</div>' +
     vgItemMais('vgMaisIr(&#39;rota&#39;)', 'Minha rota',
       'M4 17h3l2-9 3 12 2.5-7H20') +
     vgItemMais('vgMaisIr(&#39;hoje&#39;)', 'Rotas de hoje',
@@ -2687,6 +2793,13 @@ function verificarIdentidade() {
 
 async function loadFromStorage() {
   showLoading();
+  // Havia rota escolhida na sessao anterior: a proxima tela e a rota,
+  // nao a escolha. Mostrar os seletores aqui faz o motorista achar que
+  // perdeu a selecao e refazer tudo enquanto os dados ainda vem.
+  try {
+    const ses = carregarSessao();
+    if (ses && ses.motorista) vgCarregando(true);
+  } catch (e) {}
   try {
     // Try Firebase first
     const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -2725,6 +2838,7 @@ async function loadFromStorage() {
   }
 
   if (DATA.length === 0) {
+    vgCarregando(false);
     showNoData('Sem rotas cadastradas.', 'O gestor ainda não configurou as rotas.');
     return;
   }
@@ -2736,13 +2850,19 @@ async function loadFromStorage() {
 
   // Restaurar sessão anterior automaticamente
   const sessao = carregarSessao();
+  let restaurou = false;
   if (sessao && sessao.motorista) {
     const sel = document.getElementById('selMotorista');
     sel.value = sessao.motorista;
     if (sel.value === sessao.motorista) {
       loadLinhas(sessao.linhaId); // passa linhaId para restaurar linha também
+      restaurou = true;
     }
   }
+  // Os dados chegaram: sai a espera. Se nao havia o que restaurar, a
+  // tela de escolha volta — que agora e a coisa certa a mostrar.
+  vgCarregando(false);
+  if (!restaurou) vgSeletoresVisiveis(true);
 
   // Restaurar estado da busca rápida (aba, query, selecionados)
   restaurarBuscaSessao();
@@ -3483,9 +3603,11 @@ async function commGetDb() {
 // (config.empresa.operacaoNome) e monta o topo igual ao dele.
 // Sem rede, fica o nome da casca — melhor que topo vazio.
 async function vgIdentidade() {
+  // C vive dentro do IIFE do topo; aqui fora e preciso ir na origem.
+  const CFG = window.CLIENTE_CONFIG || {};
   const amb = document.getElementById('headerAmb');
   const sub = document.getElementById('headerSub');
-  if (amb && C.ambienteTeste) amb.style.display = '';
+  if (amb && CFG.ambienteTeste) amb.style.display = '';
   let nome = '', transportadora = '';
   try {
     const db = await commGetDb();
@@ -3504,7 +3626,7 @@ async function vgIdentidade() {
   const partes = [];
   if (transportadora) partes.push(transportadora);
   if (nome) partes.push('Atendendo ' + nome);
-  sub.textContent = partes.length ? partes.join(' \u00b7 ') : (C.marca || 'Rota do Dia');
+  sub.textContent = partes.length ? partes.join(' \u00b7 ') : (CFG.marca || 'Rota do Dia');
 }
 
 async function commCarregarTurnos() {
