@@ -572,7 +572,6 @@ body {
 
   // Estrutura da tela (marca do cliente injetada)
   try { vgTema(); vgFilaCarregar(); vgOcCarregar(); vgAvisosVistosCarregar(); } catch (e) {}
-  try { vgIdentidade(); } catch (e) {}
   window.addEventListener('online', () => {
     VG_ONLINE = true; vgPintarSync(); vgFilaEnviar(); vgOcEnviar();
   });
@@ -733,6 +732,9 @@ body {
 </div>
 
 `.split('__MARCA_UPPER__').join(C.marcaUpper || C.marca.toUpperCase());
+
+  // Só agora os elementos do topo existem no DOM.
+  try { vgIdentidade(); } catch (e) {}
 })();
 
 // ================= CODIGO DO APP (escopo global) =================
@@ -1629,17 +1631,18 @@ function vgPreparar(rota) {
     .slice()
     .sort((a, b) => (a.horario || '99:99').localeCompare(b.horario || '99:99'));
 
-  // ja existe viagem em andamento guardada localmente?
-  const guardada = vgRecuperar(rota.id, hoje);
-  if (guardada) {
-    VG_ATUAL = guardada;
-    VG_ORDEM = vgOrdemDoSentido(naEntrada, guardada.sentido);
-    vgPintar(); vgPintarSync(); return;
-  }
+  // Para CADA sentido: o que ja foi comecado hoje, ou uma viagem nova.
+  // Assim a entrada em andamento nao esconde a saida, e a saida nao
+  // apaga a entrada.
+  const monta = (sentido) =>
+    vgRecuperar(rota.id, hoje, sentido) || vgCriar(rota, hoje, sentido);
+  const ida = monta('ida');
+  const volta = monta('volta');
 
-  const ida = vgCriar(rota, hoje, 'ida');
-  const volta = vgCriar(rota, hoje, 'volta');
-  VG_ATUAL = vgProximaViagem([ida, volta].filter(Boolean));
+  // vgProximaViagem prioriza a que estiver em curso; entre programadas,
+  // escolhe a mais proxima do relogio. Encerrada nao concorre.
+  const candidatas = [ida, volta].filter(v => v && v.estado !== 'encerrada');
+  VG_ATUAL = vgProximaViagem(candidatas);
   VG_ORDEM = vgOrdemDoSentido(naEntrada, VG_ATUAL && VG_ATUAL.sentido);
   vgPintar();
   vgPintarSync();
@@ -1649,13 +1652,30 @@ function vgPreparar(rota) {
 
 // A viagem em curso sobrevive a recarregar a pagina: sem isso, fechar o
 // app no meio da rota perderia tudo o que ja foi marcado.
-function vgGuardar(v) {
-  try { localStorage.setItem(VG_FILA_KEY + '_atual', JSON.stringify(v)); } catch (e) {}
+// Uma chave por rota, dia e SENTIDO. Antes havia uma so: entrar na volta
+// apagava a entrada do dia.
+function vgChaveGuardada(rotaId, dataIso, sentido) {
+  return VG_FILA_KEY + '_atual_' + rotaId + '_' + dataIso + '_' +
+         (sentido === 'volta' ? 'volta' : 'ida');
 }
-function vgRecuperar(rotaId, dataIso) {
+
+function vgGuardar(v) {
+  if (!v) return;
   try {
-    const v = JSON.parse(localStorage.getItem(VG_FILA_KEY + '_atual') || 'null');
-    if (v && v.rotaId === rotaId && v.data === dataIso && v.estado !== 'encerrada') return v;
+    localStorage.setItem(vgChaveGuardada(v.rotaId, v.data, v.sentido), JSON.stringify(v));
+  } catch (e) {}
+}
+function vgRecuperar(rotaId, dataIso, sentido) {
+  try {
+    const v = JSON.parse(localStorage.getItem(vgChaveGuardada(rotaId, dataIso, sentido)) || 'null');
+    if (v && v.rotaId === rotaId && v.data === dataIso) return v;
+  } catch (e) {}
+  // Chave antiga (uma so por rota/dia): so vale se for do mesmo sentido.
+  // Sem isto, quem estivesse no meio de uma viagem a perderia ao atualizar.
+  try {
+    const antigo = JSON.parse(localStorage.getItem(VG_FILA_KEY + '_atual') || 'null');
+    if (antigo && antigo.rotaId === rotaId && antigo.data === dataIso &&
+        (antigo.sentido || 'ida') === (sentido === 'volta' ? 'volta' : 'ida')) return antigo;
   } catch (e) {}
   return null;
 }
@@ -3466,17 +3486,25 @@ async function vgIdentidade() {
   const amb = document.getElementById('headerAmb');
   const sub = document.getElementById('headerSub');
   if (amb && C.ambienteTeste) amb.style.display = '';
-  let nome = '';
+  let nome = '', transportadora = '';
   try {
     const db = await commGetDb();
     const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const snap = await getDoc(doc(db, CLIENTE_ID, 'config'));
     if (snap.exists()) {
       const c = snap.data();
-      nome = (c.empresa && c.empresa.operacaoNome) || c.operacaoNome || '';
+      const e = c.empresa || {};
+      nome = e.operacaoNome || c.operacaoNome || '';
+      transportadora = e.nome || c.nome || '';
     }
   } catch (e) { /* sem rede: cai no nome da casca */ }
-  if (sub) sub.textContent = nome ? ('Atendendo ' + nome) : (C.marca || 'Rota do Dia');
+  if (!sub) return;
+  // O gestor guarda os dois: quem opera e quem e atendido. O motorista
+  // precisa dos dois para saber onde esta quando cobre outra operacao.
+  const partes = [];
+  if (transportadora) partes.push(transportadora);
+  if (nome) partes.push('Atendendo ' + nome);
+  sub.textContent = partes.length ? partes.join(' \u00b7 ') : (C.marca || 'Rota do Dia');
 }
 
 async function commCarregarTurnos() {
