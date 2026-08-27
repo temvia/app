@@ -571,8 +571,10 @@ body {
 ` + '</style>');
 
   // Estrutura da tela (marca do cliente injetada)
-  try { vgTema(); vgFilaCarregar(); vgAvisosVistosCarregar(); } catch (e) {}
-  window.addEventListener('online', () => { VG_ONLINE = true; vgPintarSync(); vgFilaEnviar(); });
+  try { vgTema(); vgFilaCarregar(); vgOcCarregar(); vgAvisosVistosCarregar(); } catch (e) {}
+  window.addEventListener('online', () => {
+    VG_ONLINE = true; vgPintarSync(); vgFilaEnviar(); vgOcEnviar();
+  });
   window.addEventListener('offline', () => { VG_ONLINE = false; vgPintarSync(); });
   document.body.innerHTML = `
 
@@ -1194,6 +1196,17 @@ const VG_EV_VIAGEM = ['partida', 'chegada', 'desembarque_coletivo', 'fim'];
 // Eventos do VIAJANTE
 const VG_EV_PESSOA = ['embarque', 'desembarque', 'ausencia'];
 
+// Tipos fechados, nao texto livre: o gestor precisa CONTAR quantas vezes
+// o transito atrasou a linha, e isso nao sai de campo aberto.
+const VG_TIPOS_OCORRENCIA = [
+  { id: 'transito',  rotulo: 'Tr\u00e2nsito / via bloqueada' },
+  { id: 'veiculo',   rotulo: 'Problema no ve\u00edculo' },
+  { id: 'acesso',    rotulo: 'Acesso ao ponto ou \u00e0 portaria' },
+  { id: 'passageiro',rotulo: 'Passageiro' },
+  { id: 'atraso',    rotulo: 'Atraso' },
+  { id: 'outro',     rotulo: 'Outro' }
+];
+
 const VG_MOTIVOS_AUSENCIA = [
   { id: 'nao_estava', rotulo: 'Não estava no ponto' },
   { id: 'avisou', rotulo: 'Avisou que não iria' },
@@ -1436,18 +1449,36 @@ function vgFilaPor(viagem) {
   vgPintarSync();
   vgFilaEnviar();
 }
+// Uma so remessa por vez: duas chamadas simultaneas (evento novo +
+// evento 'online') gravariam o mesmo snapshot duas vezes.
+let VG_FILA_ENVIANDO = false;
+
 async function vgFilaEnviar() {
-  if (!VG_FILA.length || !VG_ONLINE) return;
+  if (!VG_FILA.length || !VG_ONLINE || VG_FILA_ENVIANDO) return;
+  VG_FILA_ENVIANDO = true;
   try {
+    // commGetDb e como o resto deste arquivo abre o Firestore. Antes aqui
+    // havia um 'db' solto, que nao existe em lugar nenhum.
+    const db = await commGetDb();
     if (!db) return;
     const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    const lote = VG_FILA.splice(0, VG_FILA.length);
-    vgFilaGravar(); vgPintarSync();
+
+    // A fila NAO e esvaziada antes de gravar. Se a gravacao falhar, os
+    // registros continuam aqui e vao na proxima tentativa.
+    const lote = VG_FILA.slice();
     const ultimo = {};
     lote.forEach(x => { ultimo[x.viagem] = x.snapshot; });
+
     for (const id of Object.keys(ultimo)) {
       await setDoc(doc(db, CLIENTE_ID, 'viagem_' + id), ultimo[id], { merge: true });
     }
+
+    // Gravou: agora sim sai da fila — e so o que estava neste lote, para
+    // nao levar junto o que o motorista marcou durante o envio.
+    VG_FILA = VG_FILA.slice(lote.length);
+    vgFilaGravar();
+    vgPintarSync();
+
     // O passageiro le a lista do dia: sem isto ele teria de adivinhar o id
     // da viagem. So os campos que ele precisa — nem tudo da viagem interessa
     // a quem espera no ponto.
@@ -1471,9 +1502,95 @@ async function vgFilaEnviar() {
       await setDoc(ref, { lista: lista, updatedAt: new Date().toISOString() }, { merge: true });
     } catch (e) { console.warn('[viagem] lista do dia:', e && e.message); }
   } catch (e) {
+    // Falhou: a fila continua cheia e a tela continua dizendo quantos
+    // registros faltam. Melhor o motorista ver o numero parado do que o
+    // sistema perder o dado em silencio.
     console.warn('[viagem] fila:', e && e.message);
+  } finally {
+    VG_FILA_ENVIANDO = false;
   }
   vgPintarSync();
+}
+
+// ==================================================================
+// OCORRENCIAS — fila propria
+// ------------------------------------------------------------------
+// Fila separada da viagem de proposito: a fila da viagem manda o
+// snapshot inteiro e e a base do relatorio; a ocorrencia e um registro
+// avulso que o gestor le em outro lugar. Misturar as duas obrigaria a
+// mexer no envio da viagem, que acabou de ser consertado.
+//
+// A gravacao usa arrayUnion: varios motoristas registram ao mesmo tempo
+// e o Firestore junta sem que um apague o outro. Ler-alterar-gravar,
+// como fazem os avisos, perderia registro em concorrencia.
+// ==================================================================
+const VG_OC_KEY = (typeof C !== 'undefined' && C.storageKey ? C.storageKey : 'temvia') + '_fila_ocorrencia';
+let VG_OC_FILA = [];
+let VG_OC_ENVIANDO = false;
+
+function vgOcCarregar() {
+  try { VG_OC_FILA = JSON.parse(localStorage.getItem(VG_OC_KEY) || '[]'); }
+  catch (e) { VG_OC_FILA = []; }
+}
+function vgOcGravar() {
+  try { localStorage.setItem(VG_OC_KEY, JSON.stringify(VG_OC_FILA)); } catch (e) {}
+}
+
+// A ocorrencia nasce presa a viagem: sem linha, turno e horario o gestor
+// recebe um relato solto que nao da para cruzar com nada.
+function vgOcMontar(tipo, texto) {
+  const v = VG_ATUAL;
+  const agora = new Date();
+  return {
+    id: 'OC-' + agora.getTime().toString(36) + Math.random().toString(36).slice(2, 5),
+    tipo: tipo,
+    texto: String(texto || '').slice(0, 500),
+    viagem: v ? v.id : '',
+    linha: v ? v.linha : (window._commLinha || ''),
+    turno: v ? v.turno : (window._commTurno || ''),
+    sentido: v ? v.sentido : '',
+    data: v ? v.data : agora.toISOString().slice(0, 10),
+    hora: vgAgora(),
+    motorista: (v && v.motorista) || (document.getElementById('selMotorista') || {}).value || '',
+    status: 'aberta',
+    em: agora.toISOString()
+  };
+}
+
+function vgOcRegistrar(tipo, texto) {
+  const oc = vgOcMontar(tipo, texto);
+  VG_OC_FILA.push(oc);
+  vgOcGravar();
+  // Tambem entra na trilha da viagem: o relatorio previsto x realizado
+  // vai precisar dela na linha do tempo, junto dos embarques.
+  if (VG_ATUAL) {
+    vgRegistrar(VG_ATUAL, 'ocorrencia', { ocId: oc.id, ocTipo: tipo });
+    vgFilaPor(VG_ATUAL);
+  }
+  vgOcEnviar();
+  return oc;
+}
+
+async function vgOcEnviar() {
+  if (!VG_OC_FILA.length || !VG_ONLINE || VG_OC_ENVIANDO) return;
+  VG_OC_ENVIANDO = true;
+  try {
+    const db = await commGetDb();
+    if (!db) return;
+    const { doc, setDoc, arrayUnion } =
+      await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const lote = VG_OC_FILA.slice();
+    await setDoc(doc(db, CLIENTE_ID, 'ocorrencias'),
+      { lista: arrayUnion.apply(null, lote), updatedAt: new Date().toISOString() },
+      { merge: true });
+    // So sai da fila o que o Firestore aceitou.
+    VG_OC_FILA = VG_OC_FILA.slice(lote.length);
+    vgOcGravar();
+  } catch (e) {
+    console.warn('[ocorrencia] fila:', e && e.message);
+  } finally {
+    VG_OC_ENVIANDO = false;
+  }
 }
 
 // ==================================================================
@@ -1583,7 +1700,7 @@ html[data-vg-tema="claro"]{--vgbg:#fbfaf7;--vgcard:#fff;--vgtxt:#2C2C2A;--vgmut:
 .vg-st{font-size:0.7188rem;color:var(--vgmut);font-style:normal}
 .vg-li-ausente .vg-st{color:#F09595}
 .vg-li-embarcou .vg-st,.vg-li-desembarcou .vg-st{color:#1D9E75}
-.vg-btn-sec{width:100%;margin-top:8px;background:transparent;border:1px solid var(--vgbrd);color:var(--vgtxt);font-size:0.8125rem}
+.vg-btn-ouro{width:100%;margin-bottom:8px;background:#FBAE17;border:1px solid #FBAE17;color:#14161a;font-weight:600;font-size:0.9375rem;min-height:48px}
 .vg-btn-sel{border-color:#EF9F27;color:#EF9F27}
 .vg-depois{background:var(--vgcard);border:1px solid var(--vgbrd);border-radius:12px;padding:11px 13px;margin-bottom:10px}
 .vg-dep-tit{font-size:0.625rem;letter-spacing:.09em;color:var(--vgmut);margin-bottom:7px}
@@ -1601,6 +1718,13 @@ html[data-vg-tema="claro"]{--vgbg:#fbfaf7;--vgcard:#fff;--vgtxt:#2C2C2A;--vgmut:
 .vg-aviso-txt{font-size:0.8438rem;color:var(--vgtxt);line-height:1.5;white-space:pre-wrap}
 .vg-aviso-link{display:inline-block;margin-top:6px;font-size:0.75rem;color:#EF9F27;text-decoration:none}
 .vg-vazio{font-size:0.8125rem;color:var(--vgmut);text-align:center;padding:26px 8px}
+.vg-oc-lbl{font-size:0.6875rem;letter-spacing:.06em;color:var(--vgmut);margin-bottom:7px}
+.vg-oc-txt{width:100%;box-sizing:border-box;background:var(--vgcard);border:1px solid var(--vgbrd);border-radius:10px;padding:10px 12px;color:var(--vgtxt);font-size:0.875rem;font-family:inherit;resize:vertical;margin-bottom:10px}
+.vg-oc-pend{font-size:0.6875rem;color:#EF9F27;margin-bottom:8px}
+.vg-btn-grande[disabled]{opacity:.45}
+.vg-cobertura{background:rgba(239,159,39,0.10);border:1px solid rgba(239,159,39,0.45);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:0.75rem;line-height:1.5;color:var(--vgtxt)}
+.vg-cobertura strong{color:#C97B0A;font-weight:600}
+html[data-vg-tema="escuro"] .vg-cobertura strong{color:#EF9F27}
 `;
 
 // O estilo entra na primeira pintura: aqui o VG_CSS ja tem valor.
@@ -1702,9 +1826,9 @@ function vgPintarAntes(el, v) {
       '</div>' +
       '<div class="vg-linha-info">' + esc(v.motorista || 'Motorista a definir') +
         (v.veiculo ? ' · ' + esc(v.veiculo) : '') + '</div>' +
-      '<button class="vg-btn vg-btn-grande" onclick="vgUiIniciar()">Iniciar rota</button>' +
-      '<button class="vg-btn vg-btn-sec" onclick="vgUiLocalizacao()">' +
+      '<button class="vg-btn vg-btn-ouro" onclick="vgUiLocalizacao()">' +
         'Compartilhar localização da van</button>' +
+      '<button class="vg-btn vg-btn-grande" onclick="vgUiIniciar()">Iniciar rota</button>' +
     '</div>';
 }
 
@@ -1777,6 +1901,7 @@ function vgPintarACaminho(el, v) {
         (r.ausentes ? ' · ' + r.ausentes + ' ausente' + (r.ausentes > 1 ? 's' : '') : '') + '</div>' +
       '<div class="vg-local">A caminho da ' + vgDestinoNome(v) +
         (v.chegadaProgramada ? ' · chegada prevista ' + esc(v.chegadaProgramada) : '') + '</div>' +
+      '<button class="vg-btn vg-btn-nav" onclick="vgUiNavegarDestino()">Navegar</button>' +
       '<button class="vg-btn vg-btn-grande" onclick="vgUiChegou()">Cheguei ' +
         (v.sentido === 'volta' ? 'à garagem' : 'à empresa') + '</button>' +
     '</div>' + vgDesfazerHtml() + vgAtalhos();
@@ -1899,6 +2024,23 @@ function vgUiNavegar() {
     : encodeURIComponent((p.embarque || p.endereco || '') + ', ' + (p.cidade || 'Sorocaba') + ' SP');
   window.open('https://www.google.com/maps/dir/?api=1&destination=' + c + '&travelmode=driving', '_blank');
 }
+// Navegar para o fim do trajeto: empresa na ida, garagem na volta.
+// Sem coordenada nao adianta abrir o Maps em branco — melhor dizer.
+function vgUiNavegarDestino() {
+  const v = VG_ATUAL;
+  const volta = v && v.sentido === 'volta';
+  const c = volta
+    ? (typeof GARAGEM_COORDS !== 'undefined' ? GARAGEM_COORDS : null)
+    : (typeof EMPRESA_COORDS !== 'undefined' ? EMPRESA_COORDS : null);
+  if (!c || c.lat == null || c.lng == null) {
+    alert('Sem coordenada ' + (volta ? 'da garagem' : 'da empresa') +
+          ' no cadastro. Avise o gestor.');
+    return;
+  }
+  window.open('https://www.google.com/maps/dir/?api=1&destination=' +
+    c.lat + ',' + c.lng + '&travelmode=driving', '_blank');
+}
+
 function vgUiEmbarcou(id) {
   const p = id ? VG_ORDEM.find(x => (x.id || x.nome) === id) : vgProximo(VG_ATUAL, VG_ORDEM);
   if (!p) return;
@@ -2161,7 +2303,58 @@ function vgFecharAvisos() {
 
 function vgUiOcorrencia() {
   vgFecharMais();
-  alert('Ocorr\u00eancias: em breve.');
+  vgFecharOc();
+  const pend = VG_OC_FILA.length;
+  const ov = document.createElement('div');
+  ov.id = 'vgOcOv';
+  ov.className = 'vg-ov';
+  ov.innerHTML = '<div class="vg-ov-caixa vg-ov-lista">' +
+    '<div class="vg-ov-tit">Registrar ocorr\u00eancia</div>' +
+    '<div class="vg-oc-lbl">O que aconteceu?</div>' +
+    '<div id="vgOcTipos">' +
+      VG_TIPOS_OCORRENCIA.map(o =>
+        '<button class="vg-btn vg-btn-motivo" data-oc="' + o.id + '" ' +
+        'onclick="vgUiOcTipo(&#39;' + o.id + '&#39;)">' + o.rotulo + '</button>').join('') +
+    '</div>' +
+    '<div class="vg-oc-lbl" style="margin-top:12px">Detalhe (opcional)</div>' +
+    '<textarea id="vgOcTexto" class="vg-oc-txt" rows="3" maxlength="500" ' +
+      'placeholder="Ex.: Av. Ipanema interditada, desvio pela Marginal."></textarea>' +
+    (pend ? '<div class="vg-oc-pend">' + pend +
+            (pend > 1 ? ' ocorr\u00eancias aguardando envio' : ' ocorr\u00eancia aguardando envio') +
+            '</div>' : '') +
+    '<button class="vg-btn vg-btn-grande" id="vgOcOk" onclick="vgUiOcSalvar()" disabled>' +
+      'Registrar</button>' +
+    '<button class="vg-btn vg-btn-cancel" onclick="vgFecharOc()">Cancelar</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+}
+
+let VG_OC_TIPO = '';
+
+function vgUiOcTipo(id) {
+  VG_OC_TIPO = id;
+  const cx = document.getElementById('vgOcTipos');
+  if (cx) [...cx.querySelectorAll('button')].forEach(b =>
+    b.classList.toggle('vg-btn-sel', b.getAttribute('data-oc') === id));
+  const ok = document.getElementById('vgOcOk');
+  if (ok) ok.disabled = false;
+}
+
+function vgUiOcSalvar() {
+  if (!VG_OC_TIPO) return;
+  const el = document.getElementById('vgOcTexto');
+  const oc = vgOcRegistrar(VG_OC_TIPO, el ? el.value : '');
+  VG_OC_TIPO = '';
+  vgFecharOc();
+  const rot = (VG_TIPOS_OCORRENCIA.find(x => x.id === oc.tipo) || {}).rotulo || 'Ocorr\u00eancia';
+  alert('Registrado: ' + rot + ' \u00e0s ' + oc.hora + '.');
+  vgPintar();
+}
+
+function vgFecharOc() {
+  const ov = document.getElementById('vgOcOv');
+  if (ov) ov.remove();
+  VG_OC_TIPO = '';
 }
 
 // ==================================================================
@@ -2880,8 +3073,9 @@ async function loadLinhas(restoreLinhaId) {
   const cobertura = (document.getElementById('selCoberturaRota') || {}).value || '';
   const nomeVer = cobertura || nome;
   if (avisoDiv && cobertura && cobertura !== nome) {
-    avisoDiv.innerHTML = '<div style="background:rgba(245,158,11,0.10);border:1px solid rgba(245,158,11,0.4);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px">'+
-      '\uD83D\uDD01 <strong>Modo cobertura:</strong> voc\u00ea (' + esc(nome) + ') est\u00e1 vendo as linhas de <strong>' + esc(cobertura) + '</strong>.</div>';
+    avisoDiv.innerHTML = '<div class="vg-cobertura">' +
+      '<strong>Modo cobertura:</strong> voc\u00ea (' + esc(nome) + ') est\u00e1 vendo as linhas de <strong>' +
+      esc(cobertura) + '</strong>.</div>';
   }
 
   // Salvar motorista na sessão
