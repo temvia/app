@@ -683,6 +683,7 @@ body {
       <div id="vgCarregando" class="vg-carregando" style="display:none">
         <div class="vg-spin"></div>
         <div>Buscando sua rota\u2026</div>
+        <div class="vg-carregando-quem"></div>
       </div>
 
       <div id="vgSeletores" class="vg-seletores">
@@ -1824,6 +1825,11 @@ html[data-vg-tema="claro"] .vg-cab{color:#2C2C2A}
 .vg-pres{margin-left:auto;font-size:0.625rem;font-weight:600;letter-spacing:.02em;color:#1D9E75;background:rgba(29,158,117,0.12);border-radius:20px;padding:2px 8px;white-space:nowrap}
 .vg-pres-nao{color:#D9534F;background:rgba(217,83,79,0.13)}
 .vg-dep-nao span:not(.vg-pres){opacity:.6;text-decoration:line-through}
+.vg-li-fim{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.vg-corrigir{background:none;border:none;color:var(--vgmut);font-family:inherit;font-size:0.6875rem;text-decoration:underline;padding:2px 0;cursor:pointer}
+.vg-conf-tit{font-size:1.375rem;font-weight:700;color:var(--vgtxt);text-align:center;line-height:1.2}
+.vg-conf-sub{font-size:0.875rem;color:var(--vgmut);text-align:center;margin:6px 0 16px}
+.vg-carregando-quem{font-size:0.75rem;color:var(--vgtxt);opacity:.8}
 .vg-carregando{display:flex;flex-direction:column;align-items:center;gap:12px;padding:44px 16px;color:var(--vgmut);font-size:0.8125rem}
 .vg-spin{width:26px;height:26px;border:2.5px solid var(--vgbrd);border-top-color:#EF9F27;border-radius:50%;animation:vgspin .8s linear infinite}
 @keyframes vgspin{to{transform:rotate(360deg)}}
@@ -1866,11 +1872,22 @@ function vgPorEstilo() {
 // Enquanto os dados nao chegam, a tela diz que esta buscando em vez de
 // mostrar os seletores vazios. So vale se havia selecao gravada: sem
 // ela, a escolha e mesmo a primeira coisa a fazer.
-function vgCarregando(ligar) {
+function vgCarregando(ligar, quem) {
   const box = document.getElementById('vgCarregando');
   const sel = document.getElementById('vgSeletores');
-  if (box) box.style.display = ligar ? '' : 'none';
+  const rc = document.getElementById('rotaContent');
+  const abas = document.getElementById('abaRotaBtn');
+  if (box) {
+    box.style.display = ligar ? '' : 'none';
+    const q = box.querySelector('.vg-carregando-quem');
+    if (q) q.textContent = ligar && quem ? quem : '';
+  }
   if (sel && ligar) sel.style.display = 'none';
+  // O showLoading() ja escreveu as instrucoes de primeiro uso aqui.
+  // Sem esconder, e essa a tela que fica no ar enquanto os dados vem.
+  if (rc && ligar) rc.style.display = 'none';
+  const barra = abas ? abas.parentElement : null;
+  if (barra) barra.style.display = ligar ? 'none' : '';
 }
 
 function vgSeletoresVisiveis(mostrar) {
@@ -2229,7 +2246,13 @@ function vgUiNavegarDestino() {
     c.lat + ',' + c.lng + '&travelmode=driving', '_blank');
 }
 
+// Pergunta antes de marcar. O nome vai na pergunta de proposito: o erro
+// que acontece na rua e marcar a pessoa errada, nao a acao errada.
 function vgUiEmbarcou(id) {
+  vgConfirmarParada(id, 'embarque');
+}
+
+function vgUiEmbarcouOk(id) {
   const p = id ? VG_ORDEM.find(x => (x.id || x.nome) === id) : vgProximo(VG_ATUAL, VG_ORDEM);
   if (!p) return;
   const k = p.id || p.nome;
@@ -2238,12 +2261,49 @@ function vgUiEmbarcou(id) {
   vgFilaPor(VG_ATUAL); vgPintar();
 }
 function vgUiDesembarcou(id) {
+  vgConfirmarParada(id, 'desembarque');
+}
+
+function vgUiDesembarcouOk(id) {
   const p = id ? VG_ORDEM.find(x => (x.id || x.nome) === id) : vgProximo(VG_ATUAL, VG_ORDEM);
   if (!p) return;
   const k = p.id || p.nome;
   vgDesembarcou(VG_ATUAL, k, p.horario || '');
   vgArmarDesfazer(k, p.nome.split(' ')[0] + ' desembarcou');
   vgFilaPor(VG_ATUAL); vgPintar();
+}
+
+// Uma folha para os dois casos. Botao grande e no mesmo lugar, para o
+// segundo toque nao exigir mira.
+function vgConfirmarParada(id, tipo) {
+  const p = id ? VG_ORDEM.find(x => (x.id || x.nome) === id) : vgProximo(VG_ATUAL, VG_ORDEM);
+  if (!p) return;
+  const k = p.id || p.nome;
+  const emb = tipo === 'embarque';
+  vgFecharConfirma();
+  const ov = document.createElement('div');
+  ov.id = 'vgConfOv';
+  ov.className = 'vg-ov';
+  ov.innerHTML = '<div class="vg-ov-caixa">' +
+    '<div class="vg-conf-tit">' + esc(p.nome) + '</div>' +
+    '<div class="vg-conf-sub">' + (emb ? 'entrou na van?' : 'desceu da van?') + '</div>' +
+    '<button class="vg-btn vg-btn-ok vg-btn-grande" onclick="vgConfirmarOk(&#39;' +
+      escAttrM(k) + '&#39;,&#39;' + tipo + '&#39;)">' +
+      (emb ? 'Sim, embarcou' : 'Sim, desembarcou') + '</button>' +
+    '<button class="vg-btn vg-btn-cancel" onclick="vgFecharConfirma()">Cancelar</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+}
+
+function vgConfirmarOk(id, tipo) {
+  vgFecharConfirma();
+  if (tipo === 'embarque') vgUiEmbarcouOk(id);
+  else vgUiDesembarcouOk(id);
+}
+
+function vgFecharConfirma() {
+  const ov = document.getElementById('vgConfOv');
+  if (ov) ov.remove();
 }
 
 // Ausente pede motivo em DOIS toques. Sem isso o relatorio diz que
@@ -2328,12 +2388,28 @@ function vgUiLista() {
           ? '<button class="vg-btn vg-btn-ok vg-btn-mini" onclick="' +
             (volta ? 'vgUiDesembarcou' : 'vgUiEmbarcou') + '(&#39;' + escAttrM(k) + '&#39;);vgFecharLista()">' +
             (volta ? 'Desembarcou' : 'Embarcou') + '</button>'
-          : '<i class="vg-st">' + rot + '</i>') + '</div>';
+          : '<div class="vg-li-fim"><i class="vg-st">' + rot + '</i>' +
+            '<button class="vg-corrigir" onclick="vgUiCorrigir(&#39;' + escAttrM(k) +
+            '&#39;)">Corrigir</button></div>') + '</div>';
     }).join('') +
     '<button class="vg-btn vg-btn-cancel" onclick="vgFecharLista()">Fechar</button>' +
     '</div>';
   document.body.appendChild(ov);
 }
+// Volta o passageiro para pendente. Sem prazo: o erro as vezes so
+// aparece duas paradas depois, e ai o desfazer ja expirou.
+function vgUiCorrigir(id) {
+  const p = VG_ORDEM.find(x => (x.id || x.nome) === id);
+  if (!p) return;
+  if (!confirm('Desfazer a marca\u00e7\u00e3o de ' + p.nome + '?')) return;
+  vgDesfazer(VG_ATUAL, id);
+  if (VG_DESFAZER && VG_DESFAZER.id === id) VG_DESFAZER = null;
+  vgFilaPor(VG_ATUAL);
+  vgFecharLista();
+  vgPintar();
+  vgUiLista();
+}
+
 function vgFecharLista() {
   const ov = document.getElementById('vgListaOv');
   if (ov) ov.remove();
@@ -2820,7 +2896,7 @@ async function loadFromStorage() {
   // perdeu a selecao e refazer tudo enquanto os dados ainda vem.
   try {
     const ses = carregarSessao();
-    if (ses && ses.motorista) vgCarregando(true);
+    if (ses && ses.motorista) vgCarregando(true, ses.motorista);
   } catch (e) {}
   try {
     // Try Firebase first
@@ -2884,6 +2960,8 @@ async function loadFromStorage() {
   // Os dados chegaram: sai a espera. Se nao havia o que restaurar, a
   // tela de escolha volta — que agora e a coisa certa a mostrar.
   vgCarregando(false);
+  const _rc = document.getElementById('rotaContent');
+  if (_rc) _rc.style.display = '';
   if (!restaurou) vgSeletoresVisiveis(true);
 
   // Restaurar estado da busca rápida (aba, query, selecionados)
