@@ -14,7 +14,7 @@ const TV_CSS_HORA = '<style>' +
   'color:#f0c070}' +
   '.hor-nota-off{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.35);color:#f08a8a}' +
   '</style>';
-const HTML_MOTOR = "\n<!-- Banner de notificação in-app -->\n<div id=\"notifBanner\" onclick=\"notifClick()\">\n  <span class=\"nf-ic\" id=\"notifIc\"></span>\n  <div style=\"flex:1;min-width:0\">\n    <div class=\"nf-tt\" id=\"notifTt\">Notificação</div>\n    <div class=\"nf-tx\" id=\"notifTx\"></div>\n  </div>\n  <button class=\"nf-cl\" onclick=\"event.stopPropagation();fecharNotif()\">✕</button>\n</div>\n\n<div id=\"loadingScreen\" class=\"loading\">\n  <div class=\"spin\"></div>\n  <div>Carregando...</div>\n</div>\n\n<div id=\"loginScreen\" class=\"login-wrap hidden\">\n  <div class=\"login-logo\">\n    <div class=\"ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 16V8a1 1 0 0 1 1-1h10v9\"/><path d=\"M13 10h4l3 3.5V16\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/><path d=\"M9 17h6\"/></svg></div>\n    <div class=\"brand\" id=\"brandLogin\"></div>\n    <div class=\"sub\">Transporte · Passageiro</div>\n  </div>\n  <div class=\"login-card\">\n    <h2>Entrar</h2>\n    <p>Digite seu telefone cadastrado para acessar sua linha.</p>\n    <label class=\"field-label\">Telefone</label>\n    <input class=\"input\" id=\"loginTel\" type=\"tel\" placeholder=\"(15) 99999-9999\" inputmode=\"tel\" onkeydown=\"if(event.key==='Enter'){event.preventDefault();fazerLogin();}\">\n    <button class=\"btn\" id=\"loginBtn\" onclick=\"fazerLogin()\">Entrar</button>\n    <div class=\"login-err\" id=\"loginErr\">Telefone não encontrado. Confira com o gestor.</div>\n  </div>\n</div>\n\n<div id=\"appScreen\" class=\"hidden\">\n  <div class=\"marca-bar\"><span class=\"mb-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 16V8a1 1 0 0 1 1-1h10v9\"/><path d=\"M13 10h4l3 3.5V16\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/><path d=\"M9 17h6\"/></svg></span><span class=\"mb-nome\" id=\"brandApp\"></span><span class=\"mb-sub\">Passageiro</span></div>\n  <div class=\"app-header\">\n    <div class=\"ava\" id=\"hAva\">M</div>\n    <div class=\"who\">\n      <div class=\"nm\" id=\"hNome\">—</div>\n      <div class=\"ln\" id=\"hLinha\">—</div>\n    </div>\n    <button class=\"logout\" onclick=\"logout()\" title=\"Sair\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10 5H6a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4\"/><path d=\"M15 8l4 4-4 4\"/><path d=\"M19 12H9\"/></svg></button>\n  </div>\n\n  <div id=\"viewInicio\" class=\"view\">\n    <div class=\"card px-st\" id=\"pxStatusCard\" style=\"display:none\"></div>\n    <div class=\"card\" id=\"rotaExtraCard\" style=\"display:none;border-color:rgba(236,72,153,0.5);background:linear-gradient(135deg,rgba(236,72,153,0.12),rgba(236,72,153,0.03))\">\n      <div class=\"card-lbl\" style=\"color:#ec4899\">Rota extra de hoje</div>\n      <div id=\"rotaExtraConteudo\"></div>\n    </div>\n    <div class=\"card track-card\">\n      <div class=\"card-lbl\">Localização da van</div>\n      <div id=\"trackArea\"><div class=\"track-off\">O motorista ainda não compartilhou a localização hoje.</div></div>\n    </div>\n\n    <div class=\"card\" id=\"horarioDiaCard\" style=\"display:none;border-color:rgba(245,158,11,0.4);background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.03))\">\n      <div class=\"card-lbl\" style=\"color:var(--accent)\">Horário especial de hoje</div>\n      <div id=\"horarioDiaConteudo\"></div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Você vai hoje?</div>\n      <div class=\"vou-wrap\" style=\"flex-wrap:wrap\">\n        <button class=\"vou-btn sim\" id=\"btnVou\" onclick=\"marcarPresenca('ambos')\" style=\"flex:1 1 100%\">Vou (ida e volta)</button>\n        <button class=\"vou-btn ida\" id=\"btnIda\" onclick=\"marcarPresenca('ida')\" style=\"flex:1 1 45%\">Só ida</button>\n        <button class=\"vou-btn volta\" id=\"btnVolta\" onclick=\"marcarPresenca('volta')\" style=\"flex:1 1 45%\">Só volta</button>\n        <button class=\"vou-btn nao\" id=\"btnNaoVou\" onclick=\"marcarPresenca('nao')\" style=\"flex:1 1 100%\">Não vou hoje</button>\n      </div>\n      <div id=\"presencaMsg\" style=\"font-size:0.75rem;color:var(--muted);margin-top:10px;text-align:center\"></div>\n    </div>\n\n    <div class=\"card\" id=\"avaliacaoCard\">\n      <div class=\"card-lbl\">Avalie sua viagem de hoje</div>\n      <div id=\"avaliacaoForm\">\n        <div style=\"display:flex;justify-content:center;gap:8px;margin:8px 0\" id=\"estrelas\">\n          <span class=\"estrela\" data-v=\"1\" onclick=\"selecionarEstrela(1)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"2\" onclick=\"selecionarEstrela(2)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"3\" onclick=\"selecionarEstrela(3)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"4\" onclick=\"selecionarEstrela(4)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"5\" onclick=\"selecionarEstrela(5)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n        </div>\n        <div id=\"avJustificativaWrap\" style=\"display:none;margin-top:8px\">\n          <textarea class=\"input\" id=\"avJustificativa\" rows=\"2\" placeholder=\"Conte o que podemos melhorar...\" style=\"resize:vertical;font-size:0.875rem\"></textarea>\n        </div>\n        <button class=\"btn\" style=\"margin-top:10px\" onclick=\"enviarAvaliacao()\" id=\"btnAvaliar\" disabled>Enviar avaliação</button>\n      </div>\n      <div id=\"avaliacaoFeita\" style=\"display:none;text-align:center;padding:8px\">\n        <div style=\"font-size:0.9375rem;font-weight:700;color:var(--green)\">Obrigado pela avaliação!</div>\n        <div style=\"font-size:0.8125rem;color:var(--muted);margin-top:4px\" id=\"avaliacaoResumo\"></div>\n      </div>\n    </div>\n\n    <div class=\"card\" id=\"feriasCard\">\n      <div class=\"card-lbl\">Férias / afastamento</div>\n      <div id=\"feriasAtiva\" style=\"display:none\">\n        <div style=\"background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px;text-align:center\">\n          <div style=\"font-weight:700;color:var(--accent);font-size:0.9375rem\" id=\"feriasLabel\">—</div>\n          <div style=\"font-size:0.75rem;color:var(--muted);margin-top:4px\">Sua vaga na linha está mantida. Você não embarca neste período.</div>\n        </div>\n        <button class=\"vou-btn\" style=\"margin-top:10px;width:100%\" onclick=\"cancelarFerias()\">Cancelar período</button>\n      </div>\n      <div id=\"feriasForm\">\n        <div style=\"font-size:0.75rem;color:var(--muted);margin-bottom:10px\">Vai se ausentar por um período? Informe as datas e sua vaga fica reservada.</div>\n        <div style=\"display:flex;gap:10px\">\n          <div style=\"flex:1\">\n            <label class=\"field-label\">Início</label>\n            <input class=\"input\" type=\"date\" id=\"feriasInicio\" style=\"font-size:0.875rem;padding:10px\">\n          </div>\n          <div style=\"flex:1\">\n            <label class=\"field-label\">Retorno</label>\n            <input class=\"input\" type=\"date\" id=\"feriasFim\" style=\"font-size:0.875rem;padding:10px\">\n          </div>\n        </div>\n        <button class=\"btn\" onclick=\"salvarFerias()\">Registrar período</button>\n      </div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Seu embarque</div>\n      <div style=\"display:flex;justify-content:space-between;align-items:flex-start;gap:12px\">\n        <div>\n          <div style=\"font-weight:700;font-size:0.9375rem\" id=\"iEmbarque\">—</div>\n          <div style=\"font-size:0.8125rem;color:var(--muted);margin-top:2px\" id=\"iBairro\">—</div>\n        </div>\n        <div style=\"text-align:right\">\n          <div class=\"big\" id=\"iHorario\">—</div>\n          <div style=\"font-size:0.6875rem;color:var(--muted)\">horário</div>\n        </div>\n      </div>\n    </div>\n      <div id=\"iHorarioNota\" class=\"hor-nota\" style=\"display:none\"></div>\n    </div>\n    <div class=\"card\" id=\"timelineCard\" style=\"display:none\">\n      <div class=\"card-lbl\">Viagem de hoje</div>\n      <div id=\"timelineConteudo\"></div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Sua linha hoje</div>\n      <div style=\"display:flex;align-items:center;gap:12px\">\n        <div id=\"iBadge\" style=\"width:44px;height:44px;border-radius:12px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.125rem;font-family:'Barlow'\">—</div>\n        <div style=\"flex:1\">\n          <div style=\"font-weight:700\" id=\"iLinhaTurno\">—</div>\n          <div style=\"font-size:0.8125rem;color:var(--muted)\" id=\"iMotorista\">Motorista: —</div>\n        </div>\n      </div>\n      <a id=\"iMotoWhats\" href=\"#\" target=\"_blank\" style=\"display:none;align-items:center;justify-content:center;gap:8px;margin-top:12px;background:rgba(37,211,102,0.12);color:#25D366;border:1px solid rgba(37,211,102,0.3);border-radius:10px;padding:11px;font-weight:700;font-family:'Barlow';font-size:0.875rem;text-decoration:none\">Falar com o motorista no WhatsApp</a>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Quem vai hoje · Linha <span id=\"qvLinha\">—</span></div>\n      <div id=\"quemVaiResumo\" style=\"display:flex;gap:10px;margin-bottom:12px\"></div>\n      <div id=\"quemVaiListas\"></div>\n    </div>\n  </div>\n\n  <div id=\"viewChat\" class=\"view chat-wrap hidden\">\n    <div class=\"chat-msgs\" id=\"chatMsgs\"></div>\n    <div class=\"chat-input\">\n      <input id=\"chatInput\" placeholder=\"Mensagem para a linha...\" onkeypress=\"if(event.key==='Enter')enviarMsg()\">\n      <button onclick=\"enviarMsg()\" title=\"Enviar\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 12 20 5l-7 15-2.5-6.5L4 12Z\"/></svg></button>\n    </div>\n  </div>\n\n  <div id=\"viewAvisos\" class=\"view hidden\">\n    <div id=\"avisosList\"></div>\n  </div>\n  <div id=\"viewContatos\" class=\"view hidden\">\n    <div class=\"card\">\n      <label class=\"field-label\">Fale com a gente</label>\n      <div style=\"font-size:0.8125rem;color:var(--muted);margin-bottom:14px;line-height:1.5\">Precisa de ajuda ou quer avisar algo? Fale direto pelo WhatsApp.</div>\n      <div id=\"contatosBtns\"></div>\n      <div id=\"contatosVazio\" style=\"display:none;font-size:0.8125rem;color:var(--muted);text-align:center;padding:16px\">Nenhum contato configurado ainda. Fale com o gestor.</div>\n    </div>\n  </div>\n</div>\n\n<div id=\"bottomNav\" class=\"bottom-nav hidden\">\n  <button class=\"bnav active\" id=\"navInicio\" onclick=\"irPara('inicio')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 10.5 12 4l9 6.5\"/><path d=\"M5.5 9.5V20h13V9.5\"/><path d=\"M10 20v-5h4v5\"/></svg></span><span class=\"lb\">Início</span></button>\n  <button class=\"bnav\" id=\"navChat\" onclick=\"irPara('chat')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 12a7 7 0 0 1-7 7H8l-4 3v-4.5A7 7 0 0 1 4 12v-.5A6.5 6.5 0 0 1 10.5 5h3A6.5 6.5 0 0 1 20 11.5Z\"/></svg></span><span class=\"lb\">Chat</span><span class=\"dot hidden\" id=\"dotChat\"></span></button>\n  <button class=\"bnav\" id=\"navAvisos\" onclick=\"irPara('avisos')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 10v4h3l6 4V6l-6 4H4Z\"/><path d=\"M17 9.5a4 4 0 0 1 0 5\"/><path d=\"M19.5 7a7 7 0 0 1 0 10\"/></svg></span><span class=\"lb\">Avisos</span><span class=\"dot hidden\" id=\"dotAvisos\"></span></button>\n  <button class=\"bnav\" id=\"navContatos\" onclick=\"irPara('contatos')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 4h3.5l1.8 4-2.2 1.6a11 11 0 0 0 5.3 5.3L15 12.7l4 1.8V18a2 2 0 0 1-2.2 2A15 15 0 0 1 4 6.2 2 2 0 0 1 5 4Z\"/></svg></span><span class=\"lb\">Contatos</span></button>\n</div>\n\n";
+const HTML_MOTOR = "\n<!-- Banner de notificação in-app -->\n<div id=\"notifBanner\" onclick=\"notifClick()\">\n  <span class=\"nf-ic\" id=\"notifIc\"></span>\n  <div style=\"flex:1;min-width:0\">\n    <div class=\"nf-tt\" id=\"notifTt\">Notificação</div>\n    <div class=\"nf-tx\" id=\"notifTx\"></div>\n  </div>\n  <button class=\"nf-cl\" onclick=\"event.stopPropagation();fecharNotif()\">✕</button>\n</div>\n\n<div id=\"loadingScreen\" class=\"loading\">\n  <div class=\"spin\"></div>\n  <div>Carregando...</div>\n</div>\n\n<div id=\"loginScreen\" class=\"login-wrap hidden\">\n  <div class=\"login-logo\">\n    <div class=\"ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 16V8a1 1 0 0 1 1-1h10v9\"/><path d=\"M13 10h4l3 3.5V16\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/><path d=\"M9 17h6\"/></svg></div>\n    <div class=\"brand\" id=\"brandLogin\"></div>\n    <div class=\"sub\">Transporte · Passageiro</div>\n  </div>\n  <div class=\"login-card\">\n    <h2>Entrar</h2>\n    <p>Digite seu telefone cadastrado para acessar sua linha.</p>\n    <label class=\"field-label\">Telefone</label>\n    <input class=\"input\" id=\"loginTel\" type=\"tel\" placeholder=\"(15) 99999-9999\" inputmode=\"tel\" onkeydown=\"if(event.key==='Enter'){event.preventDefault();fazerLogin();}\">\n    <button class=\"btn\" id=\"loginBtn\" onclick=\"fazerLogin()\">Continuar</button>\n    <div class=\"login-err\" id=\"loginErr\">Telefone não encontrado. Confira com o gestor.</div>\n  </div>\n\n  <div class=\"login-card\" id=\"pxPasso2\" style=\"display:none\">\n    <h2 id=\"pxPasso2Tit\">Primeiro acesso</h2>\n    <p id=\"pxPasso2Sub\">Para confirmar que é você, informe sua matrícula.</p>\n    <label class=\"field-label\">Matrícula</label>\n    <input class=\"input\" id=\"pxMatricula\" type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" onkeydown=\"if(event.key==='Enter'){event.preventDefault();pxConferirMatricula();}\">\n    <button class=\"btn\" onclick=\"pxConferirMatricula()\">Continuar</button>\n    <button class=\"vou-btn\" style=\"width:100%;margin-top:8px\" onclick=\"pxVoltarPasso1()\">Voltar</button>\n    <div class=\"login-err\" id=\"pxErr2\"></div>\n  </div>\n\n  <div class=\"login-card\" id=\"pxPasso3\" style=\"display:none\">\n    <h2 id=\"pxPasso3Tit\">Seu PIN</h2>\n    <p id=\"pxPasso3Sub\">Digite seu PIN de 6 dígitos.</p>\n    <label class=\"field-label\" id=\"pxP3Lbl\">PIN</label>\n    <input class=\"input\" id=\"pxPin\" type=\"password\" autocomplete=\"off\" inputmode=\"numeric\" maxlength=\"6\" onkeydown=\"if(event.key==='Enter'){event.preventDefault();pxEnviarPin();}\">\n    <div id=\"pxPin2Wrap\" style=\"display:none\">\n      <label class=\"field-label\">Repita o PIN</label>\n    <input class=\"input\" id=\"pxPin2\" type=\"password\" autocomplete=\"off\" inputmode=\"numeric\" maxlength=\"6\" onkeydown=\"if(event.key==='Enter'){event.preventDefault();pxEnviarPin();}\">\n    </div>\n    <button class=\"btn\" id=\"pxBtnPin\" onclick=\"pxEnviarPin()\">Entrar</button>\n    <button class=\"vou-btn\" style=\"width:100%;margin-top:8px\" onclick=\"pxVoltarPasso1()\">Voltar</button>\n    <div id=\"pxEsqueci\" style=\"font-size:0.75rem;color:var(--muted);text-align:center;margin-top:12px;line-height:1.5\">Esqueceu o PIN? Peça ao gestor para gerar um provisório.</div>\n    <div class=\"login-err\" id=\"pxErr3\"></div>\n  </div>\n</div>\n\n<div id=\"appScreen\" class=\"hidden\">\n  <div class=\"marca-bar\"><span class=\"mb-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 16V8a1 1 0 0 1 1-1h10v9\"/><path d=\"M13 10h4l3 3.5V16\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/><path d=\"M9 17h6\"/></svg></span><span class=\"mb-nome\" id=\"brandApp\"></span><span class=\"mb-sub\">Passageiro</span></div>\n  <div class=\"app-header\">\n    <div class=\"ava\" id=\"hAva\">M</div>\n    <div class=\"who\">\n      <div class=\"nm\" id=\"hNome\">—</div>\n      <div class=\"ln\" id=\"hLinha\">—</div>\n    </div>\n    <button class=\"logout\" onclick=\"logout()\" title=\"Sair\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10 5H6a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4\"/><path d=\"M15 8l4 4-4 4\"/><path d=\"M19 12H9\"/></svg></button>\n  </div>\n\n  <div id=\"viewInicio\" class=\"view\">\n    <div class=\"card px-st\" id=\"pxStatusCard\" style=\"display:none\"></div>\n    <div class=\"card\" id=\"rotaExtraCard\" style=\"display:none;border-color:rgba(236,72,153,0.5);background:linear-gradient(135deg,rgba(236,72,153,0.12),rgba(236,72,153,0.03))\">\n      <div class=\"card-lbl\" style=\"color:#ec4899\">Rota extra de hoje</div>\n      <div id=\"rotaExtraConteudo\"></div>\n    </div>\n    <div class=\"card track-card\">\n      <div class=\"card-lbl\">Localização da van</div>\n      <div id=\"trackArea\"><div class=\"track-off\">O motorista ainda não compartilhou a localização hoje.</div></div>\n    </div>\n\n    <div class=\"card\" id=\"horarioDiaCard\" style=\"display:none;border-color:rgba(245,158,11,0.4);background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.03))\">\n      <div class=\"card-lbl\" style=\"color:var(--accent)\">Horário especial de hoje</div>\n      <div id=\"horarioDiaConteudo\"></div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Você vai hoje?</div>\n      <div class=\"vou-wrap\" style=\"flex-wrap:wrap\">\n        <button class=\"vou-btn sim\" id=\"btnVou\" onclick=\"marcarPresenca('ambos')\" style=\"flex:1 1 100%\">Vou (ida e volta)</button>\n        <button class=\"vou-btn ida\" id=\"btnIda\" onclick=\"marcarPresenca('ida')\" style=\"flex:1 1 45%\">Só ida</button>\n        <button class=\"vou-btn volta\" id=\"btnVolta\" onclick=\"marcarPresenca('volta')\" style=\"flex:1 1 45%\">Só volta</button>\n        <button class=\"vou-btn nao\" id=\"btnNaoVou\" onclick=\"marcarPresenca('nao')\" style=\"flex:1 1 100%\">Não vou hoje</button>\n      </div>\n      <div id=\"presencaMsg\" style=\"font-size:0.75rem;color:var(--muted);margin-top:10px;text-align:center\"></div>\n    </div>\n\n    <div class=\"card\" id=\"avaliacaoCard\">\n      <div class=\"card-lbl\">Avalie sua viagem de hoje</div>\n      <div id=\"avaliacaoForm\">\n        <div style=\"display:flex;justify-content:center;gap:8px;margin:8px 0\" id=\"estrelas\">\n          <span class=\"estrela\" data-v=\"1\" onclick=\"selecionarEstrela(1)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"2\" onclick=\"selecionarEstrela(2)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"3\" onclick=\"selecionarEstrela(3)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"4\" onclick=\"selecionarEstrela(4)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n          <span class=\"estrela\" data-v=\"5\" onclick=\"selecionarEstrela(5)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"><path d=\"M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 17.3 6.7 20.2l1.1-6.1L3.4 9.9l6-.8L12 3.5Z\"/></svg></span>\n        </div>\n        <div id=\"avJustificativaWrap\" style=\"display:none;margin-top:8px\">\n          <textarea class=\"input\" id=\"avJustificativa\" rows=\"2\" placeholder=\"Conte o que podemos melhorar...\" style=\"resize:vertical;font-size:0.875rem\"></textarea>\n        </div>\n        <button class=\"btn\" style=\"margin-top:10px\" onclick=\"enviarAvaliacao()\" id=\"btnAvaliar\" disabled>Enviar avaliação</button>\n      </div>\n      <div id=\"avaliacaoFeita\" style=\"display:none;text-align:center;padding:8px\">\n        <div style=\"font-size:0.9375rem;font-weight:700;color:var(--green)\">Obrigado pela avaliação!</div>\n        <div style=\"font-size:0.8125rem;color:var(--muted);margin-top:4px\" id=\"avaliacaoResumo\"></div>\n      </div>\n    </div>\n\n    <div class=\"card\" id=\"feriasCard\">\n      <div class=\"card-lbl\">Férias / afastamento</div>\n      <div id=\"feriasAtiva\" style=\"display:none\">\n        <div style=\"background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px;text-align:center\">\n          <div style=\"font-weight:700;color:var(--accent);font-size:0.9375rem\" id=\"feriasLabel\">—</div>\n          <div style=\"font-size:0.75rem;color:var(--muted);margin-top:4px\">Sua vaga na linha está mantida. Você não embarca neste período.</div>\n        </div>\n        <button class=\"vou-btn\" style=\"margin-top:10px;width:100%\" onclick=\"cancelarFerias()\">Cancelar período</button>\n      </div>\n      <div id=\"feriasForm\">\n        <div style=\"font-size:0.75rem;color:var(--muted);margin-bottom:10px\">Vai se ausentar por um período? Informe as datas e sua vaga fica reservada.</div>\n        <div style=\"display:flex;gap:10px\">\n          <div style=\"flex:1\">\n            <label class=\"field-label\">Início</label>\n            <input class=\"input\" type=\"date\" id=\"feriasInicio\" style=\"font-size:0.875rem;padding:10px\">\n          </div>\n          <div style=\"flex:1\">\n            <label class=\"field-label\">Retorno</label>\n            <input class=\"input\" type=\"date\" id=\"feriasFim\" style=\"font-size:0.875rem;padding:10px\">\n          </div>\n        </div>\n        <button class=\"btn\" onclick=\"salvarFerias()\">Registrar período</button>\n      </div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Seu embarque</div>\n      <div style=\"display:flex;justify-content:space-between;align-items:flex-start;gap:12px\">\n        <div>\n          <div style=\"font-weight:700;font-size:0.9375rem\" id=\"iEmbarque\">—</div>\n          <div style=\"font-size:0.8125rem;color:var(--muted);margin-top:2px\" id=\"iBairro\">—</div>\n        </div>\n        <div style=\"text-align:right\">\n          <div class=\"big\" id=\"iHorario\">—</div>\n          <div style=\"font-size:0.6875rem;color:var(--muted)\">horário</div>\n        </div>\n      </div>\n    </div>\n      <div id=\"iHorarioNota\" class=\"hor-nota\" style=\"display:none\"></div>\n    </div>\n    <div class=\"card\" id=\"timelineCard\" style=\"display:none\">\n      <div class=\"card-lbl\">Viagem de hoje</div>\n      <div id=\"timelineConteudo\"></div>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Sua linha hoje</div>\n      <div style=\"display:flex;align-items:center;gap:12px\">\n        <div id=\"iBadge\" style=\"width:44px;height:44px;border-radius:12px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.125rem;font-family:'Barlow'\">—</div>\n        <div style=\"flex:1\">\n          <div style=\"font-weight:700\" id=\"iLinhaTurno\">—</div>\n          <div style=\"font-size:0.8125rem;color:var(--muted)\" id=\"iMotorista\">Motorista: —</div>\n        </div>\n      </div>\n      <a id=\"iMotoWhats\" href=\"#\" target=\"_blank\" style=\"display:none;align-items:center;justify-content:center;gap:8px;margin-top:12px;background:rgba(37,211,102,0.12);color:#25D366;border:1px solid rgba(37,211,102,0.3);border-radius:10px;padding:11px;font-weight:700;font-family:'Barlow';font-size:0.875rem;text-decoration:none\">Falar com o motorista no WhatsApp</a>\n    </div>\n    <div class=\"card\">\n      <div class=\"card-lbl\">Quem vai hoje · Linha <span id=\"qvLinha\">—</span></div>\n      <div id=\"quemVaiResumo\" style=\"display:flex;gap:10px;margin-bottom:12px\"></div>\n      <div id=\"quemVaiListas\"></div>\n    </div>\n  </div>\n\n  <div id=\"viewChat\" class=\"view chat-wrap hidden\">\n    <div class=\"chat-msgs\" id=\"chatMsgs\"></div>\n    <div class=\"chat-input\">\n      <input id=\"chatInput\" placeholder=\"Mensagem para a linha...\" onkeypress=\"if(event.key==='Enter')enviarMsg()\">\n      <button onclick=\"enviarMsg()\" title=\"Enviar\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 12 20 5l-7 15-2.5-6.5L4 12Z\"/></svg></button>\n    </div>\n  </div>\n\n  <div id=\"viewAvisos\" class=\"view hidden\">\n    <div id=\"avisosList\"></div>\n  </div>\n  <div id=\"viewContatos\" class=\"view hidden\">\n    <div class=\"card\">\n      <label class=\"field-label\">Fale com a gente</label>\n      <div style=\"font-size:0.8125rem;color:var(--muted);margin-bottom:14px;line-height:1.5\">Precisa de ajuda ou quer avisar algo? Fale direto pelo WhatsApp.</div>\n      <div id=\"contatosBtns\"></div>\n      <div id=\"contatosVazio\" style=\"display:none;font-size:0.8125rem;color:var(--muted);text-align:center;padding:16px\">Nenhum contato configurado ainda. Fale com o gestor.</div>\n    </div>\n  </div>\n</div>\n\n<div id=\"bottomNav\" class=\"bottom-nav hidden\">\n  <button class=\"bnav active\" id=\"navInicio\" onclick=\"irPara('inicio')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 10.5 12 4l9 6.5\"/><path d=\"M5.5 9.5V20h13V9.5\"/><path d=\"M10 20v-5h4v5\"/></svg></span><span class=\"lb\">Início</span></button>\n  <button class=\"bnav\" id=\"navChat\" onclick=\"irPara('chat')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 12a7 7 0 0 1-7 7H8l-4 3v-4.5A7 7 0 0 1 4 12v-.5A6.5 6.5 0 0 1 10.5 5h3A6.5 6.5 0 0 1 20 11.5Z\"/></svg></span><span class=\"lb\">Chat</span><span class=\"dot hidden\" id=\"dotChat\"></span></button>\n  <button class=\"bnav\" id=\"navAvisos\" onclick=\"irPara('avisos')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 10v4h3l6 4V6l-6 4H4Z\"/><path d=\"M17 9.5a4 4 0 0 1 0 5\"/><path d=\"M19.5 7a7 7 0 0 1 0 10\"/></svg></span><span class=\"lb\">Avisos</span><span class=\"dot hidden\" id=\"dotAvisos\"></span></button>\n  <button class=\"bnav\" id=\"navContatos\" onclick=\"irPara('contatos')\"><span class=\"ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 4h3.5l1.8 4-2.2 1.6a11 11 0 0 0 5.3 5.3L15 12.7l4 1.8V18a2 2 0 0 1-2.2 2A15 15 0 0 1 4 6.2 2 2 0 0 1 5 4Z\"/></svg></span><span class=\"lb\">Contatos</span></button>\n</div>\n\n";
 
 let TURNOS_CHEGADA = { '1°': '05:45', '2°': '14:45', '3°': '20:55', 'ADM': '07:15' };
 
@@ -264,7 +264,9 @@ async function init() {
 
   const telSalvo = localStorage.getItem(STORAGE_KEY);
   document.getElementById('loadingScreen').classList.add('hidden');
-  if (telSalvo && buscarPassageiro(telSalvo)) iniciarApp();
+  if (telSalvo && buscarPassageiro(telSalvo) && await pxAparelhoReconhecido(telSalvo)) {
+    iniciarApp();
+  }
   else document.getElementById('loginScreen').classList.remove('hidden');
 }
 
@@ -320,6 +322,104 @@ function vigiarRotaExtra(rotaId) {
 // Fora: 'desligado' (saiu da empresa) e 'sem-rota' (ainda nao alocado - o app depende de linha/turno).
 const STATUS_PODE_ENTRAR = ['ativo','ferias','afastado'];
 
+// ==================================================================
+// ACESSO DO PASSAGEIRO — PIN de 6 digitos
+// ==================================================================
+const PX_PIN_DIGITOS = 6;
+const PX_PIN_ITERACOES = 200000;      // igual ao motorista e ao gestor
+const PX_TENTATIVAS_MAX = 5;          // antes do primeiro bloqueio
+const PX_BLOQUEIO_MS = [60000, 300000, 900000];  // 1 min, 5 min, 15 min
+
+// O id do documento nao e o telefone em claro: e o hash dele com o sal
+// da operacao. Assim a colecao de PINs nao vira lista telefonica, e a
+// mesma pessoa em duas operacoes nao compartilha chave.
+// O prefixo separa do espaco dos motoristas na mesma colecao.
+async function pxPinId(telefone) {
+  const chave = await window.temviaComum.chaveLoginTelefone(telefone, CLIENTE_ID);
+  return 'pax_' + chave;
+}
+
+async function pxHash(id, valor) {
+  const enc = new TextEncoder();
+  const k = await crypto.subtle.importKey('raw', enc.encode(String(valor)),
+    'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt: enc.encode('temvia:' + CLIENTE_ID + ':' + id),
+      iterations: PX_PIN_ITERACOES, hash: 'SHA-256' }, k, 256);
+  return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// PIN previsivel nao e segredo. 000000, 123456 e 111111 sao os tres
+// primeiros que qualquer um tenta.
+function pxPinFraco(pin) {
+  if (!/^\d{6}$/.test(pin)) return 'O PIN precisa ter 6 d\u00edgitos.';
+  if (/^(\d)\1{5}$/.test(pin)) return 'Escolha um PIN com d\u00edgitos diferentes.';
+  if ('0123456789'.indexOf(pin) >= 0) return 'Sequ\u00eancias como 123456 s\u00e3o f\u00e1ceis de adivinhar.';
+  if ('9876543210'.indexOf(pin) >= 0) return 'Sequ\u00eancias s\u00e3o f\u00e1ceis de adivinhar.';
+  return '';
+}
+
+// Quem ja ativou: o documento pins_ativos e legivel e guarda so os ids,
+// nunca os hashes. A colecao de PINs continua ilegivel para todos.
+async function pxTemPin(id) {
+  try {
+    const snap = await getDoc(doc(db, CLIENTE_ID, 'pins_ativos'));
+    if (!snap.exists()) return false;
+    const d = snap.data();
+    return (d.lista || []).indexOf(id) > -1 || !!((d.meta || {})[id]);
+  } catch (e) { return null; }   // null = nao deu para consultar
+}
+
+async function pxMeta(id) {
+  try {
+    const snap = await getDoc(doc(db, CLIENTE_ID, 'pins_ativos'));
+    const m = (snap.exists() && (snap.data().meta || {})[id]) || null;
+    return { prov: !!(m && m.prov), exp: (m && m.exp) || null };
+  } catch (e) { return { prov: false, exp: null }; }
+}
+
+// ---- bloqueio progressivo, local ----
+// Nao e defesa contra ataque: quem automatiza nao passa pelo nosso
+// JavaScript. Quem segura isso e o App Check. Isto aqui evita que a
+// pessoa errada fique tentando o PIN do colega no celular dele.
+function pxBloqueioLer(id) {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY + '_tent_' + id) || 'null') ||
+               { n: 0, ate: 0 }; }
+  catch (e) { return { n: 0, ate: 0 }; }
+}
+function pxBloqueioGravar(id, v) {
+  try { localStorage.setItem(STORAGE_KEY + '_tent_' + id, JSON.stringify(v)); } catch (e) {}
+}
+function pxBloqueadoAte(id) {
+  const b = pxBloqueioLer(id);
+  return (b.ate && Date.now() < b.ate) ? b.ate : 0;
+}
+function pxRegistrarErro(id) {
+  const b = pxBloqueioLer(id);
+  b.n = (b.n || 0) + 1;
+  if (b.n >= PX_TENTATIVAS_MAX) {
+    const i = Math.min(Math.floor(b.n / PX_TENTATIVAS_MAX) - 1, PX_BLOQUEIO_MS.length - 1);
+    b.ate = Date.now() + PX_BLOQUEIO_MS[i];
+  }
+  pxBloqueioGravar(id, b);
+  return b;
+}
+function pxLimparErros(id) { pxBloqueioGravar(id, { n: 0, ate: 0 }); }
+
+// ---- trilha ----
+// Cada ativacao e cada recusa ficam registradas. Nao impede fraude;
+// deixa ela visivel, que e o que da para oferecer sem SMS.
+async function pxAuditar(evento, id, extra) {
+  try {
+    const { addDoc, collection } =
+      await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await addDoc(collection(db, CLIENTE_ID + '_auditoria'), Object.assign({
+      evento: evento, alvo: id, em: new Date().toISOString(), origem: 'passageiro'
+    }, extra || {}));
+  } catch (e) { /* trilha nao pode derrubar o acesso */ }
+}
+
+
 function buscarPassageiro(telRaw) {
   const tel = soDigitos(telRaw);
   if (tel.length < 8) return false;
@@ -331,6 +431,9 @@ function buscarPassageiro(telRaw) {
       if (pt && (pt === tel || pt.slice(-8) === tel.slice(-8))) {
         PASSAGEIRO = {
           nome: p.nome, telefone: p.telefone,
+          // matricula: usada so no primeiro acesso, para confirmar quem e.
+          matricula: p.matricula || '',
+          status: p.status || 'ativo',
           linha: rota.linha, turno: rota.turno,
           embarque: p.embarque || p.endereco || '',
           bairro: p.bairro || '', cidade: p.cidade || 'Sorocaba',
@@ -374,13 +477,249 @@ function buscarPassageiro(telRaw) {
   return achou;
 }
 
-window.fazerLogin = function() {
+// Cria o PIN. Os campos sao exatamente os que a regra aceita — qualquer
+// campo a mais e recusado, para o documento nao virar deposito de dado.
+async function pxCriarPin(pin) {
+  const id = PX_ACESSO.id;
+  const hash = await pxHash(id, pin);
+
+  // Troca do provisorio: o documento JA existe, entao nao e create. Para
+  // a regra aceitar mudar o hash e preciso provar que se conhece o atual
+  // — e so vale enquanto o PIN for provisorio.
+  if (PX_ACESSO._trocaDe) {
+    await setDoc(doc(db, CLIENTE_ID + '_pins', id), {
+      hash: hash, provisorio: false, provaAnterior: PX_ACESSO._trocaDe
+    }, { merge: true });
+    PX_ACESSO._trocaDe = null;
+    return;
+  }
+
+  const matHash = await pxHash(id, 'mat:' + String(PASSAGEIRO.matricula || ''));
+  await setDoc(doc(db, CLIENTE_ID + '_pins', id), {
+    hash: hash,
+    provisorio: false,
+    matriculaHash: matHash,
+    ativadoEm: new Date().toISOString(),
+    ativadoPor: 'passageiro'
+  });
+  // pins_ativos guarda so o id, nunca o hash. E como o app sabe, no
+  // proximo acesso, que precisa pedir o PIN.
+  try {
+    const { arrayUnion } = window.arrayUnion ? { arrayUnion: window.arrayUnion }
+      : await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await setDoc(doc(db, CLIENTE_ID, 'pins_ativos'),
+      { lista: arrayUnion(id), updatedAt: new Date().toISOString() }, { merge: true });
+  } catch (e) { console.warn('pins_ativos:', e && e.message); }
+}
+
+// Conferencia: regrava o MESMO hash. A regra so aceita se bater, entao
+// a recusa e a resposta. E um oraculo — quem segura o abuso e o App Check.
+async function pxConferirPin(hash) {
+  await setDoc(doc(db, CLIENTE_ID + '_pins', id0()), { hash: hash }, { merge: true });
+}
+function id0() { return PX_ACESSO.id; }
+
+// Provisorio: so entra depois de escolher o definitivo. E o unico caso
+// em que a regra deixa MUDAR o hash, e exige provar que conhece o atual.
+async function pxTrocarProvisorio(hashAtual) {
+  const p3 = document.getElementById('pxPasso3');
+  PX_ACESSO.novo = true; PX_ACESSO.prov = false;
+  PX_ACESSO._trocaDe = hashAtual;
+  document.getElementById('pxPin').value = '';
+  document.getElementById('pxPin2').value = '';
+  pxPrepararPasso3();
+  document.getElementById('pxPasso3Sub').textContent =
+    'O provis\u00f3rio deixa de valer agora. Escolha um PIN que s\u00f3 voc\u00ea saiba.';
+  if (p3) p3.style.display = '';
+}
+
+// A prova guarda o id do acesso, nao o PIN. Serve so para dizer "neste
+// aparelho ja se provou conhecer o PIN deste telefone".
+function pxMarcarAparelho(id) {
+  try {
+    localStorage.setItem(STORAGE_KEY + '_prova',
+      JSON.stringify({ id: id, em: new Date().toISOString() }));
+  } catch (e) {}
+}
+
+async function pxAparelhoReconhecido(tel) {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY + '_prova');
+    if (!raw) return false;              // inclusive quem entrava so com telefone antes
+    const pv = JSON.parse(raw);
+    return !!pv && pv.id === (await pxPinId(tel));
+  } catch (e) { return false; }
+}
+
+function pxEntrar() {
+  localStorage.setItem(STORAGE_KEY, soDigitos(PX_ACESSO.tel));
+  pxMarcarAparelho(PX_ACESSO.id);
+  document.getElementById('loginScreen').classList.add('hidden');
+  iniciarApp();
+}
+
+// PASSO 2 — a matricula. Confere contra o cadastro, aqui no app: a
+// regra do Firestore nao consegue fazer isso sem custar uma leitura do
+// cadastro inteiro a cada tentativa.
+window.pxConferirMatricula = async function() {
+  const dig = String(document.getElementById('pxMatricula').value || '').trim();
+  if (!dig) { pxErro('pxErr2', 'Informe sua matr\u00edcula.'); return; }
+
+  const cadastrada = String((PASSAGEIRO && PASSAGEIRO.matricula) || '').trim();
+  if (!cadastrada) {
+    pxErro('pxErr2', 'Seu cadastro est\u00e1 sem matr\u00edcula, ent\u00e3o n\u00e3o d\u00e1 para ' +
+      'ativar o acesso sozinho. Pe\u00e7a ao gestor.');
+    await pxAuditar('ativacao_sem_matricula', PX_ACESSO.id, {});
+    return;
+  }
+  // Comparacao sem zeros a esquerda e sem espacos: a pessoa digita o que
+  // esta no cracha, nao o que esta na planilha.
+  const norm = v => String(v).replace(/\D/g, '').replace(/^0+/, '');
+  if (norm(dig) !== norm(cadastrada)) {
+    pxErro('pxErr2', 'Matr\u00edcula n\u00e3o confere com o cadastro.');
+    await pxAuditar('ativacao_matricula_errada', PX_ACESSO.id, {});
+    return;
+  }
+  pxPrepararPasso3();
+  pxMostrarPasso(3);
+};
+
+// PASSO 3 — criar ou conferir o PIN.
+function pxPrepararPasso3() {
+  const novo = PX_ACESSO.novo, prov = PX_ACESSO.prov;
+  document.getElementById('pxPasso3Tit').textContent =
+    novo ? 'Crie seu PIN' : (prov ? 'PIN provis\u00f3rio' : 'Seu PIN');
+  document.getElementById('pxPasso3Sub').textContent = novo
+    ? 'Escolha 6 d\u00edgitos que s\u00f3 voc\u00ea saiba. Ele ser\u00e1 pedido nos pr\u00f3ximos acessos.'
+    : (prov ? 'Digite o PIN provis\u00f3rio que o gestor lhe passou.'
+            : 'Digite seu PIN de 6 d\u00edgitos.');
+  document.getElementById('pxP3Lbl').textContent = novo ? 'Novo PIN' : 'PIN';
+  document.getElementById('pxPin2Wrap').style.display = novo ? '' : 'none';
+  document.getElementById('pxBtnPin').textContent = novo ? 'Criar e entrar' : 'Entrar';
+  document.getElementById('pxEsqueci').style.display = novo ? 'none' : '';
+}
+
+window.pxEnviarPin = async function() {
+  const bloq = pxBloqueadoAte(PX_ACESSO.id);
+  if (bloq) {
+    pxErro('pxErr3', 'Muitas tentativas. Tente de novo em ' + pxEsperaTxt(bloq) + '.');
+    return;
+  }
+  const pin = String(document.getElementById('pxPin').value || '').trim();
+  const btn = document.getElementById('pxBtnPin');
+
+  if (PX_ACESSO.novo) {
+    const fraco = pxPinFraco(pin);
+    if (fraco) { pxErro('pxErr3', fraco); return; }
+    if (pin !== String(document.getElementById('pxPin2').value || '').trim()) {
+      pxErro('pxErr3', 'Os dois PINs n\u00e3o s\u00e3o iguais.'); return;
+    }
+    btn.disabled = true;
+    try {
+      const eraTroca = !!PX_ACESSO._trocaDe;
+      await pxCriarPin(pin);
+      await pxAuditar(eraTroca ? 'pin_trocado' : 'acesso_ativado',
+                      PX_ACESSO.id, { nome: PASSAGEIRO.nome });
+      pxEntrar();
+    } catch (e) {
+      // O create falha quando o documento JA existe — e e isso que
+      // impede tomar o acesso de quem ja ativou. Nao e erro de rede.
+      const cod = String((e && (e.code || e.message)) || '');
+      pxErro('pxErr3', cod.indexOf('permission') >= 0
+        ? 'Este acesso j\u00e1 foi ativado. Se n\u00e3o foi voc\u00ea, avise o gestor agora.'
+        : 'N\u00e3o foi poss\u00edvel criar seu PIN: ' + (e.message || e));
+      await pxAuditar('ativacao_recusada', PX_ACESSO.id, { motivo: cod.slice(0, 60) });
+    } finally { btn.disabled = false; }
+    return;
+  }
+
+  if (!/^\d{6}$/.test(pin)) { pxErro('pxErr3', 'O PIN tem 6 d\u00edgitos.'); return; }
+  btn.disabled = true;
+  try {
+    const hash = await pxHash(PX_ACESSO.id, pin);
+    await pxConferirPin(hash);          // a regra recusa se nao bater
+    pxLimparErros(PX_ACESSO.id);
+    if (PX_ACESSO.prov) { await pxTrocarProvisorio(hash); return; }
+    pxEntrar();
+  } catch (e) {
+    const b = pxRegistrarErro(PX_ACESSO.id);
+    await pxAuditar('pin_incorreto', PX_ACESSO.id, { tentativa: b.n });
+    pxErro('pxErr3', b.ate
+      ? 'PIN incorreto. Muitas tentativas — espere ' + pxEsperaTxt(b.ate) + '.'
+      : 'PIN incorreto. Se esqueceu, pe\u00e7a ao gestor para gerar um provis\u00f3rio.');
+  } finally { btn.disabled = false; }
+};
+
+// Guarda o que o passo 1 descobriu. Vive so durante o acesso.
+let PX_ACESSO = { tel: '', id: '', prov: false, novo: false };
+
+function pxMostrarPasso(n) {
+  const p1 = document.querySelector('#loginScreen .login-card');
+  if (p1) p1.style.display = n === 1 ? '' : 'none';
+  document.getElementById('pxPasso2').style.display = n === 2 ? '' : 'none';
+  document.getElementById('pxPasso3').style.display = n === 3 ? '' : 'none';
+  const foco = { 2: 'pxMatricula', 3: 'pxPin' }[n];
+  if (foco) setTimeout(() => { const e = document.getElementById(foco); if (e) e.focus(); }, 60);
+}
+
+window.pxVoltarPasso1 = function() {
+  PX_ACESSO = { tel: '', id: '', prov: false, novo: false };
+  PASSAGEIRO = null;
+  ['pxMatricula', 'pxPin', 'pxPin2'].forEach(i => {
+    const e = document.getElementById(i); if (e) e.value = '';
+  });
+  ['pxErr2', 'pxErr3'].forEach(i => {
+    const e = document.getElementById(i); if (e) e.style.display = 'none';
+  });
+  pxMostrarPasso(1);
+};
+
+function pxErro(qual, txt) {
+  const e = document.getElementById(qual);
+  if (!e) return;
+  e.textContent = txt;
+  e.style.display = 'block';
+}
+
+function pxEsperaTxt(ate) {
+  const seg = Math.ceil((ate - Date.now()) / 1000);
+  return seg > 60 ? Math.ceil(seg / 60) + ' minutos' : seg + ' segundos';
+}
+
+// PASSO 1 — o telefone identifica; nao autentica. Quem decide se entra
+// e o PIN, no passo 3.
+window.fazerLogin = async function() {
   const tel = document.getElementById('loginTel').value;
+  const btn = document.getElementById('loginBtn');
   if (buscarPassageiro(tel)) {
-    localStorage.setItem(STORAGE_KEY, soDigitos(tel));
-    document.getElementById('loginScreen').classList.add('hidden');
-    iniciarApp();
-  } else {
+    btn.disabled = true;
+    try {
+      PX_ACESSO.tel = tel;
+      PX_ACESSO.id = await pxPinId(tel);
+      const tem = await pxTemPin(PX_ACESSO.id);
+      if (tem === null) {
+        pxErro('loginErr', 'N\u00e3o foi poss\u00edvel verificar seu acesso agora. ' +
+               'Verifique sua conex\u00e3o e tente de novo.');
+        return;
+      }
+      if (tem) {
+        const meta = await pxMeta(PX_ACESSO.id);
+        PX_ACESSO.prov = meta.prov;
+        PX_ACESSO.novo = false;
+        pxPrepararPasso3();
+        pxMostrarPasso(3);
+      } else {
+        PX_ACESSO.novo = true;
+        pxMostrarPasso(2);
+      }
+    } catch (e) {
+      pxErro('loginErr', 'N\u00e3o foi poss\u00edvel continuar: ' + (e.message || e));
+    } finally {
+      btn.disabled = false;
+    }
+    return;
+  }
+  {
     const err = document.getElementById('loginErr');
     if (!CADASTRO_CARREGADO) {
       // Nao deu para consultar. Nao acusar o passageiro de nao existir.
@@ -396,6 +735,8 @@ window.fazerLogin = function() {
 };
 
 window.logout = function() {
+  // Sair apaga a prova do aparelho: o proximo acesso pede o PIN de novo.
+  try { localStorage.removeItem(STORAGE_KEY + '_prova'); } catch (e) {}
   localStorage.removeItem(STORAGE_KEY);
   if (unsubChat) unsubChat();
   if (unsubPres) unsubPres();
