@@ -485,6 +485,17 @@
     justify-content: center;
   }
   .modal-overlay.open { display: flex; }
+
+  /* Mesmo tratamento de .modal. Existe porque varias telas usam este
+     nome; sem a regra, a caixa abre transparente. */
+  .modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    max-height: 92vh;
+    overflow: auto;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+  }
   .modal {
     background: var(--surface);
     border: 1px solid var(--border);

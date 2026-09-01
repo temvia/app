@@ -37,7 +37,7 @@ const HTML_MOTOR = "\n<!-- LOGIN OVERLAY -->\n<div class=\"login-overlay\" id=\"
 const MOTOR_BASE = (document.currentScript && document.currentScript.src)
   ? document.currentScript.src.replace(/[^/]+$/, '')
   : '/motor/';
-const TEMA_VERSAO = '2026-08-20-16';
+const TEMA_VERSAO = '2026-08-31-1';
 document.title = (C.empresaNome || C.marca) + ' \u2014 Portal temvia \u2014 Cliente';
 document.head.insertAdjacentHTML('beforeend',
   '<link rel="stylesheet" href="' + MOTOR_BASE + 'tema.css?v=' + TEMA_VERSAO + '">' +
@@ -57,6 +57,16 @@ document.body.innerHTML = HTML_MOTOR.split('LOGO_MARCA').join(LOGO_MARCA);
 // cliAplicarIdentidade() troca pelo do cadastro assim que possivel.
 // Nome do portal: cadastro primeiro, casca so como reserva.
 function cliAplicarIdentidade(transportadora, operacao) {
+  // Guarda no mesmo lugar que o resto do app le, para o menu lateral e o
+  // login contarem a mesma historia.
+  try {
+    if (typeof EMPRESA_CONFIG !== 'undefined') {
+      if (transportadora) EMPRESA_CONFIG.nome = transportadora;
+      if (operacao !== undefined) EMPRESA_CONFIG.operacaoNome = operacao;
+    }
+    if (typeof cliIdentificar === 'function' && document.getElementById('tvUserNome'))
+      cliIdentificar();
+  } catch (e) {}
   var nome = String(transportadora || '').trim();
   var op = String(operacao || '').trim();
   ['brandLogin', 'brandHeader'].forEach(function (id) {
@@ -2241,7 +2251,10 @@ function cliMarcarNav(rotulo) {
 }
 
 function cliIdentificar() {
-  const nome = (window.CLIENTE_CONFIG && (window.CLIENTE_CONFIG.marca || '')) || 'Empresa';
+  // Cadastro primeiro; o apelido da casca so enquanto ele nao chegou.
+  const cfg = (typeof EMPRESA_CONFIG !== 'undefined' && EMPRESA_CONFIG) || {};
+  const nome = String(cfg.nome || '').trim() ||
+    (window.CLIENTE_CONFIG && (window.CLIENTE_CONFIG.marca || '')) || 'Empresa';
   const el = document.getElementById('tvUserNome');
   if (el) el.textContent = nome;
   const av = document.getElementById('tvAvatar');
@@ -2249,8 +2262,13 @@ function cliIdentificar() {
   const ctx = document.getElementById('tvContextoConta');
   if (ctx) ctx.textContent = nome;
   const op = document.getElementById('tvOperacaoAtendida');
-  if (op && window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.ambienteTeste) {
-    op.style.display = ''; op.textContent = 'AMBIENTE DE TESTE';
+  const atendida = String(cfg.operacaoNome || '').trim();
+  if (op) {
+    const amb = window.CLIENTE_CONFIG && window.CLIENTE_CONFIG.ambienteTeste;
+    const txt = [amb ? 'AMBIENTE DE TESTE' : '', atendida ? 'Atendendo ' + atendida : '']
+      .filter(Boolean).join(' \u00b7 ');
+    op.style.display = txt ? '' : 'none';
+    op.textContent = txt;
   }
   try {
     if (localStorage.getItem('cli_sidebar') === '1')
@@ -2944,6 +2962,10 @@ let _semAcessoNestaEmpresa = false;
 
 // Evita o "pisca": o formulario so aparece quando confirmamos que nao ha sessao aberta.
 let _formMostrado = false;
+// Expostas no window porque quem chama (logout) esta fora deste IIFE.
+window.irParaPortal = function () { return irParaPortal.apply(null, arguments); };
+window.mostrarFormularioCliente = function () { return mostrarFormularioCliente.apply(null, arguments); };
+
 function mostrarFormularioCliente() {
   if (_formMostrado) return;
   _formMostrado = true;
@@ -3077,7 +3099,13 @@ async function logout() {
     await signOut(auth);
   } catch (e) {}
   // Porta da frente do sistema agora e o portal temvia, nao a tela de login do app.
-  if (!irParaPortal(false)) mostrarFormularioCliente();
+  // As duas funcoes moram dentro do IIFE de autenticacao; daqui so se
+  // alcanca pelo window. Antes a chamada crua matava o botao Sair.
+  const _ir = window.irParaPortal, _form = window.mostrarFormularioCliente;
+  if (!(typeof _ir === 'function' && _ir(false))) {
+    if (typeof _form === 'function') _form();
+    else location.reload();
+  }
 }
 
 let fbUnsub = null;
@@ -3663,7 +3691,7 @@ async function cliEnviarSolicitacao() {
 
     // 3. Mostrar confirmação com botão WhatsApp
     const waTexto = encodeURIComponent(
-      'Solicitacao enviada para Redentor Fretamento.\n\n' +
+      'Solicitacao enviada para ' + (EMPRESA_CONFIG.nome || 'a transportadora') + '.\n\n' +
       'ID: ' + id + '\n' +
       'Servico: ' + CLI_TIPO_LABEL + '\n' +
       'Data: ' + dataFmt + (horario ? ' as ' + horario : '') + '\n' +
@@ -3673,13 +3701,13 @@ async function cliEnviarSolicitacao() {
       (obs ? '\n\nObs: ' + obs : '') +
       '\n\nAguardo confirmacao.'
     );
-    const waUrl = 'https://wa.me/?text=' + waTexto;
+    const waUrl = cadWhatsUrl(waTexto);
 
     msg.innerHTML =
       '<div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:12px;padding:16px;margin-top:8px;text-align:left">' +
         '<div style="font-weight:700;font-size:15px;color:var(--green);margin-bottom:8px">Solicitação enviada!</div>' +
         '<div style="font-size:13px;margin-bottom:4px"><strong>' + id + '</strong></div>' +
-        '<div style="font-size:12px;color:var(--muted);margin-bottom:14px">E-mail enviado para a Redentor. Compartilhe o número pelo WhatsApp se necessário:</div>' +
+        '<div style="font-size:12px;color:var(--muted);margin-bottom:14px">' + cadDestinoTexto() + ' Compartilhe o número pelo WhatsApp se necessário:</div>' +
         '<a href="' + waUrl + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-family:Barlow,sans-serif;font-weight:800;font-size:14px;margin-bottom:10px">' +
           'Compartilhar pelo WhatsApp' +
         '</a>' +
@@ -3848,9 +3876,9 @@ function cadMontarFormulario() {
       <div><label class="form-label">Data de Início *</label><input class="form-input" type="date" id="cadInicio"></div>
       <div style="grid-column:1/-1"><label class="form-label">Endereço Residencial</label><input class="form-input" id="cadEndereco" placeholder="Rua, número"></div>
       <div><label class="form-label">Bairro</label><input class="form-input" id="cadBairro" placeholder="Bairro"></div>
-      <div><label class="form-label">Cidade</label><input class="form-input" id="cadCidade" value="Sorocaba"></div>
+      <div><label class="form-label">Cidade</label><input class="form-input" id="cadCidade" placeholder="Cidade"></div>
       <div style="grid-column:1/-1"><label class="form-label">Turno de Trabalho *</label>
-        <select class="form-input" id="cadTurno"><option value="">— Selecione —</option><option value="1º Turno">1º Turno</option><option value="2º Turno">2º Turno</option><option value="3º Turno">3º Turno</option></select></div>
+        <select class="form-input" id="cadTurno">${cadOpcoesTurno()}</select></div>
     </div>`;
     const d=document.getElementById('cadInicio'); if(d) d.value=hojeLocal();
   } else {
@@ -3942,6 +3970,37 @@ function cadValidarEtapa2() {
   cadColetarDados(); return true;
 }
 
+// Os turnos sao os que o gestor cadastrou. Lista fixa aqui significa
+// que todo turno novo fica invisivel para quem abre a solicitacao.
+// Para onde vai a solicitacao. Sem nada cadastrado, nao inventa nome de
+// transportadora: diz o que de fato acontece.
+function cadDestinoTexto() {
+  const e = (typeof EMPRESA_CONFIG !== 'undefined' && EMPRESA_CONFIG) || {};
+  const alvo = String(e.emailSolicitacoes || '').trim();
+  if (alvo) return 'E-mail enviado para ' + alvo + '.';
+  const nome = String(e.nome || '').trim();
+  return nome ? ('Solicita\u00e7\u00e3o registrada para ' + nome + '.')
+              : 'Solicita\u00e7\u00e3o registrada.';
+}
+
+// Com numero cadastrado o WhatsApp abre direto na conversa certa; sem
+// ele, abre o seletor de contato, como antes.
+function cadWhatsUrl(texto) {
+  const e = (typeof EMPRESA_CONFIG !== 'undefined' && EMPRESA_CONFIG) || {};
+  const num = String(e.whatsSolicitacoes || '').replace(/\D/g, '');
+  return num ? ('https://wa.me/55' + num + '?text=' + texto)
+             : ('https://wa.me/?text=' + texto);
+}
+
+function cadOpcoesTurno() {
+  const nomes = (Array.isArray(TURNOS) && TURNOS.length)
+    ? TURNOS.map(t => t && t.nome).filter(Boolean)
+    : Object.keys(TURNOS_CHEGADA || {});
+  const lista = nomes.length ? nomes : ['1º Turno', '2º Turno', '3º Turno'];
+  return '<option value="">— Selecione —</option>' +
+    lista.map(n => '<option value="' + n + '">' + n + '</option>').join('');
+}
+
 function cadColetarDados() {
   if (CAD_TIPO_KEY==='novo') {
     CAD_DADOS={nome:(document.getElementById('cadNome')||{}).value||'',telefone:(document.getElementById('cadTelefone')||{}).value||'',matricula:(document.getElementById('cadMatricula')||{}).value||'',endereco:(document.getElementById('cadEndereco')||{}).value||'',bairro:(document.getElementById('cadBairro')||{}).value||'',cidade:(document.getElementById('cadCidade')||{}).value||'',turno:(document.getElementById('cadTurno')||{}).value||'',inicio:(document.getElementById('cadInicio')||{}).value||''};
@@ -4015,8 +4074,8 @@ async function cadEnviar() {
         await emailjs.send('service_gp46qeg','template_m4k9byn',{ origem: C.origemEmail,sol_id:id,tipo:CAD_TIPO_LABEL,data:now.toLocaleDateString('pt-BR'),horario:now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),roteiro:'—',funcionarios:resumoTxt,obs:obs||'—',to_email:email});
       }
     } catch(e){console.warn('CAD email:',e);}
-    const waTexto=encodeURIComponent('Solicitacao de Cadastro - Redentor Fretamento\n\nID: '+id+'\nTipo: '+CAD_TIPO_LABEL+'\n'+cadMontarResumoTexto()+(obs?'\n\nObs: '+obs:'')+'\n\nAguardo atendimento.');
-    msg.innerHTML='<div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:12px;padding:16px;margin-top:8px;text-align:left"><div style="font-weight:700;font-size:15px;color:var(--accent2);margin-bottom:8px">Solicitação enviada!</div><div style="font-size:13px;margin-bottom:4px"><strong>'+id+'</strong></div><div style="font-size:12px;color:var(--muted);margin-bottom:14px">E-mail enviado para a Redentor.</div><a href="https://wa.me/?text='+waTexto+'" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-family:Barlow,sans-serif;font-weight:800;font-size:14px;margin-bottom:10px">Compartilhar pelo WhatsApp</a><button onclick="cadNovaSolicitacao()" style="width:100%;padding:11px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:14px;cursor:pointer;font-family:Barlow,sans-serif;font-weight:700">Nova Solicitação</button></div>';
+    const waTexto=encodeURIComponent('Solicitacao de Cadastro - ' + (EMPRESA_CONFIG.nome || 'Transportadora') + '\n\nID: '+id+'\nTipo: '+CAD_TIPO_LABEL+'\n'+cadMontarResumoTexto()+(obs?'\n\nObs: '+obs:'')+'\n\nAguardo atendimento.');
+    msg.innerHTML='<div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:12px;padding:16px;margin-top:8px;text-align:left"><div style="font-weight:700;font-size:15px;color:var(--accent2);margin-bottom:8px">Solicitação enviada!</div><div style="font-size:13px;margin-bottom:4px"><strong>'+id+'</strong></div><div style="font-size:12px;color:var(--muted);margin-bottom:14px">' + cadDestinoTexto() + '</div><a href="'+cadWhatsUrl(waTexto)+'" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-family:Barlow,sans-serif;font-weight:800;font-size:14px;margin-bottom:10px">Compartilhar pelo WhatsApp</a><button onclick="cadNovaSolicitacao()" style="width:100%;padding:11px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:14px;cursor:pointer;font-family:Barlow,sans-serif;font-weight:700">Nova Solicitação</button></div>';
   } catch(e) { msg.style.color='var(--red)'; msg.textContent='Erro: '+e.message; }
 }
 

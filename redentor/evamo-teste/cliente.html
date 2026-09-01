@@ -9,6 +9,19 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Evamo Cliente TESTE">
 <meta name="theme-color" content="#0d1117">
+<style>
+  /* Evita o flash de conteúdo sem estilo: o tema chega com o engine. */
+  html { background: #0d1117; }
+  html:not([data-tema]) body { visibility: hidden; }
+  html.tv-destravado body { visibility: visible !important; }
+</style>
+<script>
+  // Rede de segurança: se o engine não carregar, a tela aparece mesmo
+  // sem tema em 5 segundos. Melhor feia que invisível.
+  setTimeout(function () {
+    document.documentElement.classList.add('tv-destravado');
+  }, 5000);
+</script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="msapplication-TileColor" content="#0d1117">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,7 +92,7 @@ window.CLIENTE_CONFIG = {
   ]
 };
 </script>
-<script src="/motor/beta/comum.js?v=2026-08-28-B"></script>
-<script src="/motor/beta/cliente.js?v=2026-08-28-B"></script>
+<script src="/motor/beta/comum.js?v=2026-08-31-A"></script>
+<script src="/motor/beta/cliente.js?v=2026-08-31-A"></script>
 </body>
 </html>
