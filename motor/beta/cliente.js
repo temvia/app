@@ -2962,10 +2962,6 @@ let _semAcessoNestaEmpresa = false;
 
 // Evita o "pisca": o formulario so aparece quando confirmamos que nao ha sessao aberta.
 let _formMostrado = false;
-// Expostas no window porque quem chama (logout) esta fora deste IIFE.
-window.irParaPortal = function () { return irParaPortal.apply(null, arguments); };
-window.mostrarFormularioCliente = function () { return mostrarFormularioCliente.apply(null, arguments); };
-
 function mostrarFormularioCliente() {
   if (_formMostrado) return;
   _formMostrado = true;
@@ -3099,13 +3095,10 @@ async function logout() {
     await signOut(auth);
   } catch (e) {}
   // Porta da frente do sistema agora e o portal temvia, nao a tela de login do app.
-  // As duas funcoes moram dentro do IIFE de autenticacao; daqui so se
-  // alcanca pelo window. Antes a chamada crua matava o botao Sair.
-  const _ir = window.irParaPortal, _form = window.mostrarFormularioCliente;
-  if (!(typeof _ir === 'function' && _ir(false))) {
-    if (typeof _form === 'function') _form();
-    else location.reload();
-  }
+  // Sem portal configurado, recarrega: a sessao ja foi limpa, e so
+  // revelar o formulario deixava a barra lateral montada por cima —
+  // o clique parecia nao fazer nada.
+  if (!irParaPortal(false)) location.reload();
 }
 
 let fbUnsub = null;
