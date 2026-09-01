@@ -142,6 +142,9 @@ document.head.insertAdjacentHTML('beforeend',
   '<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">' +
   '<style>' + CSS_MOTOR + '</style>');
 document.body.innerHTML = HTML_MOTOR;
+// A casca esconde o corpo ate esta classe: sem ela, so o timeout de
+// seguranca revelaria a tela, quatro segundos depois.
+document.documentElement.classList.add('tv-pronto');
 // o estilo entra em pxPorEstilo(), onde TL_CSS e PX_CSS ja tem valor
 document.head.insertAdjacentHTML('beforeend', TV_CSS_HORA);
 var _marca = C.marcaUpper || (C.marca || '').toUpperCase();

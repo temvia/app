@@ -51,34 +51,25 @@ document.head.insertAdjacentHTML('beforeend',
   '<style>' + CSS_MOTOR + '</style>');
 
 document.documentElement.setAttribute('data-tema', 'fase1');
+
+// A casca esconde o corpo ate esta classe aparecer. Marcar data-tema nao
+// bastava: o <link> do tema.css e assincrono e o atributo e definido
+// antes de o arquivo chegar — a tela era revelada sem estilo mesmo assim.
+(function () {
+  var pronto = function () { document.documentElement.classList.add('tv-pronto'); };
+  var link = document.querySelector('link[href*="tema.css"]');
+  if (!link || link.sheet) { pronto(); return; }   // ja em cache
+  link.addEventListener('load', pronto);
+  link.addEventListener('error', pronto);          // falhou: mostra assim mesmo
+  setTimeout(pronto, 4000);                        // e nunca deixa a tela presa
+})();
 document.body.innerHTML = HTML_MOTOR.split('LOGO_MARCA').join(LOGO_MARCA);
 
 // Enquanto o cadastro nao chega (ou sem rede), fica o nome da casca.
 // cliAplicarIdentidade() troca pelo do cadastro assim que possivel.
-// Nome do portal: cadastro primeiro, casca so como reserva.
-function cliAplicarIdentidade(transportadora, operacao) {
-  // Guarda no mesmo lugar que o resto do app le, para o menu lateral e o
-  // login contarem a mesma historia.
-  try {
-    if (typeof EMPRESA_CONFIG !== 'undefined') {
-      if (transportadora) EMPRESA_CONFIG.nome = transportadora;
-      if (operacao !== undefined) EMPRESA_CONFIG.operacaoNome = operacao;
-    }
-    if (typeof cliIdentificar === 'function' && document.getElementById('tvUserNome'))
-      cliIdentificar();
-  } catch (e) {}
-  var nome = String(transportadora || '').trim();
-  var op = String(operacao || '').trim();
-  ['brandLogin', 'brandHeader'].forEach(function (id) {
-    var el = document.getElementById(id);
-    if (el && nome) el.textContent = nome;
-  });
-  var sub = document.getElementById('cliSubMarca');
-  if (sub) sub.textContent = op ? ('Portal do Cliente \u00b7 ' + op)
-                                : 'Fretamento \u2014 Portal do Cliente';
-}
-
-var _marca = C.marcaUpper || (C.marca || '').toUpperCase();
+// Idem gestor: nada de apelido da casca. O cadastro chega em seguida.
+var _marca = '';
+try { _marca = localStorage.getItem('temvia_marca_' + C.clienteId) || ''; } catch (e) {}
 ['brandLogin', 'brandHeader'].forEach(function (id) {
   var el = document.getElementById(id);
   if (el) el.textContent = _marca;
@@ -2250,6 +2241,32 @@ function cliMarcarNav(rotulo) {
   if (c) c.textContent = rotulo;
 }
 
+// Nome do portal: cadastro primeiro, casca so como reserva.
+function cliAplicarIdentidade(transportadora, operacao) {
+  try {
+    if (transportadora) localStorage.setItem('temvia_marca_' + C.clienteId, transportadora);
+  } catch (e) {}
+  // Guarda no mesmo lugar que o resto do app le, para o menu lateral e o
+  // login contarem a mesma historia.
+  try {
+    if (typeof EMPRESA_CONFIG !== 'undefined') {
+      if (transportadora) EMPRESA_CONFIG.nome = transportadora;
+      if (operacao !== undefined) EMPRESA_CONFIG.operacaoNome = operacao;
+    }
+    if (typeof cliIdentificar === 'function' && document.getElementById('tvUserNome'))
+      cliIdentificar();
+  } catch (e) {}
+  var nome = String(transportadora || '').trim();
+  var op = String(operacao || '').trim();
+  ['brandLogin', 'brandHeader'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el && nome) el.textContent = nome;
+  });
+  var sub = document.getElementById('cliSubMarca');
+  if (sub) sub.textContent = op ? ('Portal do Cliente \u00b7 ' + op)
+                                : 'Fretamento \u2014 Portal do Cliente';
+}
+
 function cliIdentificar() {
   // Cadastro primeiro; o apelido da casca so enquanto ele nao chegou.
   const cfg = (typeof EMPRESA_CONFIG !== 'undefined' && EMPRESA_CONFIG) || {};
@@ -3076,7 +3093,11 @@ async function esqueciSenhaCliente() {
       else {
         const err = document.getElementById('loginError');
         if (err) {
-          err.textContent = 'Este login nao tem acesso ao portal desta empresa. Fale com o gestor.';
+          // Dizer QUEM esta conectado: sem isso a mensagem parece recusa
+          // do que a pessoa ainda nem digitou.
+          const quem = (user && user.email) ? user.email : 'a conta conectada';
+          err.textContent = 'Voce esta conectado como ' + quem +
+            ', que nao tem acesso ao portal desta empresa. Entre abaixo com outra conta.';
           err.style.display = 'block';
         }
         mostrarFormularioCliente();
@@ -3668,16 +3689,15 @@ async function cliEnviarSolicitacao() {
         funcionarios: funcListaEmail,
         obs:          obs || '—',
       };
-      // E-mail para o gestor Redentor
-      console.log('Enviando e-mail para: redentorfretamento@gmail.com');
-      await emailjs.send('service_gp46qeg', 'template_m4k9byn', { origem: C.origemEmail,
-        ...params, to_email: 'redentorfretamento@gmail.com'
-      });
-      // E-mail para o cliente (teste: borbacana@gmail.com)
-      console.log('Enviando e-mail para: borbacana@gmail.com');
-      await emailjs.send('service_gp46qeg', 'template_m4k9byn', { origem: C.origemEmail,
-        ...params, to_email: 'borbacana@gmail.com'
-      });
+      // Um destinatario so, o que estiver em Configuracoes. Sem ele, nao
+      // manda e-mail nenhum — melhor que mandar para o endereco errado.
+      const _dest = cadEmailDestino();
+      if (_dest) {
+        await emailjs.send('service_gp46qeg', 'template_m4k9byn',
+          { origem: C.origemEmail, ...params, to_email: _dest });
+      } else {
+        console.warn('Sem e-mail de solicitacoes em Configuracoes: nada enviado.');
+      }
     } catch(emailErr) {
       console.warn('EmailJS erro (não crítico):', emailErr);
     }
@@ -3967,6 +3987,13 @@ function cadValidarEtapa2() {
 // que todo turno novo fica invisivel para quem abre a solicitacao.
 // Para onde vai a solicitacao. Sem nada cadastrado, nao inventa nome de
 // transportadora: diz o que de fato acontece.
+// Um so lugar decide para onde vai o e-mail. Antes eram quatro
+// endereços escritos no motor, e o campo do gestor nao era lido.
+function cadEmailDestino() {
+  const e = (typeof EMPRESA_CONFIG !== 'undefined' && EMPRESA_CONFIG) || {};
+  return String(e.emailSolicitacoes || '').trim();
+}
+
 function cadDestinoTexto() {
   const e = (typeof EMPRESA_CONFIG !== 'undefined' && EMPRESA_CONFIG) || {};
   const alvo = String(e.emailSolicitacoes || '').trim();
@@ -4063,7 +4090,8 @@ async function cadEnviar() {
     try {
       emailjs.init('i8-o88nerwgYStDgL');
       const resumoTxt=cadMontarResumoTexto();
-      for (const email of ['redentorfretamento@gmail.com','borbacana@gmail.com']) {
+      // Lista de destinatarios: o que estiver em Configuracoes, so.
+      for (const email of [cadEmailDestino()].filter(Boolean)) {
         await emailjs.send('service_gp46qeg','template_m4k9byn',{ origem: C.origemEmail,sol_id:id,tipo:CAD_TIPO_LABEL,data:now.toLocaleDateString('pt-BR'),horario:now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),roteiro:'—',funcionarios:resumoTxt,obs:obs||'—',to_email:email});
       }
     } catch(e){console.warn('CAD email:',e);}
@@ -4386,7 +4414,7 @@ async function rcRegistrar() {
         sol_id: reg.id, tipo:'Reclamação Aberta', data: reg.dataOcorrencia.split('-').reverse().join('/'),
         horario: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), roteiro: alvo + (reg.turno?' · '+reg.turno+' turno':''),
         funcionarios: reg.descricao, obs: reg.provas ? 'Provas: '+reg.provas : '—',
-        to_email:'redentorfretamento@gmail.com'
+        to_email:cadEmailDestino()
       });
     } catch(e) { console.warn('email reclamação:', e); }
     alert('Ocorrência registrada! A Redentor foi notificada e vai responder.');
@@ -4441,7 +4469,7 @@ async function rcRecusar(id) {
         horario: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
         roteiro: alvo + (r.turno?' · '+r.turno+' turno':''),
         funcionarios: 'MOTIVO DA RECUSA: ' + motivo.trim(), obs:'A reclamação voltou para a Redentor responder novamente.',
-        to_email:'redentorfretamento@gmail.com'
+        to_email:cadEmailDestino()
       });
     } catch(e) { console.warn('email recusa:', e); }
   } catch(e) { alert('Erro: ' + e.message); }

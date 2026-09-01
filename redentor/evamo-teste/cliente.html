@@ -12,7 +12,8 @@
 <style>
   /* Evita o flash de conteúdo sem estilo: o tema chega com o engine. */
   html { background: #0d1117; }
-  html:not([data-tema]) body { visibility: hidden; }
+  /* Espera o CSS chegar de verdade, nao so o atributo do tema. */
+  html:not(.tv-pronto) body { visibility: hidden; }
   html.tv-destravado body { visibility: visible !important; }
 </style>
 <script>
@@ -92,7 +93,7 @@ window.CLIENTE_CONFIG = {
   ]
 };
 </script>
-<script src="/motor/beta/comum.js?v=2026-08-31-B"></script>
-<script src="/motor/beta/cliente.js?v=2026-08-31-B"></script>
+<script src="/motor/beta/comum.js?v=2026-09-01-A"></script>
+<script src="/motor/beta/cliente.js?v=2026-09-01-A"></script>
 </body>
 </html>

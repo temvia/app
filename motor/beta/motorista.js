@@ -579,6 +579,7 @@ body {
   // Se havia selecao gravada, a proxima tela e a rota — nao a escolha.
   // Ligar isto ANTES do innerHTML nao funciona: o elemento ainda nem
   // existe. Fica logo depois, junto da identidade.
+  document.documentElement.classList.add('tv-pronto');
   document.body.innerHTML = `
 
 <!-- LOGIN SCREEN -->
