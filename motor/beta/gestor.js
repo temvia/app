@@ -597,7 +597,10 @@ async function opCriar() {
     const ref = doc(fbDb, '_plataforma', 'operacoes');
     const atual = await getDoc(ref);
     const info = (atual.exists() && atual.data().info) || {};
-    info[id] = { nome: nome, cor: cor, path: '/redentor/' + id.replace(/_/g, '-') + '/' };
+    // Sem `path`: operacao nova usa a casca generica, e o caminho e
+    // montado por perfil na hora de abrir. Gravar um caminho de pasta
+    // aqui faz o portal procurar arquivo que nunca foi publicado.
+    info[id] = { nome: nome, cor: cor };
     await setDoc(ref, { lista: arrayUnion(id), info: info,
                         updatedAt: new Date().toISOString() }, { merge: true });
 
@@ -608,11 +611,11 @@ async function opCriar() {
         criadoEm: new Date().toISOString() }, { merge: true });
 
     await tvCarregarOperacoes();
-    const endereco = location.host + '/redentor/' + id.replace(/_/g, '-') + '/';
+    const endereco = location.host + '/redentor/gestor.html?op=' + id;
     diga('<b style="color:#10b981">' + esc(nome) + ' criada.</b><br><br>' +
       'Já aparece no menu e aceita cadastro.<br><br>' +
-      'O endereço será <code>' + esc(endereco) + '</code> — é ele que motoristas e ' +
-      'passageiros vão usar. Ainda falta publicá-lo no site: peça à temvia.');
+      'Já pode ser aberta pelo portal, sem precisar publicar nada. ' +
+      'O endereço direto é <code>' + esc(endereco) + '</code>.');
   } catch (e) {
     const cod = String((e && (e.code || e.message)) || '');
     diga(cod.indexOf('permission') >= 0
