@@ -146,6 +146,10 @@
           // Operacao com pasta propria mantem o caminho antigo; as novas
           // usam a casca generica, e o arquivo depende do perfil — quem
           // resolve isso e quem monta o link, ao escolher o perfil.
+          // So confia em caminho de pasta quando a operacao esta na
+          // reserva deste arquivo: sao as que tem pasta publicada de
+          // verdade. `path` gravado a mao para operacao nova mandaria
+          // todo mundo para um 404 — ja aconteceu com a MARLOG.
           path: (velha && velha.path) || '',
           generica: !(velha && velha.path),
           clienteId: id,
