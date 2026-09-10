@@ -96,6 +96,15 @@
     projectId: 'evamo-transporte'
   };
 
+  // Caminho do app para uma operacao. Duas formas convivem:
+  //   antiga   -> /redentor/evamo/index.html      (pasta propria)
+  //   generica -> /redentor/gestor.html?op=marlog (uma casca para todas)
+  function urlDoApp(op, arquivo) {
+    if (op && op.path) return op.path + arquivo;          // pasta propria
+    const arq = (arquivo === 'index.html') ? 'gestor.html' : arquivo;
+    return '/' + TRANSPORTADORA_ID + '/' + arq + '?op=' + encodeURIComponent(op.id);
+  }
+
   async function carregarCatalogo() {
     try {
       const { initializeApp, getApps } =
@@ -134,7 +143,11 @@
           cor: i.cor || (velha && velha.cor) || '#3b82f6',
           inicial: (nome[0] || '?').toUpperCase(),
           oculta: !!i.teste,
-          path: (velha && velha.path) || ('/redentor/?op=' + id),
+          // Operacao com pasta propria mantem o caminho antigo; as novas
+          // usam a casca generica, e o arquivo depende do perfil — quem
+          // resolve isso e quem monta o link, ao escolher o perfil.
+          path: (velha && velha.path) || '',
+          generica: !(velha && velha.path),
           clienteId: id,
           passKey: (velha && velha.passKey) || (id + '_pass_tel'),
           senhaClienteFallback: (velha && velha.senhaClienteFallback) || '',
@@ -247,10 +260,10 @@
   async function continuar(){
     const p=PERFIS.find(x=>x.id===get(K_PERFIL)), o=opers().find(x=>x.key===get(K_OPER));
     if(!p||!o){ renderPerfil(); return; }
-    if(p.id==='motorista'){ window.location.href=o.path+'motorista.html'; return; }
+    if(p.id==='motorista'){ window.location.href=urlDoApp(o,'motorista.html'); return; }
     const btn=document.getElementById('btnContinuar'), msg=document.getElementById('contMsg');
     if(btn){ btn.disabled=true; btn.textContent='Verificando acesso...'; }
-    if(await sessaoAberta(o)){ window.location.href=o.path+'index.html'; return; }
+    if(await sessaoAberta(o)){ window.location.href=urlDoApp(o,'index.html'); return; }
     if(btn){ btn.disabled=false; btn.textContent='Entrar como '+p.nome+' · '+o.nome; }
     if(msg){ msg.className='msg info'; msg.textContent='Sua sessao expirou. Entre de novo abaixo.'; }
     escolher('gestor');
@@ -274,7 +287,7 @@
       if(multi) h+='<div class="grupo">'+t.nome+'</div>';
       t.operacoes.forEach(op=>{
         const key=t.id+':'+op.id;
-        h+='<div class="card" onclick="set(K_OPER,\''+key+'\');window.location.href=\''+op.path+arquivo+'\'">'+
+        h+='<div class="card" onclick="set(K_OPER,\''+key+'\');window.location.href=\''+urlDoApp(op,arquivo)+'\'">'+
            (key===ultima?'<span class="badge">ULTIMA</span>':'')+
            '<div class="card-logo" style="background:'+op.cor+'">'+op.inicial+'</div>'+
            '<div class="card-info"><div class="card-nome">'+op.nome+'</div><div class="card-desc">'+op.desc+'</div></div>'+
@@ -331,7 +344,7 @@
   }
   function motoristaIr(a){
     set(K_OPER, a.op.key);
-    window.location.href=a.op.path+'motorista.html';
+    window.location.href=urlDoApp(a.op,'motorista.html');
   }
 
   // ================= GESTOR: login unico -> escolhe a operacao =================
@@ -404,7 +417,7 @@
       const op=r.op;
       if(multi && op.transp!==transpAtual){ transpAtual=op.transp; h+='<div class="grupo">'+op.transp+'</div>'; }
       if(r.ok){
-        h+='<div class="card" onclick="set(K_OPER,\''+op.key+'\');window.location.href=\''+op.path+'index.html\'">'+
+        h+='<div class="card" onclick="set(K_OPER,\''+op.key+'\');window.location.href=\''+urlDoApp(op,'index.html')+'\'">'+
            (op.key===ultima?'<span class="badge">ULTIMA</span>':'')+
            '<div class="card-logo" style="background:'+op.cor+'">'+op.inicial+'</div>'+
            '<div class="card-info"><div class="card-nome">'+op.nome+'</div><div class="card-desc">'+op.desc+'</div></div>'+
@@ -462,7 +475,7 @@
   function passageiroIr(a){
     try{ localStorage.setItem(a.op.passKey, a.tel); }catch(e){}
     set(K_OPER, a.op.key);
-    window.location.href=a.op.path+'passageiro.html';
+    window.location.href=urlDoApp(a.op,'passageiro.html');
   }
 
   // ================= EMPRESA CLIENTE: senha -> acha a empresa =================
@@ -526,7 +539,7 @@
       try{ localStorage.setItem('temvia_cliente_senha_'+alvo.clienteId, val); }catch(e){}
     }
     set(K_OPER, alvo.key);
-    window.location.href=alvo.path+'cliente.html';
+    window.location.href=urlDoApp(alvo,'cliente.html');
   }
   async function clienteEsqueci(){
     const email=(document.getElementById('cEmail').value||'').trim();

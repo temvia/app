@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>temvia — Portal do Cliente</title>
+<meta name="application-name" content="Evamo TESTE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Evamo TESTE">
+<meta name="theme-color" content="#0d1117">
+<style>
+  /* Evita o flash de conteúdo sem estilo: o tema chega com o engine. */
+  html { background: #0d1117; }
+  /* Espera o CSS chegar de verdade, nao so o atributo do tema. */
+  html:not(.tv-pronto) body { visibility: hidden; }
+  html.tv-destravado body { visibility: visible !important; }
+</style>
+<script>
+  // Rede de segurança: se o engine não carregar, a tela aparece mesmo
+  // sem tema em 5 segundos. Melhor feia que invisível.
+  setTimeout(function () {
+    document.documentElement.classList.add('tv-destravado');
+  }, 5000);
+</script>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="msapplication-TileColor" content="#0d1117">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<script>
+// ============================================================
+// CASCA GENERICA — PORTAL DO CLIENTE
+// Local: /redentor/cliente.html
+//
+// UMA casca para TODAS as operacoes da transportadora. A
+// operacao vem de ?op= na URL. Cliente novo nao precisa de
+// pasta nova: basta existir em _plataforma/operacoes.
+//
+// As pastas antigas (/redentor/evamo/, /redentor/evamo-teste/)
+// continuam funcionando. Sem migracao e sem data marcada.
+// ============================================================
+  // ===== INFRAESTRUTURA DA TRANSPORTADORA =====
+  // Isto NAO muda de operacao para operacao: e um projeto Firebase, uma
+  // chave Maps, um App Check. Por isso a pasta e por transportadora.
+  const FB = {
+    apiKey: "AIzaSyBN1VE2mS5nn5LxfxWMqJyHSe1aDtwYiCE",
+    authDomain: "evamo-transporte.firebaseapp.com",
+    projectId: "evamo-transporte",
+    storageBucket: "evamo-transporte.firebasestorage.app",
+    messagingSenderId: "84008575783",
+    appId: "1:84008575783:web:d56e4e2cdeed1438b87f02"
+  };
+  const MAPS_KEY = 'AIzaSyDraT6kNEiTIahM7Br6md73sO7A0COaFGA';
+  const APPCHECK_KEY = '6LcqJJItAAAAANzo7cZ476uqKlHkv_2KAY1Ugtrm';
+  const TRANSPORTADORA = 'redentor';
+
+  // ===== TELEMETRIA CENTRAL DA TEMVIA =====
+  // Projeto separado, so da temvia. Recebe CONTAGEM de uso — nunca dado
+  // de pessoa, nunca resposta do Google. E o que permite medir consumo
+  // por operacao sem abrir o banco de ninguem.
+  const FB_TELEMETRIA = {
+    apiKey: "AIzaSyDuEQ9ncWAfhj6Ej10hcwgN4JuInPC3yYc",
+    authDomain: "temvia-central.firebaseapp.com",
+    projectId: "temvia-central",
+    storageBucket: "temvia-central.firebasestorage.app",
+    messagingSenderId: "50315523226",
+    appId: "1:50315523226:web:dfe7f915f71a7459989b23"
+  };
+
+  // ===== QUAL OPERACAO =====
+  // Vem da URL: /redentor/gestor.html?op=marlog
+  // Sem ?op=, volta ao portal em vez de abrir uma tela sem sentido.
+  const OP = (new URLSearchParams(location.search).get('op') || '').trim();
+  if (!/^[a-z0-9_]{3,40}$/.test(OP)) {
+    location.replace('/' + TRANSPORTADORA + '/');
+    throw new Error('operacao ausente');
+  }
+
+  window.CLIENTE_CONFIG = {
+    clienteId: OP,
+    projetoEsperado: FB.projectId,
+    mapsKey: MAPS_KEY,
+    appCheckKey: APPCHECK_KEY,
+    timezone: 'America/Sao_Paulo',
+
+    // A trava de pasta passa a proteger a TRANSPORTADORA, que e o risco
+    // real: uma casca da Redentor abrir dado de outra transportadora.
+    // Entre operacoes da mesma casa, quem separa e a permissao por
+    // operacao nas regras do Firestore.
+    pathPrefix: '/' + TRANSPORTADORA + '/',
+    startUrl: '/' + TRANSPORTADORA + '/cliente.html?op=' + OP,
+
+    // Chave local por operacao: dois clientes no mesmo navegador nao
+    // podem compartilhar sessao nem rascunho.
+    storageKey: TRANSPORTADORA + '_' + OP + '_v1',
+
+    // MESMA instancia Firebase do portal: a sessao do login vale aqui.
+    // Nome diferente = login perdido ao entrar na operacao.
+    appNome: 'portal-' + TRANSPORTADORA + '-' + OP,
+
+    // Nome de tela: reserva ate o cadastro chegar do Firestore, que
+    // acontece em seguida. Nao inventa nome de empresa.
+    marca: OP,
+    marcaUpper: OP.toUpperCase(),
+    empresaNome: '',
+    ambienteTeste: false,
+
+    fb: FB,
+    fbTelemetria: FB_TELEMETRIA,
+
+    // Turnos, frota, servicos extras e identidade vem do documento
+    // `config` da operacao. A casca nao repete nada disso: era a
+    // segunda fonte da mesma verdade que fazia a tela mostrar um nome
+    // e o cadastro outro.
+    turnosChegada: {},
+    operacoes: []
+  };
+
+  // ===== SESSAO =====
+  // O gestor abria inteiro sem login, mostrava os dados e so falhava no
+  // salvar. Custou uma hora de investigacao achando que era permissao.
+  // Agora a falta de sessao aparece na porta, nao no fim.
+  (async function () {
+    try {
+      const { initializeApp, getApps } =
+        await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      const { getAuth, onAuthStateChanged } =
+        await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+      const nome = window.CLIENTE_CONFIG.appNome;
+      const app = getApps().find(a => a.name === nome) || initializeApp(FB, nome);
+      const auth = getAuth(app);
+      await new Promise(function (r) {
+        const parar = onAuthStateChanged(auth, function () { parar(); r(); });
+      });
+      const u = auth.currentUser;
+      if (!u || u.isAnonymous) {
+        // Guarda para onde voltar: quem clicou num link direto merece
+        // cair na operacao certa depois de entrar.
+        try { sessionStorage.setItem('temvia_voltar_para', location.href); } catch (e) {}
+        location.replace('/' + TRANSPORTADORA + '/');
+      }
+    } catch (e) {
+      console.warn('[casca] sessao:', e && e.message);
+    }
+  })();
+</script>
+<script src="/motor/comum.js?v=2026-09-10-A"></script>
+<script src="/motor/cliente.js?v=2026-09-10-A"></script>
+</body>
+</html>
