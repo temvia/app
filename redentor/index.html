@@ -84,7 +84,73 @@
 
   // ===== PORTAL EXCLUSIVO DA TRANSPORTADORA =====
   const TRANSPORTADORA_ID = 'redentor';
-  const TRANSPORTADORAS = TODAS_TRANSPORTADORAS.filter(t => t.id === TRANSPORTADORA_ID);
+  let TRANSPORTADORAS = TODAS_TRANSPORTADORAS.filter(t => t.id === TRANSPORTADORA_ID);
+
+  // ===== CATALOGO VIVO =====
+  // A infraestrutura (chaves do Firebase) continua aqui: e da
+  // transportadora e nao muda de operacao para operacao. O que vem do
+  // servidor e QUAIS operacoes existem e como se chamam.
+  const FB_TRANSPORTADORA = {
+    apiKey: 'AIzaSyBN1VE2mS5nn5LxfxWMqJyHSe1aDtwYiCE',
+    authDomain: 'evamo-transporte.firebaseapp.com',
+    projectId: 'evamo-transporte'
+  };
+
+  async function carregarCatalogo() {
+    try {
+      const { initializeApp, getApps } =
+        await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      const { getFirestore, doc, getDoc } =
+        await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      const { getAuth, signInAnonymously, onAuthStateChanged } =
+        await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+
+      const app = getApps().find(a => a.name === 'catalogo') ||
+                  initializeApp(FB_TRANSPORTADORA, 'catalogo');
+      const auth = getAuth(app);
+      // O catalogo exige sessao; a anonima serve e nao derruba login
+      // nenhum, porque esta numa instancia separada.
+      await new Promise(r => { const p2 = onAuthStateChanged(auth, () => { p2(); r(); }); });
+      if (!auth.currentUser) await signInAnonymously(auth);
+
+      const snap = await getDoc(doc(getFirestore(app), '_plataforma', 'operacoes'));
+      if (!snap.exists()) return false;
+      const d = snap.data();
+      const ids = Array.isArray(d.lista) ? d.lista : [];
+      const info = d.info || {};
+      if (!ids.length) return false;
+
+      const antigas = (TODAS_TRANSPORTADORAS[0] || {}).operacoes || [];
+      const ops = ids.map(id => {
+        const i = info[id] || {};
+        // Operacao que ja tinha pasta propria mantem o caminho antigo;
+        // as novas usam a casca generica da transportadora.
+        const velha = antigas.find(o => o.clienteId === id);
+        const nome = i.nome || (velha && velha.nome) || id;
+        return {
+          id: id,
+          nome: nome,
+          desc: i.desc || (velha && velha.desc) || '',
+          cor: i.cor || (velha && velha.cor) || '#3b82f6',
+          inicial: (nome[0] || '?').toUpperCase(),
+          oculta: !!i.teste,
+          path: (velha && velha.path) || ('/redentor/?op=' + id),
+          clienteId: id,
+          passKey: (velha && velha.passKey) || (id + '_pass_tel'),
+          senhaClienteFallback: (velha && velha.senhaClienteFallback) || '',
+          fb: FB_TRANSPORTADORA
+        };
+      });
+      TRANSPORTADORAS = [{ id: TRANSPORTADORA_ID,
+                           nome: (TODAS_TRANSPORTADORAS[0] || {}).nome || 'temvia',
+                           operacoes: ops }];
+      return true;
+    } catch (e) {
+      // Sem catalogo o portal ainda abre com o que esta no arquivo.
+      console.warn('[portal] catalogo:', e && e.message);
+      return false;
+    }
+  }
 
   // Icones vetoriais (traço fino, padrão de apps corporativos)
   const IC = {
@@ -490,7 +556,14 @@
     if(btn){ ev.preventDefault(); btn.click(); }
   });
 
+  // Pinta com o que existe no arquivo — a tela nao espera a rede.
   renderPerfil();
+
+  // E repinta quando o catalogo chega. E aqui que a DSV desativada some
+  // e que a operacao criada hoje aparece, sem ninguem editar arquivo.
+  carregarCatalogo().then(function (ok) {
+    if (ok) renderPerfil();
+  });
 </script>
 </body>
 </html>
