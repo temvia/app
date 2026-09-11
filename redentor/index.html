@@ -262,7 +262,14 @@
       const auth=getAuth(await fbDe(op));
       return await new Promise(res=>{
         const t=setTimeout(()=>res(false), 3000);
-        const un=onAuthStateChanged(auth, u=>{ clearTimeout(t); try{ un(); }catch(e){} res(!!u); });
+        // Anonimo NAO e login. garantirSessao() cria sessao anonima na
+        // instancia do gestor quando alguem abre a operacao sem estar logado —
+        // e desde que Portal/Gestor/Cliente passaram a dividir
+        // 'portal-redentor', esse anonimo cai NA MESMA instancia que o portal
+        // consulta aqui. Aceitando `!!u`, o 'Continuar de onde parou' mandava
+        // para a operacao, a operacao recusava o anonimo e devolvia ao portal:
+        // laco. As cascas ja exigem nao-anonimo; o portal passa a exigir tambem.
+        const un=onAuthStateChanged(auth, u=>{ clearTimeout(t); try{ un(); }catch(e){} res(!!u && !u.isAnonymous); });
       });
     }catch(e){ return false; }
   }
