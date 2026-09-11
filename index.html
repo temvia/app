@@ -3,488 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>temvia — Acesso</title>
 <meta name="theme-color" content="#0d1117">
-<title>temvia — Portal de Acesso</title>
 <link rel="icon" type="image/png" sizes="32x32" href="/marca/favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/marca/icon-192.png">
-<link rel="apple-touch-icon" href="/marca/icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Barlow:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#0d1117; --surface:#161b22; --surface2:#1c2333; --border:#2d3748; --accent:#f59e0b; --accent2:#3b82f6; --green:#10b981; --red:#ef4444; --text:#e6edf3; --muted:#8b949e; }
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
-  .topbar{background:linear-gradient(180deg,#11161d,#0d1117);border-bottom:1px solid var(--border);padding:calc(20px + env(safe-area-inset-top)) 18px 16px;text-align:center}
-  .brand-sub{font-size:12px;color:var(--muted);margin-top:6px;text-transform:uppercase;letter-spacing:0.6px;font-weight:500}
-  .wrap{flex:1;width:100%;max-width:560px;margin:0 auto;padding:22px 16px 40px}
-  .title{font-family:'Barlow',sans-serif;font-weight:700;font-size:18px;margin-bottom:4px}
-  .subtitle{font-size:13px;color:var(--muted);margin-bottom:20px}
-  .card{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;cursor:pointer;transition:border-color .15s,transform .05s,background .15s;color:var(--text);position:relative}
-  .card:active{transform:scale(0.99)} .card:hover{border-color:var(--accent);background:var(--surface2)}
-  .card.desativado{opacity:0.45;cursor:default}
-  .card-ico{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);color:var(--accent)}
-  .card-logo{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Barlow',sans-serif;font-weight:800;font-size:20px;color:#000;flex-shrink:0}
-  .card-info{flex:1;min-width:0}
-  .card-nome{font-family:'Barlow',sans-serif;font-weight:700;font-size:16px}
-  .card-desc{font-size:12px;color:var(--muted);margin-top:2px}
-  .card-seta{color:var(--muted);font-size:20px;flex-shrink:0}
-  .badge{position:absolute;top:10px;right:12px;background:var(--green);color:#04210f;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
-  .continuar{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:22px}
-  .continuar-label{font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600}
-  .btn-primario{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--accent),#d97706);color:#000;border:none;border-radius:10px;padding:14px 16px;font-family:'Barlow',sans-serif;font-weight:800;font-size:15px;width:100%;cursor:pointer;text-decoration:none;justify-content:center}
-  .btn-primario:disabled{opacity:0.6;cursor:wait}
-  .btn-voltar{background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;margin-bottom:18px;font-family:'Inter',sans-serif}
-  .divider{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--muted);font-size:12px}
-  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
-  .grupo{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin:14px 0 8px}
-  .campo{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;color:var(--text);font-size:16px;font-family:'Inter',sans-serif;margin-bottom:10px}
-  .campo:focus{outline:none;border-color:var(--accent)}
-  .campo-senha{position:relative}
-  .campo-senha .campo{padding-right:46px}
-  .olho{position:absolute;right:10px;top:12px;background:none;border:none;cursor:pointer;color:var(--muted);line-height:1;padding:4px;display:flex}
-  .msg{min-height:20px;font-size:13px;margin:6px 0 10px}
-  .msg.erro{color:var(--red)} .msg.ok{color:var(--green)} .msg.info{color:var(--muted)}
-  .foot{text-align:center;font-size:11px;color:var(--muted);padding:18px}
+  :root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2128;--border:#30363d;
+        --text:#e6edf3;--muted:#8b949e;--accent:#FBAE17;--erro:#f85149}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);min-height:100vh;
+       font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+       display:flex;flex-direction:column;align-items:center;
+       padding:0 20px 40px}
+  .topo{width:100%;text-align:center;padding:38px 0 30px;border-bottom:1px solid var(--border);
+        margin-bottom:40px}
+  .logo{display:flex;align-items:center;justify-content:center;gap:11px;
+        font-family:'Barlow',sans-serif;font-weight:800;font-size:30px;letter-spacing:-.5px}
+  .logo img{height:30px;width:auto}
+  .sub{font-size:11px;color:var(--muted);letter-spacing:.16em;margin-top:7px;text-transform:uppercase}
+  .caixa{width:100%;max-width:420px}
+  h1{font-family:'Barlow',sans-serif;font-size:22px;margin:0 0 6px}
+  .ajuda{font-size:13px;color:var(--muted);line-height:1.6;margin:0 0 22px}
+  label{display:block;font-size:11px;color:var(--muted);letter-spacing:.08em;
+        text-transform:uppercase;margin-bottom:7px}
+  input{width:100%;background:var(--surface);border:1px solid var(--border);
+        border-radius:11px;padding:14px 15px;color:var(--text);font-size:16px;
+        font-family:inherit}
+  input:focus{outline:none;border-color:var(--accent)}
+  button{width:100%;margin-top:14px;background:var(--accent);border:none;
+         border-radius:11px;padding:15px;color:#14161a;font-weight:700;font-size:15px;
+         font-family:inherit;cursor:pointer}
+  button[disabled]{opacity:.55;cursor:default}
+  .erro{margin-top:15px;padding:13px 15px;background:rgba(248,81,73,0.1);
+        border:1px solid rgba(248,81,73,0.35);border-radius:10px;
+        font-size:13px;line-height:1.6;color:#ffb4ae;display:none}
+  .rodape{margin-top:34px;font-size:12px;color:var(--muted);text-align:center;line-height:1.7}
+  .spin{width:22px;height:22px;border:2.5px solid var(--border);border-top-color:var(--accent);
+        border-radius:50%;animation:g .8s linear infinite;margin:0 auto}
+  @keyframes g{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
-  <div class="topbar">
-    <img src="data:image/png;base64,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" alt="temvia" style="height:44px;vertical-align:middle">
-    <span style="font-weight:400;font-size:30px;color:#fff;letter-spacing:0.5px;vertical-align:middle;margin-left:10px">temvia</span>
-    <div class="brand-sub">Gestão inteligente para transporte fretado</div>
-  </div>
 
-  <div class="wrap">
-    <div style="font-family:'Barlow',sans-serif;font-weight:800;font-size:13px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:16px;text-align:center">Portal de Acesso</div>
-    <div id="tela"></div>
-  </div>
+<div class="topo">
+  <div class="logo"><img src="/marca/temvia-simbolo.png" alt="">temvia</div>
+  <div class="sub">Gestão inteligente para transporte fretado</div>
+</div>
 
-  <div class="foot">temvia · No caminho certo. Na hora certa.</div>
+<div class="caixa">
+  <h1>Acessar</h1>
+  <p class="ajuda">Informe o e-mail ou o telefone que você usa no sistema.
+     Levamos você direto ao portal da sua empresa.</p>
+
+  <label for="ident">E-mail ou telefone</label>
+  <input id="ident" type="text" autocomplete="username"
+         placeholder="seu@email.com ou (15) 99999-9999" autofocus>
+  <button id="btn" onclick="entrar()">Continuar</button>
+
+  <div class="erro" id="erro"></div>
+  <div style="margin-top:20px;display:none" id="carregando"><div class="spin"></div></div>
+
+  <div class="rodape">
+    Primeiro acesso ou não reconhece seu contato?<br>
+    Fale com o responsável pelo transporte na sua empresa.
+  </div>
+</div>
 
 <script>
-  // ===== CATALOGO: TRANSPORTADORAS -> OPERACOES =====
-  // fb: credenciais publicas de front-end de cada operacao (as mesmas dos apps).
-  // passKey: chave do localStorage usada pelo app do passageiro daquela operacao.
-  // senhaClienteFallback: senha fixa antiga do app da empresa cliente (vale ate o gestor definir no Config).
-  const TRANSPORTADORAS = [
-    {
-      id: 'redentor', nome: 'Redentor',
-      operacoes: [
-        { id: 'dsv', nome: 'DSV', desc: 'Transporte de funcionarios · Sorocaba', cor: '#f59e0b', inicial: 'D',
-          path: '/redentor/dsv/', clienteId: 'redentor', passKey: 'redentor_pass_tel', senhaClienteFallback: 'redentordsv',
-          fb: { apiKey: 'AIzaSyAuo4e7QEOR-Yqs-Im-dSkC9hOQ19pRmG4', authDomain: 'redentor-transporte-11808.firebaseapp.com', projectId: 'redentor-transporte-11808' } },
-        { id: 'evamo', nome: 'Evamo', desc: 'Transporte de funcionarios · Sorocaba', cor: '#3b82f6', inicial: 'E',
-          path: '/redentor/evamo/', clienteId: 'evamo', passKey: 'evamo_pass_tel', senhaClienteFallback: 'evamo@26',
-          fb: { apiKey: 'AIzaSyBN1VE2mS5nn5LxfxWMqJyHSe1aDtwYiCE', authDomain: 'evamo-transporte.firebaseapp.com', projectId: 'evamo-transporte' } }
-      ]
+// ============================================================
+// PORTA DE ENTRADA — app.temvia.com.br
+//
+// POR QUE ESTA TELA NÃO FAZ LOGIN
+// Cada transportadora tem projeto Firebase próprio — é isso que impede
+// uma ver os dados da outra. Autenticar aqui exigiria saber de antemão
+// em qual projeto validar, e tentar todos seria disparar login falhado
+// em sistema alheio.
+//
+// Então aqui só se descobre PARA ONDE ir. O login acontece no portal da
+// transportadora, onde a sessão vale.
+//
+// POR QUE NÃO HÁ LISTA DE EMPRESAS
+// Seria mais simples pedir para a pessoa escolher. Mas quantos clientes
+// a temvia tem é dado comercial dela, não informação de tela de login —
+// e com cem transportadoras a escolha manual deixa de funcionar.
+// ============================================================
+
+// Projeto central da temvia. Guarda só hash de identificador e o slug da
+// transportadora: nenhum e-mail ou telefone legível, e listar a coleção
+// é proibido pela regra.
+const FB_CENTRAL = {
+  apiKey: "AIzaSyDuEQ9ncWAfhj6Ej10hcwgN4JuInPC3yYc",
+  authDomain: "temvia-central.firebaseapp.com",
+  projectId: "temvia-central",
+  storageBucket: "temvia-central.firebasestorage.app",
+  messagingSenderId: "50315523226",
+  appId: "1:50315523226:web:dfe7f915f71a7459989b23"
+};
+
+const LEMBRAR = 'temvia_transportadora';
+
+function mostrarErro(txt) {
+  const e = document.getElementById('erro');
+  e.innerHTML = txt;
+  e.style.display = 'block';
+}
+
+function ocupado(sim) {
+  document.getElementById('btn').disabled = sim;
+  document.getElementById('carregando').style.display = sim ? 'block' : 'none';
+  if (sim) document.getElementById('erro').style.display = 'none';
+}
+
+function irPara(t, ident) {
+  try { localStorage.setItem(LEMBRAR, t); } catch (e) {}
+  // O identificador vai junto para a pessoa não digitar duas vezes. Vai
+  // na URL, que é o único caminho entre duas páginas — por isso só o
+  // identificador, nunca a senha.
+  const q = ident ? ('?ident=' + encodeURIComponent(ident)) : '';
+  location.href = '/' + t + '/' + q;
+}
+
+async function entrar() {
+  const ident = (document.getElementById('ident').value || '').trim();
+  if (!ident) { mostrarErro('Informe seu e-mail ou telefone.'); return; }
+
+  ocupado(true);
+  try {
+    // O motor do roteamento mora no comum.js: a mesma função que consulta
+    // aqui é a que registra do outro lado. Duas implementações do mesmo
+    // hash divergiriam no primeiro ajuste.
+    const t = await window.temviaComum.roteamentoDe(ident, FB_CENTRAL);
+    if (t) { irPara(t, ident); return; }
+
+    mostrarErro('Não encontramos esse contato.<br><br>' +
+      'Confira se digitou certo. Se for seu primeiro acesso, ' +
+      'peça ao responsável pelo transporte na sua empresa para cadastrá-lo.');
+  } catch (e) {
+    mostrarErro('Não foi possível verificar agora. ' +
+      'Confira sua conexão e tente de novo.');
+  } finally {
+    ocupado(false);
+  }
+}
+
+document.getElementById('ident').addEventListener('keydown', function (ev) {
+  if (ev.key === 'Enter') { ev.preventDefault(); entrar(); }
+});
+
+// Quem já entrou neste aparelho vai direto, sem digitar. Só vale como
+// atalho: se a pessoa mudou de empresa, basta voltar aqui e informar o
+// contato de novo — o roteamento manda.
+(function () {
+  try {
+    const t = localStorage.getItem(LEMBRAR);
+    if (t && /^[a-z0-9_-]{2,40}$/.test(t) && !location.search) {
+      location.replace('/' + t + '/');
     }
-  ];
-
-  // Icones vetoriais (traço fino, padrão de apps corporativos)
-  const IC = {
-    truck: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V8.5A1.5 1.5 0 0 1 4.5 7h11.2a2 2 0 0 1 1.6.8l2.9 3.9a2 2 0 0 1 .4 1.2V16"/><path d="M3 16h2M9 16h6M19 16h2"/><path d="M4 11h13"/><circle cx="7" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/></svg>',
-    briefcase: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M2 13h20"/></svg>',
-    user: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7.5" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>',
-    building: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/><path d="M9 7h1.5M13.5 7H15M9 11h1.5M13.5 11H15M9 15h1.5M13.5 15H15"/></svg>'
-  };
-
-  const PERFIS = [
-    { id: 'motorista',  nome: 'Motorista',       desc: 'Rota do dia, paradas e presenças',      ico: IC.truck },
-    { id: 'gestor',     nome: 'Gestor',          desc: 'Gestão completa da operação',           ico: IC.briefcase },
-    { id: 'passageiro', nome: 'Passageiro',      desc: 'Confirmar presença e acompanhar a van', ico: IC.user },
-    { id: 'cliente',    nome: 'Empresa cliente', desc: 'Solicitações e acompanhamento',         ico: IC.building }
-  ];
-
-  const K_PERFIL='temvia_ultimo_perfil', K_OPER='temvia_ultima_operacao';
-  const get=k=>{try{return localStorage.getItem(k)||''}catch(e){return ''}};
-  const set=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
-  const opers=()=>{const o=[];TRANSPORTADORAS.forEach(t=>t.operacoes.forEach(op=>o.push({...op,transp:t.nome,transpId:t.id,key:t.id+':'+op.id})));return o;};
-  const soDigitos=t=>(t||'').replace(/\D/g,'');
-  // Comparacao de telefone IGUAL a usada pelos apps (motorista/passageiro):
-  // exige numero com pelo menos 8 digitos e compara os 8 ultimos.
-  // Sem isso, um cadastro com telefone em branco ou curto casa com QUALQUER busca
-  // e o portal oferece uma empresa onde a pessoa nao existe.
-  // Mesma regra dos apps: ferias e afastado entram; desligado e sem-rota nao.
-  const STATUS_PODE_ENTRAR=['ativo','ferias','afastado'];
-  const OLHO_ON  = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' style='width:18px;height:18px;display:block'><path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg>";
-  const OLHO_OFF = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' style='width:18px;height:18px;display:block'><path d='M3 3l18 18'/><path d='M10.6 6.2A9.9 9.9 0 0 1 12 6c6.5 0 10 6 10 6a17 17 0 0 1-3.2 3.9'/><path d='M6.6 6.7A17 17 0 0 0 2 12s3.5 6 10 6a9.6 9.6 0 0 0 3.9-.8'/><path d='M9.9 9.9a3 3 0 0 0 4.2 4.2'/></svg>";
-  // Mostrar/ocultar senha (o campo fica escondido por padrao).
-  function verSenha(idCampo,idBotao){
-    const c=document.getElementById(idCampo), b=document.getElementById(idBotao);
-    if(!c) return;
-    const ver = c.type==='password';
-    c.type = ver ? 'text' : 'password';
-    if(b){ b.innerHTML = ver ? OLHO_OFF : OLHO_ON; b.title = ver ? 'Ocultar senha' : 'Mostrar senha'; b.setAttribute('aria-label', b.title); }
-  }
-  const telBate=(bruto,alvo)=>{const d=soDigitos(bruto); return d.length>=8 && (d===alvo || d.slice(-8)===alvo.slice(-8));};
-  const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-
-  // ---- Firebase helpers (uma instancia por operacao) ----
-  const _apps={};
-  async function fbDe(op){
-    if(_apps[op.key]) return _apps[op.key];
-    const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-    const nome='portal-'+op.key.replace(':','-');
-    const app = getApps().find(a=>a.name===nome) || initializeApp(op.fb, nome);
-    _apps[op.key]=app; return app;
-  }
-  async function docDe(op, docId){
-    const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    const app = await fbDe(op);
-    const snap = await getDoc(doc(getFirestore(app), op.clienteId, docId));
-    return snap.exists() ? snap.data() : null;
-  }
-
-  let perfilAtual=null;
-  const T=()=>document.getElementById('tela');
-  const sub=t=>{};
-
-  // ================= TELA 1: PERFIS =================
-  function renderPerfil(){
-    sub('Portal de Acesso'); perfilAtual=null;
-    let h='';
-    const pId=get(K_PERFIL), oKey=get(K_OPER);
-    const p=PERFIS.find(x=>x.id===pId), o=opers().find(x=>x.key===oKey);
-    if(p&&o&&(p.id==='motorista'||p.id==='gestor')){
-      h+='<div class="continuar"><div class="continuar-label">Continuar de onde parou</div>'+
-         '<button class="btn-primario" id="btnContinuar" onclick="continuar()">Entrar como '+p.nome+' · '+o.nome+'</button>'+
-         '<div class="msg" id="contMsg"></div></div>'+
-         '<div class="divider">ou escolher outro acesso</div>';
-    }
-    h+='<div class="title">Quem é você?</div><div class="subtitle">Escolha o seu tipo de acesso.</div>';
-    PERFIS.forEach(pf=>{
-      h+='<div class="card" onclick="escolher(\''+pf.id+'\')">'+
-         '<div class="card-ico">'+pf.ico+'</div>'+
-         '<div class="card-info"><div class="card-nome">'+pf.nome+'</div><div class="card-desc">'+pf.desc+'</div></div>'+
-         '<div class="card-seta">\u203A</div></div>';
-    });
-    T().innerHTML=h;
-  }
-  // O atalho so entra direto no app do gestor se a sessao ainda estiver aberta.
-  // Sem isso, quem clicou depois de sair caia na tela de login do proprio app.
-  async function sessaoAberta(op){
-    try{
-      const { getAuth, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-      const auth=getAuth(await fbDe(op));
-      return await new Promise(res=>{
-        const t=setTimeout(()=>res(false), 3000);
-        const un=onAuthStateChanged(auth, u=>{ clearTimeout(t); try{ un(); }catch(e){} res(!!u); });
-      });
-    }catch(e){ return false; }
-  }
-  async function continuar(){
-    const p=PERFIS.find(x=>x.id===get(K_PERFIL)), o=opers().find(x=>x.key===get(K_OPER));
-    if(!p||!o){ renderPerfil(); return; }
-    if(p.id==='motorista'){ window.location.href=o.path+'motorista.html'; return; }
-    const btn=document.getElementById('btnContinuar'), msg=document.getElementById('contMsg');
-    if(btn){ btn.disabled=true; btn.textContent='Verificando acesso...'; }
-    if(await sessaoAberta(o)){ window.location.href=o.path+'index.html'; return; }
-    if(btn){ btn.disabled=false; btn.textContent='Entrar como '+p.nome+' · '+o.nome; }
-    if(msg){ msg.className='msg info'; msg.textContent='Sua sessao expirou. Entre de novo abaixo.'; }
-    escolher('gestor');
-  }
-  function escolher(id){
-    perfilAtual=PERFIS.find(x=>x.id===id);
-    set(K_PERFIL,id);
-    if(id==='motorista') renderMotorista();
-    else if(id==='gestor') renderGestorLogin();
-    else if(id==='passageiro') renderPassageiro();
-    else renderCliente();
-  }
-  const voltar='<button class="btn-voltar" onclick="renderPerfil()">\u2039 Trocar tipo de acesso</button>';
-
-  // ================= MOTORISTA: escolhe a operacao =================
-  function renderOperacoes(arquivo){
-    sub(perfilAtual.nome);
-    const multi=TRANSPORTADORAS.length>1, ultima=get(K_OPER);
-    let h=voltar+'<div class="title">Escolha a empresa</div><div class="subtitle">Acesso de '+perfilAtual.nome+'</div>';
-    TRANSPORTADORAS.forEach(t=>{
-      if(multi) h+='<div class="grupo">'+t.nome+'</div>';
-      t.operacoes.forEach(op=>{
-        const key=t.id+':'+op.id;
-        h+='<div class="card" onclick="set(K_OPER,\''+key+'\');window.location.href=\''+op.path+arquivo+'\'">'+
-           (key===ultima?'<span class="badge">ULTIMA</span>':'')+
-           '<div class="card-logo" style="background:'+op.cor+'">'+op.inicial+'</div>'+
-           '<div class="card-info"><div class="card-nome">'+op.nome+'</div><div class="card-desc">'+op.desc+'</div></div>'+
-           '<div class="card-seta">\u203A</div></div>';
-      });
-    });
-    T().innerHTML=h;
-  }
-
-  // ================= MOTORISTA: telefone -> so as operacoes onde ele trabalha =================
-  function renderMotorista(){
-    sub('Motorista');
-    const telLembrado=get('temvia_moto_tel');
-    T().innerHTML=voltar+
-      '<div class="title">Acesso do Motorista</div>'+
-      '<div class="subtitle">Digite seu telefone. Mostramos apenas as empresas onde você trabalha.</div>'+
-      '<input class="campo" id="mTel" type="tel" inputmode="numeric" placeholder="(15) 99999-9999" value="'+esc(telLembrado)+'">'+
-      '<div class="msg" id="mMsg"></div>'+
-      '<button class="btn-primario" id="mBtn" onclick="motoristaEntrar()">Continuar</button>'+
-      '<div style="font-size:12px;color:#8b949e;text-align:center;margin-top:14px;line-height:1.5">Não encontrou seu telefone?<br>Peça ao gestor para conferir seu cadastro.</div>';
-    if(telLembrado) setTimeout(motoristaEntrar, 50);
-  }
-  async function motoristaEntrar(){
-    const tel=soDigitos(document.getElementById('mTel').value);
-    const msg=document.getElementById('mMsg'), btn=document.getElementById('mBtn');
-    msg.className='msg'; msg.textContent='';
-    if(tel.length<8){ msg.className='msg erro'; msg.textContent='Digite o telefone com DDD.'; return; }
-    btn.disabled=true; btn.textContent='Procurando...';
-    const achadas=[];
-    for(const op of opers()){
-      try{
-        const dados=await docDe(op,'dados');
-        if(!dados) continue;
-        const m=(dados.MOTORISTAS||[]).find(x=>telBate(x.tel,tel));
-        if(m) achadas.push({op, nome:m.nome});
-      }catch(e){}
-    }
-    btn.disabled=false; btn.textContent='Continuar';
-    if(!achadas.length){ msg.className='msg erro'; msg.textContent='Telefone não encontrado no cadastro de motoristas. Peça ao gestor para conferir o número cadastrado.'; return; }
-    set('temvia_moto_tel', tel);
-    if(achadas.length===1){ motoristaIr(achadas[0]); return; }
-    let h=voltar+'<div class="title">Olá, '+esc((achadas[0].nome||'').split(' ')[0])+'</div><div class="subtitle">Escolha a empresa que vai rodar agora.</div>';
-    const multi=[...new Set(achadas.map(a=>a.op.transp))].length>1;
-    let transpAtual='';
-    achadas.forEach((a,i)=>{
-      if(multi && a.op.transp!==transpAtual){ transpAtual=a.op.transp; h+='<div class="grupo">'+a.op.transp+'</div>'; }
-      h+='<div class="card" onclick="motoristaIr(window._mAchadas['+i+'])">'+
-         (a.op.key===get(K_OPER)?'<span class="badge">ULTIMA</span>':'')+
-         '<div class="card-logo" style="background:'+a.op.cor+'">'+a.op.inicial+'</div>'+
-         '<div class="card-info"><div class="card-nome">'+a.op.nome+'</div><div class="card-desc">'+a.op.desc+'</div></div>'+
-         '<div class="card-seta">\u203A</div></div>';
-    });
-    window._mAchadas=achadas; T().innerHTML=h;
-  }
-  function motoristaIr(a){
-    set(K_OPER, a.op.key);
-    window.location.href=a.op.path+'motorista.html';
-  }
-
-  // ================= GESTOR: login unico -> escolhe a operacao =================
-  function renderGestorLogin(){
-    sub('Gestor');
-    T().innerHTML=voltar+
-      '<div class="title">Entrar como Gestor</div>'+
-      '<div class="subtitle">Um único login. Depois você escolhe qual empresa vai gerenciar.</div>'+
-      '<input class="campo" id="gEmail" type="email" autocomplete="username" placeholder="seu@email.com">'+
-      '<div class="campo-senha"><input class="campo" id="gSenha" type="password" autocomplete="current-password" placeholder="Senha">'+
-      '<button type="button" class="olho" id="gOlho" onclick="verSenha(\'gSenha\',\'gOlho\')" title="Mostrar senha">'+OLHO_ON+'</button></div>'+
-      '<div class="msg" id="gMsg"></div>'+
-      '<button class="btn-primario" id="gBtn" onclick="gestorEntrar()">Entrar</button>'+
-      '<div style="text-align:center;margin-top:12px"><a href="#" onclick="gestorEsqueci();return false;" style="color:#8b949e;font-size:13px">Esqueci minha senha</a></div>';
-  }
-  async function gestorEntrar(){
-    const email=document.getElementById('gEmail').value.trim();
-    const senha=document.getElementById('gSenha').value;
-    const msg=document.getElementById('gMsg'), btn=document.getElementById('gBtn');
-    msg.className='msg'; msg.textContent='';
-    if(!email||!senha){ msg.className='msg erro'; msg.textContent='Preencha e-mail e senha.'; return; }
-    btn.disabled=true; btn.textContent='Entrando...';
-    const { getAuth, signInWithEmailAndPassword, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-    const resultados=[]; let ehCliente=false;
-    for(const op of opers()){
-      try{
-        const auth=getAuth(await fbDe(op));
-        await signInWithEmailAndPassword(auth, email, senha);
-        // Conta da empresa cliente NAO gerencia: derruba a sessao e marca o card.
-        const ac=await docDe(op,'acessos');
-        const u=((ac&&ac.lista)||[]).find(x=>(x.email||'').trim().toLowerCase()===email.toLowerCase());
-        if(u && u.papel==='cliente'){
-          ehCliente=true;
-          try{ await signOut(auth); }catch(e){}
-          resultados.push({op, ok:false, cliente:true});
-        } else {
-          resultados.push({op, ok:true});
-        }
-      }catch(e){ resultados.push({op, ok:false}); }
-    }
-    btn.disabled=false; btn.textContent='Entrar';
-    const oks=resultados.filter(r=>r.ok);
-    if(!oks.length){
-      msg.className='msg erro';
-      msg.textContent = ehCliente
-        ? 'Esta conta e do portal da empresa cliente. Volte e escolha o perfil "Empresa cliente".'
-        : 'E-mail ou senha incorretos (ou sem acesso).';
-      return;
-    }
-    renderGestorOperacoes(resultados);
-  }
-  async function gestorEsqueci(){
-    const email=(document.getElementById('gEmail').value||'').trim();
-    const msg=document.getElementById('gMsg');
-    if(!email){ msg.className='msg erro'; msg.textContent='Digite seu e-mail acima e clique de novo.'; return; }
-    const { getAuth, sendPasswordResetEmail } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-    let enviou=false;
-    for(const op of opers()){
-      try{ await sendPasswordResetEmail(getAuth(await fbDe(op)), email); enviou=true; }catch(e){}
-    }
-    msg.className=enviou?'msg':'msg erro';
-    msg.textContent=enviou?'Enviamos um link para voce criar uma senha nova. Confira tambem o spam.':'Nao foi possivel enviar. Confira o e-mail digitado.';
-  }
-  function renderGestorOperacoes(resultados){
-    sub('Gestor');
-    const multi=TRANSPORTADORAS.length>1, ultima=get(K_OPER);
-    let h=voltar+'<div class="title">Qual empresa vai gerenciar?</div><div class="subtitle">Login confirmado — sessão liberada nas empresas abaixo.</div>';
-    let transpAtual='';
-    resultados.forEach(r=>{
-      const op=r.op;
-      if(multi && op.transp!==transpAtual){ transpAtual=op.transp; h+='<div class="grupo">'+op.transp+'</div>'; }
-      if(r.ok){
-        h+='<div class="card" onclick="set(K_OPER,\''+op.key+'\');window.location.href=\''+op.path+'index.html\'">'+
-           (op.key===ultima?'<span class="badge">ULTIMA</span>':'')+
-           '<div class="card-logo" style="background:'+op.cor+'">'+op.inicial+'</div>'+
-           '<div class="card-info"><div class="card-nome">'+op.nome+'</div><div class="card-desc">'+op.desc+'</div></div>'+
-           '<div class="card-seta">\u203A</div></div>';
-      } else {
-        h+='<div class="card desativado">'+
-           '<div class="card-logo" style="background:'+op.cor+'">'+op.inicial+'</div>'+
-           '<div class="card-info"><div class="card-nome">'+op.nome+'</div><div class="card-desc">'+(r.cliente?'Conta de empresa cliente':'Sem acesso com este login')+'</div></div></div>';
-      }
-    });
-    T().innerHTML=h;
-  }
-
-  // ================= PASSAGEIRO: telefone -> acha a empresa e a linha =================
-  function renderPassageiro(){
-    sub('Passageiro');
-    T().innerHTML=voltar+
-      '<div class="title">Acesso do Passageiro</div>'+
-      '<div class="subtitle">Digite seu telefone. O sistema encontra sua empresa e sua linha sozinho.</div>'+
-      '<input class="campo" id="pTel" type="tel" inputmode="numeric" placeholder="(15) 99999-9999">'+
-      '<div class="msg" id="pMsg"></div>'+
-      '<button class="btn-primario" id="pBtn" onclick="passageiroEntrar()">Entrar</button>';
-  }
-  async function passageiroEntrar(){
-    const tel=soDigitos(document.getElementById('pTel').value);
-    const msg=document.getElementById('pMsg'), btn=document.getElementById('pBtn');
-    msg.className='msg'; msg.textContent='';
-    if(tel.length<8){ msg.className='msg erro'; msg.textContent='Digite o telefone com DDD.'; return; }
-    btn.disabled=true; btn.textContent='Procurando...';
-    const achados=[];
-    for(const op of opers()){
-      try{
-        const dados=await docDe(op,'dados');
-        if(!dados) continue;
-        const todos=[];
-        (dados.DATA||[]).forEach(r=>(r.passageiros||[]).forEach(p=>{ if(STATUS_PODE_ENTRAR.includes(p.status)) todos.push(p); }));
-        (dados.SEM_ROTA||[]).forEach(p=>todos.push(p));
-        const m=todos.find(p=>telBate(p.telefone,tel));
-        if(m) achados.push({op, tel: soDigitos(m.telefone)});
-      }catch(e){}
-    }
-    btn.disabled=false; btn.textContent='Entrar';
-    if(!achados.length){ msg.className='msg erro'; msg.textContent='Telefone não encontrado. Confira o número ou fale com o gestor.'; return; }
-    if(achados.length===1){ passageiroIr(achados[0]); return; }
-    // telefone em mais de uma operacao: escolher
-    let h=voltar+'<div class="title">Encontramos você em mais de uma empresa</div><div class="subtitle">Escolha em qual quer entrar.</div>';
-    achados.forEach((a,i)=>{
-      h+='<div class="card" onclick="passageiroIr(window._pAchados['+i+'])">'+
-         '<div class="card-logo" style="background:'+a.op.cor+'">'+a.op.inicial+'</div>'+
-         '<div class="card-info"><div class="card-nome">'+a.op.nome+'</div><div class="card-desc">'+a.op.desc+'</div></div>'+
-         '<div class="card-seta">\u203A</div></div>';
-    });
-    window._pAchados=achados; T().innerHTML=h;
-  }
-  function passageiroIr(a){
-    try{ localStorage.setItem(a.op.passKey, a.tel); }catch(e){}
-    set(K_OPER, a.op.key);
-    window.location.href=a.op.path+'passageiro.html';
-  }
-
-  // ================= EMPRESA CLIENTE: senha -> acha a empresa =================
-  function renderCliente(){
-    sub('Empresa cliente');
-    T().innerHTML=voltar+
-      '<div class="title">Acesso da Empresa Cliente</div>'+
-      '<div class="subtitle">Entre com seu e-mail e senha. Se sua empresa ainda usa a senha unica, deixe o e-mail em branco.</div>'+
-      '<input class="campo" id="cEmail" type="email" autocomplete="username" placeholder="seu@email.com (opcional)">'+
-      '<div class="campo-senha"><input class="campo" id="cSenha" type="password" autocomplete="current-password" placeholder="Senha">'+
-      '<button type="button" class="olho" id="cOlho" onclick="verSenha(\'cSenha\',\'cOlho\')" title="Mostrar senha">'+OLHO_ON+'</button></div>'+
-      '<div class="msg" id="cMsg"></div>'+
-      '<button class="btn-primario" id="cBtn" onclick="clienteEntrar()">Entrar</button>'+
-      '<div style="text-align:center;margin-top:12px"><a href="#" onclick="clienteEsqueci();return false;" style="color:#8b949e;font-size:13px">Esqueci minha senha</a></div>';
-  }
-  // Com e-mail: conta individual (Firebase Auth) + conferencia na lista de acessos.
-  // Sem e-mail: senha unica antiga da empresa (transicao).
-  async function clienteEntrar(){
-    const email=(document.getElementById('cEmail').value||'').trim();
-    const val=document.getElementById('cSenha').value;
-    const msg=document.getElementById('cMsg'), btn=document.getElementById('cBtn');
-    msg.className='msg'; msg.textContent='';
-    if(!val){ msg.className='msg erro'; msg.textContent='Digite a senha.'; return; }
-    btn.disabled=true; btn.textContent='Verificando...';
-    let alvo=null;
-    if(email){
-      const { getAuth, signInWithEmailAndPassword, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-      let entrou=false, motivo='';
-      for(const op of opers()){
-        try{
-          const auth=getAuth(await fbDe(op));
-          await signInWithEmailAndPassword(auth, email, val);
-          entrou=true; // e-mail e senha conferem neste projeto
-          const ac=await docDe(op,'acessos');
-          const u=((ac&&ac.lista)||[]).find(x=>(x.email||'').trim().toLowerCase()===email.toLowerCase());
-          if(u && u.papel==='cliente' && u.ativo!==false){ alvo=op; break; }
-          motivo = !u ? 'naolistado' : (u.papel!=='cliente' ? 'papel' : 'inativo');
-          await signOut(auth);
-        }catch(e){}
-      }
-      btn.disabled=false; btn.textContent='Entrar';
-      if(!alvo){
-        msg.className='msg erro';
-        if(!entrou) msg.textContent='E-mail ou senha incorretos.';
-        else if(motivo==='papel') msg.textContent='Login correto, mas o perfil cadastrado nao e de empresa cliente. Peca ao gestor para conferir o campo papel.';
-        else if(motivo==='inativo') msg.textContent='Login correto, mas este acesso esta desativado. Fale com o gestor.';
-        else msg.textContent='Login correto, mas voce ainda nao esta na lista de acessos desta empresa. Fale com o gestor.';
-        return;
-      }
-    } else {
-      for(const op of opers()){
-        let senhaOp=op.senhaClienteFallback;
-        try{
-          const cfg=await docDe(op,'config');
-          if(cfg && cfg.senhaCliente) senhaOp=cfg.senhaCliente;
-        }catch(e){}
-        if(val===senhaOp){ alvo=op; break; }
-      }
-      btn.disabled=false; btn.textContent='Entrar';
-      if(!alvo){ msg.className='msg erro'; msg.textContent='Senha incorreta.'; return; }
-      try{ localStorage.setItem('temvia_cliente_senha_'+alvo.clienteId, val); }catch(e){}
-    }
-    set(K_OPER, alvo.key);
-    window.location.href=alvo.path+'cliente.html';
-  }
-  async function clienteEsqueci(){
-    const email=(document.getElementById('cEmail').value||'').trim();
-    const msg=document.getElementById('cMsg');
-    if(!email){ msg.className='msg erro'; msg.textContent='Digite seu e-mail acima e clique de novo.'; return; }
-    const { getAuth, sendPasswordResetEmail } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-    let enviou=false;
-    for(const op of opers()){
-      try{ await sendPasswordResetEmail(getAuth(await fbDe(op)), email); enviou=true; }catch(e){}
-    }
-    msg.className=enviou?'msg':'msg erro';
-    msg.textContent=enviou?'Enviamos um link para voce criar uma senha nova. Confira tambem o spam.':'Nao foi possivel enviar. Confira o e-mail digitado.';
-  }
-
-  // Enter em qualquer campo aciona o botao principal da tela atual.
-  // Sem isso so o clique funcionava, o que atrapalha bastante no teclado do celular.
-  document.addEventListener('keydown', function(ev){
-    if(ev.key!=='Enter') return;
-    const alvo=ev.target;
-    if(!alvo || alvo.tagName!=='INPUT') return;
-    const tela=document.getElementById('tela'); if(!tela) return;
-    // Se ha um campo depois deste, pula para ele; senao envia.
-    const campos=Array.from(tela.querySelectorAll('input'));
-    const i=campos.indexOf(alvo);
-    if(i>-1 && i<campos.length-1){ ev.preventDefault(); campos[i+1].focus(); return; }
-    const btn=tela.querySelector('button.btn-primario:not([disabled])');
-    if(btn){ ev.preventDefault(); btn.click(); }
-  });
-
-  renderPerfil();
+  } catch (e) {}
+})();
 </script>
+<script src="/motor/comum.js?v=2026-09-11-A"></script>
 </body>
 </html>
