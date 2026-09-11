@@ -1,0 +1,16 @@
+{
+  "name": "temvia-app",
+  "version": "0.0.0",
+  "private": true,
+  "description": "temvia — SaaS de gestão de transporte fretado. Site estático (GitHub Pages).",
+  "scripts": {
+    "test": "node qa/appnome_test.js . && node qa/sessao_test.js .",
+    "qa:appnome": "node qa/appnome_test.js .",
+    "qa:sessao": "node qa/sessao_test.js .",
+    "qa:navegador": "playwright install chromium"
+  },
+  "devDependencies": {
+    "acorn": "^8.18.0",
+    "playwright": "^1.63.0"
+  }
+}
