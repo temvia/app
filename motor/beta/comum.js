@@ -287,9 +287,16 @@
   function chaveRoteamento(identificador) {
     var v = String(identificador || '').trim();
     if (!v) return Promise.resolve('');
-    var norm = v.indexOf('@') > 0
-      ? v.toLowerCase()
-      : ('tel:' + normalizarTelefone(v));
+    var norm;
+    if (v.indexOf('@') > 0) {
+      norm = v.toLowerCase();
+    } else {
+      // .valor, nao o objeto: concatenar o retorno inteiro dava
+      // 'tel:[object Object]' para todo mundo — uma chave so no sistema.
+      var n = normalizarTelefone(v, { obrigatorio: false });
+      if (!n.ok || !n.valor) return Promise.resolve('');
+      norm = 'tel:' + n.valor;
+    }
     var enc = new TextEncoder();
     return crypto.subtle.digest('SHA-256', enc.encode(SAL_ROTA + '|' + norm))
       .then(function (buf) {
