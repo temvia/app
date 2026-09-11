@@ -98,7 +98,11 @@
 
     // MESMA instancia Firebase do portal: a sessao do login vale aqui.
     // Nome diferente = login perdido ao entrar na operacao.
-    appNome: 'portal-' + TRANSPORTADORA + '-' + OP,
+    // UMA instancia para a transportadora inteira, nao por operacao: o
+    // Firebase guarda a sessao por nome de instancia, e um nome por
+    // operacao faz trocar de operacao derrubar o login. O que separa uma
+    // operacao da outra e a permissao nas regras, nao a sessao.
+    appNome: 'portal-' + TRANSPORTADORA,
 
     // Nome de tela: reserva ate o cadastro chegar do Firestore, que
     // acontece em seguida. Nao inventa nome de empresa.

@@ -211,11 +211,16 @@
   // ---- Firebase helpers (uma instancia por operacao) ----
   const _apps={};
   async function fbDe(op){
-    if(_apps[op.key]) return _apps[op.key];
+    const _chave = op.transpId || TRANSPORTADORA_ID;
+    if(_apps[_chave]) return _apps[_chave];
     const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-    const nome='portal-'+op.key.replace(':','-');
+    // Nome por TRANSPORTADORA, o mesmo que as cascas usam. Com a
+    // operacao no nome, cada uma teria sessao propria e trocar de
+    // operacao derrubaria o login — e o portal nao acharia a sessao
+    // aberta pela casca.
+    const nome='portal-'+(op.transpId||TRANSPORTADORA_ID);
     const app = getApps().find(a=>a.name===nome) || initializeApp(op.fb, nome);
-    _apps[op.key]=app; return app;
+    _apps[_chave]=app; return app;
   }
   async function docDe(op, docId){
     const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
