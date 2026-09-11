@@ -724,7 +724,25 @@ function tvTrocarCliente(id) {
   if (typeof temAlteracaoPendente === 'function' && temAlteracaoPendente() &&
       !confirm('Há alterações não salvas. Trocar para ' + o.nome + ' mesmo assim?')) return;
   try { localStorage.setItem('temvia_ultima_operacao', o.id); } catch (e) {}
-  window.location.href = o.path + 'index.html';
+  window.location.href = tvUrlDaOperacao(o);
+}
+
+// Duas formas convivem e a diferenca importa:
+//   pasta propria -> /redentor/evamo/index.html
+//   casca generica -> /redentor/gestor.html?op=marlog
+// So vale como pasta propria o caminho que veio da casca: e a lista das
+// que estao mesmo publicadas. `path` gravado no cadastro para operacao
+// nova aponta para arquivo que nunca existiu — foi o 404 da MARLOG.
+function tvUrlDaOperacao(o) {
+  const noCatalogo = tvOperacoesIrmas().find(x => x.id === o.id);
+  const pasta = noCatalogo && noCatalogo.path;
+  // Caminho de pasta tem de terminar em barra. Qualquer outra coisa e
+  // registro mal preenchido, e a generica atende do mesmo jeito.
+  if (pasta && /\/$/.test(pasta)) return pasta + 'index.html';
+  // A pasta da transportadora e o primeiro segmento do caminho, tanto
+  // em /redentor/ (casca generica) quanto em /redentor/evamo-teste/.
+  const transp = String(C.pathPrefix || '/').split('/').filter(Boolean)[0] || '';
+  return '/' + transp + '/gestor.html?op=' + encodeURIComponent(o.id);
 }
 
 function tvAplicarContextoConta() {
