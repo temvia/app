@@ -667,7 +667,10 @@ async function tvCarregarOperacoes() {
       return {
         id: id,
         nome: i.nome || id,
-        path: i.path || ('/redentor/' + id.replace(/_/g, '-') + '/'),
+        // Sem `path` a operacao NAO tem pasta propria — nao se inventa
+        // uma. Quem monta o caminho (tvUrlDaOperacao) usa a casca
+        // generica nesse caso.
+        path: i.path || '',
         cor: i.cor || '',
         teste: !!i.teste
       };
@@ -7040,6 +7043,10 @@ function verificarIdentidade() {
 let fbDb = null;
 let fbSaveTimeout = null;
 let fbDocRef = null;
+// Guardar o cancelamento dos listeners nao e detalhe: sem ele, sair da
+// conta deixa o Firestore ouvindo sem sessao e o console enche de
+// permission-denied que nao sao erro de ninguem.
+let _unsubCadastro = null, _unsubExtras = null;
 
 // Initialize Firebase ONCE on page load
 async function initFirebase() {
@@ -7156,6 +7163,13 @@ function mostrarFormularioGestor() {
 setTimeout(mostrarFormularioGestor, 3500);
 
 async function logout() {
+  // Primeiro calar os listeners, depois sair. Na ordem inversa eles
+  // ficam ouvindo sem sessao e a regra recusa — o que aparece como erro
+  // vermelho para quem so clicou em Sair.
+  [_unsubCadastro, _unsubExtras, (typeof _chatUnsub !== 'undefined' ? _chatUnsub : null)]
+    .forEach(function (f) { try { if (f) f(); } catch (e) {} });
+  _unsubCadastro = null; _unsubExtras = null;
+  try { if (typeof _chatUnsub !== 'undefined') _chatUnsub = null; } catch (e) {}
   try {
     await initAuth();
     const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
@@ -9963,7 +9977,8 @@ async function cadGestorCarregar() {
     if (!fbDb) await initFirebase();
     if (!fbDb) return;
     const { onSnapshot, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    onSnapshot(doc(fbDb, CLIENTE_ID, 'solicitacoes_cadastro'), snap => {
+    if (_unsubCadastro) { _unsubCadastro(); _unsubCadastro = null; }
+    _unsubCadastro = onSnapshot(doc(fbDb, CLIENTE_ID, 'solicitacoes_cadastro'), snap => {
       CAD_GESTOR_DADOS = (snap.exists() && snap.data().lista) ? snap.data().lista : [];
       cadAtualizarBadge();
       if (document.getElementById('seAbaCadastro') &&
@@ -10449,7 +10464,8 @@ async function solCarregarFirebase() {
     if (!fbDb) await initFirebase();
     if (!fbDb) return;
     const { onSnapshot, doc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    onSnapshot(doc(fbDb, CLIENTE_ID, 'solicitacoes_extras'), snap => {
+    if (_unsubExtras) { _unsubExtras(); _unsubExtras = null; }
+    _unsubExtras = onSnapshot(doc(fbDb, CLIENTE_ID, 'solicitacoes_extras'), snap => {
       SOL_DADOS = (snap.exists() && snap.data().lista) ? snap.data().lista : [];
       solAtualizarBadge();
       if (document.getElementById('seAbaSolicitacoes') &&
