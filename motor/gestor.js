@@ -736,6 +736,26 @@ function tvTrocarCliente(id) {
 // So vale como pasta propria o caminho que veio da casca: e a lista das
 // que estao mesmo publicadas. `path` gravado no cadastro para operacao
 // nova aponta para arquivo que nunca existiu — foi o 404 da MARLOG.
+// A transportadora e o primeiro segmento do caminho: vale tanto em
+// /redentor/ (casca generica) quanto em /redentor/evamo/ (pasta propria).
+function tvTransportadora() {
+  return String(C.pathPrefix || '/').split('/').filter(Boolean)[0] || '';
+}
+
+// Registra no diretorio central para onde este acesso pertence. Falha em
+// silencio de proposito: o roteamento e conveniencia de entrada, nao
+// pode impedir um cadastro de ser salvo.
+function tvRegistrarRota(identificador) {
+  try {
+    const t = tvTransportadora();
+    const cfg = C.fbTelemetria;
+    if (!t || !cfg || !identificador) return;
+    if (window.temviaComum && window.temviaComum.registrarRoteamento) {
+      window.temviaComum.registrarRoteamento(identificador, t, cfg);
+    }
+  } catch (e) {}
+}
+
 function tvUrlDaOperacao(o) {
   const noCatalogo = tvOperacoesIrmas().find(x => x.id === o.id);
   const pasta = noCatalogo && noCatalogo.path;
@@ -2087,6 +2107,9 @@ function savePassageiro() {
   } else {
     renderSidebar();
   }
+  // Sem este registro, o passageiro digita o telefone na porta de
+  // entrada e ouve que nao foi encontrado — sem ter feito nada errado.
+  try { tvRegistrarRota(document.getElementById('fTel').value.trim()); } catch (e) {}
 }
 
 
@@ -7206,6 +7229,9 @@ async function iniciarComAutenticacao() {
     // nao escreve nada — e sem nada na tela dizendo isso.
     if (user && user.isAnonymous) user = null;
     if (user) {
+      // Quem acabou de provar que pertence e a melhor fonte possivel
+      // para o roteamento: nao ha como registrar errado.
+      try { tvRegistrarRota(user.email); } catch (e) {}
       // Conta criada para a empresa cliente NAO abre o painel do gestor.
       if (await ehAcessoDeCliente(user.email)) {
         const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');

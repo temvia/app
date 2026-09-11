@@ -264,7 +264,97 @@
     } catch (e) { return ''; }
   }
 
+  // ==================================================================
+  // ROTEAMENTO CENTRAL
+  // ------------------------------------------------------------------
+  // A pessoa entra em app.temvia.com.br e digita e-mail ou telefone. A
+  // raiz nao pode autenticar: cada transportadora tem projeto Firebase
+  // proprio, e tentar todos seria disparar login falhado em sistema
+  // alheio. Entao ela so descobre PARA ONDE mandar; o login acontece la.
+  //
+  // A alternativa era listar as transportadoras na tela. Recusada: quantos
+  // clientes a temvia tem e dado comercial dela.
+  //
+  // O que trafega e um hash. Nao ha e-mail nem telefone legivel em lugar
+  // nenhum do projeto central, e listar a colecao e proibido pela regra —
+  // so se le documento cujo id ja se conhece.
+  // ==================================================================
+  var SAL_ROTA = 'temvia:roteamento:v1';
+  var _appCentral = null;
+
+  // O mesmo identificador precisa dar sempre a mesma chave, venha de onde
+  // vier. Telefone perde formatacao; e-mail perde maiuscula e espaco.
+  function chaveRoteamento(identificador) {
+    var v = String(identificador || '').trim();
+    if (!v) return Promise.resolve('');
+    var norm = v.indexOf('@') > 0
+      ? v.toLowerCase()
+      : ('tel:' + normalizarTelefone(v));
+    var enc = new TextEncoder();
+    return crypto.subtle.digest('SHA-256', enc.encode(SAL_ROTA + '|' + norm))
+      .then(function (buf) {
+        return Array.from(new Uint8Array(buf))
+          .map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+      });
+  }
+
+  // Instancia separada e nomeada: o projeto central nao pode se misturar
+  // com a sessao da transportadora, senao entrar aqui derruba o login de la.
+  async function centralFirestore(cfg) {
+    if (!cfg || !cfg.projectId) return null;
+    var appMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    var fsMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    var authMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+    if (!_appCentral) {
+      _appCentral = appMod.getApps().find(function (a) { return a.name === 'temvia-central'; })
+                 || appMod.initializeApp(cfg, 'temvia-central');
+    }
+    var auth = authMod.getAuth(_appCentral);
+    await new Promise(function (r) {
+      var parar = authMod.onAuthStateChanged(auth, function () { parar(); r(); });
+    });
+    if (!auth.currentUser) await authMod.signInAnonymously(auth);
+    return { db: fsMod.getFirestore(_appCentral), fs: fsMod };
+  }
+
+  // Descobre a transportadora de um identificador. Devolve '' quando nao
+  // sabe — e nao saber e resposta legitima: primeiro acesso de alguem que
+  // ninguem registrou ainda.
+  async function roteamentoDe(identificador, cfgCentral) {
+    try {
+      var chave = await chaveRoteamento(identificador);
+      if (!chave) return '';
+      var c = await centralFirestore(cfgCentral);
+      if (!c) return '';
+      var snap = await c.fs.getDoc(c.fs.doc(c.db, 'roteamento', chave));
+      return (snap.exists() && snap.data().t) ? String(snap.data().t) : '';
+    } catch (e) {
+      console.warn('[roteamento] consulta:', e && e.message);
+      return '';
+    }
+  }
+
+  // Registra quem ja provou pertencer. Nunca sobrescreve: a regra proibe
+  // update, entao uma entrada existente nao pode ser sequestrada — e uma
+  // recusa aqui costuma significar "ja estava registrado", nao erro.
+  async function registrarRoteamento(identificador, transportadora, cfgCentral) {
+    try {
+      var chave = await chaveRoteamento(identificador);
+      if (!chave || !transportadora) return false;
+      var c = await centralFirestore(cfgCentral);
+      if (!c) return false;
+      await c.fs.setDoc(c.fs.doc(c.db, 'roteamento', chave),
+        { t: String(transportadora), em: new Date().toISOString() });
+      return true;
+    } catch (e) {
+      return false;   // ja existia, ou sem rede: nao e problema de ninguem
+    }
+  }
+
   raiz.temviaComum = {
+    chaveRoteamento: chaveRoteamento,
+    roteamentoDe: roteamentoDe,
+    registrarRoteamento: registrarRoteamento,
     ativarAppCheck: ativarAppCheck,
     garantirSessao: garantirSessao,
     prepararFirebase: prepararFirebase,
