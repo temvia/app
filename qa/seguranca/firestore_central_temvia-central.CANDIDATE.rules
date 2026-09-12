@@ -1,0 +1,153 @@
+// ###########################################################################
+// CANDIDATA — NÃO PUBLICADA, NÃO VALIDADA NO EMULATOR
+//
+// Gerada a partir de firestore_central_temvia-central.rules com UMA
+// substituição: validação de conteúdo em /uso.
+//
+// /roteamento fica como está. O problema dele ("entrada errada é permanente,
+// porque update e delete são proibidos") não se resolve afrouxando a regra —
+// ver RELATORIO_06 §16.
+// ###########################################################################
+
+rules_version = '2';
+
+// ===========================================================================
+// temvia — Regras do projeto CENTRAL (temvia-central)
+//
+// Este projeto NÃO guarda dado de operação. Ele existe para duas coisas que
+// precisam atravessar transportadoras, e cada transportadora tem projeto
+// Firebase próprio — é esse isolamento que impede uma ver a outra.
+//
+//   /roteamento/{chave}   para qual transportadora um acesso pertence
+//   /uso/{doc}            contagem de consumo, para o painel da temvia
+//
+// ---------------------------------------------------------------------------
+// ROTEAMENTO — por que existe
+//
+// A pessoa acessa app.temvia.com.br e digita e-mail ou telefone. A raiz
+// precisa saber para onde encaminhar, mas não pode autenticar: cada
+// transportadora tem um projeto Firebase diferente, e tentar todos seria
+// disparar login falhado em sistema alheio.
+//
+// A alternativa seria listar as transportadoras na tela para a pessoa
+// escolher. Foi recusada, e com razão: quantos clientes a temvia tem é dado
+// comercial dela, não informação de tela de login.
+//
+// O QUE FICA GUARDADO, e só isso:
+//
+//   documento:  SHA-256 do identificador normalizado, com sal fixo
+//   conteúdo:   { t: 'redentor' }
+//
+// Não há nome, não há e-mail legível, não há telefone legível. Quem abrir a
+// coleção inteira vê pares de hash e slug — e nem isso, porque listar é
+// proibido: só se lê documento cujo id já se conhece, o que exige conhecer o
+// identificador de antemão.
+//
+// O QUE ISSO NÃO PROTEGE, dito sem rodeio: quem já tem uma lista de telefones
+// pode calcular os hashes e descobrir quais deles usam a temvia e em qual
+// transportadora. O sal é público, porque roda no navegador. Considerei
+// aceitável — o dado revelado é de baixa sensibilidade e a alternativa
+// (esconder atrás de servidor) exige backend, que este projeto não tem.
+//
+// ---------------------------------------------------------------------------
+// QUEM ESCREVE O ROTEAMENTO
+//
+// Quem já provou pertencer. O gestor registra os passageiros e motoristas ao
+// cadastrá-los; cada pessoa registra a si mesma no primeiro acesso com PIN.
+// Não há sincronização em massa nem processo separado para manter.
+//
+// `create` é aberto a qualquer sessão, e isso é deliberado: exigir conta
+// impediria o passageiro — que entra anônimo — de se registrar. O risco é
+// alguém criar entradas para identificadores que não existem. O efeito seria
+// mandar essa pessoa para um portal onde ela não consegue entrar. Baixo, e
+// `update` é proibido: entrada existente não pode ser sequestrada.
+//
+// Publicado em: ____/____/2026
+// ===========================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function logado() {
+      return request.auth != null;
+    }
+
+    // Documento de roteamento: dois campos, nada mais. Campos fechados
+    // impedem que ele vire depósito de dado de pessoa.
+    function roteamentoValido() {
+      return request.resource.data.keys().hasOnly(['t', 'em'])
+             && request.resource.data.t is string
+             && request.resource.data.t.size() >= 2
+             && request.resource.data.t.size() <= 40
+             && request.resource.data.t.matches('^[a-z0-9_-]+$');
+    }
+
+    // ===================================================================
+    // ROTEAMENTO
+    // ===================================================================
+    match /roteamento/{chave} {
+      // Ler UM documento, cujo id já se conhece. Listar a coleção é
+      // proibido — é isso que impede varrer o diretório inteiro.
+      allow get: if logado();
+      allow list: if false;
+
+      // Registro no primeiro acesso, por quem já provou pertencer.
+      allow create: if logado() && roteamentoValido();
+
+      // Uma vez registrado, não muda. Sem isto, quem descobrisse a chave
+      // de alguém poderia apontá-la para outra transportadora.
+      allow update, delete: if false;
+    }
+
+    // ===================================================================
+    // TELEMETRIA DE USO
+    //
+    // Contagem e parâmetros da própria temvia: quantas roteirizações,
+    // quantos elementos consultados, custo estimado. NADA que venha do
+    // Google e NADA de pessoa — foi assim que a telemetria nasceu no
+    // projeto de cada transportadora, e assim continua aqui.
+    //
+    // Escrever é aberto: é o app de cada transportadora que reporta, e ele
+    // não tem conta neste projeto. Ler é de ninguém — o painel da temvia
+    // lê pelo console ou por conta administrativa fora destas regras.
+    // Uma transportadora não pode ler o consumo de outra, nem o próprio.
+    // ===================================================================
+    // /roteamento tem roteamentoValido(); /uso não tinha validação nenhuma:
+    // qualquer sessão anônima escrevia qualquer corpo em qualquer id. Como a
+    // telemetria agregada deve alimentar plano, limite e cobrança, isso é
+    // integridade de faturamento.
+    //
+    // O QUE ISTO **NÃO** RESOLVE: amarrar o documento à transportadora que
+    // escreve. No projeto central não há autenticação de transportadora, então
+    // não há nada verificável pelo servidor para comparar com o id do
+    // documento. Enquanto isso não existir, /uso NÃO serve para faturar.
+    function usoValido() {
+      return request.resource.data.keys().hasOnly(
+               ['chamadas', 'elementos', 'custoEstimado', 'porFuncao', 'atualizadoEm'])
+             && request.resource.data.chamadas is number
+             && request.resource.data.chamadas >= 0
+             && request.resource.data.elementos is number
+             && request.resource.data.elementos >= 0
+             && request.resource.data.custoEstimado is number
+             && request.resource.data.custoEstimado >= 0;
+    }
+
+    match /uso/{doc} {
+      allow read: if false;
+      allow create: if logado() && usoValido();
+      // Só cresce. Sobrescrever para baixo apagaria consumo já medido, e
+      // sobrescrever para cima infla cobrança alheia.
+      allow update: if logado() && usoValido()
+                    && request.resource.data.chamadas >= resource.data.chamadas
+                    && request.resource.data.elementos >= resource.data.elementos;
+      allow delete: if false;
+    }
+
+    // ===================================================================
+    // Tudo o mais: bloqueado.
+    // ===================================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

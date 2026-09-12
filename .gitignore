@@ -2,3 +2,6 @@ node_modules/
 qa/out/
 out/
 out_cli/
+firestore-debug.log
+firebase-debug.log
+ui-debug.log

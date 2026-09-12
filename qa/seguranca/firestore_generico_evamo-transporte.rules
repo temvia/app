@@ -1,0 +1,290 @@
+rules_version = '2';
+
+// ===========================================================================
+// temvia — Regras do Firestore · projeto de UMA transportadora
+//
+// VERIFICADO NO LABORATORIO DE TESTES em 09/09/2026, os 30 casos do
+// roteiro. Em especial:
+//   - o legado /evamo continua legivel sem autenticacao (6.1);
+//   - colecao registrada funciona sem ninguem escrever regra (2.1, 2.2);
+//   - colecao nao registrada e recusada (2.3, 2.4);
+//   - gestor de uma operacao nao escreve na outra (3.2);
+//   - PIN nao e legivel nem pelo dono (4.1);
+//   - trilha nao se apaga nem pelo dono (5.4).
+//
+// Regra com curinga é mais poderosa e mais fácil de errar que regra por
+// nome. Um detalhe fora do lugar aqui deixa a coleção de PINs legível —
+// por isso, ao mexer, rode o roteiro de novo antes de publicar.
+//
+// ---------------------------------------------------------------------------
+// O QUE MUDA EM RELAÇÃO ÀS REGRAS DE HOJE
+//
+// Hoje há um bloco escrito à mão por operação: evamo_temvia, evamo_teste,
+// e os respectivos _pins e _auditoria. Cada cliente novo da transportadora
+// exigia voltar aqui e escrever mais um bloco — o que obriga a temvia a
+// participar de algo que deveria ser da transportadora.
+//
+// Estas regras valem para QUALQUER operação, inclusive as que ainda não
+// existem. Publica-se uma vez, na implantação da transportadora.
+//
+// ---------------------------------------------------------------------------
+// COMO UMA OPERAÇÃO É RECONHECIDA
+//
+// Pelo sufixo do nome da coleção:
+//
+//     <op>              dados da operação   (cadastro, rotas, config, viagens)
+//     <op>_pins         PINs                (nunca legível por ninguém)
+//     <op>_auditoria    trilha              (só inserção; leitura do gestor)
+//
+// Uma operação só existe se estiver registrada em _plataforma/operacoes.
+// Sem registro, nenhuma regra casa e o bloco final nega tudo. É isso que
+// impede alguém inventar uma coleção e passar a escrever nela.
+//
+// ---------------------------------------------------------------------------
+// PERMISSÃO POR OPERAÇÃO
+//
+// Vale para GESTORES — qualquer conta que não seja anônima. Cada uid é registrado em
+// _plataforma/acessos com a lista de operações que alcança. O curinga '*'
+// dá acesso a todas, e é o que o dono da transportadora usa.
+//
+// Passageiro e motorista entram por sessão anônima e NÃO têm permissão por
+// operação: não há identidade para amarrar. Quem os protege é o App Check
+// e o PIN. Isso não é uma regressão — é o que já acontecia —, mas está
+// escrito aqui para ninguém supor proteção que não existe.
+//
+// ---------------------------------------------------------------------------
+// OS DOIS DOCUMENTOS DE CONTROLE
+//
+//   _plataforma/operacoes
+//     { lista: ['evamo_temvia', 'fabrica', 'evamo_teste'] }
+//
+//   _acessos/{uid}   um documento por pessoa
+//     { papel: 'dono',   operacoes: ['*'] }
+//     { papel: 'gestor', operacoes: ['fabrica','marlog'] }
+//
+//   Um documento por pessoa, e nao um mapa unico, porque cada gestor
+//   precisa LER o proprio registro: e assim que a tela esconde o que ele
+//   nao alcanca, em vez de oferecer e recusar depois.
+//
+// O primeiro registro é criado à mão no console, na implantação. Depois
+// disso o dono administra pelo app.
+// ===========================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- Identidade ---------------------------------------------------
+    // Qualquer sessão, inclusive anônima. Barra script cru, NÃO decide de
+    // quem é o dado. Quem protege nesta fase é o App Check.
+    function logado() {
+      return request.auth != null;
+    }
+
+    // Conta real: qualquer provedor que não seja a sessão anônima.
+    // Listar 'password' um a um quebra no dia em que outro provedor for
+    // habilitado — e o que a regra quer dizer é "não é anônimo".
+    function gestor() {
+      return request.auth != null
+             && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+
+    // ---- Registro da plataforma ---------------------------------------
+    // get() dentro de regra lê o documento mesmo com allow read: if false.
+    // Por isso o registro fica invisível para o app e visível para a regra.
+    // Um documento por pessoa: /_acessos/{uid}. Assim cada gestor le o
+    // proprio registro e a tela sabe o que ele pode ANTES de oferecer.
+    function regExiste() {
+      return request.auth != null
+             && exists(/databases/$(database)/documents/_acessos/$(request.auth.uid));
+    }
+
+    function meuRegistro() {
+      return regExiste()
+        ? get(/databases/$(database)/documents/_acessos/$(request.auth.uid)).data
+        : {};
+    }
+
+    function ehDono() {
+      return gestor() && meuRegistro().get('papel', '') == 'dono';
+    }
+
+    // Gestor registrado PARA ESTA operação. O dono passa por '*'.
+    // Sem o documento de acessos publicado ainda, ninguém é gestor de nada
+    // — de propósito: melhor travar a administração que abrir tudo.
+    function gestorDe(op) {
+      return gestor() && meuRegistro().get('operacoes', []).hasAny([op, '*']);
+    }
+
+    // ---- Operações registradas ----------------------------------------
+    function opsRegistradas() {
+      return exists(/databases/$(database)/documents/_plataforma/operacoes)
+        ? get(/databases/$(database)/documents/_plataforma/operacoes).data.get('lista', [])
+        : [];
+    }
+
+    function ehOperacao(c) {
+      return opsRegistradas().hasAny([c]);
+    }
+
+    // Nome da operação a partir do nome da coleção derivada.
+    function baseDe(c) {
+      return c.split('_pins')[0].split('_auditoria')[0];
+    }
+
+    // Documentos que só o gestor pode escrever. O resto da coleção é
+    // escrito pela operação do dia a dia (viagens, presenças, ocorrências).
+    function docDoGestor(docId) {
+      return docId in ['dados', 'servicos_extras', 'acessos', 'config'];
+    }
+
+    // Campos fechados do primeiro acesso do passageiro. Nada além destes
+    // entra: o documento não pode virar depósito de dado alheio.
+    function ativacaoValida() {
+      return request.resource != null
+             && request.resource.data != null
+             && request.resource.data.keys().hasOnly(
+               ['hash', 'provisorio', 'matriculaHash', 'ativadoEm', 'ativadoPor'])
+             && request.resource.data.hash is string
+             && request.resource.data.hash.size() >= 32
+             && request.resource.data.matriculaHash is string
+             && request.resource.data.matriculaHash.size() >= 32
+             && request.resource.data.provisorio == false
+             && request.resource.data.ativadoPor == 'passageiro'
+             && request.resource.data.ativadoEm is string;
+    }
+
+    // ===================================================================
+    // CONTROLE DA PLATAFORMA
+    // Invisível para o app. Só o dono lê e escreve.
+    // ===================================================================
+    // O catalogo de operacoes: quais existem e como se chamam. Nao e
+    // segredo, e o PORTAL precisa dele ANTES do login — e ele que
+    // desenha a tela de escolha da operacao. Exigir gestor() aqui
+    // deixava o portal cego e ele caia na lista velha do arquivo.
+    // Escrever continua so do dono: a lista decide o que existe.
+    match /_plataforma/operacoes {
+      allow read: if logado();
+      allow write: if ehDono();
+    }
+
+    // Quem pode o que: invisivel para os gerenciados.
+    match /_plataforma/{doc} {
+      allow read, write: if ehDono();
+    }
+
+    // ===================================================================
+    // QUEM PODE O QUE — um documento por pessoa
+    //
+    // Cada gestor le o PROPRIO registro: e o que permite a tela esconder
+    // operacoes que ele nao alcanca, em vez de oferecer e recusar
+    // depois. Ler o dos outros, so o dono. Escrever, so o dono — senao
+    // qualquer um se promoveria.
+    // ===================================================================
+    match /_acessos/{uid} {
+      allow read: if ehDono() || (request.auth != null && request.auth.uid == uid);
+      allow write: if ehDono();
+    }
+
+    // ===================================================================
+    // LEGADO — evamo · NÃO ALTERAR até o portal antigo ser desligado.
+    // Vem ANTES do bloco genérico de propósito: no Firestore as regras se
+    // somam, e este caminho precisa continuar aberto enquanto a operação
+    // real estiver lá. Some no dia do desligamento.
+    // ===================================================================
+    match /evamo/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null && docDoGestor(docId);
+      allow write: if !docDoGestor(docId);
+    }
+
+    match /evamo_pins/{telefone} {
+      allow read: if false;
+      allow create: if true;
+      allow update: if request.auth != null
+                    || request.resource.data.hash == resource.data.hash;
+      allow delete: if request.auth != null;
+    }
+
+    // ===================================================================
+    // PINS de qualquer operação — precisa vir ANTES do bloco de dados,
+    // senão `<op>_pins` casaria com /{colecao}/{docId} e herdaria a
+    // permissão de leitura de lá. NUNCA legível.
+    // ===================================================================
+    match /{colecao}/{telefone} {
+      allow read: if false;
+
+      allow create: if colecao.matches('.*_pins')
+                    && ehOperacao(baseDe(colecao))
+                    && (gestorDe(baseDe(colecao))
+                        || (logado() && ativacaoValida()));
+
+      // 1ª: conferência do PIN — o app regrava o mesmo hash; a regra recusa
+      //     se não bater. É um oráculo; quem segura o abuso é o App Check.
+      // 2ª: troca do provisório pelo definitivo — para MUDAR o hash é preciso
+      //     provar que se conhece o atual, e só enquanto for provisório.
+      // 3ª: limpeza da prova, sem tocar no hash.
+      allow update: if colecao.matches('.*_pins')
+                    && ehOperacao(baseDe(colecao))
+                    && (gestorDe(baseDe(colecao))
+                        || (logado() && request.resource.data.hash == resource.data.hash)
+                        || (logado()
+                            && resource.data.provisorio == true
+                            && request.resource.data.provaAnterior == resource.data.hash
+                            && request.resource.data.provisorio == false)
+                        || (logado() && request.resource.data.hash == resource.data.hash
+                            && !('provaAnterior' in request.resource.data)));
+
+      // Revogação: tirar o PIN tira o acesso, na hora.
+      allow delete: if colecao.matches('.*_pins')
+                    && ehOperacao(baseDe(colecao))
+                    && gestorDe(baseDe(colecao));
+    }
+
+    // ===================================================================
+    // TRILHA de qualquer operação — só inserção, para todos.
+    // Nem o gestor apaga: uma trilha que se apaga não é trilha.
+    // ===================================================================
+    match /{colecao}/{eventoId} {
+      allow create: if colecao.matches('.*_auditoria')
+                    && ehOperacao(baseDe(colecao))
+                    && logado();
+      allow read:   if colecao.matches('.*_auditoria')
+                    && gestorDe(baseDe(colecao));
+      allow update, delete: if false;
+    }
+
+    // ===================================================================
+    // DADOS de qualquer operação registrada.
+    //
+    // A leitura continua aberta a qualquer sessão: é assim que motorista e
+    // passageiro, que entram anônimos, alcançam a rota do dia. A ESCRITA
+    // dos documentos de cadastro exige gestor DAQUELA operação — é aqui
+    // que a permissão por operação passa a valer.
+    // ===================================================================
+    match /{colecao}/{docId} {
+      allow read: if ehOperacao(colecao) && logado();
+
+      // Cadastro, configuração e acessos: só o gestor da operação.
+      allow write: if ehOperacao(colecao)
+                   && docDoGestor(docId)
+                   && gestorDe(colecao);
+
+      // Operação do dia: viagens, presenças, ocorrências, avisos, chats.
+      // Fica com qualquer sessão porque é o motorista e o passageiro que
+      // escrevem — e eles não têm conta.
+      allow write: if ehOperacao(colecao)
+                   && !docDoGestor(docId)
+                   && logado();
+    }
+
+    // ===================================================================
+    // Tudo o mais: bloqueado. Inclui coleção não registrada em
+    // _plataforma/operacoes — é isso que impede inventar uma e escrever
+    // nela. Este bloco não revoga o que os de cima permitem; no Firestore
+    // as regras se somam. Ele cobre o que nenhum bloco acima casou.
+    // ===================================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

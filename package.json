@@ -7,10 +7,14 @@
     "test": "node qa/appnome_test.js . && node qa/sessao_test.js .",
     "qa:appnome": "node qa/appnome_test.js .",
     "qa:sessao": "node qa/sessao_test.js .",
-    "qa:navegador": "playwright install chromium"
+    "qa:navegador": "playwright install chromium",
+    "qa:seguranca": "firebase emulators:exec --config qa/seguranca/firebase.json --only firestore --project temvia-teste \"node qa/seguranca/regras_test.js\""
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
     "acorn": "^8.18.0",
+    "firebase": "^12.19.0",
+    "firebase-tools": "^15.30.0",
     "playwright": "^1.63.0"
   }
 }
